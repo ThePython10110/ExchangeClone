@@ -11,9 +11,9 @@ function get_element_deconstructor_formspec()
 end
 
 local function can_dig(pos, player)
-	local meta = minetest.get_meta(pos);
-	local inv = meta:get_inventory()
-	return inv:is_empty("fuel") and inv:is_empty("dst")
+    local meta = minetest.get_meta(pos);
+    local inv = meta:get_inventory()
+    return inv:is_empty("fuel") and inv:is_empty("dst")
 end
 
 local function on_timer(pos, elapsed)
@@ -54,11 +54,11 @@ local function on_construct(pos)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-	if minetest.is_protected(pos, player:get_player_name()) then
-		return 0
-	end
+    if minetest.is_protected(pos, player:get_player_name()) then
+        return 0
+    end
     local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
+    local inv = meta:get_inventory()
     if listname == "dst" then
         if stack:get_name() == "element_exchange:exchange_orb" then
             return stack:get_count()
@@ -71,17 +71,17 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 end
 
 local function allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, player)
-	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-	local stack = inv:get_stack(from_list, from_index)
-	return allow_metadata_inventory_put(pos, to_list, to_index, stack, player)
+    local meta = minetest.get_meta(pos)
+    local inv = meta:get_inventory()
+    local stack = inv:get_stack(from_list, from_index)
+    return allow_metadata_inventory_put(pos, to_list, to_index, stack, player)
 end
 
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
-	if minetest.is_protected(pos, player:get_player_name()) then
-		return 0
-	end
-	return stack:get_count()
+    if minetest.is_protected(pos, player:get_player_name()) then
+        return 0
+    end
+    return stack:get_count()
 end
 
 local function on_blast(pos)
@@ -95,20 +95,20 @@ end
 
 minetest.register_node("element_exchange:element_deconstructor", {
     description = "Element Deconstructor",
-	groups = {cracky = 2},
-	is_ground_content = false,
+    groups = {cracky = 2},
+    is_ground_content = false,
     can_dig = can_dig,
     on_timer = on_timer,
-	on_construct = on_construct,
-	on_metadata_inventory_move = function(pos)
-		minetest.get_node_timer(pos):start(1.0)
-	end,
-	on_metadata_inventory_put = function(pos)
-		minetest.get_node_timer(pos):start(1.0)
-	end,
-	on_metadata_inventory_take = function(pos)
-		minetest.get_node_timer(pos):start(1.0)
-	end,
+    on_construct = on_construct,
+    on_metadata_inventory_move = function(pos)
+        minetest.get_node_timer(pos):start(1.0)
+    end,
+    on_metadata_inventory_put = function(pos)
+        minetest.get_node_timer(pos):start(1.0)
+    end,
+    on_metadata_inventory_take = function(pos)
+        minetest.get_node_timer(pos):start(1.0)
+    end,
     on_blast = on_blast,
     allow_metadata_inventory_put = allow_metadata_inventory_put,
     allow_metadata_inventory_move = allow_metadata_inventory_move,
