@@ -36,8 +36,7 @@ local function on_timer(pos, elapsed)
             end
             -- make sure orb has enough charge
             local orb_charge = fuel_stack:get_meta():get_int("stored_charge") or 0
-            -- TODO specific charge required depending on node
-            orb_charge = orb_charge - 1
+            orb_charge = orb_charge - get_item_energy(src_stack:get_name())
             if orb_charge < 0 then
                 break
             end

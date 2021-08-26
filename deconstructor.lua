@@ -25,14 +25,14 @@ local function on_timer(pos, elapsed)
         if not inv:is_empty("dst") and not inv:is_empty("fuel") then
             -- remove one item from fuel inventory
             local fuel_stack = inv:get_stack("fuel", 1)
+            local energy_value = get_item_energy(fuel_stack:get_name())
             fuel_stack:set_count(fuel_stack:get_count() - 1)
             inv:set_stack("fuel", 1, fuel_stack)
 
             -- only get 1 orb as we can only use one
             local dest_orb = inv:get_stack("dst", 1)
             local stored = dest_orb:get_meta():get_int("stored_charge") or 0
-            -- TODO give a specific stored charge depending on node
-            stored = stored + 1
+            stored = stored + energy_value
             dest_orb:get_meta():set_int("stored_charge", stored)
             inv:set_stack("dst", 1, dest_orb)
 
