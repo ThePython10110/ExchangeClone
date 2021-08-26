@@ -114,3 +114,13 @@ minetest.register_node("element_exchange:element_deconstructor", {
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
 })
+
+minetest.register_craft({
+    type = "shaped",
+    output = "element_exchange:element_deconstructor",
+    recipe = {
+        {"", "element_exchange:exchange_orb",""},
+        {"element_exchange:exchange_orb", "default:furnace", "element_exchange:exchange_orb"},
+        {"", "element_exchange:exchange_orb",  ""}
+    }
+})

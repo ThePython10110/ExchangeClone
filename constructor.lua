@@ -136,3 +136,13 @@ minetest.register_node("element_exchange:element_constructor", {
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
 })
+
+minetest.register_craft({
+    type = "shaped",
+    output = "element_exchange:element_constructor",
+    recipe = {
+        {"", "element_exchange:exchange_orb",""},
+        {"element_exchange:exchange_orb", "default:pick_diamond", "element_exchange:exchange_orb"},
+        {"", "element_exchange:exchange_orb",  ""}
+    }
+})

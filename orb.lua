@@ -14,8 +14,8 @@ minetest.register_craft({
     type = "shaped",
     output = "element_exchange:exchange_orb",
     recipe = {
-        {"", "default:diamond",""},
-        {"default:diamond", "default:gold", "default:diamond"},
-        {"", "default:diamond",  ""}
+        {"default:glass", "default:diamond","default:glass"},
+        {"default:diamond", "default:steel_ingot", "default:diamond"},
+        {"default:glass", "default:diamond",  "default:glass"}
     }
 })
