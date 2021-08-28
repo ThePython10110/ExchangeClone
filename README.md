@@ -1,4 +1,5 @@
 # Element Exchange
+[![ContentDB](https://content.minetest.net/packages/enchant97/element_exchange/shields/downloads/)](https://content.minetest.net/packages/enchant97/element_exchange/)
 ![GitHub license](https://img.shields.io/github/license/enchant97/minetest_element_exchange)
 ![GitHub issues](https://img.shields.io/github/issues/enchant97/minetest_element_exchange)
 
