@@ -95,6 +95,14 @@ end
 
 minetest.register_node("element_exchange:element_deconstructor", {
     description = "Element Deconstructor",
+    tiles = {
+        "ee_deconstructor_up.png",
+        "ee_deconstructor_down.png",
+        "ee_deconstructor_right.png",
+        "ee_deconstructor_right.png",
+        "ee_deconstructor_right.png",
+        "ee_deconstructor_right.png"
+    },
     groups = {cracky = 2},
     is_ground_content = false,
     can_dig = can_dig,

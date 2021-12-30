@@ -116,6 +116,14 @@ end
 
 minetest.register_node("element_exchange:element_constructor", {
     description = "Element Constructor",
+    tiles = {
+        "ee_constructor_up.png",
+        "ee_constructor_down.png",
+        "ee_constructor_right.png",
+        "ee_constructor_right.png",
+        "ee_constructor_right.png",
+        "ee_constructor_right.png"
+    },
     groups = {cracky = 2},
     is_ground_content = false,
     can_dig=can_dig,

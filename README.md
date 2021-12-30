@@ -4,6 +4,8 @@
 
 A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. This is mod is inspired by the "Equivalent Exchange" mod for Minecraft.
 
+![In Game Screenshot](screenshot.png)
+
 ## License
 Copyright (C) 2021 Leo Spratt
 
