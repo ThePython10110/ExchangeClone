@@ -6,8 +6,8 @@
         "magic",
         "technology"
     ],
-    "license": "GPLv3",
-    "media_license": "GPLv3",
+    "license": "GPL-3.0-or-later",
+    "media_license": "GPL-3.0-or-later",
     "short_description": "Exchange nodes into other nodes",
     "dev_state": "ACTIVELY_DEVELOPED",
     "repo": "https://github.com/enchant97/minetest_element_exchange.git",
