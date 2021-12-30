@@ -7,6 +7,15 @@ A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. 
 
 ![In Game Screenshot](screenshot.png)
 
+## Features
+- Orb that holds energy
+- Collector that collects energy from the sun
+- Constructor that can convert one node into different node
+- Deconstructor that can extract energy from a node
+
+## Config
+You can change the default values in the minetest settings under `mods > element_exchange`.
+
 ## License
 Copyright (C) 2021 Leo Spratt
 

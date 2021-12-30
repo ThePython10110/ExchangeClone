@@ -1,0 +1,16 @@
+{
+    "type": "MOD",
+    "title": "",
+    "name": "element_exchange",
+    "tags": [
+        "magic",
+        "technology"
+    ],
+    "license": "GPLv3",
+    "media_license": "GPLv3",
+    "short_description": "Exchange nodes into other nodes",
+    "dev_state": "ACTIVELY_DEVELOPED",
+    "repo": "https://github.com/enchant97/minetest_element_exchange.git",
+    "website": "https://github.com/enchant97/minetest_element_exchange",
+    "issue_tracker": "https://github.com/enchant97/minetest_element_exchange/issues"
+}
