@@ -257,14 +257,24 @@ local energy_values = {
         chest = 2,
         chest_locked = 2,
     },
+    ["moreswords"] = {
+        sword_ice = 10,
+        sword_lava = 10,
+        sword_pick = 14,
+        sword_smoke = 14,
+        sword_teleport = 20,
+        sword_water = 5,
+    },
 }
 
 -- load energy values into known items
 for modname, itemlist in pairs(energy_values) do
-    for itemname, energy_value in pairs(itemlist) do
-        minetest.override_item(modname..":"..itemname, {
-            description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,
-            energy_value = energy_value,
-        })
+    if  minetest.get_modpath(modname) then
+        for itemname, energy_value in pairs(itemlist) do
+            minetest.override_item(modname..":"..itemname, {
+                description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,
+                energy_value = energy_value,
+            })
+        end
     end
 end
