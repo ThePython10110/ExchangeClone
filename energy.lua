@@ -192,6 +192,70 @@ local energy_values = {
         mese_post_light_junglewood = 4,
         mese_post_light_pine_wood = 4,
         mese_post_light_aspen_wood = 4,
+
+        --- Craft Items
+        blueberries = 5,
+        book = 4,
+        book_written = 5,
+        bronze_ingot = 7,
+        clay_brick = 6,
+        clay_lump = 4,
+        coal_lump = 4,
+        copper_ingot = 10,
+        copper_lump = 4,
+        diamond = 22,
+        flint = 5,
+        gold_ingot = 12,
+        gold_lump = 5,
+        iron_lump = 5,
+        mese_crystal = 30,
+        mese_crystal_fragment = 19,
+        obsidian_shard = 7,
+        paper = 4,
+        steel_ingot = 10,
+        stick = 3,
+        tin_ingot = 10,
+        tin_lump = 4,
+
+        --- Furnace
+        furnace = 4,
+
+        --- Tools
+        -- Picks
+        pick_wood = 2,
+        pick_stone = 3,
+        pick_bronze = 5,
+        pick_steel = 5,
+        pick_mese = 8,
+        pick_diamond = 6,
+        -- Shovels
+        shovel_wood = 2,
+        shovel_stone = 3,
+        shovel_bronze = 5,
+        shovel_steel = 5,
+        shovel_mese = 7,
+        shovel_diamond = 6,
+        -- Axes
+        axe_wood = 2,
+        axe_stone = 3,
+        axe_bronze = 5,
+        axe_steel = 5,
+        axe_mese = 8,
+        axe_diamond = 6,
+        -- Swords
+        sword_wood = 2,
+        sword_stone = 3,
+        sword_bronze = 5,
+        sword_steel = 5,
+        sword_mese = 8,
+        sword_diamond = 6,
+
+        --- Torch
+        torch = 3,
+
+        --- Chest
+        chest = 2,
+        chest_locked = 2,
     },
 }
 
