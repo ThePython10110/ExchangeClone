@@ -117,7 +117,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
         else
             return 0
         end
-    elseif listname == "src" or listname == "dst" then
+    elseif listname == "src" then
         return stack:get_count()
 
     elseif listname == "dst" then
