@@ -1,3 +1,5 @@
+
+
 function get_element_constructor_formspec()
     local formspec = {
         "size[8,9]",
@@ -80,7 +82,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
     if listname == "fuel" then
-        if stack:get_name() == "element_exchange:exchange_orb" then
+        if stack:get_name() == "exchangeclone:exchange_orb" then
             return stack:get_count()
         else
             return 0
@@ -109,12 +111,12 @@ local function on_blast(pos)
     default.get_inventory_drops(pos, "fuel", drops)
     default.get_inventory_drops(pos, "src", drops)
     default.get_inventory_drops(pos, "dst", drops)
-    drops[#drops+1] = "element_exchange:element_constructor"
+    drops[#drops+1] = "exchangeclone:element_constructor"
     minetest.remove_node(pos)
     return drops
 end
 
-minetest.register_node("element_exchange:element_constructor", {
+minetest.register_node("exchangeclone:element_constructor", {
     description = "Element Constructor",
     tiles = {
         "ee_constructor_up.png",
@@ -144,12 +146,17 @@ minetest.register_node("element_exchange:element_constructor", {
     allow_metadata_inventory_take = allow_metadata_inventory_take,
 })
 
+local recipe_ingredient = "default:pick_diamond"
+
+if exchangeclone.mineclone then
+    recipe_ingredient = "mcl_tools:pick_diamond"
+end
 minetest.register_craft({
     type = "shaped",
-    output = "element_exchange:element_constructor",
+    output = "exchangeclone:element_constructor",
     recipe = {
-        {"", "element_exchange:exchange_orb",""},
-        {"element_exchange:exchange_orb", "default:pick_diamond", "element_exchange:exchange_orb"},
-        {"", "element_exchange:exchange_orb",  ""}
+        {"", "exchangeclone:exchange_orb",""},
+        {"exchangeclone:exchange_orb", recipe_ingredient, "exchangeclone:exchange_orb"},
+        {"", "exchangeclone:exchange_orb",  ""}
     }
 })

@@ -1,4 +1,13 @@
-local default_path = minetest.get_modpath("element_exchange")
+exchangeclone = {}
+if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("mcl_core")) then
+    error("ExchangeClone requires 'default' or 'mcl_core,' but Minetest doesn't let me mark one or the other as a dependency.")
+elseif minetest.get_modpath("mcl_core") then
+    exchangeclone["mineclone"] = true
+else
+    exchangeclone["mineclone"] = false
+end
+
+local default_path = minetest.get_modpath("exchangeclone")
 
 function get_item_energy(name)
     return minetest.registered_items[name].energy_value or 1

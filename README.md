@@ -1,9 +1,9 @@
 # Element Exchange
-[![ContentDB](https://content.minetest.net/packages/enchant97/element_exchange/shields/downloads/)](https://content.minetest.net/packages/enchant97/element_exchange/)
-![GitHub license](https://img.shields.io/github/license/enchant97/minetest_element_exchange)
-![GitHub issues](https://img.shields.io/github/issues/enchant97/minetest_element_exchange)
+[![ContentDB](https://content.minetest.net/packages/thepython10110/exchangeclone/shields/downloads/)](https://content.minetest.net/packages/thepython10110/exchangeclone/)
+![GitHub license](https://img.shields.io/github/license/thepython10110/minetest_exchangeclone)
+![GitHub issues](https://img.shields.io/github/issues/thepython10110/minetest_exchangeclone)
 
-A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. This is mod is inspired by the "Equivalent Exchange" mod for Minecraft.
+A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. This is mod is inspired by the "Equivalent Exchange" mod for Minecraft, and forked and modified from [Element Exchange](https://github.com/enchant97/minetest_element_exchange). In other words, 90% of the code is not mine.
 
 ![In Game Screenshot](screenshot.png)
 
@@ -14,9 +14,9 @@ A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. 
 - Deconstructor that can extract energy from a node
 
 ## Config
-You can change the default values in the minetest settings under `mods > element_exchange`.
+You can change the default values in the minetest settings under `mods > exchangeclone`.
 
-## License
+## Original License
 Copyright (C) 2021 Leo Spratt
 
 This program is free software: you can redistribute it and/or modify

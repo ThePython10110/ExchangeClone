@@ -4,8 +4,8 @@ local energy_values = {
     ["default"] = {
         --- Nodes
         -- Stone
-        stone = 1,
-        cobble = 2,
+        stone = 2,
+        cobble = 1,
         stonebrick = 3,
         stone_block = 3,
         mossycobble = 3,
@@ -87,27 +87,27 @@ local energy_values = {
 
         -- Ores,
         stone_with_coal = 5,
-        coalblock = 5,
+        coalblock = 36,
 
         stone_with_iron = 5,
-        steelblock = 5,
+        steelblock = 90,
 
         stone_with_copper = 5,
-        copperblock = 5,
+        copperblock = 90,
 
         stone_with_tin = 5,
-        tinblock = 5,
+        tinblock = 90,
 
-        bronzeblock = 5,
+        bronzeblock = 63,
 
         stone_with_gold = 5,
-        goldblock = 5,
+        goldblock = 108,
 
         stone_with_mese = 5,
-        mese = 5,
+        mese = 270,
 
         stone_with_diamond = 17,
-        diamondblock = 17,
+        diamondblock = 198,
 
         -- Plantlife,
         cactus = 2,
@@ -209,7 +209,7 @@ local energy_values = {
         gold_lump = 5,
         iron_lump = 5,
         mese_crystal = 30,
-        mese_crystal_fragment = 19,
+        mese_crystal_fragment = 3,
         obsidian_shard = 7,
         paper = 4,
         steel_ingot = 10,
@@ -218,7 +218,7 @@ local energy_values = {
         tin_lump = 4,
 
         --- Furnace
-        furnace = 4,
+        furnace = 8,
 
         --- Tools
         -- Picks
@@ -265,11 +265,29 @@ local energy_values = {
         sword_teleport = 20,
         sword_water = 5,
     },
+    ["mcl_core"] = {
+        --Nodes
+        --Stone
+        stone = 2,
+        cobble = 1,
+        stonebrick = 3,
+        stonebrickmossy = 3,
+        stonebrickcracked = 3,
+        stonebrickcarved = 3,
+        stone_smooth = 3,
+        diorite = 1,
+        andesite = 1,
+        granite = 1,
+        mossycobble = 3,
+
+        stone_with_diamond = 17,
+        diamondblock = 17,
+    }
 }
 
 -- load energy values into known items
 for modname, itemlist in pairs(energy_values) do
-    if  minetest.get_modpath(modname) then
+    if minetest.get_modpath(modname) then
         for itemname, energy_value in pairs(itemlist) do
             minetest.override_item(modname..":"..itemname, {
                 description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,

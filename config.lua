@@ -1,1 +1,1 @@
-COLLECTOR_INTERVAL = minetest.settings:get("element_exchange.collector_interval") or 20
+COLLECTOR_INTERVAL = minetest.settings:get("exchangeclone.collector_interval") or 20

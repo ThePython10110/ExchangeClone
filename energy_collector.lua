@@ -53,7 +53,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
     if listname == "dst" then
-        if stack:get_name() == "element_exchange:exchange_orb" then
+        if stack:get_name() == "exchangeclone:exchange_orb" then
             return stack:get_count()
         else
             return 0
@@ -78,12 +78,12 @@ end
 local function on_blast(pos)
     local drops = {}
     default.get_inventory_drops(pos, "dst", drops)
-    drops[#drops+1] = "element_exchange:energy_collector"
+    drops[#drops+1] = "exchangeclone:energy_collector"
     minetest.remove_node(pos)
     return drops
 end
 
-minetest.register_node("element_exchange:energy_collector", {
+minetest.register_node("exchangeclone:energy_collector", {
     description = "Energy Collector",
     tiles = {
         "ee_energy_collector_up.png",
@@ -113,12 +113,22 @@ minetest.register_node("element_exchange:energy_collector", {
     allow_metadata_inventory_take = allow_metadata_inventory_take,
 })
 
+local recipe_item_1 = "default:steel_block"
+local recipe_item_2 = "default:obsidian_glass"
+local recipe_item_3 = "default:chest"
+
+if exchangeclone.mineclone then
+    recipe_item_1 = "mcl_core:ironblock"
+    recipe_item_2 = "mcl_core:glass"
+    recipe_item_3 = "mcl_chests:chest"
+end
+
 minetest.register_craft({
     type = "shaped",
-    output = "element_exchange:energy_collector",
+    output = "exchangeclone:energy_collector",
     recipe = {
-        {"default:obsidian_glass", "default:obsidian_glass","default:obsidian_glass"},
-        {"element_exchange:exchange_orb", "default:chest", "element_exchange:exchange_orb"},
-        {"default:steelblock", "default:steelblock",  "default:steelblock"}
+        {recipe_item_2, recipe_item_2, recipe_item_2},
+        {"exchangeclone:exchange_orb", recipe_item_3, "exchangeclone:exchange_orb"},
+        {recipe_item_1, recipe_item_1, recipe_item_1}
     }
 })

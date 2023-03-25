@@ -4,18 +4,28 @@ function read_orb_charge(itemstack, user, pointed_thing)
     return itemstack
 end
 
-minetest.register_tool("element_exchange:exchange_orb", {
+minetest.register_tool("exchangeclone:exchange_orb", {
     description = "Exchange Orb",
     inventory_image = "ee_exchange_orb.png",
     on_use = read_orb_charge,
 })
 
+local recipe_item_1 = "default:steel_ingot"
+local recipe_item_2 = "default:diamond"
+local recipe_item_3 = "default:glass"
+
+if exchangeclone.mineclone then
+    recipe_item_1 = "mcl_core:iron_ingot"
+    recipe_item_2 = "mcl_core:diamond"
+    recipe_item_3 = "mcl_core:glass"
+end
+
 minetest.register_craft({
     type = "shaped",
-    output = "element_exchange:exchange_orb",
+    output = "exchangeclone:exchange_orb",
     recipe = {
-        {"default:glass", "default:diamond","default:glass"},
-        {"default:diamond", "default:steel_ingot", "default:diamond"},
-        {"default:glass", "default:diamond",  "default:glass"}
+        {recipe_item_3, recipe_item_2, recipe_item_3},
+        {recipe_item_2, recipe_item_1, recipe_item_2},
+        {recipe_item_3, recipe_item_2,  recipe_item_3}
     }
 })
