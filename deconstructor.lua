@@ -1,6 +1,6 @@
 function get_element_deconstructor_formspec()
     if not exchangeclone.mineclone then
-        local formspec = {
+        local formspec = table.concat({
             
             "size[8,9]",
             "label[2,1;Fuel]",
@@ -8,7 +8,7 @@ function get_element_deconstructor_formspec()
             "label[5,1;Orb]",
             "list[context;dst;5,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
-        }
+        }, "")
     else
         local formspec = "size[8,9]"..
             "no_prepend[]"..
@@ -23,7 +23,7 @@ function get_element_deconstructor_formspec()
             "listring[current_player;main]"..
             "listring[context;dst]"
     end
-    return table.concat(formspec, "")
+    return formspec
 end
 
 local function can_dig(pos, player)
