@@ -1,5 +1,5 @@
 function get_element_deconstructor_formspec()
-    minetest.log(exchangeclone.mineclone)
+    minetest.log(tostring(exchangeclone.mineclone))
     if not exchangeclone.mineclone then
         local formspec = table.concat({
             "size[8,9]",
