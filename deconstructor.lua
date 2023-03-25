@@ -11,14 +11,15 @@ function get_element_deconstructor_formspec()
         }, "")
     else
         local formspec = "size[8,9]"..
-            "no_prepend[]"..
-            mcl_vars.gui_nonbg..mcl_vars.gui_bg_color..
             "background[-0.19,-0.25;10.5,9.87]"..
             "label[2,1;"..minetest.formspec_escape(minetest.colorize("#313131", "Fuel")).."]"..
             "list[context;fuel;2,2;1,1;]"..
+            mcl_formspec.get_itemslot_bg(2,2,1,1)..
             "label[5,1;"..minetest.formspec_escape(minetest.colorize("#313131", "Orb")).."]"..
             "list[context;dst;5,2;1,1;]"..
-            "list[current_player;main;0,5;8,4;]"..
+            mcl_formspec.get_itemslot_bg(5,2,1,1)..
+            "list[current_player;main;0,5;9,4;]"..
+            mcl_formspec.get_itemslot_bg(0,5,9,4)..
             "listring[context;fuel]"..
             "listring[current_player;main]"..
             "listring[context;dst]"
