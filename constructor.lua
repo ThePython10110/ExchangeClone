@@ -1,17 +1,48 @@
 
 
 function get_element_constructor_formspec()
-    local formspec = {
-        "size[8,9]",
-        "label[2,1;Orb]",
-        "list[context;fuel;2,2;1,1;]",
-        "label[3,1;Source]",
-        "list[context;src;3,2;1,1;]",
-        "label[5,1;Output]",
-        "list[context;dst;5,2;1,1;]",
-        "list[current_player;main;0,5;8,4;]",
-    }
-    return table.concat(formspec, "")
+    if not exchangeclone.mineclone then
+        local formspec = {
+            "size[8,9]",
+            "label[2,1;Orb]",
+            "list[context;fuel;2,2;1,1;]",
+            "label[3,1;Source]",
+            "list[context;src;3,2;1,1;]",
+            "label[5,1;Output]",
+            "list[context;dst;5,2;1,1;]",
+            "list[current_player;main;0,5;8,4;]",
+            "listring[context;fuel]",
+            "listring[current_player;main]",
+            "listring[context;src]",
+            "listring[current_player;main]",
+            "listring[context;dst]",
+            "listring[current_player;main]"
+        }
+        return table.concat(formspec, "")
+    else
+        local formspec = {
+            "size[9,9]",
+            "label[2,1;Orb]",
+            "list[context;fuel;2,2;1,1;]",
+            mcl_formspec.get_itemslot_bg(2,2,1,1),
+            "label[3,1;Source]",
+            "list[context;src;3,2;1,1;]",
+            mcl_formspec.get_itemslot_bg(3,2,1,1),
+            "label[5,1;Output]",
+            "list[context;dst;5,2;1,1;]",
+            mcl_formspec.get_itemslot_bg(5,2,1,1),
+            "list[current_player;main;0,5;9,3;9]",
+            mcl_formspec.get_itemslot_bg(0,5,9,3),
+            "list[current_player;main;0,6;9,1;]",
+            mcl_formspec.get_itemslot_bg(0,6,9,1),
+            "listring[context;fuel]",
+            "listring[current_player;main]",
+            "listring[context;src]",
+            "listring[current_player;main]",
+            "listring[context;dst]",
+            "listring[current_player;main]"
+        }
+    end
 end
 
 local function can_dig(pos, player)

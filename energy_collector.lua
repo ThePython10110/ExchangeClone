@@ -1,11 +1,28 @@
 function get_energy_collector_formspec()
-    local formspec = {
-        "size[8,9]",
-        "label[3,2;Orb]",
-        "list[context;dst;4,2;1,1;]",
-        "list[current_player;main;0,5;8,4;]",
-    }
-    return table.concat(formspec, "")
+    if not exchangeclone.mineclone then
+        local formspec = {
+            "size[8,9]",
+            "label[3,2;Orb]",
+            "list[context;dst;4,2;1,1;]",
+            "list[current_player;main;0,5;8,4;]",
+            "listring[current_player;main]",
+            "listring[context;dst]"
+        }
+        return table.concat(formspec, "")
+    else
+        local formspec = {
+            "size[8,9]",
+            "label[3,2;Orb]",
+            "list[context;dist;4,2;1,1;]",
+            mcl_formspec.get_itemslot_bg(4,2,1,1),
+            "list[current_player;main;0,5;9,3;9]",
+            mcl_formspec.get_itemslot_bg(0,5,9,3),
+            "list[current_player;main;0,6;9,1;]",
+            mcl_formspec.get_itemslot_bg(0,6,9,1),
+            "listring[current_player;main]",
+            "listring[context;dst]"
+        }
+    end
 end
 
 local function can_dig(pos, player)
