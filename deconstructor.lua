@@ -15,10 +15,13 @@ function get_element_deconstructor_formspec()
             mcl_vars.gui_nonbg..mcl_vars.gui_bg_color..
             "background[-0.19,-0.25;10.5,9.87]"..
             "label[2,1;"..minetest.formspec_escape(minetest.colorize("#313131", S("Fuel"))).."]"..
-            "listring[context;fuel;2,2;1,1;]"..
+            "list[context;fuel;2,2;1,1;]"..
             "label[5,1;"..minetest.formspec_escape(minetest.colorize("#313131", S("Orb"))).."]"..
-            "listring[context;dst;5,2;1,1;]"..
-            "listring[current_player;main;0,5;8,4;]"
+            "list[context;dst;5,2;1,1;]"..
+            "list[current_player;main;0,5;8,4;]"..
+            "listring[context;fuel]"..
+            "listring[current_player;main]"..
+            "listring[context;dst]"
     end
     return table.concat(formspec, "")
 end
