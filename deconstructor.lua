@@ -18,10 +18,10 @@ function get_element_deconstructor_formspec()
             "list[context;dst;5,2;1,1;]"..
             mcl_formspec.get_itemslot_bg(5,2,1,1)..
             "list[current_player;main;0,5;9,4;]"..
-            mcl_formspec.get_itemslot_bg(0,5,9,4)..
+            mcl_formspec.get_itemslot_bg(0,5,9,4)--[[..
             "listring[context;fuel]"..
             "listring[current_player;main]"..
-            "listring[context;dst]"
+            "listring[context;dst]"--]]
     end
     return formspec
 end
@@ -70,6 +70,7 @@ local function on_construct(pos)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
+    
     if minetest.is_protected(pos, player:get_player_name()) then
         return 0
     end
