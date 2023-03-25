@@ -10,7 +10,7 @@ function get_element_deconstructor_formspec()
             "list[current_player;main;0,5;8,4;]",
         }, "")
     else
-        local formspec = "size[8,9]"..
+        local formspec = "size[10,10]"..
             "label[2,1;"..minetest.formspec_escape(minetest.colorize("#313131", "Fuel")).."]"..
             "list[context;fuel;2,2;1,1;]"..
             mcl_formspec.get_itemslot_bg(2,2,1,1)..
