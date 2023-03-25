@@ -1,5 +1,3 @@
-
-
 function get_element_constructor_formspec()
     if not exchangeclone.mineclone then
         local formspec = {
@@ -21,7 +19,7 @@ function get_element_constructor_formspec()
         return table.concat(formspec, "")
     else
         local formspec = {
-            "size[9,9]",
+            "size[9,10]",
             "label[2,1;Orb]",
             "list[context;fuel;2,2;1,1;]",
             mcl_formspec.get_itemslot_bg(2,2,1,1),
@@ -33,8 +31,8 @@ function get_element_constructor_formspec()
             mcl_formspec.get_itemslot_bg(5,2,1,1),
             "list[current_player;main;0,5;9,3;9]",
             mcl_formspec.get_itemslot_bg(0,5,9,3),
-            "list[current_player;main;0,6;9,1;]",
-            mcl_formspec.get_itemslot_bg(0,6,9,1),
+            "list[current_player;main;0,8.5;9,1;]",
+            mcl_formspec.get_itemslot_bg(0,8.5,9,1),
             "listring[context;fuel]",
             "listring[current_player;main]",
             "listring[context;src]",
@@ -42,6 +40,7 @@ function get_element_constructor_formspec()
             "listring[context;dst]",
             "listring[current_player;main]"
         }
+        return table.concat(formspec, "")
     end
 end
 
