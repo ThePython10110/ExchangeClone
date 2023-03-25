@@ -1,10 +1,12 @@
 exchangeclone = {}
-if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("mcl_core")) then
+if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
     error("ExchangeClone requires 'default' or 'mcl_core,' but Minetest doesn't let me mark one or the other as a dependency.")
 elseif minetest.get_modpath("mcl_core") then
     exchangeclone["mineclone"] = true
+    minetest.log("Loading ExchangeClone with MineClone configuration")
 else
     exchangeclone["mineclone"] = false
+    minetest.log("Loading ExchangeClone with MTG configuration")
 end
 
 local default_path = minetest.get_modpath("exchangeclone")

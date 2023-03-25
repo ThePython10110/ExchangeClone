@@ -1,5 +1,6 @@
 function get_element_deconstructor_formspec()
-    if exchangeclone.mineclone then
+    minetest.log(exchangeclone.mineclone)
+    if not exchangeclone.mineclone then
         local formspec = table.concat({
             "size[8,9]",
             "label[2,1;Fuel]",
