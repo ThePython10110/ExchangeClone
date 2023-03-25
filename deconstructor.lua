@@ -1,20 +1,19 @@
 function get_element_deconstructor_formspec()
     if not exchangeclone.mineclone then
         local formspec = table.concat({
-            
             "size[8,9]",
             "label[2,1;Fuel]",
             "list[context;fuel;2,2;1,1;]",
             "label[5,1;Orb]",
             "list[context;dst;5,2;1,1;]",
-            "list[current_player;main;0,5;8,4;]",
+            "list[current_player;main;0,5;8,4;]"
         }, "")
     else
         local formspec = "size[10,10]"..
-            "label[2,1;"..minetest.formspec_escape(minetest.colorize("#313131", "Fuel")).."]"..
+            "label[2,1;Fuel]"..
             "list[context;fuel;2,2;1,1;]"..
             mcl_formspec.get_itemslot_bg(2,2,1,1)..
-            "label[5,1;"..minetest.formspec_escape(minetest.colorize("#313131", "Orb")).."]"..
+            "label[5,1;Orb]"..
             "list[context;dst;5,2;1,1;]"..
             mcl_formspec.get_itemslot_bg(5,2,1,1)..
             "list[current_player;main;0,5;9,4;]"..
