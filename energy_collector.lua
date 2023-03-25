@@ -13,7 +13,7 @@ function get_energy_collector_formspec()
         local formspec = {
             "size[8,10]",
             "label[3,2;Orb]",
-            "list[context;dist;4,2;1,1;]",
+            "list[context;dst;4,2;1,1;]",
             mcl_formspec.get_itemslot_bg(4,2,1,1),
             "list[current_player;main;0,5;9,3;9]",
             mcl_formspec.get_itemslot_bg(0,5,9,3),
