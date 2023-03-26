@@ -1,15 +1,17 @@
+--Renamed "fuel" inventory to "main" to work with hoppers
+
 function get_element_deconstructor_formspec()
     if not exchangeclone.mineclone then
         local formspec = {
             "size[8,9]",
             "label[2,1;Fuel]",
-            "list[context;fuel;2,2;1,1;]",
+            "list[context;main;2,2;1,1;]",
             "label[5,1;Orb]",
             "list[context;dst;5,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
-            "listring[context;dst]",
+            "listring[context;main]",
             "listring[current_player;main]",
-            "listring[context;fuel]",
+            "listring[context;dst]",
             "listring[current_player;main]"
         }
         return table.concat(formspec, "")
@@ -17,7 +19,7 @@ function get_element_deconstructor_formspec()
         local formspec = {
             "size[9,10]",
             "label[2,1;Fuel]",
-            "list[context;fuel;2,2;1,1;]",
+            "list[context;main;2,2;1,1;]",
             mcl_formspec.get_itemslot_bg(2,2,1,1),
             "label[5,1;Orb]",
             "list[context;dst;5,2;1,1;]",
@@ -26,10 +28,10 @@ function get_element_deconstructor_formspec()
             mcl_formspec.get_itemslot_bg(0,5,9,3),
             "list[current_player;main;0,8.5;9,1;]",
             mcl_formspec.get_itemslot_bg(0,8.5,9,1),
+            "listring[context;main]",
             "listring[current_player;main]",
-            "listring[context;fuel]",
-            "listring[current_player;main]",
-            "listring[context;dst]"
+            "listring[context;dst]",
+            "listring[current_player;main]"
         }
         return table.concat(formspec, "")
     end
@@ -38,7 +40,7 @@ end
 local function can_dig(pos, player)
     local meta = minetest.get_meta(pos);
     local inv = meta:get_inventory()
-    return inv:is_empty("fuel") and inv:is_empty("dst")
+    return inv:is_empty("main") and inv:is_empty("dst")
 end
 
 local function on_timer(pos, elapsed)
@@ -47,12 +49,12 @@ local function on_timer(pos, elapsed)
     local update = true
     while elapsed > 0 and update do
         update = false
-        if not inv:is_empty("dst") and not inv:is_empty("fuel") then
+        if not inv:is_empty("dst") and not inv:is_empty("main") then
             -- remove one item from fuel inventory
-            local fuel_stack = inv:get_stack("fuel", 1)
+            local fuel_stack = inv:get_stack("main", 1)
             local energy_value = get_item_energy(fuel_stack:get_name())
             fuel_stack:set_count(fuel_stack:get_count() - 1)
-            inv:set_stack("fuel", 1, fuel_stack)
+            inv:set_stack("main", 1, fuel_stack)
 
             -- only get 1 orb as we can only use one
             local dest_orb = inv:get_stack("dst", 1)
@@ -71,7 +73,7 @@ end
 local function on_construct(pos)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
-    inv:set_size("fuel", 1)
+    inv:set_size("main", 1)
     inv:set_size("dst", 1)
     meta:set_string("formspec", get_element_deconstructor_formspec())
     meta:set_string("infotext", "Element Deconstructor")
@@ -91,7 +93,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
         else
             return 0
         end
-    elseif listname == "fuel" then
+    elseif listname == "main" then
         return stack:get_count()
     end
 end
@@ -112,7 +114,7 @@ end
 
 local function on_blast(pos)
     local drops = {}
-    default.get_inventory_drops(pos, "fuel", drops)
+    default.get_inventory_drops(pos, "main", drops)
     default.get_inventory_drops(pos, "dst", drops)
     drops[#drops+1] = "exchangeclone:element_deconstructor"
     minetest.remove_node(pos)
@@ -129,7 +131,7 @@ minetest.register_node("exchangeclone:element_deconstructor", {
         "ee_deconstructor_right.png",
         "ee_deconstructor_right.png"
     },
-    groups = {cracky = 2},
+    groups = {cracky = 2, container = 3},
     is_ground_content = false,
     can_dig = can_dig,
     on_timer = on_timer,

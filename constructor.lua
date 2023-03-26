@@ -9,9 +9,9 @@ function get_element_constructor_formspec()
             "label[5,1;Output]",
             "list[context;dst;5,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
-            "listring[context;fuel]",
-            "listring[current_player;main]",
             "listring[context;src]",
+            "listring[current_player;main]",
+            "listring[context;fuel]",
             "listring[current_player;main]",
             "listring[context;dst]",
             "listring[current_player;main]"
@@ -33,9 +33,9 @@ function get_element_constructor_formspec()
             mcl_formspec.get_itemslot_bg(0,5,9,3),
             "list[current_player;main;0,8.5;9,1;]",
             mcl_formspec.get_itemslot_bg(0,8.5,9,1),
-            "listring[context;fuel]",
-            "listring[current_player;main]",
             "listring[context;src]",
+            "listring[current_player;main]",
+            "listring[context;fuel]",
             "listring[current_player;main]",
             "listring[context;dst]",
             "listring[current_player;main]"
@@ -159,7 +159,7 @@ minetest.register_node("exchangeclone:element_constructor", {
         "ee_constructor_right.png",
         "ee_constructor_right.png"
     },
-    groups = {cracky = 2},
+    groups = {cracky = 2, container = 4},
     is_ground_content = false,
     can_dig=can_dig,
     on_timer = on_timer,

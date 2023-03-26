@@ -3,9 +3,9 @@ function get_energy_collector_formspec()
         local formspec = {
             "size[8,9]",
             "label[3,2;Orb]",
-            "list[context;dst;4,2;1,1;]",
+            "list[context;main;4,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
-            "listring[context;dst]",
+            "listring[context;main]",
             "listring[current_player;main]"
         }
         return table.concat(formspec, "")
@@ -13,14 +13,14 @@ function get_energy_collector_formspec()
         local formspec = {
             "size[9,10]",
             "label[3,2;Orb]",
-            "list[context;dst;4,2;1,1;]",
+            "list[context;main;4,2;1,1;]",
             mcl_formspec.get_itemslot_bg(4,2,1,1),
             "list[current_player;main;0,5;9,3;9]",
             mcl_formspec.get_itemslot_bg(0,5,9,3),
             "list[current_player;main;0,8.5;9,1;]",
             mcl_formspec.get_itemslot_bg(0,8.5,9,1),
             "listring[current_player;main]",
-            "listring[context;dst]"
+            "listring[context;main]"
         }
         return table.concat(formspec, "")
     end
@@ -29,7 +29,7 @@ end
 local function can_dig(pos, player)
     local meta = minetest.get_meta(pos);
     local inv = meta:get_inventory()
-    return inv:is_empty("dst")
+    return inv:is_empty("main")
 end
 
 local function on_timer(pos, elapsed)
@@ -39,18 +39,18 @@ local function on_timer(pos, elapsed)
     -- get block above
     pos.y = pos.y + 1
 
-    if inv:is_empty("dst") then
+    if inv:is_empty("main") then
         -- stop timer
         minetest.get_node_timer(pos):stop()
         return false
     end
 
     if minetest.get_natural_light(pos) == 15 then
-        local dest_orb = inv:get_stack("dst", 1)
+        local dest_orb = inv:get_stack("main", 1)
         local stored = dest_orb:get_meta():get_int("stored_charge") or 0
         stored = stored + 1
         dest_orb:get_meta():set_int("stored_charge", stored)
-        inv:set_stack("dst", 1, dest_orb)
+        inv:set_stack("main", 1, dest_orb)
     end
     return true
 end
@@ -58,7 +58,7 @@ end
 local function on_construct(pos)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
-    inv:set_size("dst", 1)
+    inv:set_size("main", 1)
     meta:set_string("formspec", get_energy_collector_formspec())
     meta:set_string("infotext", "Energy Collector")
     on_timer(pos, 0)
@@ -70,7 +70,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
     end
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
-    if listname == "dst" then
+    if listname == "main" then
         if stack:get_name() == "exchangeclone:exchange_orb" then
             return stack:get_count()
         else
@@ -95,7 +95,7 @@ end
 
 local function on_blast(pos)
     local drops = {}
-    default.get_inventory_drops(pos, "dst", drops)
+    default.get_inventory_drops(pos, "main", drops)
     drops[#drops+1] = "exchangeclone:energy_collector"
     minetest.remove_node(pos)
     return drops
@@ -111,7 +111,7 @@ minetest.register_node("exchangeclone:energy_collector", {
         "ee_energy_collector_right.png",
         "ee_energy_collector_right.png"
     },
-    groups = {cracky = 2},
+    groups = {cracky = 2, container = 2},
     is_ground_content = false,
     can_dig = can_dig,
     on_timer = on_timer,
