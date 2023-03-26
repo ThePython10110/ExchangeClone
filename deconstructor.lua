@@ -9,10 +9,10 @@ function get_element_deconstructor_formspec()
             "label[5,1;Orb]",
             "list[context;dst;5,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
-            "listring[current_player;main]",
             "listring[context;main]",
             "listring[current_player;main]",
-            "listring[context;dst]"
+            "listring[context;dst]",
+            "listring[current_player;main]"
         }
         return table.concat(formspec, "")
     else

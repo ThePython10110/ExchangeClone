@@ -9,12 +9,12 @@ function get_element_constructor_formspec()
             "label[5,1;Output]",
             "list[context;dst;5,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
+            "listring[current_player;main]",
             "listring[context;src]",
             "listring[current_player;main]",
             "listring[context;fuel]",
             "listring[current_player;main]",
             "listring[context;dst]",
-            "listring[current_player;main]"
         }
         return table.concat(formspec, "")
     else

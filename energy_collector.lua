@@ -5,8 +5,8 @@ function get_energy_collector_formspec()
             "label[3,2;Orb]",
             "list[context;main;4,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
-            "listring[context;main]",
-            "listring[current_player;main]"
+            "listring[current_player;main]",
+            "listring[context;main]"
         }
         return table.concat(formspec, "")
     else
