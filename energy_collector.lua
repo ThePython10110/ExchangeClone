@@ -115,6 +115,7 @@ minetest.register_node("exchangeclone:energy_collector", {
     },
     groups = {cracky = 2, container = 2},
     is_ground_content = false,
+    can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, digger)
         if exchangeclone.mineclone then
             local meta = minetest.get_meta(pos)

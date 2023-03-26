@@ -9,10 +9,10 @@ function get_element_deconstructor_formspec()
             "label[5,1;Orb]",
             "list[context;dst;5,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
+            "listring[current_player;main]",
             "listring[context;main]",
             "listring[current_player;main]",
             "listring[context;dst]",
-            "listring[current_player;main]"
         }
         return table.concat(formspec, "")
     else
@@ -28,10 +28,10 @@ function get_element_deconstructor_formspec()
             mcl_formspec.get_itemslot_bg(0,5,9,3),
             "list[current_player;main;0,8.5;9,1;]",
             mcl_formspec.get_itemslot_bg(0,8.5,9,1),
+            "listring[current_player;main]",
             "listring[context;main]",
             "listring[current_player;main]",
-            "listring[context;dst]",
-            "listring[current_player;main]"
+            "listring[context;dst]"
         }
         return table.concat(formspec, "")
     end
@@ -135,6 +135,7 @@ minetest.register_node("exchangeclone:element_deconstructor", {
     },
     groups = {cracky = 2, container = 3},
     is_ground_content = false,
+    can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, digger)
         if exchangeclone.mineclone then
             local meta = minetest.get_meta(pos)
