@@ -75,7 +75,7 @@ local function on_timer(pos, elapsed)
             end
             -- give orb new charge value
             fuel_stack:get_meta():set_int("stored_charge", orb_charge)
-            fuel_stack:get_meta():set_string("description", "Current charge: "..tostring(orb_charge))
+            fuel_stack:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(orb_charge))
             inv:set_stack("fuel", 1, fuel_stack)
             -- "convert" charge into a node at dst
             if dst_stack:is_empty() then

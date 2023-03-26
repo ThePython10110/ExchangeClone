@@ -62,7 +62,7 @@ local function on_timer(pos, elapsed)
             local stored = dest_orb:get_meta():get_int("stored_charge") or 0
             stored = stored + energy_value
             dest_orb:get_meta():set_int("stored_charge", stored)
-            dest_orb:get_meta():set_string("description", "Current charge: "..tostring(stored))
+            dest_orb:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(stored))
             inv:set_stack("dst", 1, dest_orb)
 
             update = true

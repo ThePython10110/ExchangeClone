@@ -5,7 +5,7 @@ function read_orb_charge(itemstack, user, pointed_thing)
 end
 
 minetest.register_tool("exchangeclone:exchange_orb", {
-    description = "Exchange Orb",
+    description = "Exchange Orb\nCurrent Charge: 0",
     inventory_image = "ee_exchange_orb.png",
     on_use = read_orb_charge,
 })
