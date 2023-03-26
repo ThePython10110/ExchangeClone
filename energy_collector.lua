@@ -5,13 +5,13 @@ function get_energy_collector_formspec()
             "label[3,2;Orb]",
             "list[context;dst;4,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
-            "listring[current_player;main]",
-            "listring[context;dst]"
+            "listring[context;dst]",
+            "listring[current_player;main]"
         }
         return table.concat(formspec, "")
     else
         local formspec = {
-            "size[8,10]",
+            "size[9,10]",
             "label[3,2;Orb]",
             "list[context;dst;4,2;1,1;]",
             mcl_formspec.get_itemslot_bg(4,2,1,1),
