@@ -161,7 +161,20 @@ minetest.register_node("exchangeclone:element_constructor", {
     },
     groups = {cracky = 2, container = 4},
     is_ground_content = false,
-    can_dig=can_dig,
+    after_dig_node = function(pos, oldnode, oldmetadata, digger)
+		local meta = minetest.get_meta(pos)
+		local meta2 = meta:to_table()
+		meta:from_table(oldmetadata)
+		local inv = meta:get_inventory()
+		for _, listname in ipairs({"src", "dst", "fuel"}) do
+			local stack = inv:get_stack(listname, 1)
+			if not stack:is_empty() then
+				local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
+				minetest.add_item(p, stack)
+			end
+		end
+		meta:from_table(meta2)
+	end,
     on_timer = on_timer,
     on_construct = on_construct,
     on_metadata_inventory_move = function(pos)

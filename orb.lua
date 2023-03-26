@@ -23,9 +23,15 @@ end
 minetest.register_craft({
     type = "shaped",
     output = "exchangeclone:exchange_orb",
+    groups = {},
     recipe = {
         {recipe_item_3, recipe_item_2, recipe_item_3},
         {recipe_item_2, recipe_item_1, recipe_item_2},
         {recipe_item_3, recipe_item_2,  recipe_item_3}
     }
+})
+minetest.register_craft({ --Making it fuel so hopper will work with constructor better
+	type = "fuel",
+	recipe = "exchangeclone:exchange_orb",
+	burntime = 800
 })
