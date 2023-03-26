@@ -9,10 +9,10 @@ function get_element_deconstructor_formspec()
             "label[5,1;Orb]",
             "list[context;dst;5,2;1,1;]",
             "list[current_player;main;0,5;8,4;]",
+            "listring[current_player;main]",
             "listring[context;main]",
             "listring[current_player;main]",
-            "listring[context;dst]",
-            "listring[current_player;main]"
+            "listring[context;dst]"
         }
         return table.concat(formspec, "")
     else
@@ -38,6 +38,7 @@ function get_element_deconstructor_formspec()
 end
 
 local function can_dig(pos, player)
+    if exchangeclone.mineclone then return true end
     local meta = minetest.get_meta(pos);
     local inv = meta:get_inventory()
     return inv:is_empty("main") and inv:is_empty("dst")
@@ -61,6 +62,7 @@ local function on_timer(pos, elapsed)
             local stored = dest_orb:get_meta():get_int("stored_charge") or 0
             stored = stored + energy_value
             dest_orb:get_meta():set_int("stored_charge", stored)
+            dest_orb:get_meta():set_string("description", "Current charge: "..tostring(stored))
             inv:set_stack("dst", 1, dest_orb)
 
             update = true
@@ -134,18 +136,20 @@ minetest.register_node("exchangeclone:element_deconstructor", {
     groups = {cracky = 2, container = 3},
     is_ground_content = false,
     after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		local meta = minetest.get_meta(pos)
-		local meta2 = meta:to_table()
-		meta:from_table(oldmetadata)
-		local inv = meta:get_inventory()
-		for _, listname in ipairs({"main", "dst"}) do
-			local stack = inv:get_stack(listname, 1)
-			if not stack:is_empty() then
-				local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-				minetest.add_item(p, stack)
-			end
-		end
-		meta:from_table(meta2)
+        if exchangeclone.mineclone then
+            local meta = minetest.get_meta(pos)
+            local meta2 = meta:to_table()
+            meta:from_table(oldmetadata)
+            local inv = meta:get_inventory()
+            for _, listname in ipairs({"main", "dst"}) do
+                local stack = inv:get_stack(listname, 1)
+                if not stack:is_empty() then
+                    local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
+                    minetest.add_item(p, stack)
+                end
+            end
+            meta:from_table(meta2)
+        end
 	end,
     on_timer = on_timer,
     on_construct = on_construct,
