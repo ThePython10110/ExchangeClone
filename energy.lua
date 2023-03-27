@@ -388,11 +388,11 @@ local energy_values = {
     ["mcl_tools"] = {
         sword_stone = 6,
         shovel_stone = 9,
-        pickaxe_stone = 11,
+        pick_stone = 11,
         axe_stone = 11,
         sword_stone_enchanted = 12,
         shovel_stone_enchanted = 18,
-        --pickaxe_stone_enchanted = 22,
+        pick_stone_enchanted = 22,
         axe_stone_enchanted = 22,
     },
     ["mcl_mobitems"] = {
