@@ -433,6 +433,7 @@ end
 for modname, itemlist in pairs(energy_values) do
     if minetest.get_modpath(modname) then
         for itemname, energy_value in pairs(itemlist) do
+            minetest.log("Adding energy value ("..energy_value..") for "..modname..":"..itemname)
             minetest.override_item(modname..":"..itemname, {
                 description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,
                 energy_value = energy_value,
