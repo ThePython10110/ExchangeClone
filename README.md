@@ -10,16 +10,21 @@ A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. 
 ## Features
 - Orb that holds energy (left click while holding it to show charge)
 - Collector that collects energy from the sun
-- Deconstructor that can turn nodes into energy
-- Constructor that can create nodes from energy
+- Deconstructor that can turn items into energy
+- Constructor that can create items from energy
 
 ## Config
 You can change the default values in the Minetest settings under `mods > exchangeclone`.
 
 ## New features added by ThePython10110
-Support for MineClone, including hoppers.
-Shift-clicking mostly works (ListRings).
-Fixed a bug where items could be placed in the output slot of the Element Constructor.
+* Working on support for MineClone, including hoppers (all features work, just need to add energy values).
+* Shift-clicking works (ListRings).
+* Fixed a bug where items could be placed in the output slot of the Element Constructor.
+* Added the ability to add energy values by group (hopefully)
+## Features that may be added in the future
+* Energy Condenser similar to that in Equivalent Exchange
+* Philosopher's Stone, Dark Matter, Red Matter, etc.
+* Basically, various things 
 
 ## Original License
 Copyright (C) 2021 Leo Spratt

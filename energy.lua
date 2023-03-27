@@ -265,25 +265,169 @@ local energy_values = {
         sword_teleport = 20,
         sword_water = 5,
     },
-    ["mcl_core"] = {
-        --Nodes
-        --Stone
-        stone = 2,
-        cobble = 1,
-        stonebrick = 3,
-        stonebrickmossy = 3,
-        stonebrickcracked = 3,
-        stonebrickcarved = 3,
-        stone_smooth = 3,
-        diorite = 1,
-        andesite = 1,
-        granite = 1,
-        mossycobble = 3,
 
-        stone_with_diamond = 17,
-        diamondblock = 17,
+--Energy values taken from https://technicpack.fandom.com/wiki/Alchemical_Math
+--Didn't type out the ones with a value of 1, since that's the default
+
+    ["mcl_core"] = {
+        snow = 0,
+        snowball = 0,
+        stone_with_coal = 0,
+        stone_with_iron = 0,
+        stone_with_diamond = 0,
+        stone_with_redstone = 0,
+        stone_with_lapis = 0,
+        stone_with_emerald = 0,
+        stone_with_gold = 0,
+        gravel = 3,
+        stick = 3,
+        flint = 4,
+        cactus = 8,
+        acaciawood = 8,
+        birchwood = 8,
+        darkwood = 8,
+        junglewood = 8,
+        sprucewood = 8,
+        wood = 8
+    },
+    ["mcl_bamboo"] = {
+        bamboo_mosaic = 8,
+        bamboo_plank = 8
+    },
+    ["mcl_furnaces"] = {
+        furnace = 8
+    },
+    ["mcl_stairs"] = {
+        slab_redsandstone = 2,
+        slab_redsandstonesmooth2 = 2,
+        slab_sandstone = 2,
+        slab_sandstonesmooth2 = 2,
+        slab_acaciatree_bark = 4,
+        slab_birchtree_bark = 4,
+        slab_darktree_bark = 4,
+        slab_jungletree_bark = 4,
+        slab_sprucetree_bark = 4,
+        slab_tree_bark = 4,
+        stair_nether_brick = 6,
+        stair_red_nether_brick = 6
+    },
+    ["mcl_flowers"] = {
+    },
+    ["mcl_mangrove"] = {
+        mangrove_wood = 8
+    },
+    ["mcl_nether"] = {
+        nether_brick = 3,
+        red_nether_brick = 3,
+    },
+    ["mcl_fences"] = {
+        nether_brick_fence = 4
+    },
+    ["mcl_walls"] = {
+    },
+    ["mcl_end"] = {
+    },
+    ["mcl_copper"] = {
+        stone_with_copper = 0
+    },
+    ["mcl_deepslate"] = {
+        deepslate_with_coal = 0,
+        deepslate_with_iron = 0,
+        deepslate_with_gold = 0,
+        deepslate_with_diamond = 0,
+        deepslate_with_lapis = 0,
+        deepslate_with_redstone = 0,
+        deepslate_with_copper = 0,
+        deepslate_with_emerald = 0
+    },
+    ["xpanes"] = {
+        pane_natural_flat = 0,
+        pane_white_flat = 0,
+        pane_black_flat = 0,
+        pane_brown_flat = 0,
+        pane_blue_flat = 0,
+        pane_cyan_flat = 0,
+        pane_gray_flat = 0,
+        pane_green_flat = 0,
+        pane_light_blue_flat = 0,
+        pane_lime_flat = 0,
+        pane_magenta_flat = 0,
+        pane_orange_flat = 0,
+        pane_pink_flat = 0,
+        pane_red_flat = 0,
+        pane_silver_flat = 0,
+        pane_yellow_flat = 0
+    },
+    ["mcl_brewing"] = {
+        stand_000 = 0
+    },
+    ["mcl_cauldrons"] = {
+        cauldron = 0
+    },
+    ["mesecons_button"] = {
+        button_acaciawood_off = 2,
+        button_bamboo_off = 2,
+        button_birchwood_off = 2,
+        button_crimson_hyphae_wood_off = 2,
+        button_darkwood_off = 2,
+        button_junglewood_off = 2,
+        button_mangrove_wood_off = 2,
+        button_sprucewood_off = 2,
+        button_stone_off = 2,
+        button_warped_hyphae_wood_off = 2,
+        button_wood_off = 2
+    },
+    ["mesecons_pressureplates"] = {
+        pressure_plate_stone_off = 2
+    },
+    ["mesecons_walllever"] = {
+        wall_lever_off = 5
+    },
+    ["mclx_fences"] = {
+        red_nether_brick_fence = 4,
+        red_nether_brick_fence_gate = 4,
+        nether_brick_fence_gate = 4
+    },
+    ["mcl_tools"] = {
+        sword_stone = 6
+    },
+    ["group"] = {
+        sandstone = 3,
+        stone_brick = 1,
+        wood = 8,
+        wood_slab = 4,
+        
     }
 }
+
+local function get_group_items(groups, allow_duplicates)
+	if type(groups) ~= "table" then
+		return nil
+	end
+
+	allow_duplicates = allow_duplicates or false
+
+	local g_cnt = #groups
+
+	local result = {}
+	for i = 1, g_cnt do
+		result[groups[i]] = {}
+	end
+
+	for name, def in pairs(minetest.registered_nodes) do
+		for i = 1, g_cnt do
+			local grp = groups[i]
+			if def.groups[grp] then
+				result[grp][#result[grp]+1] = name
+				if allow_duplicates == false then
+					break
+				end
+			end
+		end
+	end
+
+	return result
+end
 
 -- load energy values into known items
 for modname, itemlist in pairs(energy_values) do
@@ -293,6 +437,20 @@ for modname, itemlist in pairs(energy_values) do
                 description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,
                 energy_value = energy_value,
             })
+        end
+    elseif modname == "group" then
+        local groupnames = {}
+        for k,v in pairs(tab) do
+            groupnames[#groupnames + 1] = k
+        end
+        grouped_items = get_group_items(groupnames)
+        for groupname, energy_value in pairs(itemlist) do
+            for item in grouped_items[groupname] do
+                minetest.override_item(item, {
+                    description = minetest.registered_items[item].description.."\nEnergy Value: "..energy_value,
+                    energy_value = energy_value
+                })
+            end
         end
     end
 end
