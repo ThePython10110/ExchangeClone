@@ -359,7 +359,7 @@ local energy_values = {
         pane_yellow_flat = 0
     },
     ["mcl_brewing"] = {
-        stand_000 = 0
+        stand = 0
     },
     ["mcl_cauldrons"] = {
         cauldron = 0
