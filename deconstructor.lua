@@ -60,11 +60,9 @@ local function on_timer(pos, elapsed)
                 energy_value = get_item_energy(fuel_stack:get_name())
             end
             local wear = fuel_stack:get_wear()
-            if wear then
-                minetest.log("Wear: "..wear)
-                energy_value = energy_value * (wear / 65536)
+            if wear and wear ~= 0 then
+                energy_value = math.ceil(energy_value * (wear / 65536))
             end
-            minetest.log("Energy value: "..energy_value)
             fuel_stack:set_count(fuel_stack:get_count() - 1)
             inv:set_stack("main", 1, fuel_stack)
             -- only get 1 orb as we can only use one
