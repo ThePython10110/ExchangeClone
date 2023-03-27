@@ -271,7 +271,6 @@ local energy_values = {
 
     ["mcl_core"] = {
         snow = 0,
-        snowball = 0,
         stone_with_coal = 0,
         stone_with_iron = 0,
         stone_with_diamond = 0,
@@ -283,12 +282,9 @@ local energy_values = {
         stick = 3,
         flint = 4,
         cactus = 8,
-        acaciawood = 8,
-        birchwood = 8,
-        darkwood = 8,
-        junglewood = 8,
-        sprucewood = 8,
-        wood = 8
+    },
+    ["mcl_throwing"] = {
+        snowball = 0,
     },
     ["mcl_bamboo"] = {
         bamboo_mosaic = 8,
