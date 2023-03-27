@@ -55,9 +55,9 @@ local function on_timer(pos, elapsed)
             local fuel_stack = inv:get_stack("main", 1)
             local energy_value = 0
             if fuel_stack:get_name() == "exchangeclone:exchange_orb" then
-                local energy_value = (fuel_stack:get_meta():get_int("stored_charge") or 0) + 8452 --8452 = energy cost of orb
+                energy_value = (fuel_stack:get_meta():get_int("stored_charge") or 0) + 8452 --8452 = energy cost of orb
             else
-                local energy_value = get_item_energy(fuel_stack:get_name())
+                energy_value = get_item_energy(fuel_stack:get_name())
             end
             local wear = fuel_stack:get_wear()
             if wear then

@@ -7,6 +7,7 @@ end
 minetest.register_tool("exchangeclone:exchange_orb", {
     description = "Exchange Orb\nCurrent Charge: 0",
     inventory_image = "ee_exchange_orb.png",
+    energy_value = 8452,
     on_use = read_orb_charge,
 })
 
