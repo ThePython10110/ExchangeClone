@@ -429,29 +429,32 @@ local function get_group_items(groups, allow_duplicates)
 	return result
 end
 
--- load energy values into known items
-for modname, itemlist in pairs(energy_values) do
-    if minetest.get_modpath(modname) then
-        for itemname, energy_value in pairs(itemlist) do
-            minetest.log("Adding energy value ("..energy_value..") for "..modname..":"..itemname)
-            minetest.override_item(modname..":"..itemname, {
-                description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,
-                energy_value = energy_value,
-            })
-        end
-    elseif modname == "group" then
-        local groupnames = {}
-        for k,v in pairs(tab) do
-            groupnames[#groupnames + 1] = k
-        end
-        grouped_items = get_group_items(groupnames)
-        for groupname, energy_value in pairs(itemlist) do
-            for item in grouped_items[groupname] do
-                minetest.override_item(item, {
-                    description = minetest.registered_items[item].description.."\nEnergy Value: "..energy_value,
-                    energy_value = energy_value
+minetest.register_on_mods_loaded(function()
+    -- load energy values into known items
+    for modname, itemlist in pairs(energy_values) do
+        if minetest.get_modpath(modname) then
+            for itemname, energy_value in pairs(itemlist) do
+                minetest.log("Adding energy value ("..energy_value..") for "..modname..":"..itemname)
+                minetest.override_item(modname..":"..itemname, {
+                    description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,
+                    energy_value = energy_value,
                 })
+            end
+        elseif modname == "group" then
+            local groupnames = {}
+            for k,v in pairs(tab) do
+                groupnames[#groupnames + 1] = k
+            end
+            grouped_items = get_group_items(groupnames)
+            for groupname, energy_value in pairs(itemlist) do
+                for item in grouped_items[groupname] do
+                    minetest.override_item(item, {
+                        description = minetest.registered_items[item].description.."\nEnergy Value: "..energy_value,
+                        energy_value = energy_value
+                    })
+                end
             end
         end
     end
 end
+)
