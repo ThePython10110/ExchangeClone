@@ -445,9 +445,9 @@ minetest.register_on_mods_loaded(function()
             for k,v in pairs(itemlist) do
                 groupnames[#groupnames + 1] = k
             end
-            grouped_items = get_group_items(groupnames)
+            local grouped_items = get_group_items(groupnames)
             for groupname, energy_value in pairs(itemlist) do
-                for item in grouped_items[groupname] do
+                for i, item in ipairs(grouped_items[groupname]) do
                     minetest.override_item(item, {
                         description = minetest.registered_items[item].description.."\nEnergy Value: "..energy_value,
                         energy_value = energy_value
