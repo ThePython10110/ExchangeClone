@@ -33,5 +33,5 @@ minetest.register_craft({
 minetest.register_craft({ --Making it fuel so hopper will work with constructor better
 	type = "fuel",
 	recipe = "exchangeclone:exchange_orb",
-	burntime = 800
+	burntime = 1600 --Basically 2 coal blocks
 })

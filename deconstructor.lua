@@ -53,10 +53,17 @@ local function on_timer(pos, elapsed)
         if not inv:is_empty("dst") and not inv:is_empty("main") then
             -- remove one item from fuel inventory
             local fuel_stack = inv:get_stack("main", 1)
-            local energy_value = get_item_energy(fuel_stack:get_name())
+            if fuel_stack:get_name() == "exchangeclone:exchange_orb" then
+                local energy_value = (fuel_stack:get_meta():get_int("stored_charge") or 0) + 8452 --8452 = energy cost of orb
+            else
+                local energy_value = get_item_energy(fuel_stack:get_name())
+            end
+            local wear = fuel_stack:get_wear()
+            if wear then
+                energy_value = energy_value * (wear / 65536)
+            end
             fuel_stack:set_count(fuel_stack:get_count() - 1)
             inv:set_stack("main", 1, fuel_stack)
-
             -- only get 1 orb as we can only use one
             local dest_orb = inv:get_stack("dst", 1)
             local stored = dest_orb:get_meta():get_int("stored_charge") or 0

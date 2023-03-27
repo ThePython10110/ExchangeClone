@@ -1,11 +1,9 @@
 # Element Exchange
-[![ContentDB](https://content.minetest.net/packages/thepython10110/exchangeclone/shields/downloads/)](https://content.minetest.net/packages/thepython10110/exchangeclone/)
-![GitHub license](https://img.shields.io/github/license/thepython10110/minetest_exchangeclone)
-![GitHub issues](https://img.shields.io/github/issues/thepython10110/minetest_exchangeclone)
-
-A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. This is mod is inspired by the "Equivalent Exchange" mod for MineCraft, and forked and modified from [Element Exchange](https://github.com/enchant97/minetest_element_exchange). In other words, most of the code is not mine.
+A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. This is mod is inspired by the "Equivalent Exchange" mod for MineCraft, and forked and modified from [Element Exchange](https://github.com/enchant97/minetest_element_exchange). In other words, a lot of the code is not mine.
 
 ![In Game Screenshot](screenshot.png)
+
+[GitHub repo](https://github.com/thepython10110/exchangeclone)
 
 ## Features
 - Orb that holds energy (left click while holding it to show charge)
@@ -17,14 +15,13 @@ A [Minetest](https://www.minetest.net/) mod to exchange nodes into other nodes. 
 You can change the default values in the Minetest settings under `mods > exchangeclone`.
 
 ## New features added by ThePython10110
-* Working on support for MineClone, including hoppers (all features work, just need to add energy values).
-* Shift-clicking works (ListRings).
-* Fixed a bug where items could be placed in the output slot of the Element Constructor.
-* Added the ability to add energy values by group (hopefully)
-## Features that may be added in the future
-* Energy Condenser similar to that in Equivalent Exchange
-* Philosopher's Stone, Dark Matter, Red Matter, etc.
-* Basically, various things 
+* Working on support for MineClone, including hoppers (all features work, just need to add energy values)
+* Shift-clicking works (`listring`s)
+* Fixed a bug where items could be placed in the output slot of the Element Constructor
+* Added the ability to add energy values by group
+* Damaged tools now give less energy (based on wear)
+* Orbs now can be turned into energy (based on how much is stored)
+I plan to add more features from Equivalent Exchange (Energy Condenser, Philosopher's Stone, dark matter, etc.), but I don't actually own MineCraft, meaning I will probably make some minor mistakes, since all I have to go on is the internet. Please report any issues on the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).
 
 ## Original License
 Copyright (C) 2021 Leo Spratt

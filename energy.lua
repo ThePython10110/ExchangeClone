@@ -282,16 +282,27 @@ local energy_values = {
         stick = 3,
         flint = 4,
         cactus = 8,
+        vine = 8,
+        cobweb = 12,
+        ladder = 14,
+    },
+    ["mcl_bows"] = {
+        arrow = 14,
+    },
+    ["mcl_fishing"] = {
+        fishing_rod = 12,
+        fishing_rod_enchanted = 24,
     },
     ["mcl_throwing"] = {
         snowball = 0,
     },
     ["mcl_bamboo"] = {
-        bamboo_mosaic = 8,
-        bamboo_plank = 8
     },
     ["mcl_furnaces"] = {
         furnace = 8
+    },
+    ["mcl_farming"] = {
+        hoe_stone = 10
     },
     ["mcl_stairs"] = {
         slab_redsandstone = 2,
@@ -308,6 +319,7 @@ local energy_values = {
         stair_red_nether_brick = 6
     },
     ["mcl_flowers"] = {
+        waterlily = 16,
     },
     ["mcl_mangrove"] = {
         mangrove_wood = 8
@@ -361,17 +373,6 @@ local energy_values = {
         cauldron = 0
     },
     ["mesecons_button"] = {
-        button_acaciawood_off = 2,
-        button_bamboo_off = 2,
-        button_birchwood_off = 2,
-        button_crimson_hyphae_wood_off = 2,
-        button_darkwood_off = 2,
-        button_junglewood_off = 2,
-        button_mangrove_wood_off = 2,
-        button_sprucewood_off = 2,
-        button_stone_off = 2,
-        button_warped_hyphae_wood_off = 2,
-        button_wood_off = 2
     },
     ["mesecons_pressureplates"] = {
         pressure_plate_stone_off = 2
@@ -385,14 +386,31 @@ local energy_values = {
         nether_brick_fence_gate = 4
     },
     ["mcl_tools"] = {
-        sword_stone = 6
+        sword_stone = 6,
+        shovel_stone = 9,
+        pickaxe_stone = 11,
+        axe_stone = 11,
+        sword_stone_enchanted = 12,
+        shovel_stone_enchanted = 18,
+        pickaxe_stone_enchanted = 22,
+        axe_stone_enchanted = 22,
+    },
+    ["mcl_mobitems"] = {
+        string = 12,
+    },
+    ["mcl_torches"] = {
+        torch = 9,
     },
     ["group"] = {
         sandstone = 3,
         stone_brick = 1,
         wood = 8,
         wood_slab = 4,
-        
+        button = 2,
+        dye = 8,
+        fence_wood = 12,
+        wood_stairs = 12,
+        flower = 16,
     }
 }
 
