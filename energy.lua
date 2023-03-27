@@ -442,7 +442,7 @@ minetest.register_on_mods_loaded(function()
             end
         elseif modname == "group" then
             local groupnames = {}
-            for k,v in pairs(tab) do
+            for k,v in pairs(itemlist) do
                 groupnames[#groupnames + 1] = k
             end
             grouped_items = get_group_items(groupnames)
