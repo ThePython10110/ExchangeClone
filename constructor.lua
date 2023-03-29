@@ -69,27 +69,30 @@ local function on_timer(pos, elapsed)
             end
             -- make sure orb has enough charge
             local orb_charge = fuel_stack:get_meta():get_int("stored_charge") or 0
-            orb_charge = orb_charge - get_item_energy(src_stack:get_name())
-            if orb_charge < 0 then
-                break
+            local energy_cost = get_item_energy(src_stack:get_name())
+            if energy_cost > 0 then
+                orb_charge = orb_charge - energy_cost
+                if orb_charge < 0 then
+                    break
+                end
+                -- give orb new charge value
+                fuel_stack:get_meta():set_int("stored_charge", orb_charge)
+                fuel_stack:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(orb_charge))
+                inv:set_stack("fuel", 1, fuel_stack)
+                -- "convert" charge into a node at dst
+                if dst_stack:is_empty() then
+                    -- create a new stack
+                    dst_stack = ItemStack(src_stack:get_name())
+                elseif dst_stack:get_count() >= 64 then
+                    -- the max item count is limited to 64
+                    break
+                else
+                    -- add one node into stack
+                    dst_stack:set_count(dst_stack:get_count() + 1)
+                end
+                inv:set_stack("dst", 1, dst_stack)
+                update = true
             end
-            -- give orb new charge value
-            fuel_stack:get_meta():set_int("stored_charge", orb_charge)
-            fuel_stack:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(orb_charge))
-            inv:set_stack("fuel", 1, fuel_stack)
-            -- "convert" charge into a node at dst
-            if dst_stack:is_empty() then
-                -- create a new stack
-                dst_stack = ItemStack(src_stack:get_name())
-            elseif dst_stack:get_count() >= 64 then
-                -- the max item count is limited to 64
-                break
-            else
-                -- add one node into stack
-                dst_stack:set_count(dst_stack:get_count() + 1)
-            end
-            inv:set_stack("dst", 1, dst_stack)
-            update = true
         end
     end
     minetest.get_node_timer(pos):stop()

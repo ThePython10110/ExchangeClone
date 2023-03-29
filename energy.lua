@@ -1,6 +1,8 @@
 -- TODO add more items from minetest_game
 -- Names listed are in the order shown in the minetest_game repo
 local energy_values = {
+    ["group"] = {
+    },
     ["default"] = {
         --- Nodes
         -- Stone
@@ -269,6 +271,21 @@ local energy_values = {
 --Energy values taken from https://technicpack.fandom.com/wiki/Alchemical_Math
 --Didn't type out the ones with a value of 1, since that's the default
 
+    ["mcl_group"] = {
+        sandstone = 3,
+        stone_brick = 1,
+        wood = 8,
+        wood_slab = 4,
+        button = 2,
+        dye = 8,
+        fence_wood = 12,
+        wood_stairs = 12,
+        flower = 16,
+        pane = 0,
+        pressure_plate = 16,
+        trapdoor = 24,
+        fence_gate = 32,
+    },
     ["mcl_core"] = {
         snow = 0,
         stone_with_coal = 0,
@@ -285,6 +302,12 @@ local energy_values = {
         vine = 8,
         cobweb = 12,
         ladder = 14,
+        clay_lump = 16,
+        brick = 16,
+        charcoal_lump = 32,
+    },
+    ["mcl_crafting_table"] = {
+        crafting_table = 32,
     },
     ["mcl_bows"] = {
         arrow = 14,
@@ -302,7 +325,14 @@ local energy_values = {
         furnace = 8
     },
     ["mcl_farming"] = {
-        hoe_stone = 10
+        hoe_stone = 10,
+        hoe_stone_enchanted = 20,
+        hoe_wood = 24,
+        hoe_wood_enchanted = 48,
+        wheat_seeds = 16,
+        melon_seeds = 16,
+        melon = 16,
+        cookie = 22,
     },
     ["mcl_stairs"] = {
         slab_redsandstone = 2,
@@ -327,6 +357,7 @@ local energy_values = {
     ["mcl_nether"] = {
         nether_brick = 3,
         red_nether_brick = 3,
+        nether_wart_item = 24,
     },
     ["mcl_fences"] = {
         nether_brick_fence = 4
@@ -349,22 +380,6 @@ local energy_values = {
         deepslate_with_emerald = 0
     },
     ["xpanes"] = {
-        pane_natural_flat = 0,
-        pane_white_flat = 0,
-        pane_black_flat = 0,
-        pane_brown_flat = 0,
-        pane_blue_flat = 0,
-        pane_cyan_flat = 0,
-        pane_gray_flat = 0,
-        pane_green_flat = 0,
-        pane_light_blue_flat = 0,
-        pane_lime_flat = 0,
-        pane_magenta_flat = 0,
-        pane_orange_flat = 0,
-        pane_pink_flat = 0,
-        pane_red_flat = 0,
-        pane_silver_flat = 0,
-        pane_yellow_flat = 0
     },
     ["mcl_brewing"] = {
         stand = 0
@@ -375,7 +390,7 @@ local energy_values = {
     ["mesecons_button"] = {
     },
     ["mesecons_pressureplates"] = {
-        pressure_plate_stone_off = 2
+        pressure_plate_stone_off = 2,
     },
     ["mesecons_walllever"] = {
         wall_lever_off = 5
@@ -386,32 +401,27 @@ local energy_values = {
         nether_brick_fence_gate = 4
     },
     ["mcl_tools"] = {
+        sword_wood = 20,
         sword_stone = 6,
         shovel_stone = 9,
         pick_stone = 11,
         axe_stone = 11,
+        shovel_wood = 16,
+        sword_wood_enchanted = 40,
         sword_stone_enchanted = 12,
         shovel_stone_enchanted = 18,
         pick_stone_enchanted = 22,
         axe_stone_enchanted = 22,
+        shovel_wood_enchanted = 32,
     },
     ["mcl_mobitems"] = {
         string = 12,
+        rotten_flesh = 24,
+        slimeball = 24,
     },
     ["mcl_torches"] = {
         torch = 9,
     },
-    ["group"] = {
-        sandstone = 3,
-        stone_brick = 1,
-        wood = 8,
-        wood_slab = 4,
-        button = 2,
-        dye = 8,
-        fence_wood = 12,
-        wood_stairs = 12,
-        flower = 16,
-    }
 }
 
 local function get_group_items(groups, allow_duplicates)
@@ -448,13 +458,13 @@ minetest.register_on_mods_loaded(function()
     for modname, itemlist in pairs(energy_values) do
         if minetest.get_modpath(modname) then
             for itemname, energy_value in pairs(itemlist) do
-                minetest.log("Adding energy value ("..energy_value..") for "..modname..":"..itemname)
+                --minetest.log("Adding energy value ("..energy_value..") for "..modname..":"..itemname)
                 minetest.override_item(modname..":"..itemname, {
                     description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,
                     energy_value = energy_value,
                 })
             end
-        elseif modname == "group" then
+        elseif (modname == "mcl_group" and exchangeclone.mineclone) or (modname == "group" and not exchangeclone.mineclone) then
             local groupnames = {}
             for k,v in pairs(itemlist) do
                 groupnames[#groupnames + 1] = k
@@ -462,8 +472,15 @@ minetest.register_on_mods_loaded(function()
             local grouped_items = get_group_items(groupnames)
             for groupname, energy_value in pairs(itemlist) do
                 for i, item in ipairs(grouped_items[groupname]) do
+                        local description = minetest.registered_items[item].description
+                        local already_has_value = description:find("Energy Value: (%d+)")
+                        if already_has_value then
+                            description = description:gsub("Energy Value: "..already_has_value, "Energy Value: "..energy_value)
+                        else
+                            description = minetest.registered_items[item].description.."\nEnergy Value: "..energy_value
+                        end
                     minetest.override_item(item, {
-                        description = minetest.registered_items[item].description.."\nEnergy Value: "..energy_value,
+                        description = description,
                         energy_value = energy_value
                     })
                 end

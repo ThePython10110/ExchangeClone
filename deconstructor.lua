@@ -59,19 +59,21 @@ local function on_timer(pos, elapsed)
             else
                 energy_value = get_item_energy(fuel_stack:get_name())
             end
-            local wear = fuel_stack:get_wear()
-            if wear and wear ~= 0 then
-                energy_value = math.ceil(energy_value * (wear / 65536))
+            if energy_value ~= 0 then
+                local wear = fuel_stack:get_wear()
+                if wear and wear ~= 0 then
+                    energy_value = math.ceil(energy_value * (wear / 65536))
+                end
+                fuel_stack:set_count(fuel_stack:get_count() - 1)
+                inv:set_stack("main", 1, fuel_stack)
+                -- only get 1 orb as we can only use one
+                local dest_orb = inv:get_stack("dst", 1)
+                local stored = dest_orb:get_meta():get_int("stored_charge") or 0
+                stored = stored + energy_value
+                dest_orb:get_meta():set_int("stored_charge", stored)
+                dest_orb:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(stored))
+                inv:set_stack("dst", 1, dest_orb)
             end
-            fuel_stack:set_count(fuel_stack:get_count() - 1)
-            inv:set_stack("main", 1, fuel_stack)
-            -- only get 1 orb as we can only use one
-            local dest_orb = inv:get_stack("dst", 1)
-            local stored = dest_orb:get_meta():get_int("stored_charge") or 0
-            stored = stored + energy_value
-            dest_orb:get_meta():set_int("stored_charge", stored)
-            dest_orb:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(stored))
-            inv:set_stack("dst", 1, dest_orb)
 
             update = true
         end
