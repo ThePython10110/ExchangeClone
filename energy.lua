@@ -268,23 +268,31 @@ local energy_values = {
         sword_water = 5,
     },
 
---Energy values taken from https://technicpack.fandom.com/wiki/Alchemical_Math
---Didn't type out the ones with a value of 1, since that's the default
+--[[Energy values mostly taken from https://technicpack.fandom.com/wiki/Alchemical_Math
+I had to change some since they weren't as "equivalent" as they were supposed to be.
+I also didn't type out the ones with a value of 1, since that's the default.]]
 
     ["mcl_group"] = {
         sandstone = 3,
         stone_brick = 1,
         wood = 8,
         wood_slab = 4,
-        button = 2,
+        button = 8,
         dye = 8,
-        fence_wood = 12,
+        fence_wood = 13,
         wood_stairs = 12,
         flower = 16,
         pane = 0,
         pressure_plate = 16,
         trapdoor = 24,
         fence_gate = 32,
+        sapling = 32,
+        mushroom = 32,
+        tree = 32,
+        boat = 40,
+        wool = 48,
+        door = 12,
+        bed = 168,
     },
     ["mcl_core"] = {
         snow = 0,
@@ -295,29 +303,47 @@ local energy_values = {
         stone_with_lapis = 0,
         stone_with_emerald = 0,
         stone_with_gold = 0,
+        mossycobble = 9,
         gravel = 3,
-        stick = 3,
+        stick = 4,
         flint = 4,
         cactus = 8,
         vine = 8,
         cobweb = 12,
-        ladder = 14,
+        ladder = 9,
         clay_lump = 16,
         brick = 16,
         charcoal_lump = 32,
+        reeds = 32,
+        paper = 32,
+        sugar = 32,
+        obsidian = 64,
+        crying_obsidian = 100,
+        clay = 64,
+        brick_block = 64,
+        coal_lump = 128,
+        apple = 128,
     },
     ["mcl_crafting_table"] = {
         crafting_table = 32,
     },
     ["mcl_bows"] = {
-        arrow = 14,
+        arrow = 3,
+        bow = 48,
     },
     ["mcl_fishing"] = {
-        fishing_rod = 12,
-        fishing_rod_enchanted = 24,
+        fishing_rod = 36,
+        fishing_rod_enchanted = 72,
+        clownfish_raw = 64,
+        fish_cooked = 64,
+        fish_raw = 64,
+        pufferfish_raw = 64,
+        salmon_cooked = 64,
+        salmon_raw = 64,
     },
     ["mcl_throwing"] = {
         snowball = 0,
+        egg = 32,
     },
     ["mcl_bamboo"] = {
     },
@@ -331,8 +357,17 @@ local energy_values = {
         hoe_wood_enchanted = 48,
         wheat_seeds = 16,
         melon_seeds = 16,
-        melon = 16,
+        melon = 144,
         cookie = 22,
+        pumpkin_seeds = 36,
+        wheat_item = 24,
+        bread = 72,
+        pumpkin = 144,
+        pumpkin_face = 144,
+        pumpkin_face_light = 144
+    },
+    ["mcl_cocoas"] = {
+        cocoa_beans = 128,
     },
     ["mcl_stairs"] = {
         slab_redsandstone = 2,
@@ -346,28 +381,32 @@ local energy_values = {
         slab_sprucetree_bark = 4,
         slab_tree_bark = 4,
         stair_nether_brick = 6,
-        stair_red_nether_brick = 6
+        stair_red_nether_brick = 6,
+        slab_brick_block = 32,
+        stair_brick_block = 96,
     },
     ["mcl_flowers"] = {
         waterlily = 16,
     },
     ["mcl_mangrove"] = {
-        mangrove_wood = 8
     },
     ["mcl_nether"] = {
-        nether_brick = 3,
-        red_nether_brick = 3,
+        nether_brick = 4,
+        red_nether_brick = 50,
         nether_wart_item = 24,
+        soul_sand = 49,
+        soul_soil = 49,
     },
     ["mcl_fences"] = {
-        nether_brick_fence = 4
     },
     ["mcl_walls"] = {
     },
     ["mcl_end"] = {
     },
     ["mcl_copper"] = {
-        stone_with_copper = 0
+        stone_with_copper = 0,
+        copper_ingot = 85,
+        raw_copper = 85,
     },
     ["mcl_deepslate"] = {
         deepslate_with_coal = 0,
@@ -380,6 +419,7 @@ local energy_values = {
         deepslate_with_emerald = 0
     },
     ["xpanes"] = {
+        bar_flat = 96,
     },
     ["mcl_brewing"] = {
         stand = 0
@@ -389,38 +429,94 @@ local energy_values = {
     },
     ["mesecons_button"] = {
     },
+    ["mesecons"] = {
+        redstone = 64,
+    },
+    ["mesecons_torch"] = {
+        mesecon_torch_on = 68,
+    },
     ["mesecons_pressureplates"] = {
         pressure_plate_stone_off = 2,
     },
     ["mesecons_walllever"] = {
         wall_lever_off = 5
     },
+    ["mesecons_noteblock"] = {
+        noteblock = 128,
+    },
     ["mclx_fences"] = {
-        red_nether_brick_fence = 4,
-        red_nether_brick_fence_gate = 4,
-        nether_brick_fence_gate = 4
+        nether_brick_fence = 3,
+        nether_brick_fence_gate = 6,
+        red_nether_brick_fence = 33,
+        red_nether_brick_fence_gate = 150,
     },
     ["mcl_tools"] = {
-        sword_wood = 20,
-        sword_stone = 6,
-        shovel_stone = 9,
-        pick_stone = 11,
-        axe_stone = 11,
-        shovel_wood = 16,
-        sword_wood_enchanted = 40,
-        sword_stone_enchanted = 12,
-        shovel_stone_enchanted = 18,
-        pick_stone_enchanted = 22,
-        axe_stone_enchanted = 22,
-        shovel_wood_enchanted = 32,
+        sword_wood = 21,
+        sword_stone = 7,
+        shovel_stone = 11,
+        pick_stone = 13,
+        axe_stone = 13,
+        shovel_wood = 18,
+        pick_wood = 34,
+        axe_wood = 34,
+        sword_wood_enchanted = 42,
+        sword_stone_enchanted = 14,
+        shovel_stone_enchanted = 22,
+        pick_stone_enchanted = 26,
+        axe_stone_enchanted = 26,
+        shovel_wood_enchanted = 36,
+        pick_wood_enchanted = 68,
+        axe_wood_enchanted = 68,
     },
     ["mcl_mobitems"] = {
         string = 12,
         rotten_flesh = 24,
         slimeball = 24,
+        feather = 48,
+        porkchop = 64,
+        cooked_porkchop = 64,
+        beef = 64,
+        cooked_beef = 64,
+        chicken = 64,
+        cooked_chicken = 64,
+        leather = 64,
+        spider_eye = 128,
+        bone = 144,
     },
     ["mcl_torches"] = {
         torch = 9,
+    },
+    ["mcl_mushrooms"] = {
+    },
+    ["mcl_bone_meal"] = {
+        bone_meal = 48,
+    },
+    ["mcl_signs"] = {
+        wall_sign = 17,
+        wall_sign_acaciawood = 17,
+        wall_sign_bamboo = 17,
+        wall_sign_birchwood = 17,
+        wall_sign_crimson_hyphae_wood = 17,
+        wall_sign_darkwood = 17,
+        wall_sign_junglewood = 17,
+        wall_sign_mangrove_wood = 17,
+        wall_sign_sprucewood = 17,
+        wall_sign_warped_hyphae_wood = 17,
+    },
+    ["mcl_chests"] = {
+        chest = 64
+    },
+    ["mcl_paintings"] = {
+        painting = 96,
+    },
+    ["mcl_minecarts"] = {
+        rail = 96
+    },
+    ["mcl_books"] = {
+        book = 150,
+    },
+    ["mcl_dispensers"] = {
+        dispenser = 119,
     },
 }
 
@@ -453,14 +549,23 @@ local function get_group_items(groups, allow_duplicates)
 	return result
 end
 
+--Wait until all mods are loaded (to make sure all nodes have been registered)
+--Easier than making it depend on every single MineClone mod
 minetest.register_on_mods_loaded(function()
     -- load energy values into known items
     for modname, itemlist in pairs(energy_values) do
         if minetest.get_modpath(modname) then
             for itemname, energy_value in pairs(itemlist) do
                 --minetest.log("Adding energy value ("..energy_value..") for "..modname..":"..itemname)
+                local description = minetest.registered_items[itemname].description
+                local already_has_value = description:find("Energy Value: (%d+)")
+                if already_has_value then
+                    description = description:gsub("Energy Value: "..already_has_value, "Energy Value: "..energy_value)
+                else
+                    description = minetest.registered_items[itemname].description.."\nEnergy Value: "..energy_value
+                end
                 minetest.override_item(modname..":"..itemname, {
-                    description = minetest.registered_items[modname..":"..itemname].description.."\nEnergy Value: "..energy_value,
+                    description = description,
                     energy_value = energy_value,
                 })
             end
