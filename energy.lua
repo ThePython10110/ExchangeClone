@@ -323,6 +323,10 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         brick_block = 64,
         coal_lump = 128,
         apple = 128,
+        gold_nugget = 227,
+        iron_ingot = 256,
+        lapis = 864,
+        diamond = 8192,
     },
     ["mcl_crafting_table"] = {
         crafting_table = 32,
@@ -356,8 +360,9 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         hoe_wood = 24,
         hoe_wood_enchanted = 48,
         wheat_seeds = 16,
-        melon_seeds = 16,
+        melon_seeds = 36,
         melon = 144,
+        melon_item = 36,
         cookie = 22,
         pumpkin_seeds = 36,
         wheat_item = 24,
@@ -365,6 +370,9 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         pumpkin = 144,
         pumpkin_face = 144,
         pumpkin_face_light = 144
+    },
+    ["mcl_cake"] = {
+        cake = 411,
     },
     ["mcl_cocoas"] = {
         cocoa_beans = 128,
@@ -396,12 +404,15 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         nether_wart_item = 24,
         soul_sand = 49,
         soul_soil = 49,
+        glowstone_dust = 384,
+        glowstone = 1536,
     },
     ["mcl_fences"] = {
     },
     ["mcl_walls"] = {
     },
     ["mcl_end"] = {
+        dragon_egg = 139264,
     },
     ["mcl_copper"] = {
         stone_with_copper = 0,
@@ -444,6 +455,9 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
     ["mesecons_noteblock"] = {
         noteblock = 128,
     },
+    ["mesecons_delayer"] = {
+        delayer_off_1 = 203,
+    },
     ["mclx_fences"] = {
         nether_brick_fence = 3,
         nether_brick_fence_gate = 6,
@@ -468,6 +482,10 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         pick_wood_enchanted = 68,
         axe_wood_enchanted = 68,
     },
+    ["mcl_potions"] = {
+        fermented_spider_eye = 192,
+        speckled_melon = 1852,
+    },
     ["mcl_mobitems"] = {
         string = 12,
         rotten_flesh = 24,
@@ -482,6 +500,13 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         leather = 64,
         spider_eye = 128,
         bone = 144,
+        gunpowder = 192,
+        saddle = 192,
+        blaze_powder = 768,
+        magma_cream = 768,
+        ender_pearl = 1024, --I hate typing "ender" in Lua; it thinks I'm typing "end" and unindents.
+        blaze_rod = 1536,
+        ghast_tear = 4096,
     },
     ["mcl_torches"] = {
         torch = 9,
@@ -517,6 +542,17 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
     },
     ["mcl_dispensers"] = {
         dispenser = 119,
+    },
+    ["mcl_buckets"] = {
+        bucket_empty = 768,
+        bucket_water = 769,
+        bucket_river_water = 769,
+        bucket_lava = 896,
+        bucket_milk = 832,
+        bucket_cod = 896,
+        bucket_salmon = 896,
+        bucket_tropical_fish = 896,
+        bucket_axlotl = 1024,
     },
 }
 
