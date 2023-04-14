@@ -1,8 +1,6 @@
 -- TODO add more items from minetest_game
 -- Names listed are in the order shown in the minetest_game repo
-local energy_values = {
-    ["group"] = {
-    },
+exchangeclone.energy_values = {
     ["default"] = {
         --- Nodes
         -- Stone
@@ -271,38 +269,7 @@ local energy_values = {
 --[[Energy values mostly taken from https://technicpack.fandom.com/wiki/Alchemical_Math
 I had to change some since they weren't as "equivalent" as they were supposed to be.
 I also didn't type out the ones with a value of 1, since that's the default.]]
-
-    ["mcl_group"] = {
-        sandstone = 3,
-        stone_brick = 1,
-        wood = 8,
-        wood_slab = 4,
-        button = 8,
-        dye = 8,
-        fence_wood = 13,
-        wood_stairs = 12,
-        flower = 16,
-        pane = 0,
-        pressure_plate = 16,
-        trapdoor = 24,
-        fence_gate = 32,
-        sapling = 32,
-        mushroom = 32,
-        tree = 32,
-        boat = 40,
-        wool = 48,
-        door = 12,
-        bed = 168,
-    },
     ["mcl_core"] = {
-        snow = 0,
-        stone_with_coal = 0,
-        stone_with_iron = 0,
-        stone_with_diamond = 0,
-        stone_with_redstone = 0,
-        stone_with_lapis = 0,
-        stone_with_emerald = 0,
-        stone_with_gold = 0,
         mossycobble = 9,
         gravel = 3,
         stick = 4,
@@ -318,7 +285,7 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         paper = 32,
         sugar = 32,
         obsidian = 64,
-        crying_obsidian = 100,
+        crying_obsidian = 1000,
         clay = 64,
         brick_block = 64,
         coal_lump = 128,
@@ -326,7 +293,72 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         gold_nugget = 227,
         iron_ingot = 256,
         lapis = 864,
+        emerald = 1024,
+        gold_ingot = 2048,
+        ironblock = 2304,
         diamond = 8192,
+    },
+    ["mcl_beds"] = {
+        respawn_anchor = 10608,
+    },
+    ["mcl_bells"] = {
+        bell = 8192,
+    },
+    ["mcl_armor"] = {
+        boots_leather = 256,
+        helmet_leather = 320,
+        leggings_leather = 448,
+        chestplate_leather = 512,
+        boots_chain = 768,
+        helmet_chain = 1024,
+        leggings_chain = 1536,
+        chestplate_chain = 1792,
+        boots_iron = 1024,
+        helmet_iron = 1280,
+        leggings_iron = 1792,
+        chestplate_iron = 2048,
+        boots_gold = 8192,
+        helmet_gold = 10240,
+        leggings_gold = 14336,
+        chestplate_gold = 16384,
+        boots_diamond = 32768,
+        helmet_diamond = 40960,
+        leggings_diamond = 57344,
+        chestplate_diamond = 65536,
+        boots_netherite = 106496,
+        helmet_netherite = 147456,
+        leggings_netherite = 204800,
+        chestplate_netherite = 270336,
+        boots_leather_enchanted = 256*2,
+        helmet_leather_enchanted = 320*2,
+        leggings_leather_enchanted = 448*2,
+        chestplate_leather_enchanted = 512*2,
+        boots_chain_enchanted = 768*2,
+        helmet_chain_enchanted = 1024*2,
+        leggings_chain_enchanted = 1536*2,
+        chestplate_chain_enchanted = 1792*2,
+        boots_iron_enchanted = 1024*2,
+        helmet_iron_enchanted = 1280*2,
+        leggings_iron_enchanted = 1792*2,
+        chestplate_iron_enchanted = 2048*2,
+        boots_gold_enchanted = 8192*2,
+        helmet_gold_enchanted = 10240*2,
+        leggings_gold_enchanted = 14336*2,
+        chestplate_gold_enchanted = 16384*2,
+        boots_diamond_enchanted = 32768*2,
+        helmet_diamond_enchanted = 40960*2,
+        leggings_diamond_enchanted = 57344*2,
+        chestplate_diamond_enchanted = 65536*2,
+        boots_netherite_enchanted = 106496*2,
+        helmet_netherite_enchanted = 147456*2,
+        leggings_netherite_enchanted = 204800*2,
+        chestplate_netherite_enchanted = 270336*2,
+        elytra = 73728*4,
+    },
+    ["mcl_anvils"] = {
+        anvil = 7936,
+        anvil_damage_1 = 5632,
+        anvil_damage_2 = 3328,
     },
     ["mcl_crafting_table"] = {
         crafting_table = 32,
@@ -334,6 +366,17 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
     ["mcl_bows"] = {
         arrow = 3,
         bow = 48,
+    },
+    ["mcl_amethyst"] = {
+        amethyst_shard = 256,
+        small_amethyst_bud = 256,
+        medium_amethyst_bud = 341,
+        large_amethyst_bud = 426,
+        amethyst_cluster = 512,
+        budding_amethyst_block = 0, --not obtainable in survival
+        amethyst_block = 1024,
+        tinted_glass = 1025,
+        calcite = 128,
     },
     ["mcl_fishing"] = {
         fishing_rod = 36,
@@ -346,19 +389,36 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         salmon_raw = 64,
     },
     ["mcl_throwing"] = {
-        snowball = 0,
+        snowball = 0.25,
         egg = 32,
+        ender_pearl = 1024, --I hate typing "ender" in Lua; it thinks I'm typing "end" and unindents.
     },
     ["mcl_bamboo"] = {
+        bamboo = 2,
+        scaffolding = 4,
+        bamboo_block = 16,
+        bamboo_block_stripped = 16,
+        bamboo_plank = 8,
+        bamboo_mosaic = 8,
+        bamboo_door = 16,
+
     },
     ["mcl_furnaces"] = {
         furnace = 8
     },
     ["mcl_farming"] = {
         hoe_stone = 10,
-        hoe_stone_enchanted = 20,
         hoe_wood = 24,
-        hoe_wood_enchanted = 48,
+        hoe_iron = 520,
+        hoe_gold = 4104,
+        hoe_diamond = 16380,
+        hoe_netherite = 90108,
+        hoe_stone_enchanted = 10*2,
+        hoe_wood_enchanted = 24*2,
+        hoe_iron_enchanted = 520*2,
+        hoe_gold_enchanted = 4104*2,
+        hoe_diamond_enchanted = 16380*2,
+        hoe_netherite_enchanted = 90108*2,
         wheat_seeds = 16,
         melon_seeds = 36,
         melon = 144,
@@ -377,6 +437,9 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
     ["mcl_cocoas"] = {
         cocoa_beans = 128,
     },
+    ["mcl_beacons"] = {
+        beacon = 73925,
+    },
     ["mcl_stairs"] = {
         slab_redsandstone = 2,
         slab_redsandstonesmooth2 = 2,
@@ -392,6 +455,18 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         stair_red_nether_brick = 6,
         slab_brick_block = 32,
         stair_brick_block = 96,
+        slab_bamboo_block = 8,
+        stair_bamboo_block = 24,
+        slab_bamboo_mosaic = 4,
+        slab_bamboo_plank = 4,
+        slab_bamboo_stripped = 8,
+        stair_bamboo_mosaic = 12,
+        stair_bamboo_plank = 12,
+        stair_bamboo_stripped = 24
+
+    },
+    ["mcl_barrels"] = {
+        barrel_closed = 56,
     },
     ["mcl_flowers"] = {
         waterlily = 16,
@@ -403,11 +478,14 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         red_nether_brick = 50,
         nether_wart_item = 24,
         soul_sand = 49,
-        soul_soil = 49,
         glowstone_dust = 384,
         glowstone = 1536,
+        ancient_debris = 16384,
+        netherite_scrap = 16384,
+        netherite_ingot = 73728,
     },
     ["mcl_fences"] = {
+        nether_brick_fence = 3,
     },
     ["mcl_walls"] = {
     },
@@ -415,28 +493,19 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         dragon_egg = 139264,
     },
     ["mcl_copper"] = {
-        stone_with_copper = 0,
         copper_ingot = 85,
         raw_copper = 85,
     },
     ["mcl_deepslate"] = {
-        deepslate_with_coal = 0,
-        deepslate_with_iron = 0,
-        deepslate_with_gold = 0,
-        deepslate_with_diamond = 0,
-        deepslate_with_lapis = 0,
-        deepslate_with_redstone = 0,
-        deepslate_with_copper = 0,
-        deepslate_with_emerald = 0
     },
     ["xpanes"] = {
         bar_flat = 96,
     },
     ["mcl_brewing"] = {
-        stand = 0
+        stand = 1539
     },
     ["mcl_cauldrons"] = {
-        cauldron = 0
+        cauldron = 1792,
     },
     ["mesecons_button"] = {
     },
@@ -445,6 +514,9 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
     },
     ["mesecons_torch"] = {
         mesecon_torch_on = 68,
+    },
+    ["mcl_armor_stand"] = {
+        armor_stand = 24.5,
     },
     ["mesecons_pressureplates"] = {
         pressure_plate_stone_off = 2,
@@ -459,28 +531,59 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         delayer_off_1 = 203,
     },
     ["mclx_fences"] = {
-        nether_brick_fence = 3,
         nether_brick_fence_gate = 6,
         red_nether_brick_fence = 33,
         red_nether_brick_fence_gate = 150,
     },
     ["mcl_tools"] = {
-        sword_wood = 21,
-        sword_stone = 7,
-        shovel_stone = 11,
-        pick_stone = 13,
-        axe_stone = 13,
-        shovel_wood = 18,
-        pick_wood = 34,
-        axe_wood = 34,
-        sword_wood_enchanted = 42,
-        sword_stone_enchanted = 14,
-        shovel_stone_enchanted = 22,
-        pick_stone_enchanted = 26,
-        axe_stone_enchanted = 26,
-        shovel_wood_enchanted = 36,
-        pick_wood_enchanted = 68,
-        axe_wood_enchanted = 68,
+        shovel_stone = 9,
+        sword_stone = 6,
+        pick_stone = 11,
+        axe_stone = 11,
+        shovel_wood = 16,
+        sword_wood = 20,
+        pick_wood = 32,
+        axe_wood = 32,
+        shovel_gold = 2056,
+        sword_gold = 5000,
+        pick_gold = 6152,
+        axe_gold = 6152,
+        shovel_iron = 264,
+        sword_iron = 516,
+        pick_iron = 796,
+        axe_iron = 796,
+        shovel_diamond = 8200,
+        sword_diamond = 16392,
+        pick_diamond = 24584,
+        axe_diamond = 24584,
+        shovel_netherite = 81928,
+        sword_netherite = 90120,
+        pick_netherite = 98312,
+        axe_netherite = 98312,
+        shovel_stone_enchanted = 9*2,
+        sword_stone_enchanted = 6*2,
+        pick_stone_enchanted = 11*2,
+        axe_stone_enchanted = 11*2,
+        shovel_wood_enchanted = 16*2,
+        sword_wood_enchanted = 20*2,
+        pick_wood_enchanted = 32*2,
+        axe_wood_enchanted = 32*2,
+        shovel_gold_enchanted = 2056*2,
+        sword_gold_enchanted = 5000*2,
+        pick_gold_enchanted = 6152*2,
+        axe_gold_enchanted = 6152*2,
+        shovel_iron_enchanted = 264*2,
+        sword_iron_enchanted = 516*2,
+        pick_iron_enchanted = 796*2,
+        axe_iron_enchanted = 796*2,
+        shovel_diamond_enchanted = 8200*2,
+        sword_diamond_enchanted = 16392*2,
+        pick_diamond_enchanted = 24584*2,
+        axe_diamond_enchanted = 24584*2,
+        shovel_netherite_enchanted = 81928*2,
+        sword_netherite_enchanted = 90120*2,
+        pick_netherite_enchanted = 98312*2,
+        axe_netherite_enchanted = 98312*2,
     },
     ["mcl_potions"] = {
         fermented_spider_eye = 192,
@@ -501,12 +604,26 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         spider_eye = 128,
         bone = 144,
         gunpowder = 192,
+        milk_bucket = 832,
         saddle = 192,
         blaze_powder = 768,
         magma_cream = 768,
-        ender_pearl = 1024, --I hate typing "ender" in Lua; it thinks I'm typing "end" and unindents.
         blaze_rod = 1536,
         ghast_tear = 4096,
+        nether_star = 73728,
+    },
+    ["mcl_honey"] = {
+        honeycomb = 32,
+        honey_bottle = 33,
+        honey_block = 128,
+        honeycomb_block = 128,
+    },
+    ["mcl_beehives"] = {
+        bee_nest = 144,
+        beehive = 144,
+    },
+    ["mcl_blackstone"] = {
+        soul_soil = 49,
     },
     ["mcl_torches"] = {
         torch = 9,
@@ -548,20 +665,50 @@ I also didn't type out the ones with a value of 1, since that's the default.]]
         bucket_water = 769,
         bucket_river_water = 769,
         bucket_lava = 896,
-        bucket_milk = 832,
         bucket_cod = 896,
         bucket_salmon = 896,
         bucket_tropical_fish = 896,
-        bucket_axlotl = 1024,
+        bucket_axolotl = 1024,
     },
 }
 
-local function get_group_items(groups, allow_duplicates)
+exchangeclone.mtg_group_values = {
+
+}
+
+exchangeclone.mcl_group_values = {
+    {"slab", 0.5},
+    {"banner", 292},
+    {"sandstone", 3},
+    {"stone_brick", 1},
+    {"wood", 8},
+    {"wood_slab", 4},
+    {"button", 8},
+    {"dye", 8},
+    {"fence_wood", 13},
+    {"wood_stairs", 12},
+    {"flower", 16},
+    {"pane", 3},
+    {"pressure_plate", 16},
+    {"trapdoor", 24},
+    {"fence_gate", 32},
+    {"sapling", 32},
+    {"mushroom", 32},
+    {"tree", 32},
+    {"boat", 40},
+    {"wool", 48},
+    {"door", 12},
+    {"bed", 168},
+    {"NO_GROUP", 1},
+}
+
+local function get_group_items(groups, allow_duplicates, include_no_group)
 	if type(groups) ~= "table" then
 		return nil
 	end
 
 	allow_duplicates = allow_duplicates or false
+    include_no_group = include_no_group or false
 
 	local g_cnt = #groups
 
@@ -569,62 +716,86 @@ local function get_group_items(groups, allow_duplicates)
 	for i = 1, g_cnt do
 		result[groups[i]] = {}
 	end
+    if include_no_group then
+        result["NO_GROUP"] = {}
+    end
+    local in_group = false
 
 	for name, def in pairs(minetest.registered_nodes) do
+        in_group = false
 		for i = 1, g_cnt do
 			local grp = groups[i]
 			if def.groups[grp] then
 				result[grp][#result[grp]+1] = name
+                in_group = true
 				if allow_duplicates == false then
 					break
 				end
 			end
 		end
+        if include_no_group and in_group == false then
+            result["NO_GROUP"][#result["NO_GROUP"]+1] = name
+        end
 	end
 
 	return result
 end
 
+function exchangeclone.set_item_energy(itemstring, energy_value)
+    local description = ""
+    if not pcall(function()
+        description = minetest.registered_items[itemstring].description
+        local existing_energy_value = description:find("Energy Value: ([%d%.]+)")
+        if existing_energy_value then
+            minetest.log(itemstring..": old = "..tostring(existing_energy_value)..", new = "..tostring(energy_value))
+            description = description:gsub("Energy Value: ([%d%.]+)", "Energy Value: "..energy_value)
+            minetest.log(description)
+        else
+            description = minetest.registered_items[itemstring].description.."\nEnergy Value: "..energy_value
+        end
+        minetest.override_item(itemstring, {
+            description = description,
+            energy_value = energy_value,
+        })
+        return true
+    end) then
+        minetest.log("error", "Failed to add energy value ("..energy_value..") for "..itemstring)
+    else
+        --minetest.log("Added energy value ("..energy_value..") for "..itemstring)
+    end
+end
+
 --Wait until all mods are loaded (to make sure all nodes have been registered)
---Easier than making it depend on every single MineClone mod
+--This is much easier than making it depend on every single MineClone mod.
 minetest.register_on_mods_loaded(function()
-    -- load energy values into known items
-    for modname, itemlist in pairs(energy_values) do
+    if exchangeclone.mineclone then --Set all group items to MineClone values
+        local groupnames = {}
+        for index, group in ipairs(exchangeclone.mcl_group_values) do
+            groupnames[#groupnames + 1] = group[1] --Get list of group names
+        end
+        local grouped_items = get_group_items(groupnames, false, true)
+        for index, group in ipairs(exchangeclone.mcl_group_values) do
+            for i, item in pairs(grouped_items[group[1]]) do
+                exchangeclone.set_item_energy(item, group[2])
+            end
+        end
+    else --Set all group items to Minetest Game values
+        local groupnames = {}
+        for index, group in ipairs(exchangeclone.mtg_group_values) do
+            groupnames[#groupnames + 1] = group[0] --Get list of group names
+        end
+        local grouped_items = get_group_items(groupnames, false, true)
+        for index, group in ipairs(exchangeclone.mtg_group_values) do
+            for i, item in pairs(grouped_items[group[0]]) do
+                exchangeclone.set_item_energy(item, group[1])
+            end
+        end
+    end
+    -- load energy values into other items
+    for modname, itemlist in pairs(exchangeclone.energy_values) do
         if minetest.get_modpath(modname) then
             for itemname, energy_value in pairs(itemlist) do
-                --minetest.log("Adding energy value ("..energy_value..") for "..modname..":"..itemname)
-                local description = minetest.registered_items[itemname].description
-                local already_has_value = description:find("Energy Value: (%d+)")
-                if already_has_value then
-                    description = description:gsub("Energy Value: "..already_has_value, "Energy Value: "..energy_value)
-                else
-                    description = minetest.registered_items[itemname].description.."\nEnergy Value: "..energy_value
-                end
-                minetest.override_item(modname..":"..itemname, {
-                    description = description,
-                    energy_value = energy_value,
-                })
-            end
-        elseif (modname == "mcl_group" and exchangeclone.mineclone) or (modname == "group" and not exchangeclone.mineclone) then
-            local groupnames = {}
-            for k,v in pairs(itemlist) do
-                groupnames[#groupnames + 1] = k
-            end
-            local grouped_items = get_group_items(groupnames)
-            for groupname, energy_value in pairs(itemlist) do
-                for i, item in ipairs(grouped_items[groupname]) do
-                        local description = minetest.registered_items[item].description
-                        local already_has_value = description:find("Energy Value: (%d+)")
-                        if already_has_value then
-                            description = description:gsub("Energy Value: "..already_has_value, "Energy Value: "..energy_value)
-                        else
-                            description = minetest.registered_items[item].description.."\nEnergy Value: "..energy_value
-                        end
-                    minetest.override_item(item, {
-                        description = description,
-                        energy_value = energy_value
-                    })
-                end
+                exchangeclone.set_item_energy(modname..":"..itemname, energy_value)                                
             end
         end
     end

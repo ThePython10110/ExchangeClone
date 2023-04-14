@@ -1,4 +1,4 @@
---Renamed "fuel" inventory to "main" to work with hoppers
+--Renamed "fuel" inventory to "main" to (almost) work with hoppers
 
 function get_element_deconstructor_formspec()
     if not exchangeclone.mineclone then
@@ -55,22 +55,25 @@ local function on_timer(pos, elapsed)
             local fuel_stack = inv:get_stack("main", 1)
             local energy_value = 0
             if fuel_stack:get_name() == "exchangeclone:exchange_orb" then
-                energy_value = (fuel_stack:get_meta():get_int("stored_charge") or 0) + 8452 --8452 = energy cost of orb
+                energy_value = (fuel_stack:get_meta():get_float("stored_charge") or 0) + 8452 --8452 = energy cost of orb
             else
-                energy_value = get_item_energy(fuel_stack:get_name())
+                energy_value = exchangeclone.get_item_energy(fuel_stack:get_name())
             end
             if energy_value ~= 0 then
                 local wear = fuel_stack:get_wear()
                 if wear and wear ~= 0 then
-                    energy_value = math.ceil(energy_value * (wear / 65536))
+                    energy_value = energy_value * (65536 / wear)
+                end
+                -- only get 1 orb as we can only use one
+                local dest_orb = inv:get_stack("dst", 1)
+                local stored = dest_orb:get_meta():get_float("stored_charge") or 0
+                if stored + energy_value < stored then
+                    return --will hopefully prevent overflow, not that overflow is likely
                 end
                 fuel_stack:set_count(fuel_stack:get_count() - 1)
                 inv:set_stack("main", 1, fuel_stack)
-                -- only get 1 orb as we can only use one
-                local dest_orb = inv:get_stack("dst", 1)
-                local stored = dest_orb:get_meta():get_int("stored_charge") or 0
                 stored = stored + energy_value
-                dest_orb:get_meta():set_int("stored_charge", stored)
+                dest_orb:get_meta():set_float("stored_charge", stored)
                 dest_orb:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(stored))
                 inv:set_stack("dst", 1, dest_orb)
             end

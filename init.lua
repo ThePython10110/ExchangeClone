@@ -11,9 +11,11 @@ end
 
 local default_path = minetest.get_modpath("exchangeclone")
 
-function get_item_energy(name)
+function exchangeclone.get_item_energy(name)
     return minetest.registered_items[name].energy_value or 1
 end
+
+exchangeclone.collector_interval = minetest.settings:get("exchangeclone.collector_interval") or 20
 
 dofile(default_path.."/config.lua")
 dofile(default_path.."/constructor.lua")

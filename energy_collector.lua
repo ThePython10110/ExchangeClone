@@ -48,9 +48,9 @@ local function on_timer(pos, elapsed)
 
     if minetest.get_natural_light(pos) == 15 then
         local dest_orb = inv:get_stack("main", 1)
-        local stored = dest_orb:get_meta():get_int("stored_charge") or 0
+        local stored = dest_orb:get_meta():get_float("stored_charge") or 0
         stored = stored + 1
-        dest_orb:get_meta():set_int("stored_charge", stored)
+        dest_orb:get_meta():set_float("stored_charge", stored)
         dest_orb:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(stored))
         inv:set_stack("main", 1, dest_orb)
     end
@@ -135,13 +135,13 @@ minetest.register_node("exchangeclone:energy_collector", {
     on_timer = on_timer,
     on_construct = on_construct,
     on_metadata_inventory_move = function(pos)
-        minetest.get_node_timer(pos):start(COLLECTOR_INTERVAL)
+        minetest.get_node_timer(pos):start(exchangeclone.collector_interval)
     end,
     on_metadata_inventory_put = function(pos)
-        minetest.get_node_timer(pos):start(COLLECTOR_INTERVAL)
+        minetest.get_node_timer(pos):start(exchangeclone.collector_interval)
     end,
     on_metadata_inventory_take = function(pos)
-        minetest.get_node_timer(pos):start(COLLECTOR_INTERVAL)
+        minetest.get_node_timer(pos):start(exchangeclone.collector_interval)
     end,
     on_blast = on_blast,
     allow_metadata_inventory_put = allow_metadata_inventory_put,
