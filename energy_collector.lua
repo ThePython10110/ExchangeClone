@@ -1,4 +1,4 @@
-function get_energy_collector_formspec()
+local function get_energy_collector_formspec()
     if not exchangeclone.mineclone then
         local formspec = {
             "size[8,9]",
@@ -68,6 +68,7 @@ end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
     if minetest.is_protected(pos, player:get_player_name()) then
+        minetest.log("blocked put")
         return 0
     end
     local meta = minetest.get_meta(pos)
@@ -90,6 +91,7 @@ end
 
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
     if minetest.is_protected(pos, player:get_player_name()) then
+        minetest.log("blocked take")
         return 0
     end
     return stack:get_count()
@@ -97,10 +99,29 @@ end
 
 local function on_blast(pos)
     local drops = {}
-    default.get_inventory_drops(pos, "main", drops)
+    exchangeclone.get_inventory_drops(pos, "main", drops)
     drops[#drops+1] = "exchangeclone:energy_collector"
     minetest.remove_node(pos)
+    
     return drops
+end
+
+
+local function on_dig_node(pos, oldnode, oldmetadata, digger)
+    if exchangeclone.mineclone then
+        local meta = minetest.get_meta(pos)
+        local meta2 = meta:to_table()
+        meta:from_table(oldmetadata)
+        local inv = meta:get_inventory()
+        for _, listname in ipairs({"main"}) do
+            local stack = inv:get_stack(listname, 1)
+            if not stack:is_empty() then
+                local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
+                minetest.add_item(p, stack)
+            end
+        end
+        meta:from_table(meta2)
+    end
 end
 
 minetest.register_node("exchangeclone:energy_collector", {
@@ -116,24 +137,9 @@ minetest.register_node("exchangeclone:energy_collector", {
     groups = {cracky = 2, container = 2},
     is_ground_content = false,
     can_dig = can_dig,
-    after_dig_node = function(pos, oldnode, oldmetadata, digger)
-        if exchangeclone.mineclone then
-            local meta = minetest.get_meta(pos)
-            local meta2 = meta:to_table()
-            meta:from_table(oldmetadata)
-            local inv = meta:get_inventory()
-            for _, listname in ipairs({"main"}) do
-                local stack = inv:get_stack(listname, 1)
-                if not stack:is_empty() then
-                    local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-                    minetest.add_item(p, stack)
-                end
-            end
-            meta:from_table(meta2)
-        end
-	end,
     on_timer = on_timer,
     on_construct = on_construct,
+    on_dig_node = on_dig_node,
     on_metadata_inventory_move = function(pos)
         minetest.get_node_timer(pos):start(exchangeclone.collector_interval)
     end,
@@ -149,7 +155,36 @@ minetest.register_node("exchangeclone:energy_collector", {
     allow_metadata_inventory_take = allow_metadata_inventory_take,
 })
 
-local recipe_item_1 = "default:steel_block"
+--[[if minetest.get_modpath("pipeworks") then
+    minetest.override_item("exchangeclone:energy_collector", {
+        tube = {
+            input_inventory = "main",
+            connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
+            insert_object = function(pos, node, stack, direction)
+                local meta = minetest.get_meta(pos)
+                local inv = meta:get_inventory()
+                return inv:add_item("main", stack)
+            end,
+            can_insert = function(pos, node, stack, direction)
+                local meta = minetest.get_meta(pos)
+                local inv = meta:get_inventory()
+                if stack:get_name() == "exchangeclone:exchange_orb" then
+                    minetest.log(inv:room_for_item("main", stack))
+                    return inv:room_for_item("main", stack)
+                else
+                    minetest.log("failed")
+                end
+            end,
+        },
+        after_place_node = function(pos, placer)
+            pipeworks.after_place(pos)
+        end,
+        after_dig_node = pipeworks.after_dig,
+        on_rotate = pipeworks.on_rotate,
+    })
+end]]
+
+local recipe_item_1 = "default:steelblock"
 local recipe_item_2 = "default:obsidian_glass"
 local recipe_item_3 = "default:chest"
 

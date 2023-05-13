@@ -61,8 +61,8 @@ local function on_timer(pos, elapsed)
             end
             if energy_value ~= 0 then
                 local wear = fuel_stack:get_wear()
-                if wear and wear ~= 0 then
-                    energy_value = energy_value * (65536 / wear)
+                if wear and wear > 1 then
+                    energy_value = math.floor(energy_value * (65536 / wear))
                 end
                 -- only get 1 orb as we can only use one
                 local dest_orb = inv:get_stack("dst", 1)
@@ -77,7 +77,6 @@ local function on_timer(pos, elapsed)
                 dest_orb:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(stored))
                 inv:set_stack("dst", 1, dest_orb)
             end
-
             update = true
         end
     end
@@ -129,8 +128,8 @@ end
 
 local function on_blast(pos)
     local drops = {}
-    default.get_inventory_drops(pos, "main", drops)
-    default.get_inventory_drops(pos, "dst", drops)
+    exchangeclone.get_inventory_drops(pos, "main", drops)
+    exchangeclone.get_inventory_drops(pos, "dst", drops)
     drops[#drops+1] = "exchangeclone:element_deconstructor"
     minetest.remove_node(pos)
     return drops

@@ -9,13 +9,25 @@ else
     minetest.log("Loading ExchangeClone with MTG configuration")
 end
 
+function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes default dependency
+	local inv = minetest.get_meta(pos):get_inventory()
+	local n = #drops
+	for i = 1, inv:get_size(inventory) do
+		local stack = inv:get_stack(inventory, i)
+		if stack:get_count() > 0 then
+			drops[n+1] = stack:to_table()
+			n = n + 1
+		end
+	end
+end
+
 local default_path = minetest.get_modpath("exchangeclone")
 
 function exchangeclone.get_item_energy(name)
     return minetest.registered_items[name].energy_value or 1
 end
 
-exchangeclone.collector_interval = minetest.settings:get("exchangeclone.collector_interval") or 20
+exchangeclone.collector_interval = minetest.settings:get("exchangeclone.collector_interval") or 5
 
 dofile(default_path.."/config.lua")
 dofile(default_path.."/constructor.lua")

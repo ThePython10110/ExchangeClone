@@ -146,9 +146,9 @@ end
 
 local function on_blast(pos)
     local drops = {}
-    default.get_inventory_drops(pos, "fuel", drops)
-    default.get_inventory_drops(pos, "src", drops)
-    default.get_inventory_drops(pos, "dst", drops)
+    exchangeclone.get_inventory_drops(pos, "fuel", drops)
+    exchangeclone.get_inventory_drops(pos, "src", drops)
+    exchangeclone.get_inventory_drops(pos, "dst", drops)
     drops[#drops+1] = "exchangeclone:element_constructor"
     minetest.remove_node(pos)
     return drops
