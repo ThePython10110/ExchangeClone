@@ -29,6 +29,7 @@ I plan to add more features from Equivalent Exchange (Energy Condenser, Philosop
 ## Known issues:
 * When items are inserted into machines with MineClone hoppers, it does not trigger the machines to start.
 * When machines are exploded, they (and the items inside) do not drop.
+
 If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).
 
 ![MineClone Screenshot](screenshot.png)
