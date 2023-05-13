@@ -5,6 +5,10 @@ Allows players to turn nodes into energy (stored in orbs), and energy from orbs 
 
 [Forum topic](https://forum.minetest.net/viewtopic.php?f=9&t=29473)
 
+[ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone)
+
+[Direct download](https://github.com/ThePython10110/ExchangeClone/archive/refs/heads/main.zip)
+
 Dependencies: Minetest Game or MineClone.
 
 ## Features
