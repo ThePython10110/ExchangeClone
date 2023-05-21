@@ -1093,6 +1093,77 @@ exchangeclone.mcl_energy_values = {
         stair_quartzblock = 256*3,
         stair_redsandstone = 2*3,
         stair_sandstone = 2*3,
+    },
+    ["meat_blocks"] = {
+        sausage = 64,
+        cooked_sausage = 64,
+        burnt_sausage = 64,
+        burnt_porkchop = 64,
+        burnt_beef = 64,
+        burnt_chicken = 48,
+        burnt_rabbit = 40,
+        burnt_mutton = 48,
+        burnt_fish = 40,
+        burnt_salmon = 48,
+        raw_block_sausage = 576,
+        raw_block_porkchop = 576,
+        raw_block_beef = 576,
+        raw_block_chicken = 432,
+        raw_block_mutton = 432,
+        raw_block_salmon = 432,
+        raw_block_rabbit = 360,
+        raw_block_fish = 360,
+        cooked_block_sausage = 576,
+        cooked_block_porkchop = 576,
+        cooked_block_beef = 576,
+        cooked_block_chicken = 432,
+        cooked_block_mutton = 432,
+        cooked_block_salmon = 432,
+        cooked_block_rabbit = 360,
+        cooked_block_fish = 360,
+        burnt_block_sausage = 576,
+        burnt_block_porkchop = 576,
+        burnt_block_beef = 576,
+        burnt_block_chicken = 432,
+        burnt_block_mutton = 432,
+        burnt_block_salmon = 432,
+        burnt_block_rabbit = 360,
+        burnt_block_fish = 360,
+    },
+    ["sound_machine"] = {
+        sound_machine = 681,
+        portable_sound_machine = 681,
+    },
+    ["fake_liquids"] = {
+        solid_water_source = 4,
+        solid_useless_bean_liquid_source = 0,
+        solid_glue_source = 12,
+        solid_river_water_source = 4,
+        solid_fake_lava_source = 68,
+        solid_lava_source = 131,
+        solid_fake_water_source = 195,
+        bucket_fake_lava = 833,
+        bucket_fake_water = 960,
+    },
+    ["sticky_things"] = {
+        bucket_glue = 797,
+        glue_source = 0,
+        glue_flowing = 0,
+        sticky_block = 100,
+    },
+    ["ghost_blocks"] = {
+        ghostifier = 4104,
+    },
+    ["lava_sponge"] = {
+        lava_sponge = 1032,
+        lava_sponge_wet = 1160,
+    },
+    ["slime_things"] = {
+        pressure_plate_slimeblock_off = 432,
+        button_slimeblock_off = 24,
+    },
+    ["small_why_things"] = {
+        craftable_barrier = 72,
     }
 }
 
@@ -1140,9 +1211,10 @@ exchangeclone.mcl_group_values = {
     {"bark", 43},
     {"glass", 2}, --undyed glass is 1
     {"huge_mushroom", 0}, --if you want energy, break it into mushrooms; doesn't always drop.
-    {"NO_GROUP", 1},
     {"carpet", 32},
-    {"spawn_egg", 0}
+    {"spawn_egg", 0},
+    {"useless", 0},
+    {"NO_GROUP", 1},
 }
 
 exchangeclone.mcl_potion_data = {
@@ -1210,7 +1282,7 @@ function exchangeclone.set_item_energy(itemstring, energy_value)
     local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
     if not (item_name and mod_name) then return end
     if mod_name == "ghost_blocks" then
-        energy_value = 1
+        energy_value = 0 --I don't know what to do about ghost blocks.
     end
     if exchangeclone.mineclone then
         if exchangeclone.mcl_energy_values[mod_name] then

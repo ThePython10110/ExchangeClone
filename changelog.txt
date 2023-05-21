@@ -1,0 +1,6 @@
+1.0.0
+    Initial release
+2.0
+    Added a changelog
+    Changed version numbers from x.x.x to x.x.
+    Added all items from Why
