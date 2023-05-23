@@ -1,12 +1,8 @@
 exchangeclone = {}
 if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
     error("ExchangeClone requires 'default' or 'mcl_core,' but Minetest doesn't let me mark one or the other as a dependency.")
-elseif minetest.get_modpath("mcl_core") then
-    exchangeclone["mineclone"] = true
-    minetest.log("Loading ExchangeClone with MineClone configuration")
 else
-    exchangeclone["mineclone"] = false
-    minetest.log("Loading ExchangeClone with MTG configuration")
+	exchangeclone.mineclone = minetest.get_modpath("mcl_core")
 end
 
 function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes default dependency
@@ -29,9 +25,9 @@ end
 
 exchangeclone.collector_interval = minetest.settings:get("exchangeclone.collector_interval") or 5
 
-dofile(default_path.."/config.lua")
 dofile(default_path.."/constructor.lua")
 dofile(default_path.."/deconstructor.lua")
 dofile(default_path.."/energy_collector.lua")
 dofile(default_path.."/energy.lua")
 dofile(default_path.."/orb.lua")
+dofile(default_path.."/philosophers_stone.lua")

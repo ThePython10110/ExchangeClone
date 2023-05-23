@@ -4,3 +4,20 @@
     Added a changelog
     Changed version numbers from x.x.x to x.x.
     Added all items from Why
+    Added Philosopher's Stone
+        Left click to increase range (minimum = 0, maximum = 4).
+        Shift+left click to decrease range.
+        Aux1+left click to open enchanting table (MineClone only).
+        Right click to transmute blocks in range.
+        Shift+right click transmute blocks in range (mode 2, some differences).
+        Aux1+right click to open crafting table (MineClone only).
+        Crafted with a diamond in the middle, glowstone dust in the corners, and redstone dust on the sides (MineClone)
+        Crafted with a diamond in the middle, tin ingots in the corners, and obsidian on the sides (Minetest Game)
+        Can use to craft coal into iron, mese into diamonds, etc.
+    Ghost blocks are now worth 0 instead of 1 (to prevent infinite energy)
+    Fixed stairs and slabs not working in Minetest Game
+    Changed the recipe for the Exchange Orb
+        New recipe is a Philosopher's Stone in the middle, diamonds in the corners, and iron/steel ingots on the sides.
+    Changed the energy values of tin, copper, and bronze in Minetest Game.
+    Renamed images to reflect mod name change ("exchangeclone" instead of "ee" for Element Exchange)
+    Deleted unnecessary "config.lua"

@@ -138,12 +138,12 @@ end
 minetest.register_node("exchangeclone:element_deconstructor", {
     description = "Element Deconstructor",
     tiles = {
-        "ee_deconstructor_up.png",
-        "ee_deconstructor_down.png",
-        "ee_deconstructor_right.png",
-        "ee_deconstructor_right.png",
-        "ee_deconstructor_right.png",
-        "ee_deconstructor_right.png"
+        "exchangeclone_deconstructor_up.png",
+        "exchangeclone_deconstructor_down.png",
+        "exchangeclone_deconstructor_right.png",
+        "exchangeclone_deconstructor_right.png",
+        "exchangeclone_deconstructor_right.png",
+        "exchangeclone_deconstructor_right.png"
     },
     groups = {cracky = 2, container = 3},
     is_ground_content = false,

@@ -157,12 +157,12 @@ end
 minetest.register_node("exchangeclone:element_constructor", {
     description = "Element Constructor",
     tiles = {
-        "ee_constructor_up.png",
-        "ee_constructor_down.png",
-        "ee_constructor_right.png",
-        "ee_constructor_right.png",
-        "ee_constructor_right.png",
-        "ee_constructor_right.png"
+        "exchangeclone_constructor_up.png",
+        "exchangeclone_constructor_down.png",
+        "exchangeclone_constructor_right.png",
+        "exchangeclone_constructor_right.png",
+        "exchangeclone_constructor_right.png",
+        "exchangeclone_constructor_right.png"
     },
     groups = {cracky = 2, container = 4},
     is_ground_content = false,

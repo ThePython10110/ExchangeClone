@@ -127,12 +127,12 @@ end
 minetest.register_node("exchangeclone:energy_collector", {
     description = "Energy Collector",
     tiles = {
-        "ee_energy_collector_up.png",
-        "ee_energy_collector_down.png",
-        "ee_energy_collector_right.png",
-        "ee_energy_collector_right.png",
-        "ee_energy_collector_right.png",
-        "ee_energy_collector_right.png"
+        "exchangeclone_energy_collector_up.png",
+        "exchangeclone_energy_collector_down.png",
+        "exchangeclone_energy_collector_right.png",
+        "exchangeclone_energy_collector_right.png",
+        "exchangeclone_energy_collector_right.png",
+        "exchangeclone_energy_collector_right.png"
     },
     groups = {cracky = 2, container = 2},
     is_ground_content = false,

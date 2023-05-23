@@ -1,6 +1,7 @@
 -- WARNING: Do not use aliases; they will be ignored.
 exchangeclone.mtg_energy_values = {
     ["exchangeclone"] = {
+        orb = 8452,
         element_deconstructor = 33816,
         element_constructor = 58392,
         energy_collector = 23901,
@@ -70,12 +71,12 @@ exchangeclone.mtg_energy_values = {
         steelblock = 256*9,
 
         stone_with_copper = 0,
-        copperblock = 258*9,
+        copperblock = 320*9,
 
         stone_with_tin = 0,
-        tinblock = 256*9,
+        tinblock = 384*9,
 
-        bronzeblock = 256*9,
+        bronzeblock = 327*9,
 
         stone_with_gold = 0,
         goldblock = 2048*9,
@@ -148,12 +149,12 @@ exchangeclone.mtg_energy_values = {
         blueberries = 8,
         book = 96,
         book_written = 96,
-        bronze_ingot = 256,
+        bronze_ingot = 327,
         clay_brick = 16,
         clay_lump = 16,
         coal_lump = 128,
-        copper_ingot = 256,
-        copper_lump = 256,
+        copper_ingot = 320,
+        copper_lump = 320,
         diamond = 8192,
         flint = 4,
         gold_ingot = 2048,
@@ -165,8 +166,8 @@ exchangeclone.mtg_energy_values = {
         paper = 32,
         steel_ingot = 256,
         stick = 4,
-        tin_ingot = 256,
-        tin_lump = 256,
+        tin_ingot = 384,
+        tin_lump = 384,
 
         --- Furnace
         furnace = 8,
@@ -189,10 +190,10 @@ exchangeclone.mtg_energy_values = {
         sword_steel = 516,
         pick_steel = 796,
         axe_steel = 796,
-        shovel_bronze = 264,
-        sword_bronze = 516,
-        pick_bronze = 796,
-        axe_bronze = 796,
+        shovel_bronze = 335,
+        sword_bronze = 662,
+        pick_bronze = 989,
+        axe_bronze = 989,
         shovel_diamond = 8200,
         sword_diamond = 16392,
         pick_diamond = 24584,
@@ -306,6 +307,7 @@ exchangeclone.mcl_energy_values = {
         element_deconstructor = 33816,
         element_constructor = 58392,
         energy_collector = 23883,
+        orb = 8452,
     },
     ["mcl_core"] = {
         stonebrickmossy = 9,
@@ -1406,9 +1408,6 @@ minetest.register_on_mods_loaded(function()
         for _, info in ipairs(exchangeclone.mcl_potion_data) do
             add_potion_energy(info)
         end
-        for _, item in ipairs(slabs_and_stairs) do
-            exchangeclone.set_item_energy(item[1], item[2])
-        end
 
     else --Set all items to Minetest Game values
         local groupnames = {}
@@ -1422,8 +1421,9 @@ minetest.register_on_mods_loaded(function()
             end
         end
     end
-
-    if exchangeclone.mineclone then
+    
+    for _, item in ipairs(slabs_and_stairs) do
+        exchangeclone.set_item_energy(item[1], item[2])
     end
 end
 )
