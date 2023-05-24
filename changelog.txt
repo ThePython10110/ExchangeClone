@@ -21,3 +21,6 @@
     Changed the energy values of tin, copper, and bronze in Minetest Game.
     Renamed images to reflect mod name change ("exchangeclone" instead of "ee" for Element Exchange)
     Deleted unnecessary "config.lua"
+2.1
+    Fixed Exchange Orb energy value (forgot to change it after changing the recipe)
+    Changed constructor, deconstructor, and collector recipes and energy values to make them cheaper

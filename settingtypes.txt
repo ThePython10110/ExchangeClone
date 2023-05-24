@@ -1,2 +1,1 @@
-# How fast the energy collector gathers energy from the light
-exchangeclone.collector_interval (Collector Gather Interval) int 5
+exchangeclone.energy_collector_speed (Energy Collector energy/second) int 10

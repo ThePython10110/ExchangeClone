@@ -20,14 +20,14 @@ end
 local default_path = minetest.get_modpath("exchangeclone")
 
 function exchangeclone.get_item_energy(name)
-    return minetest.registered_items[name].energy_value or 1
+    return minetest.registered_items[name].energy_value
 end
 
-exchangeclone.collector_interval = minetest.settings:get("exchangeclone.collector_interval") or 5
+exchangeclone.collector_speed = minetest.settings:get("exchangeclone.energy_collector_speed") or 10
 
 dofile(default_path.."/constructor.lua")
 dofile(default_path.."/deconstructor.lua")
 dofile(default_path.."/energy_collector.lua")
-dofile(default_path.."/energy.lua")
 dofile(default_path.."/orb.lua")
 dofile(default_path.."/philosophers_stone.lua")
+dofile(default_path.."/energy.lua")

@@ -1,10 +1,11 @@
 -- WARNING: Do not use aliases; they will be ignored.
 exchangeclone.mtg_energy_values = {
     ["exchangeclone"] = {
-        orb = 8452,
-        element_deconstructor = 33816,
-        element_constructor = 58392,
+        orb = 33792,
+        element_deconstructor = 67592,
+        element_constructor = 92168,
         energy_collector = 23901,
+        philosophers_stone = 9984,
     },
     ["beds"] = {
         bed_bottom = 168,
@@ -304,10 +305,11 @@ I had to change some since they weren't as "equivalent" as they were supposed to
 I also didn't type out the ones with a value of 1, since that's the default.]]
 exchangeclone.mcl_energy_values = {
     ["exchangeclone"] = {
-        element_deconstructor = 33816,
-        element_constructor = 58392,
+        element_deconstructor = 67592,
+        element_constructor = 92168,
         energy_collector = 23883,
-        orb = 8452,
+        orb = 33792,
+        philosophers_stone = 9984,
     },
     ["mcl_core"] = {
         stonebrickmossy = 9,

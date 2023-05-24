@@ -192,7 +192,7 @@ minetest.register_craft({
     output = "exchangeclone:element_deconstructor",
     recipe = {
         {"", "exchangeclone:exchange_orb",""},
-        {"exchangeclone:exchange_orb", recipe_ingredient, "exchangeclone:exchange_orb"},
+        {"", recipe_ingredient, ""},
         {"", "exchangeclone:exchange_orb",  ""}
     }
 })
