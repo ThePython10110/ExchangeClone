@@ -91,7 +91,6 @@ end
 
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
     if minetest.is_protected(pos, player:get_player_name()) then
-        minetest.log("blocked take")
         return 0
     end
     return stack:get_count()
@@ -134,12 +133,15 @@ minetest.register_node("exchangeclone:energy_collector", {
         "exchangeclone_energy_collector_right.png",
         "exchangeclone_energy_collector_right.png"
     },
-    groups = {cracky = 2, container = 2},
+    groups = {cracky = 2, container = 2, pickaxey = 2},
+    _mcl_hardness = 3,
+	_mcl_blast_resistance = 6,
+    sounds = mcl_sounds.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
     on_timer = on_timer,
     on_construct = on_construct,
-    on_dig_node = on_dig_node,
+    after_dig_node = on_dig_node,
     on_metadata_inventory_move = function(pos)
         minetest.get_node_timer(pos):start(1)
     end,

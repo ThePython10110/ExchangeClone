@@ -1,1 +1,1 @@
-exchangeclone.energy_collector_speed (Energy Collector energy/second) int 10
+exchangeclone.energy_collector_speed (Energy Collector energy/second) int 5

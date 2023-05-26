@@ -23,7 +23,7 @@ function exchangeclone.get_item_energy(name)
     return minetest.registered_items[name].energy_value
 end
 
-exchangeclone.collector_speed = minetest.settings:get("exchangeclone.energy_collector_speed") or 10
+exchangeclone.collector_speed = minetest.settings:get("exchangeclone.energy_collector_speed") or 5
 
 dofile(default_path.."/constructor.lua")
 dofile(default_path.."/deconstructor.lua")

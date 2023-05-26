@@ -55,7 +55,7 @@ local function on_timer(pos, elapsed)
             local fuel_stack = inv:get_stack("main", 1)
             local energy_value = 0
             if fuel_stack:get_name() == "exchangeclone:exchange_orb" then
-                energy_value = (fuel_stack:get_meta():get_float("stored_charge") or 0) + 8452 --8452 = energy cost of orb
+                energy_value = (fuel_stack:get_meta():get_float("stored_charge") or 0) + 33792 --33792 = energy cost of orb
             else
                 energy_value = exchangeclone.get_item_energy(fuel_stack:get_name())
             end
@@ -145,7 +145,10 @@ minetest.register_node("exchangeclone:element_deconstructor", {
         "exchangeclone_deconstructor_right.png",
         "exchangeclone_deconstructor_right.png"
     },
-    groups = {cracky = 2, container = 3},
+    groups = {cracky = 2, container = 3, pickaxey = 2},
+    _mcl_hardness = 3,
+	_mcl_blast_resistance = 6,
+    sounds = mcl_sounds.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, digger)

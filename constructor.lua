@@ -164,7 +164,10 @@ minetest.register_node("exchangeclone:element_constructor", {
         "exchangeclone_constructor_right.png",
         "exchangeclone_constructor_right.png"
     },
-    groups = {cracky = 2, container = 4},
+    groups = {cracky = 2, container = 4, pickaxey = 2},
+    _mcl_hardness = 3,
+	_mcl_blast_resistance = 6,
+    sounds = mcl_sounds.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, digger)

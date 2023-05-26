@@ -33,12 +33,15 @@ exchangeclone.node_transmutations = {
         ["mcl_core:stone"] = "mcl_core:cobble",
         ["mcl_core:cobble"] = "mcl_core:stone",
         ["mcl_core:dirt_with_grass"] = "mcl_core:sand",
+        ["mcl_core:podzol"] = "mcl_core:redsand",
         ["mcl_core:dirt"] = "mcl_core:sand",
         ["mcl_core:sand"] = "mcl_core:dirt_with_grass",
-        ["mcl_core:redsand"] = "mcl_core:dirt_with_grass",
+        ["mcl_core:redsand"] = "mcl_core:podzol",
         ["mcl_flowers:tallgrass"] = "mcl_core:deadbush",
         ["mcl_nether:netherrack"] = "mcl_core:cobble",
         ["mcl_core:gravel"] = "mcl_core:sandstone",
+        ["mcl_core:sandstone"] = "mcl_core:gravel",
+        ["mcl_core:redsandstone"] = "mcl_core:gravel",
         ["mcl_farming:pumpkin"] = "mcl_farming:melon",
         ["mcl_farming:melon"] = "mcl_farming:pumpkin",
         ["mcl_core:water_source"] = "mcl_core:ice",
@@ -73,11 +76,14 @@ exchangeclone.node_transmutations = {
         ["mcl_crimson:crimson_roots"] = "mcl_crimson:warped_roots",
         ["mcl_nether:nether_wart_block"] = "mcl_crimson:warped_wart_block",
         ["mcl_core:glass"] = "mcl_core:sand",
+        ["mcl_blackstone:blackstone"] = "mcl_blackstone:basalt",
+        ["mcl_blackstone:basalt"] = "mcl_blackstone:blackstone",
         ["mcl_flowers:double_grass"] = "mcl_core:deadbush",
         --["mcl_flowers:double_grass_top"] = "air",
         ["mcl_core:andesite"] = "mcl_core:diorite",
         ["mcl_core:diorite"] = "mcl_core:granite",
-        ["mcl_core:granite"] = "mcl_core:andesite",
+        ["mcl_core:granite"] = "mcl_deepslate:tuff",
+        ["mcl_deepslate:tuff"] = "mcl_core:andesite",
         ["mcl_deepslate:deepslate"] = "mcl_deepslate:deepslate_cobbled",
         ["mcl_deepslate:deepslate_cobbled"] = "mcl_deepslate:deepslate",
         ["mcl_core:stone_with_coal"] = "mcl_deepslate:deepslate_with_coal",
@@ -86,6 +92,7 @@ exchangeclone.node_transmutations = {
         ["mcl_core:stone_with_gold"] = "mcl_deepslate:deepslate_with_gold",
         ["mcl_core:stone_with_emerald"] = "mcl_deepslate:deepslate_with_emerald",
         ["mcl_core:stone_with_redstone"] = "mcl_deepslate:deepslate_with_redstone",
+        ["mcl_core:stone_with_redstone_lit"] = "mcl_deepslate:deepslate_with_redstone_lit",
         ["mcl_core:stone_with_diamond"] = "mcl_deepslate:deepslate_with_diamond",
         ["mcl_copper:stone_with_copper"] = "mcl_deepslate:deepslate_with_copper",
         ["mcl_deepslate:deepslate_with_coal"] = "mcl_core:stone_with_coal",
@@ -98,6 +105,7 @@ exchangeclone.node_transmutations = {
         ["mcl_deepslate:deepslate_with_copper"] = "mcl_copper:stone_with_copper",
         ["mcl_core:bedrock"] = "mcl_core:barrier",
         ["mcl_core:barrier"] = "mcl_core:bedrock",
+        ["mcl_end:end_stone"] = "mcl_nether:netherrack",
 
         ["default:stone"] = "default:cobble",
         ["default:desert_stone"] = "default:desert_cobble",
@@ -147,11 +155,12 @@ exchangeclone.node_transmutations = {
     { --sneak+use
         ["mcl_core:stone"] = "mcl_core:dirt_with_grass",
         ["mcl_core:cobble"] = "mcl_core:dirt_with_grass",
+        ["mcl_deepslate:deepslate"] = "mcl_core:podzol",
+        ["mcl_deepslate:deepslate_cobbled"] = "mcl_core:podzol",
         ["mcl_core:sand"] = "mcl_core:cobble",
         ["mcl_core:redsand"] = "mcl_core:cobble",
-        ["mcl_core:sandstone"] = "mcl_core:gravel",
-        ["mcl_core:redsandstone"] = "mcl_core:gravel",
         ["mcl_core:dirt_with_grass"] = "mcl_core:cobble",
+        ["mcl_core:podzol"] = "mcl_deepslate:deepslate_cobbled",
         ["mcl_core:acacialeaves"] = "mcl_core:spruceleaves",
         ["mcl_core:birchleaves"] = "mcl_core:acacialeaves",
         ["mcl_core:darkleaves"] = "mcl_core:birchleaves",
@@ -166,6 +175,9 @@ exchangeclone.node_transmutations = {
         ["mcl_mangrove:mangrove_tree"] = "mcl_core:jungletree",
         ["mcl_core:tree"] = "mcl_mangrove:mangrove_tree",
         ["mcl_core:sprucetree"] = "mcl_core:tree",
+        ["mcl_nether:netherrack"] = "mcl_end:end_stone",
+        ["mcl_nether:soul_sand"] = "mcl_blackstone:soul_soil",
+        ["mcl_blackstone:soul_soil"] = "mcl_nether:soul_sand",
 
         ["default:stone"] = "default:dirt_with_grass",
         ["default:cobble"] = "default:dirt_with_grass",
@@ -180,6 +192,10 @@ exchangeclone.node_transmutations = {
         ["default:sandstone"] = "default:gravel",
         ["default:desert_sandstone"] = "default:gravel",
         ["default:silver_sandstone"] = "default:gravel",
+        ["mcl_core:diorite"] = "mcl_core:andesite",
+        ["mcl_core:andesite"] = "mcl_deepslate:tuff",
+        ["mcl_deepslate:tuff"] = "mcl_core:granite",
+        ["mcl_core:granite"] = "mcl_core:diorite",
         ["default:acacia_tree"] = "default:pine_tree",
         ["default:tree"] = "default:acacia_tree",
         ["default:aspen_tree"] = "default:tree",
@@ -217,7 +233,8 @@ function exchangeclone.transmute_nodes(player, distance, mode)
             if minetest.is_protected(new_pos, player:get_player_name()) then
                 minetest.record_protection_violation(new_pos, player:get_player_name())
             else
-                minetest.swap_node(new_pos, {name = new_node})
+                node.name = new_node
+                minetest.swap_node(new_pos, node)
             end
         end
     end
@@ -525,12 +542,10 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "mcl_core:diamond",
+    output = "mcl_core:emerald",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "mcl_core:gold_ingot",
-        "mcl_core:gold_ingot",
         "mcl_core:gold_ingot",
         "mcl_core:gold_ingot",
     },
@@ -538,7 +553,28 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "mcl_core:gold_ingot 4",
+    output = "mcl_core:gold_ingot 2",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "mcl_core:emerald"
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "mcl_core:diamond",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "mcl_core:emerald",
+        "mcl_core:emerald",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "mcl_core:emerald 2",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
@@ -594,6 +630,40 @@ minetest.register_craft({
     recipe = {
         "exchangeclone:philosophers_stone",
         "mcl_core:diamondblock"
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "mcl_core:lapis 2",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "mesecons_torch:redstoneblock",
+        "mesecons_torch:redstoneblock",
+        "mesecons_torch:redstoneblock",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "mesecons:redstone 27",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "mcl_core:lapis",
+        "mcl_core:lapis",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "mesecons:redstone 27",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "mcl_core:lapis",
+        "mcl_core:lapis",
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })

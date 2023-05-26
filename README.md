@@ -32,7 +32,7 @@ All energy values are in `energy.lua`. You can also change the speed at which th
     * Left-click and sneak-left-click to transmute blocks in range (two different modes with minor differences)
     * Aux1-left-click to open enchanting table (MineClone only)
     * Aux1-right-click to open crafting table (MineClone only)
-    * Ability to exchange charcoal/coal/iron/copper/tin/gold/mese/diamond by crafting (stone is always returned)
+    * Ability to exchange charcoal/coal/iron/copper/tin/gold/mese/diamond by crafting (the Philosopher's Stone is always returned)
 I don't actually own MineCraft, meaning I don't know how the original mod (Equivalent Exchange) works. I will probably make some minor mistakes, since all I have to go on is the internet. 
 
 ## Known issues:
