@@ -45,7 +45,7 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 ![Minetest Game Screenshot](screenshot_mtg.png)
 
 ## Sources/license:
-This mod is inspired by the "Equivalent Exchange" mod for MineCraft, and forked and modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Both this mod and Element Exchange are licensed under GPLv3+. The textures for the Constructor, Deconstructor, Collector, and Orb are from Element Exchange and have the same license. The texture for the Philosopher's Stone is my own and also licensed under GPLv3+ just to make things easy.
+This mod is inspired by the "Equivalent Exchange" mod for MineCraft, and forked and modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Both this mod and Element Exchange are licensed under GPLv3+. The textures for the Constructor, Deconstructor, Collector, and Orb are from Element Exchange and have the same license.The Alchemical Coal, Mobius Fuel, and Aeternalis Fuel textures are modified versions of MineClone's coal texture (CC-BY-SA-3.0). All other textures are my own (inspired by Equivalent Exchange) and licensed under GPLv3+ just to make it match Element Exchange. 
 
 Copyright (C) 2023 ThePython10110
 

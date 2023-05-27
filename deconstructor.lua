@@ -1,3 +1,5 @@
+local sound_mod = mcl_sounds or default
+
 --Renamed "fuel" inventory to "main" to (almost) work with hoppers
 
 function get_element_deconstructor_formspec()
@@ -148,7 +150,7 @@ minetest.register_node("exchangeclone:element_deconstructor", {
     groups = {cracky = 2, container = 3, pickaxey = 2},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
-    sounds = mcl_sounds.node_sound_metal_defaults(),
+    sounds = sound_mod.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, digger)

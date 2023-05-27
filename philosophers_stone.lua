@@ -1,6 +1,6 @@
 local function show_enchanting(player)
     local player_meta = player:get_meta()
-    player_meta:set_int("mcl_enchanting:num_bookshelves", 15)
+    player_meta:set_int("mcl_enchanting:num_bookshelves", 10)
     player_meta:set_string("mcl_enchanting:table_name", "Enchanting Table")
     mcl_enchanting.show_enchanting_formspec(player)
 end
@@ -664,6 +664,98 @@ minetest.register_craft({
         "exchangeclone:philosophers_stone",
         "mcl_core:lapis",
         "mcl_core:lapis",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "exchangeclone:alchemical_coal",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "mcl_core:coal_lump",
+        "mcl_core:coal_lump",
+        "mcl_core:coal_lump",
+        "mcl_core:coal_lump",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "exchangeclone:alchemical_coal",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "default:coal_lump",
+        "default:coal_lump",
+        "default:coal_lump",
+        "default:coal_lump",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "default:coal_lump 4",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "exchangeclone:alchemical_coal",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "mcl_core:coal_lump 4",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "exchangeclone:alchemical_coal",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "exchangeclone:mobius_fuel",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "exchangeclone:alchemical_coal",
+        "exchangeclone:alchemical_coal",
+        "exchangeclone:alchemical_coal",
+        "exchangeclone:alchemical_coal",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "exchangeclone:alchemical_coal 4",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "exchangeclone:mobius_fuel",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "exchangeclone:aeternalis_fuel",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "exchangeclone:mobius_fuel",
+        "exchangeclone:mobius_fuel",
+        "exchangeclone:mobius_fuel",
+        "exchangeclone:mobius_fuel",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "exchangeclone:mobius_fuel 4",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "exchangeclone:aeternalis_fuel",
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })

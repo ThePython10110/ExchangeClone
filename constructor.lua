@@ -1,3 +1,5 @@
+local sound_mod = mcl_sounds or default
+
 function get_element_constructor_formspec()
     if not exchangeclone.mineclone then
         local formspec = {
@@ -167,7 +169,7 @@ minetest.register_node("exchangeclone:element_constructor", {
     groups = {cracky = 2, container = 4, pickaxey = 2},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
-    sounds = mcl_sounds.node_sound_metal_defaults(),
+    sounds = sound_mod.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, digger)

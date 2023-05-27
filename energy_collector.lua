@@ -1,3 +1,5 @@
+local sound_mod = mcl_sounds or default
+
 local function get_energy_collector_formspec()
     if not exchangeclone.mineclone then
         local formspec = {
@@ -136,7 +138,7 @@ minetest.register_node("exchangeclone:energy_collector", {
     groups = {cracky = 2, container = 2, pickaxey = 2},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
-    sounds = mcl_sounds.node_sound_metal_defaults(),
+    sounds = sound_mod.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
     on_timer = on_timer,

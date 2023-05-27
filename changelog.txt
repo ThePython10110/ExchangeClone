@@ -24,6 +24,9 @@
 2.1
     The Energy Collector setting is now energy/second instead of second/energy to fit much higher costs than Element Exchange (default is 5 energy/s).
     Fixed Exchange Orb energy value (forgot to change it after changing the recipe)
+    PS's enchanting table now is limited to 10-bookshelf enchantments to make it more balanced.
+    Added Alchemical Coal, Mobius Fuel, Aeternalis Fuel, Dark Matter, and Red Matter
+    Added Dark Matter sword, pickaxe, axe, shovel, hoe, and shears
     Changed constructor, deconstructor, and collector recipes and energy values to make them cheaper
     The Constructor, Deconstructor, and Energy Collector are now not unbreakable in MineClone (I really should test in survival).
     The Energy Collector now drops its contents when broken in MineClone.
