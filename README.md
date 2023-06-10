@@ -32,12 +32,16 @@ All energy values are in `energy.lua`. You can also change the speed at which th
     * Left-click and sneak-left-click to transmute blocks in range (two different modes with minor differences)
     * Aux1-left-click to open enchanting table (MineClone only)
     * Aux1-right-click to open crafting table (MineClone only)
-    * Ability to exchange charcoal/coal/iron/copper/tin/gold/mese/diamond by crafting (the Philosopher's Stone is always returned)
+    * Ability to exchange charcoal/coal/iron/copper/tin/gold/mese/emerald/diamond by crafting (the Philosopher's Stone is always returned)
+    * Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
+    * Dark Matter Orbs, Blocks, and tools
+    * Red Matter Orbs and Blocks
 I don't actually own MineCraft, meaning I don't know how the original mod (Equivalent Exchange) works. I will probably make some minor mistakes, since all I have to go on is the internet. 
 
 ## Known issues:
-* When items are inserted into machines with MineClone hoppers, it does not trigger the machines to start.
+* When items are inserted into the Energy Collector, Deconstructor, or Constructor with MineClone hoppers, it does not trigger the machines to start.
 * When machines are exploded, they (and the items inside) do not drop.
+* Dark Matter Shears will sometimes be treated as 
 
 If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).
 

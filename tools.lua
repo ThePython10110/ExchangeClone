@@ -5,10 +5,10 @@ else
     local wield_scale = {x=1,y=1,z=1}
 end
 
-local make_grass_path
-local make_stripped_trunk
+local shovel_on_place
+local axe_on_place
 if exchangeclone.mineclone then
-	make_grass_path = function(itemstack, placer, pointed_thing)
+	shovel_on_place = function(itemstack, placer, pointed_thing)
 		-- Use pointed node's on_rightclick function first, if present
 		local node = minetest.get_node(pointed_thing.under)
 		if placer and not placer:get_player_control().sneak then
@@ -30,15 +30,6 @@ if exchangeclone.mineclone then
 					minetest.record_protection_violation(pointed_thing.under, placer:get_player_name())
 					return itemstack
 				end
-
-				if not minetest.is_creative_enabled(placer:get_player_name()) then
-					-- Add wear (as if digging a shovely node)
-					local toolname = itemstack:get_name()
-					local wear = mcl_autogroup.get_wear(toolname, "shovely")
-					if wear then
-						itemstack:add_wear(wear)
-					end
-				end
 				minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = above}, true)
 				minetest.swap_node(pointed_thing.under, {name="mcl_core:grass_path"})
 			end
@@ -46,7 +37,7 @@ if exchangeclone.mineclone then
 		return itemstack
 	end
 	
-	make_stripped_trunk = function(itemstack, placer, pointed_thing)
+	axe_on_place = function(itemstack, placer, pointed_thing)
 		if pointed_thing.type ~= "node" then return end
 
 		local node = minetest.get_node(pointed_thing.under)
@@ -71,50 +62,56 @@ if exchangeclone.mineclone then
 			return itemstack
 		else
 			minetest.swap_node(pointed_thing.under, {name=noddef._mcl_stripped_variant, param2=node.param2})
-			if not minetest.is_creative_enabled(placer:get_player_name()) then
-				-- Add wear (as if digging a axey node)
-				local toolname = itemstack:get_name()
-				local wear = mcl_autogroup.get_wear(toolname, "axey")
-				if wear then
-					itemstack:add_wear(wear)
-				end
-			end
 		end
 		return itemstack
 	end
 end
 
-local carve_pumpkin
-if minetest.get_modpath("mcl_farming") then
-	carve_pumpkin = function(itemstack, placer, pointed_thing)
-		-- Use pointed node's on_rightclick function first, if present
-		local node = minetest.get_node(pointed_thing.under)
-		if placer and not placer:get_player_control().sneak then
-			if minetest.registered_nodes[node.name] and minetest.registered_nodes[node.name].on_rightclick then
-				return minetest.registered_nodes[node.name].on_rightclick(pointed_thing.under, node, placer, itemstack) or itemstack
-			end
+local function create_soil(pos, inv)
+	if pos == nil then
+		return false
+	end
+	local node = minetest.get_node(pos)
+	local name = node.name
+	local above = minetest.get_node({x=pos.x, y=pos.y+1, z=pos.z})
+	if minetest.get_item_group(name, "cultivatable") == 2 then
+		if above.name == "air" then
+			node.name = "mcl_farming:soil"
+			minetest.set_node(pos, node)
+			minetest.sound_play("default_dig_crumbly", { pos = pos, gain = 0.5 }, true)
+			return true
 		end
+	elseif minetest.get_item_group(name, "cultivatable") == 1 then
+		if above.name == "air" then
+			node.name = "mcl_core:dirt"
+			minetest.set_node(pos, node)
+			minetest.sound_play("default_dig_crumbly", { pos = pos, gain = 0.6 }, true)
+			return true
+		end
+	end
+	return false
+end
 
-		-- Only carve pumpkin if used on side
-		if pointed_thing.above.y ~= pointed_thing.under.y then
-			return
+local hoe_on_place = function(itemstack, user, pointed_thing)
+	if minetest.get_modpath("farming") and farming then
+		return farming.hoe_on_use(itemstack, user, pointed_thing)
+	elseif not mineclone then
+		return
+	end
+	-- Call on_rightclick if the pointed node defines it
+	local node = minetest.get_node(pointed_thing.under)
+	if user and not user:get_player_control().sneak then
+		if minetest.registered_nodes[node.name] and minetest.registered_nodes[node.name].on_rightclick then
+			return minetest.registered_nodes[node.name].on_rightclick(pointed_thing.under, node, user, itemstack) or itemstack
 		end
-		if node.name == "mcl_farming:pumpkin" then
-			if not minetest.is_creative_enabled(placer:get_player_name()) then
-				-- Add wear (as if digging a shearsy node)
-				local toolname = itemstack:get_name()
-				local wear = mcl_autogroup.get_wear(toolname, "shearsy")
-				if wear then
-					itemstack:add_wear(wear)
-				end
+	end
 
-			end
-			minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pointed_thing.above}, true)
-			local dir = vector.subtract(pointed_thing.under, pointed_thing.above)
-			local param2 = minetest.dir_to_facedir(dir)
-			minetest.set_node(pointed_thing.under, {name="mcl_farming:pumpkin_face", param2 = param2})
-			minetest.add_item(pointed_thing.above, "mcl_farming:pumpkin_seeds 4")
-		end
+	if minetest.is_protected(pointed_thing.under, user:get_player_name()) then
+		minetest.record_protection_violation(pointed_thing.under, user:get_player_name())
+		return itemstack
+	end
+
+	if create_soil(pointed_thing.under, user:get_inventory()) then
 		return itemstack
 	end
 end
@@ -155,7 +152,7 @@ minetest.register_tool("exchangeclone:shovel_dark_matter", {
 		},
 	},
 	sound = { breaks = "default_tool_breaks" },
-	on_place = make_grass_path,
+	on_place = shovel_on_place,
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
 		shovely = { speed = 16, level = 7, uses = 0 }
@@ -177,33 +174,29 @@ minetest.register_tool("exchangeclone:axe_dark_matter", {
 		},
 	},
 	sound = { breaks = "default_tool_breaks" },
-	on_place = make_stripped_trunk,
+	on_place = axe_on_place,
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
 		axey = { speed = 16, level = 7, uses = 0 }
 	},
 })
 
-minetest.register_tool("exchangeclone:sword_dark_matter", {
-	description = "Dark Matter Sword\nImage coming soon.",
-	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0 },
+minetest.register_tool("exchangeclone:dark_matter_hoe", {
+	description = "Dark Matter Hoe",
 	wield_scale = wield_scale,
+	on_place = hoe_on_place,
+	groups = { tool=1, hoe=1, enchantability=0 },
 	tool_capabilities = {
-		-- 1/1.2
 		full_punch_interval = 0.25,
-		max_drop_level=5,
-		damage_groups = {fleshy=14},
-		punch_attack_uses = 0,
-		groupcaps={
-			snappy = {times={[1]=0.95, [2]=0.45, [3]=0.15}, uses=0, maxlevel=4},
-		},
+		damage_groups = { fleshy = 7, },
 	},
-	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		swordy = { speed = 16, level = 7, uses = 0 }
+		hoey = { speed = 12, level = 7, uses = 0 }
 	},
 })
+
+--Crafting recipes
 
 local diamond_itemstring = "default:diamond"
 if exchangeclone.mineclone then
@@ -223,6 +216,24 @@ minetest.register_craft({
     output = "exchangeclone:pick_dark_matter",
     recipe = {
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter", "exchangeclone:dark_matter"},
+        {"", diamond_itemstring, ""},
+        {"", diamond_itemstring, ""}
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:axe_dark_matter",
+    recipe = {
+        {"exchangeclone:dark_matter", "exchangeclone:dark_matter", ""},
+        {"exchangeclone:dark_matter", diamond_itemstring, ""},
+        {"", diamond_itemstring, ""}
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:dark_matter_hoe",
+    recipe = {
+        {"exchangeclone:dark_matter", "exchangeclone:dark_matter", ""},
         {"", diamond_itemstring, ""},
         {"", diamond_itemstring, ""}
     }

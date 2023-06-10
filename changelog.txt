@@ -1,39 +1,56 @@
 1.0.0
     Initial release
+    New features:
+        MineClone support, including (sort of) hoppers
+        Added the ability to add items by group
+        Shift-clicking (listrings)!
+    Changes:
+        Completely redone recipes, now includes all items.
+        Tools' energy value now depends on wear.
+    Bugfixes:
+        Items can no longer be put in the Constructor's output slot.
+
 2.0
-    Added a changelog
-    Changed version numbers from x.x.x to x.x.
-    Added all items from Why
-    Added Philosopher's Stone
-        Left click to increase range (minimum = 0, maximum = 4).
-        Shift+left click to decrease range.
-        Aux1+left click to open enchanting table (MineClone only).
-        Right click to transmute blocks in range.
-        Shift+right click transmute blocks in range (mode 2, some differences).
-        Aux1+right click to open crafting table (MineClone only).
-        Crafted with a diamond in the middle, glowstone dust in the corners, and redstone dust on the sides (MineClone)
-        Crafted with a diamond in the middle, tin ingots in the corners, and obsidian on the sides (Minetest Game)
-        Can use to craft coal into iron, mese into diamonds, etc.
-    Why's Ghost blocks are now worth 0 instead of 1 (to prevent infinite energy)
-    Fixed stairs and slabs not working in Minetest Game
-    Changed the recipe for the Exchange Orb
-        New recipe is a Philosopher's Stone in the middle, diamonds in the corners, and iron/steel ingots on the sides.
-    Changed the energy values of tin, copper, and bronze in Minetest Game.
-    Renamed images to reflect mod name change ("exchangeclone" instead of "ee" for Element Exchange)
-    Deleted unnecessary "config.lua"
-2.1
-    The Energy Collector setting is now energy/second instead of second/energy to fit much higher costs than Element Exchange (default is 5 energy/s).
-    Fixed Exchange Orb energy value (forgot to change it after changing the recipe)
-    PS's enchanting table now is limited to 10-bookshelf enchantments to make it more balanced.
-    Added Alchemical Coal, Mobius Fuel, Aeternalis Fuel, Dark Matter, and Red Matter
-    Added Dark Matter sword, pickaxe, axe, shovel, hoe, and shears
-    Changed constructor, deconstructor, and collector recipes and energy values to make them cheaper
-    The Constructor, Deconstructor, and Energy Collector are now not unbreakable in MineClone (I really should test in survival).
-    The Energy Collector now drops its contents when broken in MineClone.
-    Copper blocks are now worth 4 times as much as copper ingots instead of 9 (MineClone).
-    Fixed terracotta values (MineClone)
-    Set gravel value to 1 to match sand/stone/dirt/etc (MineClone).
-    Tuff, blackstone, and basalt are now transmutable (MineClone).
-    A couple of minor transmutation changes (MineClone).
-    Changed emerald value to 4096 (MineClone).
-    Gold cannot be crafted into diamonds using the PS; it can now be crafted into emeralds and emeralds into diamonds (MineClone).
+    New features:
+        Added a changelog (you're reading it now)
+        Added all items from Why (a MineClone modpack I made)
+        Added Philosopher's Stone
+            Left click to increase range (minimum = 0, maximum = 4).
+            Shift+left click to decrease range.
+            Aux1+left click to open enchanting table (MineClone only).
+            Right click to transmute blocks in range.
+            Shift+right click transmute blocks in range (mode 2, some differences).
+            Aux1+right click to open crafting table (MineClone only).
+            Crafted with a diamond in the middle, glowstone dust in the corners, and redstone dust on the sides (MineClone)
+            Crafted with a diamond in the middle, tin ingots in the corners, and obsidian on the sides (Minetest Game)
+            Can use to craft coal into iron, mese into diamonds, etc.
+    Changes:
+        Changed version numbers from x.x.x to x.x.
+        Changed the recipe for the Exchange Orb
+            New recipe is a Philosopher's Stone in the middle, diamonds in the corners, and iron/steel ingots on the sides.
+        Changed the energy values of tin, copper, and bronze in Minetest Game.
+        Renamed images to reflect mod name change ("exchangeclone" instead of "ee" for Element Exchange)
+        Deleted unnecessary "config.lua"
+    Bugfixes:
+        Ghost Blocks (from Why) are now worth 0 instead of 1 (to prevent infinite energy)
+        Fixed stairs and slabs not working in Minetest Game
+
+3.0
+    New features:
+        Added Alchemical Coal, Mobius Fuel, Aeternalis Fuel, Dark Matter, and Red Matter
+        Added Dark and Red Matter tools
+    Changes:
+        The Energy Collector setting is now energy/second instead of second/energy to fit much higher costs than Element Exchange (default is 5 energy/s).
+        Set gravel value to 1 to match sand/stone/dirt/etc (MineClone).
+        Tuff, blackstone, and basalt are now transmutable (MineClone).
+        A couple of minor transmutation changes (MineClone).
+        Changed emerald value to 4096 (MineClone).
+        Gold cannot be crafted into diamonds using the PS; it can now be crafted into emeralds and emeralds into diamonds (MineClone).
+        The PS's enchanting table now is limited to 8-bookshelf enchantments to make it more balanced.
+    Bugfixes:
+        Copper blocks are now worth 4 times as much as copper ingots instead of 9 (MineClone).
+        Fixed terracotta values (MineClone)
+        The Energy Collector now drops its contents when broken in MineClone.
+        Fixed Exchange Orb energy value (forgot to change it after changing the recipe)
+            Changed constructor, deconstructor, and collector recipes and energy values to make them cheaper.
+        The Constructor, Deconstructor, and Energy Collector are now not unbreakable in MineClone (I really should test in survival).

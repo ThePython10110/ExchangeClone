@@ -30,6 +30,11 @@ dofile(default_path.."/deconstructor.lua")
 dofile(default_path.."/energy_collector.lua")
 dofile(default_path.."/orb.lua")
 dofile(default_path.."/craftitems.lua")
-dofile(default_path.."/dark_and_red_tools.lua")
+dofile(default_path.."/tools.lua")
+if exchangeclone.mineclone then
+	dofile(default_path.."/shears.lua")
+end
+dofile(default_path.."/swords.lua")
 dofile(default_path.."/philosophers_stone.lua")
+dofile(default_path.."/pesa.lua")
 dofile(default_path.."/energy.lua")

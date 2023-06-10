@@ -2,7 +2,7 @@ local sound_mod = mcl_sounds or default
 
 --Renamed "fuel" inventory to "main" to (almost) work with hoppers
 
-function get_element_deconstructor_formspec()
+local function get_element_deconstructor_formspec()
     if not exchangeclone.mineclone then
         local formspec = {
             "size[8,9]",
@@ -67,17 +67,14 @@ local function on_timer(pos, elapsed)
                     energy_value = math.floor(energy_value * (65536 / wear))
                 end
                 -- only get 1 orb as we can only use one
-                local dest_orb = inv:get_stack("dst", 1)
-                local stored = dest_orb:get_meta():get_float("stored_charge") or 0
+                local stored = exchangeclone.get_orb_energy(inv, "dst", 1)
                 if stored + energy_value < stored then
                     return --will hopefully prevent overflow, not that overflow is likely
                 end
                 fuel_stack:set_count(fuel_stack:get_count() - 1)
                 inv:set_stack("main", 1, fuel_stack)
                 stored = stored + energy_value
-                dest_orb:get_meta():set_float("stored_charge", stored)
-                dest_orb:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(stored))
-                inv:set_stack("dst", 1, dest_orb)
+                exchangeclone.set_orb_energy(inv, "dst", 1, stored)
             end
             update = true
         end

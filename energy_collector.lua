@@ -1,8 +1,9 @@
 local sound_mod = mcl_sounds or default
 
 local function get_energy_collector_formspec()
+    local formspec
     if not exchangeclone.mineclone then
-        local formspec = {
+        formspec = {
             "size[8,9]",
             "label[3,2;Orb]",
             "list[context;main;4,2;1,1;]",
@@ -10,9 +11,8 @@ local function get_energy_collector_formspec()
             "listring[current_player;main]",
             "listring[context;main]"
         }
-        return table.concat(formspec, "")
     else
-        local formspec = {
+        formspec = {
             "size[9,10]",
             "label[3,2;Orb]",
             "list[context;main;4,2;1,1;]",
@@ -24,8 +24,8 @@ local function get_energy_collector_formspec()
             "listring[current_player;main]",
             "listring[context;main]"
         }
-        return table.concat(formspec, "")
     end
+    return table.concat(formspec, "")
 end
 
 local function can_dig(pos, player)
@@ -50,11 +50,9 @@ local function on_timer(pos, elapsed)
 
     if minetest.get_natural_light(pos) == 15 then
         local dest_orb = inv:get_stack("main", 1)
-        local stored = dest_orb:get_meta():get_float("stored_charge") or 0
+        local stored = exchangeclone.get_orb_energy(inv, "main", 1)
         stored = stored + exchangeclone.collector_speed
-        dest_orb:get_meta():set_float("stored_charge", stored)
-        dest_orb:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(stored))
-        inv:set_stack("main", 1, dest_orb)
+        exchangeclone.set_orb_energy(inv, "main", 1, stored)
     end
     return true
 end
@@ -70,7 +68,6 @@ end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
     if minetest.is_protected(pos, player:get_player_name()) then
-        minetest.log("blocked put")
         return 0
     end
     local meta = minetest.get_meta(pos)
@@ -106,7 +103,6 @@ local function on_blast(pos)
     
     return drops
 end
-
 
 local function on_dig_node(pos, oldnode, oldmetadata, digger)
     if exchangeclone.mineclone then

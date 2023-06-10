@@ -58,7 +58,6 @@ local function on_timer(pos, elapsed)
     local update = true
     while elapsed > 0 and update do
         update = false
-        local fuel_stack = inv:get_stack("fuel", 1)
         local src_stack = inv:get_stack("src", 1)
         local dst_stack = inv:get_stack("dst", 1)
 
@@ -70,7 +69,7 @@ local function on_timer(pos, elapsed)
                 end
             end
             -- make sure orb has enough charge
-            local orb_charge = fuel_stack:get_meta():get_float("stored_charge") or 0
+            local orb_charge = exchangeclone.get_orb_energy(inv, "fuel", 1)
             local energy_cost = exchangeclone.get_item_energy(src_stack:get_name())
             if energy_cost > 0 then
                 orb_charge = orb_charge - energy_cost
@@ -78,9 +77,7 @@ local function on_timer(pos, elapsed)
                     break
                 end
                 -- give orb new charge value
-                fuel_stack:get_meta():set_float("stored_charge", orb_charge)
-                fuel_stack:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..tostring(orb_charge))
-                inv:set_stack("fuel", 1, fuel_stack)
+                exchangeclone.set_orb_energy(inv, "fuel", 1, orb_charge)
                 -- "convert" charge into a node at dst
                 if dst_stack:is_empty() then
                     -- create a new stack

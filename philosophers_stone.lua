@@ -1,6 +1,6 @@
 local function show_enchanting(player)
     local player_meta = player:get_meta()
-    player_meta:set_int("mcl_enchanting:num_bookshelves", 10)
+    player_meta:set_int("mcl_enchanting:num_bookshelves", 8)
     player_meta:set_string("mcl_enchanting:table_name", "Enchanting Table")
     mcl_enchanting.show_enchanting_formspec(player)
 end
@@ -244,10 +244,10 @@ end
 
 local function on_left_click(itemstack, player, pointed_thing)
     if player:get_player_control().sneak then
-        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_stone_range"))
+        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
         if range == 0 then range = 5 end
         range = range - 1
-        itemstack:get_meta():set_int("exchangeclone_stone_range", range or 0)
+        itemstack:get_meta():set_int("exchangeclone_item_range", range or 0)
         minetest.chat_send_player(player:get_player_name(), "Current Range: "..range)
         return itemstack
     elseif not player:get_player_control().aux1 then
@@ -255,10 +255,10 @@ local function on_left_click(itemstack, player, pointed_thing)
         if new_stack then
             return new_stack
         end
-        local range = itemstack:get_meta():get_int("exchangeclone_stone_range")
+        local range = itemstack:get_meta():get_int("exchangeclone_item_range")
         if range == 4 then range = -1 end
         range = range + 1
-        itemstack:get_meta():set_int("exchangeclone_stone_range", range or 0)
+        itemstack:get_meta():set_int("exchangeclone_item_range", range or 0)
         minetest.chat_send_player(player:get_player_name(), "Current Range: "..range)
         return itemstack
     elseif exchangeclone.mineclone then
@@ -268,21 +268,55 @@ end
 
 local function on_right_click(itemstack, player, pointed_thing)
     if player:get_player_control().sneak then
-        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_stone_range"))
+        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
         exchangeclone.transmute_nodes(player, range, 2)
     elseif not player:get_player_control().aux1 then
-        local range = itemstack:get_meta():get_int("exchangeclone_stone_range")
+        local range = itemstack:get_meta():get_int("exchangeclone_item_range")
         exchangeclone.transmute_nodes(player, range, 1)
     elseif exchangeclone.mineclone then
         mcl_crafting_table.show_crafting_form(player)
     end
 end
 
+local tt_help = "(Shift-)click: change range, (shift-)right-click: transmute blocks."
+
+local item1 = "mese crystals"
+if exchangeclone.mineclone then
+    item1 = "emeralds"
+end
+
+local longdesc =    "A mysterious device discovered by alchemists millenia ago. The crafting recipe was recently rediscovered by ThePython.\n\n"..
+                    "It has the ability to transmute nearby blocks into other blocks. The range can be increased or decreased from 0 to 4 by (shift-)clicking.\n"..
+                    "Transmute blocks by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
+                    "the block directly below you, with a radius equal to the range.\n"..
+                    "The ancient tome (entitled the \"Tekkit Wiki\") vaguely mentioned a \"cooldown\" when used to transmute large areas, "..
+                    "but ThePython was far to lazy to implement such a thing.\n\n"..
+                    "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
+                    "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
+                    "range is reset when used in a crafting recipe."
+
+local usagehelp = "The range can be increased or decreased from 0 to 4 by (shift-)clicking. Transmute blocks by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
+                    "the block directly below you, with a radius equal to the range.\n\n"..
+                    "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
+                    "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
+                    "range is reset when used in a crafting recipe."
+
+if exchangeclone.mineclone then
+    tt_help = tt_help.."\nAux1+click: enchanting table. Aux1+right-click: crafting table."
+    local extra_stuff = "\n\nIn MineClone, Aux1+right-click opens a 3x3 crafting table and Aux1+left-click opens an enchanting table (the equivalent of a real "..
+                        "enchanting table with eight bookshelves around it)."
+    longdesc = longdesc..extra_stuff
+    usagehelp = usagehelp..extra_stuff
+end
+
 minetest.register_tool("exchangeclone:philosophers_stone", {
     description = "Philosopher's Stone",
     inventory_image = "exchangeclone_philosophers_stone.png",
     wield_image = "exchangeclone_philosophers_stone.png",
-    exchangeclone_stone_range = 0,
+    _tt_help = tt_help,
+    _doc_items_longdesc = longdesc,
+    _doc_items_usagehelp = usagehelp,
+    exchangeclone_item_range = 0,
     on_use = on_left_click,
     on_place = on_right_click,
     on_secondary_use = on_right_click,
