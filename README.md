@@ -22,7 +22,7 @@ All energy values are in `energy.lua`. You can also change the speed at which th
 
 ## New features added by ThePython10110
 * Support for MineClone
-* Better energy values (originally, you could convert a single diamond into a diamond block... incredibly OP).
+* COMPLETELY redone energy values (originally, you could convert a single diamond into a diamond block... incredibly OP).
 * Shift-clicking works (`listring`s)
 * Fixed a bug where items could be placed in the output slot of the Element Constructor
 * Added the ability to add energy values by group
@@ -33,15 +33,14 @@ All energy values are in `energy.lua`. You can also change the speed at which th
     * Aux1-left-click to open enchanting table (MineClone only)
     * Aux1-right-click to open crafting table (MineClone only)
     * Ability to exchange charcoal/coal/iron/copper/tin/gold/mese/emerald/diamond by crafting (the Philosopher's Stone is always returned)
-    * Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
-    * Dark Matter Orbs, Blocks, and tools
-    * Red Matter Orbs and Blocks
-I don't actually own MineCraft, meaning I don't know how the original mod (Equivalent Exchange) works. I will probably make some minor mistakes, since all I have to go on is the internet. 
+* Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
+* Dark and Red Matter Orbs, Blocks, and tools
+I don't actually own MineCraft, meaning I don't know exactly how the original mod (Equivalent Exchange) works. I will probably make some minor mistakes, since all I have to go on is the internet. 
 
 ## Known issues:
 * When items are inserted into the Energy Collector, Deconstructor, or Constructor with MineClone hoppers, it does not trigger the machines to start.
 * When machines are exploded, they (and the items inside) do not drop.
-* Dark Matter Shears will sometimes be treated as 
+* Dark/Red matter shears will sometimes be treated as normal shears.
 
 If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).
 

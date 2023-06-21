@@ -26,21 +26,18 @@ else
 end
 formspec = table.concat(formspec, "")
 
-local function on_rightclick(itemstack, user, pointed_thing)
-    if pointed_thing.type == "node" then
-        -- Use pointed node's on_rightclick function first, if present
-        local node = minetest.get_node(pointed_thing.under)
-        if user and not user:get_player_control().sneak then
-            if minetest.registered_nodes[node.name] and minetest.registered_nodes[node.name].on_rightclick then
-                return minetest.registered_nodes[node.name].on_rightclick(pointed_thing.under, node, user, itemstack) or itemstack
-            end
-        end
+local function on_rightclick(itemstack, player, pointed_thing)
+    local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
+    if click_test ~= false then
+        return click_test
     end
-    minetest.show_formspec(user:get_player_name(), "exchangeclone_pesa", formspec)
+    minetest.show_formspec(player:get_player_name(), "exchangeclone_pesa", formspec)
 end
 
 minetest.register_tool("exchangeclone:pesa", {
     description = "Personal Energy Storage Accessor (PESA)",
+    wield_image = "exchangeclone_pesa.png",
+    inventory_image = "exchangeclone_pesa.png",
     on_secondary_use = on_rightclick,
     on_place = on_rightclick,
 })
@@ -69,10 +66,17 @@ minetest.register_allow_player_inventory_action(function(player, action, inv, in
 	end
 end)
 
-function exchangeclone.get_player_energy(player)
-    return exchangeclone.get_orb_energy(player:get_inventory(), "exchangeclone_pesa", 1)
+local chest_itemstring = "default:chest"
+if exchangeclone.mineclone then
+    chest_itemstring = "mcl_chests:chest"
 end
 
-function exchangeclone.set_player_energy(player, amount)
-    exchangeclone.set_orb_energy(player:get_inventory(), "exchangeclone_pesa", 1, amount)
-end
+minetest.register_craft({
+    output = "exchangeclone:pesa",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        chest_itemstring
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})

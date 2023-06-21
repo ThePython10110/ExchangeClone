@@ -1,114 +1,85 @@
---[[
-    Yes, shears need an entire file... it's a huge amount of code.
-    They were originally with the other tools, but the code just
-    got too long.
-]]
-
-local function round(num)
-    if num % 1 < 0.5 then
-        return math.floor(num)
-    else
-        return math.ceil(num)
-    end
-end
-
-local shear_cube = function(player, distance)
+local shear_cube = function(player, center, distance)
+    exchangeclone.play_ability_sound(player)
     local player_pos = player:get_pos()
-    local pos = {}
+    local pos = center
     local node_positions = {}
-    pos.x = round(player_pos.x)
-    pos.y = math.floor(player_pos.y) --make sure y is node BELOW player's feet
-    pos.z = round(player_pos.z)
+    local player_energy = exchangeclone.get_player_energy(player)
+    local energy_cost = 0
+    pos.x = exchangeclone.round(pos.x)
+    pos.y = math.floor(pos.y) --make sure y is node BELOW player's feet
+    pos.z = exchangeclone.round(pos.z)
 
     for x = pos.x-distance, pos.x+distance do
+        if energy_cost + 8 > player_energy then
+            break
+        end
     for y = pos.y-distance, pos.y+distance do
+        if energy_cost + 8 > player_energy then
+            break
+        end
     for z = pos.z-distance, pos.z+distance do
+        if energy_cost + 8 > player_energy then
+            break
+        end
         local new_pos = {x=x,y=y,z=z}
         local node = minetest.get_node(new_pos) or "air"
         local node_def = minetest.registered_items[node.name]
-        if node_def.groups.shearsy or node_def.groups.shearsy_cobweb then
+        if (node_def.groups.shearsy or node_def.groups.shearsy_cobweb) and node.name ~= "mcl_flowers:double_grass_top" then
             if minetest.is_protected(new_pos, player:get_player_name()) then
                 minetest.record_protection_violation(new_pos, player:get_player_name())
             else
-                local drop_name = node.name
-                if node_def._mcl_shears_drop and not node_def._mcl_shears_drop == true then
-                    drop_name = node_def._mcl_shears_drop
-                end
-                node_positions[#node_positions + 1] = {pos = new_pos, name = drop_name}
+                energy_cost = energy_cost + 8
+                local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_shears")
+                exchangeclone.drop_items_on_player(new_pos, drops, player)
+                minetest.set_node(new_pos, {name = "air"})
             end
         end
     end
     end
-    end
-    minetest.log(dump(node_positions))
-    local player_energy = exchangeclone.get_player_energy(player)
-    local energy_cost = 0
-    for _, data in ipairs(node_positions) do
-        if energy_cost + 16 > player_energy then
-            break
-        end
-        energy_cost = energy_cost + 16
-        minetest.set_node(data.pos, {name = "air"})
-        minetest.add_item(player_pos, data.name)
     end
     exchangeclone.set_player_energy(player, player_energy - energy_cost)
 end
 
 local shears_rightclick = function(itemstack, player, pointed_thing)
     -- Use pointed node's on_rightclick function first, if present
-    local node
-    if pointed_thing and pointed_thing.under then
-        node = minetest.get_node(pointed_thing.under)
-        if player and not player:get_player_control().sneak then
-            if minetest.registered_nodes[node.name] and minetest.registered_nodes[node.name].on_rightclick then
-                return minetest.registered_nodes[node.name].on_rightclick(pointed_thing.under, node, player, itemstack) or itemstack
-            end
-        end
+    local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
+    if click_test ~= false then
+        return click_test
     end
 
     if player:get_player_control().aux1 then
-        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
-        if player:get_player_control().sneak then
-            if range == 0 then
-                range = 4
-            else
-                range = range - 1
-            end
-        end
-        if range == 4 then
-            range = 0
+        if itemstack:get_name():find("dark") then
+            return exchangeclone.range_update(itemstack, player, 3)
         else
-            range = range + 1
+            return exchangeclone.range_update(itemstack, player, 4)
         end
-        minetest.chat_send_player(player:get_player_name(), "Current Range: "..range)
-        itemstack:get_meta():set_int("exchangeclone_item_range", range)
-        return itemstack
     end
 
-    if player:get_player_control().sneak or not (pointed_thing and pointed_thing.above) then
-        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
-        shear_cube(player, range)
-        return itemstack
+    if (pointed_thing.type == "node") and pointed_thing.above and not player:get_player_control().sneak  then
+        local node = minetest.get_node(pointed_thing.under)
+        if node.name == "mcl_farming:pumpkin" and (pointed_thing.above.y ~= pointed_thing.under.y) then
+            minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pointed_thing.above}, true)
+            local dir = vector.subtract(pointed_thing.under, pointed_thing.above)
+            local param2 = minetest.dir_to_facedir(dir)
+            minetest.set_node(pointed_thing.under, {name="mcl_farming:pumpkin_face", param2 = param2})
+            minetest.add_item(pointed_thing.above, "mcl_farming:pumpkin_seeds 4")
+        end
     end
 
-    if not (pointed_thing and pointed_thing.above) then return itemstack end
+    local center = player:get_pos()
 
-    -- Only carve pumpkin if used on side
-    if pointed_thing.above.y ~= pointed_thing.under.y then
-        return
+    if (pointed_thing.type == "node") and pointed_thing.under then
+        center = pointed_thing.under
     end
-    if node.name == "mcl_farming:pumpkin" then
-        minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pointed_thing.above}, true)
-        local dir = vector.subtract(pointed_thing.under, pointed_thing.above)
-        local param2 = minetest.dir_to_facedir(dir)
-        minetest.set_node(pointed_thing.under, {name="mcl_farming:pumpkin_face", param2 = param2})
-        minetest.add_item(pointed_thing.above, "mcl_farming:pumpkin_seeds 4")
-    end
+    local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
+    shear_cube(player, center, range)
     return itemstack
 end
 
 minetest.register_tool("exchangeclone:dark_matter_shears", {
-    description = "Dark Matter Shears\nImage coming soon.",
+    description = "Dark Matter Shears",
+    wield_image = "exchangeclone_dark_matter_shears.png",
+    inventory_image = "exchangeclone_dark_matter_shears.png",
     stack_max = 1,
     groups = { tool=1, shears=1, dig_speed_class=7, },
     tool_capabilities = {
@@ -128,7 +99,9 @@ minetest.register_tool("exchangeclone:dark_matter_shears", {
 })
 
 minetest.register_tool("exchangeclone:red_matter_shears", {
-    description = "Red Matter Shears\nImage coming soon.",
+    description = "Red Matter Shears",
+    wield_image = "exchangeclone_red_matter_shears.png",
+    inventory_image = "exchangeclone_red_matter_shears.png",
     stack_max = 1,
     groups = { tool=1, shears=1, dig_speed_class=8, },
     tool_capabilities = {
@@ -450,16 +423,18 @@ minetest.registered_entities["mobs_mc:snowman"].on_rightclick = function(self, c
     end
 end
 
-
-local diamond_itemstring = "default:diamond"
-if exchangeclone.mineclone then
-    diamond_itemstring = "mcl_core:diamond"
-end
-
 minetest.register_craft({
     output = "exchangeclone:dark_matter_shears",
     recipe = {
         {"", "exchangeclone:dark_matter"},
-        {diamond_itemstring, ""},
+        {exchangeclone.diamond_itemstring, ""},
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:red_matter_shears",
+    recipe = {
+        {"", "exchangeclone:red_matter"},
+        {"exchangeclone:dark_matter_shears", ""},
     }
 })

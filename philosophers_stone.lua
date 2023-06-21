@@ -1,31 +1,8 @@
 local function show_enchanting(player)
     local player_meta = player:get_meta()
-    player_meta:set_int("mcl_enchanting:num_bookshelves", 8)
+    player_meta:set_int("mcl_enchanting:num_bookshelves", 8) -- 15 for max enchantments
     player_meta:set_string("mcl_enchanting:table_name", "Enchanting Table")
     mcl_enchanting.show_enchanting_formspec(player)
-end
-
-local function call_on_rightclick(itemstack, player, pointed_thing)
-	-- Call on_rightclick if the pointed node defines it
-	if pointed_thing and pointed_thing.type == "node" then
-		local pos = pointed_thing.under
-		local node = minetest.get_node(pos)
-		if player and not player:get_player_control().sneak then
-			local nodedef = minetest.registered_nodes[node.name]
-			local on_rightclick = nodedef and nodedef.on_rightclick
-			if on_rightclick then
-				return on_rightclick(pos, node, player, itemstack, pointed_thing) or itemstack
-			end
-		end
-	end
-end
-
-local function round(num)
-    if num % 1 < 0.5 then
-        return math.floor(num)
-    else
-        return math.ceil(num)
-    end
 end
 
 exchangeclone.node_transmutations = {
@@ -215,11 +192,12 @@ exchangeclone.node_transmutations = {
     }
 }
 
-function exchangeclone.transmute_nodes(player, distance, mode)
-    local pos = player:get_pos()
-    pos.x = round(pos.x)
+local function transmute_nodes(player, center, distance, mode)
+    exchangeclone.play_ability_sound(player)
+    local pos = center
+    pos.x = exchangeclone.round(pos.x)
     pos.y = math.floor(pos.y) --make sure y is node BELOW player's feet
-    pos.z = round(pos.z)
+    pos.z = exchangeclone.round(pos.z)
     for x = pos.x-distance, pos.x+distance do
     for y = pos.y-distance, pos.y+distance do
     for z = pos.z-distance, pos.z+distance do
@@ -242,39 +220,35 @@ function exchangeclone.transmute_nodes(player, distance, mode)
     end
 end
 
-local function on_left_click(itemstack, player, pointed_thing)
-    if player:get_player_control().sneak then
-        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
-        if range == 0 then range = 5 end
-        range = range - 1
-        itemstack:get_meta():set_int("exchangeclone_item_range", range or 0)
-        minetest.chat_send_player(player:get_player_name(), "Current Range: "..range)
-        return itemstack
-    elseif not player:get_player_control().aux1 then
-        local new_stack = call_on_rightclick(itemstack, player, pointed_thing)
-        if new_stack then
-            return new_stack
+local on_left_click = nil
+if exchangeclone.mineclone then
+    on_left_click = function(itemstack, player, pointed_thing)
+        if player:get_player_control().sneak then
+            show_enchanting(player)
+        else
+            mcl_crafting_table.show_crafting_form(player)
         end
-        local range = itemstack:get_meta():get_int("exchangeclone_item_range")
-        if range == 4 then range = -1 end
-        range = range + 1
-        itemstack:get_meta():set_int("exchangeclone_item_range", range or 0)
-        minetest.chat_send_player(player:get_player_name(), "Current Range: "..range)
-        return itemstack
-    elseif exchangeclone.mineclone then
-        show_enchanting(player)
     end
 end
 
 local function on_right_click(itemstack, player, pointed_thing)
+    local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
+    if click_test ~= false then
+        return click_test
+    end
+    if player:get_player_control().aux1 then
+        return exchangeclone.range_update(itemstack, player)
+    end
+    local center = player:get_pos()
+    if pointed_thing and pointed_thing.type == "node" then
+        center = pointed_thing.under
+    end
     if player:get_player_control().sneak then
         local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
-        exchangeclone.transmute_nodes(player, range, 2)
-    elseif not player:get_player_control().aux1 then
+        transmute_nodes(player, center, range, 2)
+    else
         local range = itemstack:get_meta():get_int("exchangeclone_item_range")
-        exchangeclone.transmute_nodes(player, range, 1)
-    elseif exchangeclone.mineclone then
-        mcl_crafting_table.show_crafting_form(player)
+        transmute_nodes(player, center, range, 1)
     end
 end
 
@@ -286,24 +260,24 @@ if exchangeclone.mineclone then
 end
 
 local longdesc =    "A mysterious device discovered by alchemists millenia ago. The crafting recipe was recently rediscovered by ThePython.\n\n"..
-                    "It has the ability to transmute nearby blocks into other blocks. The range can be increased or decreased from 0 to 4 by (shift-)clicking.\n"..
+                    "It has the ability to transmute nearby blocks into other blocks. The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking.\n"..
                     "Transmute blocks by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
                     "the block directly below you, with a radius equal to the range.\n"..
                     "The ancient tome (entitled the \"Tekkit Wiki\") vaguely mentioned a \"cooldown\" when used to transmute large areas, "..
-                    "but ThePython was far to lazy to implement such a thing.\n\n"..
+                    "but ThePython was far to lazy to implement such a thing (maybe just have the charge level/radius reset every time?).\n\n"..
                     "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
                     "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
                     "range is reset when used in a crafting recipe."
 
-local usagehelp = "The range can be increased or decreased from 0 to 4 by (shift-)clicking. Transmute blocks by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
+local usagehelp = "The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking. Transmute blocks by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
                     "the block directly below you, with a radius equal to the range.\n\n"..
                     "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
                     "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
                     "range is reset when used in a crafting recipe."
 
 if exchangeclone.mineclone then
-    tt_help = tt_help.."\nAux1+click: enchanting table. Aux1+right-click: crafting table."
-    local extra_stuff = "\n\nIn MineClone, Aux1+right-click opens a 3x3 crafting table and Aux1+left-click opens an enchanting table (the equivalent of a real "..
+    tt_help = tt_help.."\nClick: crafting table. Shift-click: enchanting table."
+    local extra_stuff = "\n\nIn MineClone, clicking opens a 3x3 crafting table and shift+clicking opens an enchanting table (the equivalent of a real "..
                         "enchanting table with eight bookshelves around it)."
     longdesc = longdesc..extra_stuff
     usagehelp = usagehelp..extra_stuff
@@ -320,6 +294,7 @@ minetest.register_tool("exchangeclone:philosophers_stone", {
     on_use = on_left_click,
     on_place = on_right_click,
     on_secondary_use = on_right_click,
+    groups = {philosophers_stone = 1, disable_repair = 1}
 })
 
 local diamond = "default:diamond"
@@ -702,31 +677,33 @@ minetest.register_craft({
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
-minetest.register_craft({
-    output = "exchangeclone:alchemical_coal",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_core:coal_lump",
-        "mcl_core:coal_lump",
-        "mcl_core:coal_lump",
-        "mcl_core:coal_lump",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "exchangeclone:alchemical_coal",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "default:coal_lump",
-        "default:coal_lump",
-        "default:coal_lump",
-        "default:coal_lump",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
+if exchangeclone.mineclone then -- no idea why both recipes show up in the craft guide, so added if/else
+    minetest.register_craft({
+        output = "exchangeclone:alchemical_coal",
+        type = "shapeless",
+        recipe = {
+            "exchangeclone:philosophers_stone",
+            "mcl_core:coal_lump",
+            "mcl_core:coal_lump",
+            "mcl_core:coal_lump",
+            "mcl_core:coal_lump",
+        },
+        replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    })
+else
+    minetest.register_craft({
+        output = "exchangeclone:alchemical_coal",
+        type = "shapeless",
+        recipe = {
+            "exchangeclone:philosophers_stone",
+            "default:coal_lump",
+            "default:coal_lump",
+            "default:coal_lump",
+            "default:coal_lump",
+        },
+        replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    })
+end
 
 minetest.register_craft({
     output = "default:coal_lump 4",

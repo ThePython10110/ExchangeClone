@@ -1,4 +1,9 @@
-local sound_mod = mcl_sounds or default
+local sound_mod
+if mcl_sounds then
+    sound_mod = mcl_sounds
+else
+    sound_mod = default
+end
 
 --Renamed "fuel" inventory to "main" to (almost) work with hoppers
 
@@ -61,10 +66,12 @@ local function on_timer(pos, elapsed)
             else
                 energy_value = exchangeclone.get_item_energy(fuel_stack:get_name())
             end
-            if energy_value ~= 0 then
+            if energy_value == 0 then
+                break
+            else
                 local wear = fuel_stack:get_wear()
                 if wear and wear > 1 then
-                    energy_value = math.floor(energy_value * (65536 / wear))
+                    energy_value = math.ceil(energy_value * (65536 / wear))
                 end
                 -- only get 1 orb as we can only use one
                 local stored = exchangeclone.get_orb_energy(inv, "dst", 1)
@@ -150,7 +157,7 @@ minetest.register_node("exchangeclone:element_deconstructor", {
     sounds = sound_mod.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
-    after_dig_node = function(pos, oldnode, oldmetadata, digger)
+    after_dig_node = function(pos, oldnode, oldmetadata, player)
         if exchangeclone.mineclone then
             local meta = minetest.get_meta(pos)
             local meta2 = meta:to_table()

@@ -1,4 +1,9 @@
-local sound_mod = mcl_sounds or default
+local sound_mod
+if mcl_sounds then
+    sound_mod = mcl_sounds
+else
+    sound_mod = default
+end
 
 local function get_energy_collector_formspec()
     local formspec
@@ -104,7 +109,7 @@ local function on_blast(pos)
     return drops
 end
 
-local function on_dig_node(pos, oldnode, oldmetadata, digger)
+local function on_dig_node(pos, oldnode, oldmetadata, player)
     if exchangeclone.mineclone then
         local meta = minetest.get_meta(pos)
         local meta2 = meta:to_table()
@@ -176,7 +181,7 @@ minetest.register_node("exchangeclone:energy_collector", {
                 end
             end,
         },
-        after_place_node = function(pos, placer)
+        after_place_node = function(pos, player)
             pipeworks.after_place(pos)
         end,
         after_dig_node = pipeworks.after_dig,

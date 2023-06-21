@@ -1,4 +1,9 @@
-local sound_mod = mcl_sounds or default
+local sound_mod
+if mcl_sounds then
+    sound_mod = mcl_sounds
+else
+    sound_mod = default
+end
 
 local function get_level(level)
     if exchangeclone.mineclone then
@@ -83,24 +88,25 @@ minetest.register_node("exchangeclone:red_matter_block", {
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 100,
 })
-
-minetest.register_craft({
-    output = "exchangeclone:dark_matter",
-    recipe = {
-        {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"},
-        {"exchangeclone:aeternalis_fuel", "mcl_core:diamondblock", "exchangeclone:aeternalis_fuel"},
-        {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"}
-    }
-})
-
-minetest.register_craft({
-    output = "exchangeclone:dark_matter",
-    recipe = {
-        {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"},
-        {"exchangeclone:aeternalis_fuel", "default:diamondblock", "exchangeclone:aeternalis_fuel"},
-        {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"}
-    }
-})
+if exchangeclone.mineclone then
+    minetest.register_craft({
+        output = "exchangeclone:dark_matter",
+        recipe = {
+            {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"},
+            {"exchangeclone:aeternalis_fuel", "mcl_core:diamondblock", "exchangeclone:aeternalis_fuel"},
+            {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"}
+        }
+    })
+else
+    minetest.register_craft({
+        output = "exchangeclone:dark_matter",
+        recipe = {
+            {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"},
+            {"exchangeclone:aeternalis_fuel", "default:diamondblock", "exchangeclone:aeternalis_fuel"},
+            {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"}
+        }
+    })
+end
 
 minetest.register_craft({
     output = "exchangeclone:red_matter",
@@ -130,15 +136,15 @@ minetest.register_craft({
 minetest.register_craft({
     output = "exchangeclone:dark_matter 4",
     recipe = {
-        {"exchangeclone:dark_matter_block","exchangeclone:dark_matter_block}"},
-        {"exchangeclone:dark_matter_block","exchangeclone:dark_matter_block}"}
+        {"exchangeclone:dark_matter_block","exchangeclone:dark_matter_block"},
+        {"exchangeclone:dark_matter_block","exchangeclone:dark_matter_block"}
     }
 })
 
 minetest.register_craft({
     output = "exchangeclone:red_matter 4",
     recipe = {
-        {"exchangeclone:red_matter_block","exchangeclone:red_matter_block}"},
-        {"exchangeclone:red_matter_block","exchangeclone:red_matter_block}"}
+        {"exchangeclone:red_matter_block","exchangeclone:red_matter_block"},
+        {"exchangeclone:red_matter_block","exchangeclone:red_matter_block"}
     }
 })

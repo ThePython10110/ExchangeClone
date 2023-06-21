@@ -1,6 +1,11 @@
-local sound_mod = mcl_sounds or default
+local sound_mod
+if mcl_sounds then
+    sound_mod = mcl_sounds
+else
+    sound_mod = default
+end
 
-function get_element_constructor_formspec()
+local function get_element_constructor_formspec()
     if not exchangeclone.mineclone then
         local formspec = {
             "size[8,9]",
@@ -169,7 +174,7 @@ minetest.register_node("exchangeclone:element_constructor", {
     sounds = sound_mod.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
-    after_dig_node = function(pos, oldnode, oldmetadata, digger)
+    after_dig_node = function(pos, oldnode, oldmetadata, player)
         if exchangeclone.mineclone then
             local meta = minetest.get_meta(pos)
             local meta2 = meta:to_table()

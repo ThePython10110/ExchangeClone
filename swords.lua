@@ -1,11 +1,4 @@
-local wield_scale
-if exchangeclone.mineclone then
-    local wield_scale = mcl_vars.tool_wield_scale
-else
-    local wield_scale = {x=1,y=1,z=1}
-end
-
-local aoe_exclude = { --any entity not beginning with "mobs_mc:" is automatically added to this list.
+local aoe_exclude = { --any entity not including "mobs" is automatically added to this list.
 	["mobs_mc:spider_eyes"] = true,
 	["mobs_mc:wither_skull"] = true,
 	["mobs_mc:fireball"] = true,
@@ -56,7 +49,7 @@ local hostile_mobs = { --for Red Matter Sword
 
 minetest.register_on_mods_loaded(function()
 	for name, def in pairs(minetest.registered_entities) do
-		if not name:find("mobs_mc:") then
+		if not name:find("mobs") then
 			aoe_exclude[name] = true
 		end
 	end
@@ -73,14 +66,10 @@ local sword_aoe = function(info)
 
 	return function(itemstack, player, pointed_thing) --copied from MineClone's TNT; I would simply use the explosion function but it would hurt the player.
 		-- Use pointed node's on_rightclick function first, if present
-		if pointed_thing and pointed_thing.under then
-			local node = minetest.get_node(pointed_thing.under)
-			if player and not player:get_player_control().sneak then
-				if minetest.registered_nodes[node.name] and minetest.registered_nodes[node.name].on_rightclick then
-					return minetest.registered_nodes[node.name].on_rightclick(pointed_thing.under, node, player, itemstack) or itemstack
-				end
-			end
-		end
+		local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
+        if click_test ~= false then
+            return click_test
+        end
 
 		local player_energy = exchangeclone.get_player_energy(player)
 		if player_energy >= 384 then
@@ -88,6 +77,8 @@ local sword_aoe = function(info)
 		else
 			return
 		end
+
+		exchangeclone.play_ability_sound(player)
 
 		local pos = player:get_pos()
 
@@ -172,14 +163,16 @@ local red_matter_sword_action = function(itemstack, player, pointed_thing)
 		return itemstack
 	end
 
-	local aoe_function = sword_aoe({max_damage = 15, knockback = 20, radius = 7, damage_all = damage_all})
+	local aoe_function = sword_aoe({max_damage = 12, knockback = 20, radius = 7, damage_all = damage_all})
 	aoe_function(itemstack, player, pointed_thing)
 end
 
-minetest.register_tool("exchangeclone:sword_dark_matter", {
-	description = "Dark Matter Sword\nImage coming soon.",
+minetest.register_tool("exchangeclone:dark_matter_sword", {
+	description = "Dark Matter Sword",
+	wield_image = "exchangeclone_dark_matter_sword.png",
+	inventory_image = "exchangeclone_dark_matter_sword.png",
 	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0 },
-	wield_scale = wield_scale,
+	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
 		full_punch_interval = 0.25,
@@ -190,8 +183,8 @@ minetest.register_tool("exchangeclone:sword_dark_matter", {
 			snappy = {times={[1]=0.95, [2]=0.45, [3]=0.15}, uses=0, maxlevel=4},
 		},
 	},
-	on_secondary_use = sword_aoe({max_damage = 11, knockback = 12, radius = 5}),
-	on_place = sword_aoe({max_damage = 11, knockback = 12, radius = 5}),
+	on_secondary_use = sword_aoe({max_damage = 10, knockback = 12, radius = 5}),
+	on_place = sword_aoe({max_damage = 10, knockback = 12, radius = 5}),
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
@@ -199,15 +192,17 @@ minetest.register_tool("exchangeclone:sword_dark_matter", {
 	},
 })
 
-minetest.register_tool("exchangeclone:sword_red_matter", {
-	description = "Red Matter Sword\nImage coming soon.",
+minetest.register_tool("exchangeclone:red_matter_sword", {
+	description = "Red Matter Sword",
+	wield_image = "exchangeclone_red_matter_sword.png",
+	inventory_image = "exchangeclone_red_matter_sword.png",
 	groups = { tool=1, sword=1, dig_speed_class=8, enchantability=0 },
-	wield_scale = wield_scale,
+	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
 		full_punch_interval = 0.17,
 		max_drop_level=6,
-		damage_groups = {fleshy=16},
+		damage_groups = {fleshy=14},
 		punch_attack_uses = 0,
 		groupcaps={
 			snappy = {times={[1]=0.6, [2]=0.25, [3]=0.1}, uses=0, maxlevel=5},
@@ -222,16 +217,20 @@ minetest.register_tool("exchangeclone:sword_red_matter", {
 	},
 })
 
-local diamond_itemstring = "default:diamond"
-if exchangeclone.mineclone then
-    diamond_itemstring = "mcl_core:diamond"
-end
-
 minetest.register_craft({
-    output = "exchangeclone:sword_dark_matter",
+    output = "exchangeclone:dark_matter_sword",
     recipe = {
         {"", "exchangeclone:dark_matter", ""},
         {"", "exchangeclone:dark_matter", ""},
-        {"", diamond_itemstring, ""}
+        {"", exchangeclone.diamond_itemstring, ""}
     }
+})
+
+minetest.register_craft({
+	output = "exchangeclone:red_matter_sword",
+	recipe = {
+		{"", "exchangeclone:red_matter", ""},
+		{"", "exchangeclone:red_matter", ""},
+		{"", "exchangeclone:dark_matter_sword", ""},
+	}
 })

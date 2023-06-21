@@ -1272,63 +1272,171 @@ exchangeclone.mcl_potion_data = {
     {name = "invisibility", ingredient_cost = 192, custom_base_cost = 623, plus = true}
 }
 
-local function get_group_items(groups, allow_duplicates, include_no_group)
-	if type(groups) ~= "table" then
-		return nil
-	end
+exchangeclone.whitelisted_mods = {
+    ["exchangeclone"] = true,
+    ["beds"] = true,
+    ["binoculars"] = true,
+    ["boats"] = true,
+    ["bones"] = true,
+    ["bucket"] = true,
+    ["butterflies"] = true,
+    ["carts"] = true,
+    ["default"] = true,
+    ["doors"] = true,
+    ["dye"] = true,
+    ["farming"] = true,
+    ["fire"] = true,
+    ["fireflies"] = true,
+    ["flowers"] = true,
+    ["keys"] = true,
+    ["mapping_kit"] = true,
+    ["moreswords"] = true,
+    ["stairs"] = true,
+    ["tnt"] = true,
+    ["vessels"] = true,
+    ["walls"] = true,
+    ["wool"] = true,
+    ["xpanes"] = true,
+    ["doc_identifier"] = true,
+    ["fake_liquids"] = true,
+    ["ghost_blocks"] = true,
+    ["lava_sponge"] = true,
+    ["mcl_amethyst"] = true,
+    ["mcl_anvils"] = true,
+    ["mcl_armor"] = true,
+    ["mcl_armor_stand"] = true,
+    ["mcl_bamboo"] = true,
+    ["mcl_banners"] = true,
+    ["mcl_barrels"] = true,
+    ["mcl_beacons"] = true,
+    ["mcl_beds"] = true,
+    ["mcl_books"] = true,
+    ["mcl_bows"] = true,
+    ["mcl_cauldrons"] = true,
+    ["mcl_chests"] = true,
+    ["mcl_clock"] = true,
+    ["mcl_cocoas"] = true,
+    ["mcl_colorblocks"] = true,
+    ["mcl_colors"] = true,
+    ["mcl_comparators"] = true,
+    ["mcl_compass"] = true,
+    ["mcl_composters"] = true,
+    ["mcl_copper"] = true,
+    ["mcl_core"] = true,
+    ["mcl_crafting_table"] = true,
+    ["mcl_crimson"] = true,
+    ["mcl_deepslate"] = true,
+    ["mcl_dispensers"] = true,
+    ["mcl_doors"] = true,
+    ["mcl_droppers"] = true,
+    ["mcl_dye"] = true,
+    ["mcl_enchanting"] = true,
+    ["mcl_end"] = true,
+    ["mcl_experience"] = true,
+    ["mcl_farming"] = true,
+    ["mcl_fences"] = true,
+    ["mcl_fire"] = true,
+    ["mcl_fireworks"] = true,
+    ["mcl_fishing"] = true,
+    ["mcl_fletching_table"] = true,
+    ["mcl_flowerpots"] = true,
+    ["mcl_flowers"] = true,
+    ["mcl_furnaces"] = true,
+    ["mcl_grindstone"] = true,
+    ["mcl_hamburger"] = true,
+    ["mcl_heads"] = true,
+    ["mcl_honey"] = true,
+    ["mcl_hoppers"] = true,
+    ["mcl_itemframes"] = true,
+    ["mcl_jukebox"] = true,
+    ["mcl_lanterns"] = true,
+    ["mcl_lectern"] = true,
+    ["mcl_lightning_rods"] = true,
+    ["mcl_loom"] = true,
+    ["mcl_mangrove"] = true,
+    ["mcl_maps"] = true,
+    ["mcl_minecarts"] = true,
+    ["mcl_mobitems"] = true,
+    ["mcl_mud"] = true,
+    ["mcl_mushrooms"] = true,
+    ["mcl_nether"] = true,
+    ["mcl_observers"] = true,
+    ["mcl_ocean"] = true,
+    ["mcl_paintings"] = true,
+    ["mcl_potions"] = true,
+    ["mcl_raw_ores"] = true,
+    ["mcl_sculk"] = true,
+    ["mcl_shields"] = true,
+    ["mcl_signs"] = true,
+    ["mcl_smithing_table"] = true,
+    ["mcl_smoker"] = true,
+    ["mcl_sponges"] = true,
+    ["mcl_spyglass"] = true,
+    ["mcl_stairs"] = true,
+    ["mcl_stonecutter"] = true,
+    ["mcl_sus_stew"] = true,
+    ["mcl_target"] = true,
+    ["mcl_tnt"] = true,
+    ["mcl_tools"] = true,
+    ["mcl_throwing"] = true,
+    ["mcl_torches"] = true,
+    ["mcl_totems"] = true,
+    ["mcl_villages"] = true,
+    ["mcl_walls"] = true,
+    ["mcl_wool"] = true,
+    ["mclx_core"] = true,
+    ["mclx_fences"] = true,
+    ["mclx_stairs"] = true,
+    ["meat_blocks"] = true,
+    ["screwdriver"] = true,
+    ["slime_things"] = true,
+    ["small_why_things"] = true,
+    ["sound_machine"] = true,
+    ["sticky_things"] = true,
+}
 
-	allow_duplicates = allow_duplicates or false
-    include_no_group = include_no_group or false
 
-	local g_cnt = #groups
-
-	local result = {}
-	for i = 1, g_cnt do
-		result[groups[i]] = {}
-	end
-    if include_no_group then
-        result["NO_GROUP"] = {}
+--only allow Mesecons in MineClone
+if exchangeclone.mineclone then
+    for k, v in pairs({
+        ["mesecons"] = true,
+        ["mesecons_button"] = true,
+        ["mesecons_delayer"] = true,
+        ["mesecons_lightstone"] = true,
+        ["mesecons_noteblock"] = true,
+        ["mesecons_pistons"] = true,
+        ["mesecons_pressureplates"] = true,
+        ["mesecons_solarpanel"] = true,
+        ["mesecons_torch"] = true,
+        ["mesecons_walllever"] = true,
+        ["mesecons_wires"] = true,
+    }) do
+        exchangeclone.whitelisted_mods[k] = v
     end
-    local in_group = false
-
-	for name, def in pairs(minetest.registered_items) do
-        in_group = false
-		for i = 1, g_cnt do
-			local grp = groups[i]
-			if def.groups[grp] ~= nil then
-				result[grp][#result[grp]+1] = name
-                in_group = true
-				if allow_duplicates == false then
-					break
-				end
-			end
-		end
-        if include_no_group and in_group == false then
-            result["NO_GROUP"][#result["NO_GROUP"]+1] = name
-        end
-	end
-
-	return result
 end
 
-function exchangeclone.set_item_energy(itemstring, energy_value)
+local function set_item_energy(itemstring, energy_value)
     local def = minetest.registered_items[itemstring]
     if not def then return end
     if not def.groups then return end
     if not def.description or def.description == "" then return end
     local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
     if not (item_name and mod_name) then return end
-    if mod_name == "ghost_blocks" then
-        energy_value = 0 --I don't know what to do about ghost blocks.
-    end
-    if exchangeclone.mineclone then
-        if exchangeclone.mcl_energy_values[mod_name] then
-            energy_value = exchangeclone.mcl_energy_values[mod_name][item_name] or energy_value --override if possible
+    if exchangeclone.whitelisted_mods[mod_name] then
+        if mod_name == "ghost_blocks" then
+            energy_value = 0 --I don't know what to do about ghost blocks.
+        end
+        if exchangeclone.mineclone then
+            if exchangeclone.mcl_energy_values[mod_name] then
+                energy_value = exchangeclone.mcl_energy_values[mod_name][item_name] or energy_value --override if possible
+            end
+        else
+            if exchangeclone.mtg_energy_values[mod_name] then
+                energy_value = exchangeclone.mtg_energy_values[mod_name][item_name] or energy_value --override if possible
+            end
         end
     else
-        if exchangeclone.mtg_energy_values[mod_name] then
-            energy_value = exchangeclone.mtg_energy_values[mod_name][item_name] or energy_value --override if possible
-        end
+        energy_value = 0
     end
     local description = def.description
     local groups = table.copy(def.groups)
@@ -1374,38 +1482,38 @@ end
 
 local function add_potion_energy(info)
     local base_cost = 2 --cost of water bottle
-    --TODO: Change when MineClone does.
+    --TODO: Change dragon's breath when MineClone does.
     local dragon_breath_cost = 8.5
     base_cost = math.floor(base_cost + (info.ingredient_cost / 3)) --/3 because 3 potions/ingredient
     base_cost = base_cost + (info.custom_base_cost or 8) --8 = 1/3 of nether wart.
     local splash_cost = base_cost + 64
     local lingering_cost = math.floor(base_cost + (dragon_breath_cost / 3))
-    exchangeclone.set_item_energy("mcl_potions:"..info.name, base_cost)
-    exchangeclone.set_item_energy("mcl_potions:"..info.name.."_splash", splash_cost)
-    exchangeclone.set_item_energy("mcl_potions:"..info.name.."_lingering", lingering_cost)
+    set_item_energy("mcl_potions:"..info.name, base_cost)
+    set_item_energy("mcl_potions:"..info.name.."_splash", splash_cost)
+    set_item_energy("mcl_potions:"..info.name.."_lingering", lingering_cost)
     if not info.no_arrow then
         local arrow_cost = math.floor(lingering_cost / 8 + 3)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_arrow", arrow_cost)
+        set_item_energy("mcl_potions:"..info.name.."_arrow", arrow_cost)
     end
     if info.plus then
         local plus_base_cost = base_cost + 21
         local plus_splash_cost = splash_cost + 21
         local plus_lingering_cost = lingering_cost + 21
         local plus_arrow_cost = math.floor(plus_lingering_cost / 8 + 3)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_plus", plus_base_cost)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_plus_splash", plus_splash_cost)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_plus_lingering", plus_lingering_cost)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_plus_arrow", plus_arrow_cost)
+        set_item_energy("mcl_potions:"..info.name.."_plus", plus_base_cost)
+        set_item_energy("mcl_potions:"..info.name.."_plus_splash", plus_splash_cost)
+        set_item_energy("mcl_potions:"..info.name.."_plus_lingering", plus_lingering_cost)
+        set_item_energy("mcl_potions:"..info.name.."_plus_arrow", plus_arrow_cost)
     end
     if info.two then
         local two_base_cost = base_cost + 21
         local two_splash_cost = splash_cost + 21
         local two_lingering_cost = lingering_cost + 21
         local two_arrow_cost = math.floor(two_lingering_cost / 8 + 3)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_2", two_base_cost)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_2_splash", two_splash_cost)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_2_lingering", two_lingering_cost)
-        exchangeclone.set_item_energy("mcl_potions:"..info.name.."_2_arrow", two_arrow_cost)
+        set_item_energy("mcl_potions:"..info.name.."_2", two_base_cost)
+        set_item_energy("mcl_potions:"..info.name.."_2_splash", two_splash_cost)
+        set_item_energy("mcl_potions:"..info.name.."_2_lingering", two_lingering_cost)
+        set_item_energy("mcl_potions:"..info.name.."_2_arrow", two_arrow_cost)
     end
 end
 
@@ -1417,28 +1525,28 @@ minetest.register_on_mods_loaded(function()
         for index, group in ipairs(exchangeclone.mcl_group_values) do
             groupnames[#groupnames + 1] = group[1] --Get list of group names
         end
-        local grouped_items = get_group_items(groupnames, true, true)
+        local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
         for index, group in ipairs(exchangeclone.mcl_group_values) do
             for i, item in pairs(grouped_items[group[1]]) do
-                exchangeclone.set_item_energy(item, group[2])
+                set_item_energy(item, group[2])
             end
         end
         for i = 0, 31 do
-            exchangeclone.set_item_energy("mcl_compass:"..i.."_recovery", 443456)
+            set_item_energy("mcl_compass:"..i.."_recovery", 443456)
         end
         for i = 0, 31 do
-            exchangeclone.set_item_energy("mcl_compass:"..i, 1088)
+            set_item_energy("mcl_compass:"..i, 1088)
         end
-        exchangeclone.set_item_energy("mcl_compass:compass", 1088)
+        set_item_energy("mcl_compass:compass", 1088)
         for i = 0, 63 do
-            exchangeclone.set_item_energy("mcl_clock:clock_"..i, 8256)
+            set_item_energy("mcl_clock:clock_"..i, 8256)
         end
-        exchangeclone.set_item_energy("mcl_clock:clock", 8256)
+        set_item_energy("mcl_clock:clock", 8256)
         --It's almost like the "compass" and "clock" groups don't exist. I tried using them, but it just didn't work.
-        exchangeclone.set_item_energy("mcl_bone_meal:bone_meal", 48)
+        set_item_energy("mcl_bone_meal:bone_meal", 48)
         --Bone meal just doesn't work either, for some reason.
         for i = 1, 8 do --faster than doing everything individually.
-            exchangeclone.set_item_energy("mcl_jukebox:record_"..i, 1024)
+            set_item_energy("mcl_jukebox:record_"..i, 1024)
         end
         for _, info in ipairs(exchangeclone.mcl_potion_data) do
             add_potion_energy(info)
@@ -1449,16 +1557,16 @@ minetest.register_on_mods_loaded(function()
         for index, group in ipairs(exchangeclone.mtg_group_values) do
             groupnames[#groupnames + 1] = group[1] --Get list of group names
         end
-        local grouped_items = get_group_items(groupnames, true, true)
+        local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
         for index, group in ipairs(exchangeclone.mtg_group_values) do
             for i, item in pairs(grouped_items[group[1]]) do
-                exchangeclone.set_item_energy(item, group[2])
+                set_item_energy(item, group[2])
             end
         end
     end
     
     for _, item in ipairs(slabs_and_stairs) do
-        exchangeclone.set_item_energy(item[1], item[2])
+        set_item_energy(item[1], item[2])
     end
 end
 )

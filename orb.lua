@@ -1,34 +1,21 @@
-function exchangeclone.read_orb_charge(itemstack, user, pointed_thing)
+local function read_orb_charge(itemstack, player, pointed_thing)
+    local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
+    if click_test ~= false then
+        return click_test
+    end
+    
     local stored = itemstack:get_meta():get_float("stored_charge") or 0
-    minetest.chat_send_player(user:get_player_name(), "Current Charge: "..stored)
+    minetest.chat_send_player(player:get_player_name(), "Current Charge: "..stored)
     return itemstack
-end
-
-function exchangeclone.get_orb_energy(inventory, listname, index)
-    if not inventory then return end
-    if not listname then listname = "main" end
-    if not index then index = 1 end
-    local itemstack = inventory:get_stack(listname, index)
-    if not itemstack then return end
-    return itemstack:get_meta():get_float("stored_energy")
-end
-
-function exchangeclone.set_orb_energy(inventory, listname, index, amount)
-    if (not inventory) or (not amount) or (amount < 0) then return end
-    if not listname then listname = "main" end
-    if not index then index = 1 end
-    local itemstack = inventory:get_stack(listname, index)
-    if not itemstack then return end
-    itemstack:get_meta():set_float("stored_energy", amount)
-    itemstack:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..amount)
-    inventory:set_stack(listname, index, itemstack)
 end
 
 minetest.register_tool("exchangeclone:exchange_orb", {
     description = "Exchange Orb\nCurrent Charge: 0",
     inventory_image = "exchangeclone_exchange_orb.png",
     --energy_value = 33792,
-    on_use = exchangeclone.read_orb_charge,
+    on_secondary_use = read_orb_charge,
+    on_place = read_orb_charge,
+    groups = {exchange_orb = 1, disable_repair = 1}
 })
 
 local recipe_item_1 = "default:steel_ingot"
