@@ -14,7 +14,7 @@
     New features:
         Added a changelog (you're reading it now!)
         Added all items from Why (a MineClone modpack I made)
-        Added Philosopher's Stone
+        Added Philosopher's Stone (these controls are now inaccurate; changed in 3.0)
             Left click to increase range (minimum = 0, maximum = 4).
             Shift+left click to decrease range.
             Aux1+left click to open enchanting table (MineClone only).
