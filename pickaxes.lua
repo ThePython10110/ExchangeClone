@@ -1,6 +1,6 @@
 local players_digging = {}
 
-local function mine_vein(player, start_pos, node_name, pos)
+local function mine_vein(player, player_energy, start_pos, node_name, pos)
     -- Not very efficient, but it SHOULD work.
     if not player then return 0 end
     if not start_pos then return 0 end
@@ -9,12 +9,13 @@ local function mine_vein(player, start_pos, node_name, pos)
     if not node_name then node_name = node.name end
     local distance = vector.distance(pos, start_pos)
     if distance > 10 then return 0 end
+    if player_energy < 8 then return 0 end
     if node_name == node.name then
-        local energy_cost = 0
+        local energy_cost = 8
         exchangeclone.drop_items_on_player(pos, minetest.get_node_drops(node.name, "exchangeclone:red_matter_pickaxe"), player)
         minetest.set_node(pos, {name = "air"})
         for x = pos.x-1,pos.x+1 do for y = pos.y-1,pos.y+1 do for z = pos.z-1,pos.z+1 do
-            local cost = mine_vein(player, start_pos, node_name, {x=x,y=y,z=z})
+            local cost = mine_vein(player, player_energy, start_pos, node_name, {x=x,y=y,z=z})
             if cost and cost > 0 then
                 energy_cost = energy_cost + cost
             end
@@ -23,6 +24,13 @@ local function mine_vein(player, start_pos, node_name, pos)
     end
     return 0
 end
+
+local torch_itemstring = "default:torch"
+if exchangeclone.mineclone then
+    torch_itemstring = "mcl_torches:torch"
+end
+
+local torch_on_place = minetest.registered_items[torch_itemstring].on_place
 
 local function pickaxe_on_use(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -53,14 +61,21 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
 		return itemstack
 	end
 
-    if pointed_thing.type == "node"
-    and (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
-        local player_energy = exchangeclone.get_player_energy(player)
-        players_digging[player:get_player_name()] = true
-        local energy_cost = mine_vein(player, pointed_thing.under)
-        players_digging[player:get_player_name()] = nil
-        if energy_cost then
-            exchangeclone.set_player_energy(player, player_energy - energy_cost)
+    if pointed_thing.type == "node" then
+        if (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
+            local player_energy = exchangeclone.get_player_energy(player)
+            exchangeclone.play_ability_sound(player)
+            players_digging[player:get_player_name()] = true
+            local energy_cost = mine_vein(player, player_energy, pointed_thing.under)
+            players_digging[player:get_player_name()] = nil
+            if energy_cost then
+                exchangeclone.set_player_energy(player, player_energy - energy_cost)
+            end
+        elseif itemstack:get_name():find("red") then
+            local player_energy = exchangeclone.get_player_energy(player)
+            torch_on_place(ItemStack(torch_itemstring), player, pointed_thing)
+            exchangeclone.set_player_energy(player, player_energy - exchangeclone.get_item_energy(torch_itemstring))
+            -- If the torch could not be placed, it still costs energy... not sure how to fix that
         end
     end
 end

@@ -252,7 +252,7 @@ local function on_right_click(itemstack, player, pointed_thing)
     end
 end
 
-local tt_help = "(Shift-)click: change range, (shift-)right-click: transmute blocks."
+local tt_help = "(Shift)-right-click: transmute blocks. (Shift)-Aux1-right-click: Change range"
 
 local item1 = "mese crystals"
 if exchangeclone.mineclone then

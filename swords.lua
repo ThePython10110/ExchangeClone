@@ -220,17 +220,17 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 minetest.register_craft({
     output = "exchangeclone:dark_matter_sword",
     recipe = {
-        {"", "exchangeclone:dark_matter", ""},
-        {"", "exchangeclone:dark_matter", ""},
-        {"", exchangeclone.diamond_itemstring, ""}
+        {"exchangeclone:dark_matter"},
+        {"exchangeclone:dark_matter"},
+        {exchangeclone.diamond_itemstring}
     }
 })
 
 minetest.register_craft({
 	output = "exchangeclone:red_matter_sword",
 	recipe = {
-		{"", "exchangeclone:red_matter", ""},
-		{"", "exchangeclone:red_matter", ""},
-		{"", "exchangeclone:dark_matter_sword", ""},
+		{"exchangeclone:red_matter"},
+		{"exchangeclone:red_matter"},
+		{"exchangeclone:dark_matter_sword"},
 	}
 })

@@ -1,5 +1,7 @@
 local axe_break_cube = function(player, center, distance, strip)
-    exchangeclone.play_ability_sound(player)
+    if distance > 0 then
+        exchangeclone.play_ability_sound(player)
+    end
     local player_pos = player:get_pos()
     local player_energy = exchangeclone.get_player_energy(player)
     local energy_cost = 0
@@ -138,17 +140,17 @@ minetest.register_tool("exchangeclone:red_matter_axe", {
 minetest.register_craft({
     output = "exchangeclone:dark_matter_axe",
     recipe = {
-        {"exchangeclone:dark_matter", "exchangeclone:dark_matter", ""},
-        {"exchangeclone:dark_matter", exchangeclone.diamond_itemstring, ""},
-        {"", exchangeclone.diamond_itemstring, ""}
+        {"exchangeclone:dark_matter", "exchangeclone:dark_matter"},
+        {"exchangeclone:dark_matter", exchangeclone.diamond_itemstring},
+        {"", exchangeclone.diamond_itemstring}
     }
 })
 
 minetest.register_craft({
     output = "exchangeclone:red_matter_axe",
     recipe = {
-        {"exchangeclone:red_matter", "exchangeclone:red_matter", ""},
-        {"exchangeclone:red_matter", "exchangeclone:dark_matter_axe", ""},
-        {"", "exchangeclone:dark_matter", ""}
+        {"exchangeclone:red_matter", "exchangeclone:red_matter"},
+        {"exchangeclone:red_matter", "exchangeclone:dark_matter_axe"},
+        {"", "exchangeclone:dark_matter"}
     }
 })

@@ -272,17 +272,17 @@ minetest.register_on_dignode(
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hoe",
     recipe = {
-        {"exchangeclone:dark_matter", "exchangeclone:dark_matter", ""},
-        {"", exchangeclone.diamond_itemstring, ""},
-        {"", exchangeclone.diamond_itemstring, ""}
+        {"exchangeclone:dark_matter", "exchangeclone:dark_matter"},
+        {"", exchangeclone.diamond_itemstring},
+        {"", exchangeclone.diamond_itemstring}
     }
 })
 
 minetest.register_craft({
     output = "exchangeclone:red_matter_hoe",
     recipe = {
-        {"exchangeclone:red_matter", "exchangeclone:red_matter", ""},
-        {"", "group:dark_matter_hoe", ""},
-        {"", "exchangeclone:dark_matter", ""}
+        {"exchangeclone:red_matter", "exchangeclone:red_matter"},
+        {"", "group:dark_matter_hoe"},
+        {"", "exchangeclone:dark_matter"}
     }
 })

@@ -70,7 +70,15 @@ local function on_timer(pos, elapsed)
             -- make sure the stack at dst is same as the src
             if not inv:is_empty("dst") then
                 if not(src_stack:get_name() == dst_stack:get_name()) then
-                    break
+                    if exchangeclone.mineclone then
+                        if not(string.sub(src_stack:get_name(), -10, -1) == "_enchanted"
+                        and string.sub(src_stack:get_name(), 1, -11) == dst_stack:get_name()
+                        and src_stack:get_name() ~= "mcl_core:apple_gold_enchanted") then
+                            break
+                        end
+                    else
+                        break
+                    end
                 end
             end
             -- make sure orb has enough charge
@@ -86,9 +94,14 @@ local function on_timer(pos, elapsed)
                 -- "convert" charge into a node at dst
                 if dst_stack:is_empty() then
                     -- create a new stack
-                    dst_stack = ItemStack(src_stack:get_name())
-                elseif dst_stack:get_count() >= 64 then
-                    -- the max item count is limited to 64
+                    if exchangeclone.mineclone
+                    and string.sub(src_stack:get_name(), -10, -1) == "_enchanted"
+                    and src_stack:get_name() ~= "mcl_core:apple_gold_enchanted" then
+                        dst_stack = ItemStack(string.sub(src_stack:get_name(), 1, -11))
+                    else
+                        dst_stack = ItemStack(src_stack:get_name())
+                    end
+                elseif not dst_stack:item_fits(src_stack:get_name()) then
                     break
                 else
                     -- add one node into stack

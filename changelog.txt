@@ -49,14 +49,15 @@
             Axes:
                 Can break all wood and leaves within a radius, costing 8 energy per block broken.
             Shovels:
-                Can break all sand/gravel-like blocks within a radius, or all dirt-like blocks *on one level* within a radius, costing 8 energy per block broken
+                Can break all shovely blocks within a radius, costing 8 energy per block broken
+                Can create paths in a radius, costing 8 energy per block
             Hoes:
                 Breaks dirt incredibly quickly (and unfortunately all other shovely blocks because I can't figure out how to avoid it)
                 Has a 3x3 mode for digging dirt (slightly slower)
                 Can till all dirt within a radius, costs 2 energy per block
             Hammers:
                 Breaks pickaxey blocks in a 3x3 area
-                Can break all pickaxey blocks within a radius
+                Can break all pickaxey blocks within a radius, costing 8 energy per block broken
             Shears:
                 More wool/mushrooms dropped when shearing, chance of cloning sheep/mooshrooms
                 Can shear all shearable plants/cobwebs within a radius, costing 8 energy per block broken.
@@ -73,6 +74,9 @@
         Gold cannot be crafted into diamonds using the PS; it can now be crafted into emeralds and emeralds into diamonds (MineClone).
         The PS's enchanting table now is limited to 8-bookshelf enchantments to make it more balanced (MineClone).
         Fixed terracotta values (MineClone)
+        Enchanted tools/armor are now worth the same amount as unenchanted tools/armor instead of twice as much (MineClone).
+        Enchanted tools/armor cannot be created by the Constructor (MineClone).
+        It is now impossible to get stacks of invalid sizes with the Constructor (>16 ender pearls or >1 pickaxe, for example)
     Bugfixes:
         Fixed freezing when attempting to deconstruct 0-energy items
         The Constructor, Deconstructor, and Energy Collector are now not unbreakable in MineClone (I really should test in survival).

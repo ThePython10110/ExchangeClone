@@ -1,6 +1,8 @@
 # ExchangeClone
 Allows players to turn nodes into energy (stored in orbs), and energy from orbs into nodes. Supports all items in Minetest Game and MineClone 2!
 
+Includes other things from Equivalent Exchange (the MineCraft mod)
+
 [GitHub repo](https://github.com/thepython10110/exchangeclone)
 
 [Forum topic](https://forum.minetest.net/viewtopic.php?f=9&t=29473)
@@ -40,7 +42,8 @@ I don't actually own MineCraft, meaning I don't know exactly how the original mo
 ## Known issues:
 * When items are inserted into the Energy Collector, Deconstructor, or Constructor with MineClone hoppers, it does not trigger the machines to start.
 * When machines are exploded, they (and the items inside) do not drop.
-* Dark/Red matter shears will sometimes be treated as normal shears.
+* Dark/Red matter shears will sometimes be treated as normal shears when used by MineClone dispensers.
+* Blocks destroyed by special abilities will not update surrounding blocks (so you may end up with floating gravel, flowers, torches, etc.)
 
 If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).
 
@@ -48,7 +51,7 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 ![Minetest Game Screenshot](screenshot_mtg.png)
 
 ## Sources/license:
-This mod is inspired by the "Equivalent Exchange" mod for MineCraft, and forked and modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Both this mod and Element Exchange are licensed under GPLv3+. The textures for the Constructor, Deconstructor, Collector, and Orb are from Element Exchange and have the same license.The Alchemical Coal, Mobius Fuel, and Aeternalis Fuel textures are modified versions of MineClone's coal texture (CC-BY-SA-3.0). All other textures are my own (inspired by Equivalent Exchange) and licensed under GPLv3+ just to make it match Element Exchange. 
+This mod is inspired by the "Equivalent Exchange" mod for MineCraft, and forked and modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Both this mod and Element Exchange are licensed under GPLv3+. The textures for the Constructor, Deconstructor, Collector, and Orb are from Element Exchange and have the same license.The Alchemical Coal, Mobius Fuel, and Aeternalis Fuel textures are modified versions of MineClone's coal texture (CC-BY-SA-3.0). All other textures are my own (inspired by Equivalent Exchange) and licensed under GPLv3+ just to make it match Element Exchange.
 
 Copyright (C) 2023 ThePython10110
 
