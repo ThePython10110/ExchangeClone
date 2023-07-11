@@ -84,3 +84,9 @@
         The Energy Collector now drops its contents when broken (MineClone)
         Fixed Exchange Orb energy value (forgot to change it after changing the recipe)
             Changed Constructor, Deconstructor, and Collector recipes and energy values to make them cheaper.
+3.1
+    Changes:
+        Added new energy values from Why (and Why's new Minetest Game energy values)
+    Bugfixes:
+        Fixed crash based on PESA inventory movement
+        Added mcl_blackstone to the mod whitelist

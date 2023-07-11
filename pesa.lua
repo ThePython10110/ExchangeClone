@@ -53,11 +53,13 @@ minetest.register_allow_player_inventory_action(function(player, action, inv, in
 		or action == "take" and  info.listname  == "exchangeclone_pesa"
 	) then
 		if player:get_wielded_item():get_name() == "exchangeclone:pesa" then
-			local stack = player:get_inventory():get_stack(info.from_list, info.from_index)
-            if action == "take" then
-                return stack:get_count()
+            local stack
+			if info.listname or (info.from_list and info.from_list == "exchangeclone_pesa") then
+                stack = player:get_inventory():get_stack("exchangeclone_pesa", info.from_index)
+            else
+                stack = player:get_inventory():get_stack("main", info.from_index)
             end
-            if stack:get_name() == "exchangeclone:exchange_orb" then
+            if stack:get_name() == "exchangeclone:exchange_orb" or action == "take" then
                 return stack:get_count()
             else
                 return 0
