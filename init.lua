@@ -16,6 +16,7 @@ dofile(default_path.."/energy_collector.lua")
 dofile(default_path.."/orb.lua")
 dofile(default_path.."/craftitems.lua")
 if exchangeclone.mineclone then
+	mcl_item_id.set_mod_namespace("exchangeclone")
 	dofile(default_path.."/shears.lua")
 end
 dofile(default_path.."/swords.lua")

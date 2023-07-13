@@ -90,3 +90,6 @@
     Bugfixes:
         Fixed crash based on PESA inventory movement
         Added mcl_blackstone to the mod whitelist
+3.2
+    Changes:
+        Set MineClone mod namespace
