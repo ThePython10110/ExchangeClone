@@ -1,7 +1,5 @@
 # ExchangeClone
-Allows players to turn nodes into energy (stored in orbs), and energy from orbs into nodes. Supports all items in Minetest Game and MineClone 2!
-
-Includes other things from Equivalent Exchange (the MineCraft mod)
+Allows players to turn items into energy (stored in orbs), and energy from orbs into items. Supports all items in Minetest Game and MineClone 2! Includes other things from Equivalent Exchange (the MineCraft mod)
 
 [GitHub repo](https://github.com/thepython10110/exchangeclone)
 
@@ -14,10 +12,13 @@ Includes other things from Equivalent Exchange (the MineCraft mod)
 Dependencies: Minetest Game or MineClone.
 
 ## Features
-- Orb that holds energy (left click while holding it to show charge)
-- Collector that collects energy from the sun
-- Deconstructor that can turn items into energy
-- Constructor that can create items from energy
+* Orb that holds energy (left click while holding it to show charge)
+* Collector that collects energy from the sun
+* Deconstructor that can turn items into energy
+* Constructor that can create items from energy
+* Philosopher's Stone
+* Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
+* Dark and Red Matter Orbs, Blocks, tools, and armor
 
 ## Config
 All energy values are in `energy.lua`. You can also change the speed at which the Energy Collector collects energy (default: 5 energy/second) in `minetest.conf` or the Minetest settings.
@@ -25,17 +26,17 @@ All energy values are in `energy.lua`. You can also change the speed at which th
 ## New features added by ThePython10110
 *More information in `changelog.txt`.*
 * Support for MineClone
-* COMPLETELY redone energy values (originally, you could convert a single diamond into a diamond node... incredibly OP).
+* COMPLETELY redone energy values (originally, you could convert a single diamond into a diamond block... incredibly OP).
 * Shift-clicking works with the Constructor/Deconstructor/Collector (`listring`s)
 * Fixed a bug where items could be placed in the output slot of the Element Constructor
 * Added the ability to add energy values by group
 * Damaged tools now give less energy (based on wear)
 * Added Philosopher's Stone
-    * Right-click and sneak-right-click to increase and decrease transmutation range (0-4 nodes away from the node you are currently standing on)
-    * Left-click and sneak-left-click to transmute nodes in range (two different modes with minor differences)
-    * Aux1-left-click to open enchanting table (MineClone only)
-    * Aux1-right-click to open crafting table (MineClone only)
-    * Ability to exchange charcoal/coal/iron/copper/tin/gold/mese/emerald/diamond by crafting (the Philosopher's Stone is always returned)
+    * Aux1-right-click and aux1-sneak-right-click to increase and decrease transmutation range (0-4 nodes away from the node you are currently standing on)
+    * Right-click and sneak-right-click to transmute nodes in range (two different modes with minor differences)
+    * Left-click to open crafting table (MineClone only)
+    * Shift-left-click to open enchanting table (MineClone only)
+    * Ability to exchange resources by crafting (the Philosopher's Stone is always returned)
 * Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
 * Dark and Red Matter Orbs, Blocks, tools, and armor
 
