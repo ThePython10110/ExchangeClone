@@ -1,51 +1,46 @@
-local axe_break_cube = function(player, center, distance, strip)
-    if distance > 0 then
-        exchangeclone.play_ability_sound(player)
-    end
-    local player_pos = player:get_pos()
-    local player_energy = exchangeclone.get_player_energy(player)
-    local energy_cost = 0
-    local pos = center
-    pos.x = exchangeclone.round(pos.x)
-    pos.y = math.floor(pos.y) --make sure y is node BELOW player's feet
-    pos.z = exchangeclone.round(pos.z)
-
-    for x = pos.x-distance, pos.x+distance do
-        if energy_cost + 8 > player_energy then
-            break
+exchangeclone.axe_action = {
+    start_action = function(player, center, range)
+        if exchangeclone.check_cooldown(player, "axe") then return end
+        local data = {}
+        data.player_energy = exchangeclone.get_player_energy(player)
+        data.energy_cost = 0
+        if exchangeclone.mineclone then
+            data.strip = not player:get_player_control().sneak
         end
-    for y = pos.y-distance, pos.y+distance do
-        if energy_cost + 8 > player_energy then
-            break
+        if range > 0 or not data.strip then
+            exchangeclone.play_ability_sound(player)
         end
-    for z = pos.z-distance, pos.z+distance do
-        if energy_cost + 8 > player_energy then
-            break
-        end
-        local new_pos = {x=x,y=y,z=z}
-        local node = minetest.get_node(new_pos) or {name="air"}
+        return data
+    end,
+    action = function(player, pos, node, data)
+        if data.energy_cost + 8 > data.player_energy then return end
         local node_def = minetest.registered_items[node.name]
         if (node_def.groups.tree or node_def.groups.leaves) then
-            if minetest.is_protected(new_pos, player:get_player_name()) then
-                minetest.record_protection_violation(new_pos, player:get_player_name())
+            if minetest.is_protected(pos, player:get_player_name()) then
+                minetest.record_protection_violation(pos, player:get_player_name())
             else
-                energy_cost = energy_cost + 8
-                if strip then
+                if data.strip then
                     if node_def._mcl_stripped_variant ~= nil then
-                        minetest.swap_node(new_pos, {name=node_def._mcl_stripped_variant, param2=node.param2})
+                        data.energy_cost = data.energy_cost + 4
+                        minetest.swap_node(pos, {name=node_def._mcl_stripped_variant, param2=node.param2})
                     end
                 else
+                    data.energy_cost = data.energy_cost + 8
                     local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_axe")
-                    exchangeclone.drop_items_on_player(new_pos, drops, player)
-                    minetest.set_node(new_pos, {name = "air"})
+                    exchangeclone.drop_items_on_player(pos, drops, player)
+                    minetest.set_node(pos, {name = "air"})
                 end
             end
         end
+        return data
+    end,
+    end_action = function(player, center, range, data)
+        if range > 0 or not data.strip then
+            exchangeclone.set_player_energy(player, data.player_energy - data.energy_cost)
+            exchangeclone.start_cooldown(player, "axe", range/6)
+        end
     end
-    end
-    end
-    exchangeclone.set_player_energy(player, player_energy - energy_cost)
-end
+}
 
 local function axe_on_place(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -63,27 +58,9 @@ local function axe_on_place(itemstack, player, pointed_thing)
 
     local range = itemstack:get_meta():get_int("exchangeclone_item_range")
 
-    if pointed_thing.type == "node" then
-        local node = minetest.get_node(pointed_thing.under)
-        local node_def = minetest.registered_nodes[node.name]
-
-        if range == 0 then
-            if node_def._mcl_stripped_variant ~= nil then
-                minetest.swap_node(pointed_thing.under, {name=node_def._mcl_stripped_variant, param2=node.param2})
-                return itemstack
-            end
-        end
-    end
-
     local center = player:get_pos()
-    if pointed_thing.type == "node" then
-        center = pointed_thing.under
-    end
-    if player:get_player_control().sneak and exchangeclone.mineclone then
-        axe_break_cube(player, center, range, true) -- strip when holding shift
-    else
-        axe_break_cube(player, center, range)
-    end
+    if pointed_thing.type == "node" then center = pointed_thing.under end
+    exchangeclone.node_radius_action(player, center, range, exchangeclone.axe_action)
     return itemstack
 end
 

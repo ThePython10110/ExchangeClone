@@ -3,49 +3,36 @@ if exchangeclone.mineclone then
 	stone_group = "pickaxey"
 end
 
-local players_digging = {}
-
-local hammer_break_cube = function(player, center, distance)
-    players_digging[player:get_player_name()] = true -- to prevent doing 3x3 as well as AOE
-    exchangeclone.play_ability_sound(player)
-    local player_pos = player:get_pos()
-    local player_energy = exchangeclone.get_player_energy(player)
-    local energy_cost = 0
-    local pos = center
-    pos.x = exchangeclone.round(pos.x)
-    pos.y = math.floor(pos.y) --make sure y is node BELOW player's feet
-    pos.z = exchangeclone.round(pos.z)
-
-    for x = pos.x-distance, pos.x+distance do
-        if energy_cost + 8 > player_energy then
-            break
-        end
-    for y = pos.y-distance, pos.y+distance do
-        if energy_cost + 8 > player_energy then
-            break
-        end
-    for z = pos.z-distance, pos.z+distance do
-        if energy_cost + 8 > player_energy then
-            break
-        end
-        local new_pos = {x=x,y=y,z=z}
-        local node = minetest.get_node(new_pos) or {name="air"}
-	    if minetest.get_item_group(node.name, stone_group) ~= 0 then
-            if minetest.is_protected(new_pos, player:get_player_name()) then
-                minetest.record_protection_violation(new_pos, player:get_player_name())
-            else
-                energy_cost = energy_cost + 8
-                local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_hammer")
-                exchangeclone.drop_items_on_player(new_pos, drops, player)
-                minetest.set_node(new_pos, {name = "air"})
-            end
-        end
-    end
-    end
-    end
-    exchangeclone.set_player_energy(player, player_energy - energy_cost)
-    players_digging[player:get_player_name()] = nil
-end
+exchangeclone.hammer_action = {
+	start_action = function(player, center, range)
+		if exchangeclone.check_cooldown(player, "hammer") then return end
+		local data = {}
+		exchangeclone.multidig[player:get_player_name()] = true -- to prevent doing 3x3 as well as AOE
+		exchangeclone.play_ability_sound(player)
+		data.player_energy = exchangeclone.get_player_energy(player)
+		data.energy_cost = 0
+		return data
+	end,
+	action = function(player, pos, node, data)
+		if data.energy_cost + 8 > data.player_energy then return end
+		if minetest.get_item_group(node.name, stone_group) ~= 0 then
+			if minetest.is_protected(pos, player:get_player_name()) then
+				minetest.record_protection_violation(pos, player:get_player_name())
+			else
+				data.energy_cost = data.energy_cost + 8
+				local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_hammer")
+				exchangeclone.drop_items_on_player(pos, drops, player)
+				minetest.set_node(pos, {name = "air"})
+			end
+		end
+		return data
+	end,
+	end_action = function(player, center, range, data)
+		exchangeclone.set_player_energy(player, data.player_energy - data.energy_cost)
+		exchangeclone.multidig[player:get_player_name()] = nil
+		exchangeclone.start_cooldown(player, "hammer", range/2) -- The hammer has by far the most lag potential and therefore a long cooldown.
+	end
+}
 
 local function hammer_on_place(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -65,7 +52,7 @@ local function hammer_on_place(itemstack, player, pointed_thing)
 		local current_name = itemstack:get_name()
 		if string.sub(current_name, -4, -1) == "_3x3" then
 			itemstack:set_name(string.sub(current_name, 1, -5))
-			minetest.chat_send_player(player:get_player_name(), "Single block mode")
+			minetest.chat_send_player(player:get_player_name(), "Single node mode")
 		else
 			itemstack:set_name(current_name.."_3x3")
 			minetest.chat_send_player(player:get_player_name(), "3x3 mode")
@@ -78,7 +65,7 @@ local function hammer_on_place(itemstack, player, pointed_thing)
     if pointed_thing.type == "node" then
         center = pointed_thing.under
     end
-    hammer_break_cube(player, center, range)
+    exchangeclone.node_radius_action(player, center, range, exchangeclone.hammer_action)
 end
 
 minetest.register_tool("exchangeclone:dark_matter_hammer", {
@@ -180,73 +167,6 @@ minetest.register_tool("exchangeclone:red_matter_hammer_3x3", {
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place,
 })
-
--- adapted from https://github.com/cultom/hammermod/blob/master/init.lua
-
-local function dig_if_stone(pos, player)
-	local node = minetest.get_node(pos)
-	if minetest.get_item_group(node.name, stone_group) ~= 0 then
-		minetest.node_dig(pos, minetest.get_node(pos), player)
-	end
-end
-
-minetest.register_on_dignode(
-  function(pos, oldnode, player)
-    if player == nil or (player:get_wielded_item():get_name() ~= "exchangeclone:dark_matter_hammer_3x3"
-		and player:get_wielded_item():get_name() ~= "exchangeclone:red_matter_hammer_3x3") then
-      return
-    end
-    
-    local playerName = player:get_player_name()
-    if(playerName == ""  or players_digging[playerName]) then
-      return
-    end
-    players_digging[playerName] = true
-
-    local player_rotation = exchangeclone.get_face_direction(player)
-
-	local dir1
-	local dir2
-
-	if player_rotation.y ~= 0 then
-		dir1 = "x"
-		dir2 = "z"
-	elseif player_rotation.x ~= 0 then
-		dir1 = "y"
-		dir2 = "z"
-	elseif player_rotation.z ~= 0 then
-		dir1 = "x"
-		dir2 = "y"
-	end
-
-    --[[
-        123
-        4 5
-        678
-    ]]
-
-	pos[dir1] = pos[dir1] - 1 --7
-	dig_if_stone(pos, player)
-	pos[dir2] = pos[dir2] - 1 --6
-	dig_if_stone(pos, player)
-	pos[dir1] = pos[dir1] + 1 --4
-	dig_if_stone(pos, player)
-	pos[dir1] = pos[dir1] + 1 --1
-	dig_if_stone(pos, player)
-	pos[dir2] = pos[dir2] + 1 --2
-	dig_if_stone(pos, player)
-	pos[dir2] = pos[dir2] + 1 --3
-	dig_if_stone(pos, player)
-	pos[dir1] = pos[dir1] - 1 --5
-	dig_if_stone(pos, player)
-	pos[dir1] = pos[dir1] - 1 --8
-	dig_if_stone(pos, player)
-
-    players_digging[playerName] = nil
-  end
-)
-
--- end copied code
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hammer",

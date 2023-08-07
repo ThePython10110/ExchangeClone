@@ -1,55 +1,46 @@
-local shovel_cube = function(player, center, distance, path)
-    if distance > 0 then
-        exchangeclone.play_ability_sound(player)
-    end
-    local player_pos = player:get_pos()
-    local player_energy = exchangeclone.get_player_energy(player)
-    local energy_cost = 0
-    local pos = center
-    pos.x = exchangeclone.round(pos.x)
-    pos.y = math.floor(pos.y) --make sure y is node BELOW player's feet
-    pos.z = exchangeclone.round(pos.z)
-
-    for x = pos.x-distance, pos.x+distance do
-        if energy_cost + 8 > player_energy then
-            break
+exchangeclone.shovel_action = {
+    start_action = function(player, center, range)
+        if exchangeclone.check_cooldown(player, "shovel") then return end
+        local data = {}
+        data.player_energy = exchangeclone.get_player_energy(player)
+        data.energy_cost = 0
+        if exchangeclone.mineclone then
+            data.path = not player:get_player_control().sneak
         end
-    for y = pos.y-distance, pos.y+distance do
-        if energy_cost + 8 > player_energy then
-            break
+        if range > 0 or not data.path then
+            exchangeclone.play_ability_sound(player)
         end
-    for z = pos.z-distance, pos.z+distance do
-        if energy_cost + 8 > player_energy then
-            break
-        end
-        local new_pos = {x=x,y=y,z=z}
-        local node = minetest.get_node(new_pos) or {name="air"}
+        return data
+    end,
+    action = function(player, pos, node, data)
+        if data.energy_cost + 8 > data.player_energy then return end
         if ((minetest.get_item_group(node.name, "crumbly") > 0) or (minetest.get_item_group(node.name, "shovely") > 0)) then
-            if minetest.is_protected(new_pos, player:get_player_name()) then
-                minetest.record_protection_violation(new_pos, player:get_player_name())
+            if minetest.is_protected(pos, player:get_player_name()) then
+                minetest.record_protection_violation(pos, player:get_player_name())
             else
-                if distance > 0 then
-                    energy_cost = energy_cost + 8
-                end
-                if path then
+                if data.path then
                     if (minetest.get_item_group(node.name, "path_creation_possible") == 1) then
-                        minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = new_pos}, true)
-                        minetest.swap_node(new_pos, {name="mcl_core:grass_path"})
+                        minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
+                        data.energy_cost = data.energy_cost + 4
+                        minetest.swap_node(pos, {name="mcl_core:grass_path"})
                     end
                 else
+                    data.energy_cost = data.energy_cost + 8
                     local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_shovel")
-                    exchangeclone.drop_items_on_player(new_pos, drops, player)
-                    minetest.set_node(new_pos, {name = "air"})
+                    exchangeclone.drop_items_on_player(pos, drops, player)
+                    minetest.set_node(pos, {name = "air"})
                 end
             end
         end
+        return data
+    end,
+    end_action = function(player, center, range, data)
+        if range > 0 or not data.path then
+            exchangeclone.set_player_energy(player, data.player_energy - data.energy_cost)
+            exchangeclone.start_cooldown(player, "shovel", range/4) -- Longish cooldown
+        end
     end
-    end
-    end
-    if distance > 0 then
-        exchangeclone.set_player_energy(player, player_energy - energy_cost)
-    end
-end
+}
 
 
 local function shovel_on_place(itemstack, player, pointed_thing)
@@ -73,11 +64,7 @@ local function shovel_on_place(itemstack, player, pointed_thing)
         center = pointed_thing.under
     end
 
-    if player:get_player_control().sneak then
-        shovel_cube(player, center, range, false)
-    else
-        shovel_cube(player, center, range, true)
-    end
+   exchangeclone.node_radius_action(player, center, range, exchangeclone.shovel_action)
 
     return itemstack
 end

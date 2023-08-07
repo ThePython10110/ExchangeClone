@@ -44,7 +44,7 @@ local function on_timer(pos, elapsed)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
 
-    -- get block above
+    -- get node above
     pos.y = pos.y + 1
 
     if inv:is_empty("main") then

@@ -55,12 +55,13 @@ minetest.register_on_mods_loaded(function()
 	end
 end)
 
-local sword_aoe = function(info)
+exchangeclone.aoe_attack = function(info)
 	if not info then return end
 	local max_damage = info.max_damage
 	local knockback = info.knockback
 	local radius = info.radius
 	local damage_all = info.damage_all --damage all mobs/players or just hostile ones
+	local cooldown = info.cooldown or 0
 	if not max_damage or not knockback or not radius then return end
 	if damage_all == nil then damage_all = 1 end
 
@@ -70,6 +71,8 @@ local sword_aoe = function(info)
         if click_test ~= false then
             return click_test
         end
+
+		if exchangeclone.check_cooldown(player, "sword") then return end
 
 		local player_energy = exchangeclone.get_player_energy(player)
 		if player_energy >= 384 then
@@ -97,16 +100,14 @@ local sword_aoe = function(info)
 
 				local opos = obj:get_pos()
 				
-				local distance = vector.distance(pos, opos)
+				local distance = math.max(1, vector.distance(pos, opos))
 
 				-- Punch entity with damage depending on explosion exposure and
 				-- distance to explosion
 				local punch_vec = vector.subtract(opos, pos)
 				local punch_dir = vector.normalize(punch_vec)
 				punch_dir = {x=punch_dir.x, y=punch_dir.y+0.3, z=punch_dir.z} -- knockback should be more upward
-				if distance < 1 then distance = 1 end --to prevent huge amounts of damage and dividing by zero
-				local damage = max_damage/distance
-
+				local damage = math.min(max_damage, max_damage-distance)
 				--minetest.log(dump({name=ent.name, distance=distance, damage=damage}))
 
 				local sleep_formspec_doesnt_close_mt53 = false
@@ -144,6 +145,7 @@ local sword_aoe = function(info)
 				end
 			end
 		end
+		exchangeclone.start_cooldown(player, "sword", cooldown)
 	end
 end
 
@@ -163,7 +165,7 @@ local red_matter_sword_action = function(itemstack, player, pointed_thing)
 		return itemstack
 	end
 
-	local aoe_function = sword_aoe({max_damage = 12, knockback = 20, radius = 7, damage_all = damage_all})
+	local aoe_function = exchangeclone.aoe_attack({max_damage = 12, knockback = 20, radius = 7, damage_all = damage_all, cooldown = 0.2})
 	aoe_function(itemstack, player, pointed_thing)
 end
 
@@ -183,8 +185,8 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 			snappy = {times={[1]=0.95, [2]=0.45, [3]=0.15}, uses=0, maxlevel=4},
 		},
 	},
-	on_secondary_use = sword_aoe({max_damage = 10, knockback = 12, radius = 5}),
-	on_place = sword_aoe({max_damage = 10, knockback = 12, radius = 5}),
+	on_secondary_use = exchangeclone.aoe_attack({max_damage = 10, knockback = 12, radius = 5, cooldown = 0.5}),
+	on_place = exchangeclone.aoe_attack({max_damage = 10, knockback = 12, radius = 5, cooldown = 0.5}),
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {

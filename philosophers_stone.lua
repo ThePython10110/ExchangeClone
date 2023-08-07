@@ -192,33 +192,31 @@ exchangeclone.node_transmutations = {
     }
 }
 
-local function transmute_nodes(player, center, distance, mode)
-    exchangeclone.play_ability_sound(player)
-    local pos = center
-    pos.x = exchangeclone.round(pos.x)
-    pos.y = math.floor(pos.y) --make sure y is node BELOW player's feet
-    pos.z = exchangeclone.round(pos.z)
-    for x = pos.x-distance, pos.x+distance do
-    for y = pos.y-distance, pos.y+distance do
-    for z = pos.z-distance, pos.z+distance do
-        local new_pos = {x=x,y=y,z=z}
-        local node = minetest.get_node(new_pos)
+exchangeclone.stone_action = {
+    start_action = function(player, center, range, mode)
+        if exchangeclone.check_cooldown(player, "phil") then return end
+        exchangeclone.play_ability_sound(player)
+        return mode
+    end,
+    action = function(player, pos, node, mode)
         local new_node = exchangeclone.node_transmutations[mode][node.name]
         if not new_node and mode == 2 then
             new_node = exchangeclone.node_transmutations[1][node.name]
         end
         if new_node then
-            if minetest.is_protected(new_pos, player:get_player_name()) then
-                minetest.record_protection_violation(new_pos, player:get_player_name())
+            if minetest.is_protected(pos, player:get_player_name()) then
+                minetest.record_protection_violation(pos, player:get_player_name())
             else
                 node.name = new_node
-                minetest.swap_node(new_pos, node)
+                minetest.swap_node(pos, node)
             end
         end
+        return true
+    end,
+    end_action = function(player, center, range, data)
+        exchangeclone.start_cooldown(player, "phil", 0.3)
     end
-    end
-    end
-end
+}
 
 local on_left_click = nil
 if exchangeclone.mineclone then
@@ -245,14 +243,14 @@ local function on_right_click(itemstack, player, pointed_thing)
     end
     if player:get_player_control().sneak then
         local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
-        transmute_nodes(player, center, range, 2)
+        exchangeclone.node_radius_action(player, center, range, exchangeclone.stone_action, 2)
     else
         local range = itemstack:get_meta():get_int("exchangeclone_item_range")
-        transmute_nodes(player, center, range, 1)
+        exchangeclone.node_radius_action(player, center, range, exchangeclone.stone_action, 1)
     end
 end
 
-local tt_help = "(Shift)-right-click: transmute blocks. (Shift)-Aux1-right-click: Change range"
+local tt_help = "(Shift)-right-click: transmute nodes. (Shift)-Aux1-right-click: Change range"
 
 local item1 = "mese crystals"
 if exchangeclone.mineclone then
@@ -260,17 +258,17 @@ if exchangeclone.mineclone then
 end
 
 local longdesc =    "A mysterious device discovered by alchemists millenia ago. The crafting recipe was recently rediscovered by ThePython.\n\n"..
-                    "It has the ability to transmute nearby blocks into other blocks. The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking.\n"..
-                    "Transmute blocks by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
-                    "the block directly below you, with a radius equal to the range.\n"..
+                    "It has the ability to transmute nearby nodes into other nodes. The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking.\n"..
+                    "Transmute nodes by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
+                    "the node directly below you, with a radius equal to the range.\n"..
                     "The ancient tome (entitled the \"Tekkit Wiki\") vaguely mentioned a \"cooldown\" when used to transmute large areas, "..
                     "but ThePython was far to lazy to implement such a thing (maybe just have the charge level/radius reset every time?).\n\n"..
                     "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
                     "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
                     "range is reset when used in a crafting recipe."
 
-local usagehelp = "The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking. Transmute blocks by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
-                    "the block directly below you, with a radius equal to the range.\n\n"..
+local usagehelp = "The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking. Transmute nodes by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
+                    "the node directly below you, with a radius equal to the range.\n\n"..
                     "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
                     "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
                     "range is reset when used in a crafting recipe."

@@ -137,12 +137,53 @@ if exchangeclone.mineclone then
     exchangeclone.wield_scale = mcl_vars.tool_wield_scale
 end
 
+exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.5)
+
 exchangeclone.diamond_itemstring = "default:diamond"
 if exchangeclone.mineclone then
     exchangeclone.diamond_itemstring = "mcl_core:diamond"
 end
 
 local doTileDrops = minetest.settings:get_bool("mcl_doTileDrops", true)
+
+local function get_fortune_drops(fortune_drops, fortune_level)
+	local drop
+	local i = fortune_level
+	repeat
+		drop = fortune_drops[i]
+		i = i - 1
+	until drop or i < 1
+	return drop or {}
+end
+
+local function discrete_uniform_distribution(drops, min_count, max_count, cap)
+	local new_drops = table.copy(drops)
+	for i, item in ipairs(drops) do
+		local new_item = ItemStack(item)
+		local multiplier = math.random(min_count, max_count)
+		if cap then
+			multiplier = math.min(cap, multiplier)
+		end
+		new_item:set_count(multiplier * new_item:get_count())
+		new_drops[i] = new_item
+	end
+	return new_drops
+end
+
+local tmp_id = 0
+
+local function get_drops(drop, toolname, param2, paramtype2)
+	tmp_id = tmp_id + 1
+	local tmp_node_name = "mcl_item_entity:" .. tmp_id
+	minetest.registered_nodes[tmp_node_name] = {
+		name = tmp_node_name,
+		drop = drop,
+		paramtype2 = paramtype2
+	}
+	local drops = minetest.get_node_drops({ name = tmp_node_name, param2 = param2 }, toolname)
+	minetest.registered_nodes[tmp_node_name] = nil
+	return drops
+end
 
 function exchangeclone.drop_items_on_player(pos, drops, player) --copied from MineClone's code
     if not exchangeclone.mineclone then
@@ -207,30 +248,31 @@ function exchangeclone.drop_items_on_player(pos, drops, player) --copied from Mi
 		end
 	end
 
-	-- if tool and nodedef._mcl_fortune_drop and enchantments.fortune then
-	-- 	local fortune_level = enchantments.fortune
-	-- 	local fortune_drop = nodedef._mcl_fortune_drop
-	-- 	if fortune_drop.discrete_uniform_distribution then
-	-- 		local min_count = fortune_drop.min_count
-	-- 		local max_count = fortune_drop.max_count + fortune_level * (fortune_drop.factor or 1)
-	-- 		local chance = fortune_drop.chance or fortune_drop.get_chance and fortune_drop.get_chance(fortune_level)
-	-- 		if not chance or math.random() < chance then
-	-- 			drops = discrete_uniform_distribution(fortune_drop.multiply and drops or fortune_drop.items, min_count, max_count,
-	-- 				fortune_drop.cap)
-	-- 		elseif fortune_drop.override then
-	-- 			drops = {}
-	-- 		end
-	-- 	else
-	-- 		-- Fixed Behavior
-	-- 		local drop = get_fortune_drops(fortune_drop, fortune_level)
-	-- 		drops = get_drops(drop, tool:get_name(), dug_node.param2, nodedef.paramtype2)
-	-- 	end
-	-- end
+--[[]]	if tool and nodedef._mcl_fortune_drop and enchantments.fortune then
+		local fortune_level = enchantments.fortune
+		local fortune_drop = nodedef._mcl_fortune_drop
+		if fortune_drop.discrete_uniform_distribution then
+			local min_count = fortune_drop.min_count
+			local max_count = fortune_drop.max_count + fortune_level * (fortune_drop.factor or 1)
+			local chance = fortune_drop.chance or fortune_drop.get_chance and fortune_drop.get_chance(fortune_level)
+			if not chance or math.random() < chance then
+				drops = discrete_uniform_distribution(fortune_drop.multiply and drops or fortune_drop.items, min_count, max_count,
+					fortune_drop.cap)
+			elseif fortune_drop.override then
+				drops = {}
+			end
+		else
+			-- Fixed Behavior
+			local drop = get_fortune_drops(fortune_drop, fortune_level)
+			drops = get_drops(drop, tool:get_name(), dug_node.param2, nodedef.paramtype2)
+		end
+	end
+--]]
 
 	if player and mcl_experience.throw_xp and not silk_touch_drop then
 		local experience_amount = minetest.get_item_group(dug_node.name, "xp")
 		if experience_amount > 0 then
-			mcl_experience.throw_xp(pos, experience_amount)
+			mcl_experience.throw_xp(player:get_pos(), experience_amount)
 		end
 	end
 
@@ -278,4 +320,62 @@ function exchangeclone.get_face_direction(player)
     end
 
 	return result
+end
+
+function exchangeclone.node_radius_action(player, center, range, functions, extra_info)
+	if not functions.action then return end
+	local data
+	local stop = false
+	if functions.start_action then
+		data = functions.start_action(player, center, range, extra_info)
+		if not data then return end
+	end
+	if not center then center = player:get_pos() end
+	center.x = exchangeclone.round(center.x)
+	center.y = math.floor(center.y) --make sure y is node BELOW player's feet
+	center.z = exchangeclone.round(center.z)
+	for x = center.x-range,center.x+range do
+	for y = center.y-range,center.y+range do
+	for z = center.z-range,center.z+range do
+		local pos = {x=x,y=y,z=z}
+		local node = minetest.get_node(pos)
+		local result = functions.action(player, pos, node, data)
+		if not result then stop = true break end
+		if result ~= true then data = result end
+	end
+	if stop then break end
+	end
+	if stop then break end
+	end
+	if functions.end_action then
+		data = functions.end_action(player, center, range, data)
+	end
+	return data
+end
+
+exchangeclone.cooldowns = {}
+
+minetest.register_on_joinplayer(function(player, last_login)
+	exchangeclone.cooldowns[player:get_player_name()] = {}
+end)
+
+minetest.register_on_leaveplayer(function(player, timed_out)
+	exchangeclone.cooldowns[player:get_player_name()] = nil
+end)
+
+function exchangeclone.start_cooldown(player, name, time)
+	local player_name = player:get_player_name()
+	exchangeclone.cooldowns[player_name][name] = time
+	minetest.after(time, function()
+		if exchangeclone.cooldowns[player_name] then
+			exchangeclone.cooldowns[player_name][name] = nil
+		end
+	end)
+end
+
+function exchangeclone.check_cooldown(player, name)
+	local player_name = player:get_player_name()
+	if exchangeclone.cooldowns[player_name] then
+		return exchangeclone.cooldowns[player_name][name]
+	end
 end
