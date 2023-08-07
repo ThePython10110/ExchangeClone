@@ -25,6 +25,7 @@ All energy values are in `energy.lua`. You can also change the speed at which th
 
 ## New features added by ThePython10110
 *More information in `changelog.txt`.*
+
 * Support for MineClone
 * COMPLETELY redone energy values (originally, you could convert a single diamond into a diamond block... incredibly OP).
 * Shift-clicking works with the Constructor/Deconstructor/Collector (`listring`s)
