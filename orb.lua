@@ -12,7 +12,8 @@ end
 minetest.register_tool("exchangeclone:exchange_orb", {
     description = "Exchange Orb\nCurrent Charge: 0",
     inventory_image = "exchangeclone_exchange_orb.png",
-    --energy_value = 33792,
+    energy_value = 33792,
+    color = "#000000",
     on_secondary_use = read_orb_charge,
     on_place = read_orb_charge,
     groups = {exchange_orb = 1, disable_repair = 1}

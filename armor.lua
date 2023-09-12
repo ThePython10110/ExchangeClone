@@ -64,8 +64,8 @@ function exchangeclone.check_armor_health(obj)
         already_has_health = obj:get_meta():get_int("exchangeclone_red_matter_armor") or 0
     end
     if armor_pieces >= max_armor then
+        obj:set_properties({hp_max = 2000})
         if already_has_health == 0 then
-            obj:set_properties({hp_max = 2000})
             -- fix this if MineCraft changes to max_hp instead of hardcoding 20
             obj:set_hp(2000-math.max(20-obj:get_hp(), 0))
             obj:get_meta():set_int("exchangeclone_red_matter_armor", 1)

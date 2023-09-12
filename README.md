@@ -60,24 +60,163 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 ![Minetest Game Screenshot](screenshot_mtg.png)
 
 ## Sources/license:
-* Code: Forked and *heavily* modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Both this mod ane Element Exchange are licenced under GPLv3+. Based on Equivalent Exchange and ProjectE, mods for MineCraft.
+* Code: Forked and *heavily* modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Both this mod and Element Exchange are licenced under GPLv3+. Based on Equivalent Exchange and ProjectE, mods for MineCraft.
 * Textures:
-    * Energy Collector, Element Deconstructor, Element Constructor, and Exchange Orb: Directly from Element Exchange, GPLv3+.
+    * Energy Collector, Element Deconstructor, Element Constructor: Directly from Element Exchange, GPLv3+.
+    * Exchange Orb: *Slightly* modified from Element Exchange (I just changed the color to white so it could change colors correctly)
     * Alchemical Coal, Mobius Fuel, and Aeternalis Fuel: modified versions of MineClone's coal texture (CC-BY-SA-3.0).
     * Dark and Red Matter Armor (and eventually Gem Armor): modified versions of diamond armor from 3D Armor (CC-BY-SA-3.0) and `mcl_armor` (CC-BY-SA-3.0).
 * All other textures (and sounds): Created by me, inspired by Equivalent Exchange and licensed under CC-BY-SA-3.0.
 
-Copyright (C) 2023 ThePython10110
+# Changelog:
+### 1.0.0
+* Initial release
+* New features:
+    * MineClone support, including (sort of) hoppers
+    * Added the ability to add items by group
+    * Shift-clicking (listrings)!
+* Changes:
+    * Completely redone recipes, now includes all items.
+    * Tools' energy value now depends on wear.
+* Bugfixes:
+    * Items can no longer be put in the Constructor's output slot.
+    * Honestly, I'm going to count the broken energy values as a bug...
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+### 2.0
+* New features:
+    * Added a changelog (you're reading it now!)
+    * Added all items from Why (a MineClone modpack I made)
+    * Added Philosopher's Stone (these controls are now inaccurate; changed in 3.0)
+        * Left click to increase range (minimum = 0, maximum = 4).
+        * Shift+left click to decrease range.
+        * Aux1+left click to open enchanting table (MineClone only).
+        * Right click to transmute nodes in range (mode 1).
+        * Shift+right click to transmute nodes in range (mode 2, has some differences).
+        * Aux1+right click to open crafting table (MineClone only).
+        * Can use to craft coal into iron, mese into diamonds, etc.
+* Changes:
+    * Changed version numbers from x.x.x to x.x.
+    * Changed the recipe for the Exchange Orb
+        * New recipe is a Philosopher's Stone in the middle, diamonds in the corners, and iron/steel ingots on the sides.
+    * Changed the energy values of tin, copper, and bronze in Minetest Game.
+    * Renamed images to reflect mod name change ("exchangeclone" instead of "ee" for Element Exchange)
+    * Deleted unnecessary "config.lua"
+* Bugfixes:
+    * Ghost Blocks (from Why) are now worth 0 instead of 1 (to prevent infinite energy)
+    * Fixed stairs and slabs not working in Minetest Game
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+### 3.0 (the most interesting release so far)
+* New features:
+    * Added Alchemical Coal, Mobius Fuel, Aeternalis Fuel, Dark Matter (blocks and orbs), and Red Matter (blocks and orbs)
+    * Added PESA (Personal Energy Storage Accessor)
+        * A single inventory slot in which an orb can be placed. Energy from the orb is used for special abilities.
+    * Added Dark and Red Matter tools
+        * Faster than any other tools (in unmodded MTG/MCL), each has an ability
+        * Special abilities that break nodes (as well as shearing) drop items directly on the player.
+        * Swords:
+            * Can damage all mobs within a radius (Red Matter sword can toggle between hostile/all mobs), costing 384 energy.
+        * Pickaxes:
+            * Has 3x1 modes (long, tall, and wide, all slightly slower)
+            * Can mine a full vein of ores, dropping items and experience on the player and costing 8 energy per node broken
+        * Axes:
+            * Can break all wood and leaves within a radius, costing 8 energy per node broken.
+        * Shovels:
+            * Can break all shovely nodes within a radius, costing 8 energy per node broken
+            * Can create paths in a radius, costing 4 energy per node
+        * Hoes:
+            * Breaks dirt incredibly quickly
+            * Has a 3x3 mode for digging dirt (slightly slower)
+            * Can till all dirt within a radius, costs 4 energy per node
+        * Hammers:
+            * Breaks pickaxey nodes in a 3x3 area
+            * Can break all pickaxey nodes within a radius, costing 8 energy per node broken
+        * Shears:
+            * More wool/mushrooms dropped when shearing, chance of cloning sheep/mooshrooms
+            * Can shear all shearable plants/cobwebs within a radius, costing 8 energy per node broken.
+* Changes:
+    * Added a mod whitelist in `energy.lua`, any item from a mod NOT in the whitelist (`exchangeclone.whitelisted_mods`) will have an energy value of 0
+    * Orbs now show their energy on right click instead of left click
+    * Changed Philosopher's Stone controls to make everything more consistant
+    * The Energy Collector setting is now energy/second instead of second/energy to fit much higher costs than Element Exchange (default is 5 energy/s).
+    * Set gravel value to 1 to match sand/stone/dirt/etc (MineClone).
+    * Tuff, blackstone, and basalt are now transmutable (MineClone).
+    * A couple of minor transmutation changes (MineClone).
+    * Changed emerald value to 4096 (MineClone).
+    * Gold cannot be crafted into diamonds using the PS; it can now be crafted into emeralds and emeralds into diamonds (MineClone).
+    * The PS's enchanting table now is limited to 8-bookshelf enchantments to make it more balanced (MineClone).
+    * Fixed terracotta values (MineClone)
+    * Enchanted tools/armor are now worth the same amount as unenchanted tools/armor instead of twice as much (MineClone).
+    * Enchanted tools/armor cannot be created by the Constructor (MineClone).
+    * It is now impossible to get stacks of invalid sizes with the Constructor (>16 ender pearls or >1 pickaxe, for example)
+* Bugfixes:
+    * Fixed freezing when attempting to deconstruct 0-energy items
+    * The Constructor, Deconstructor, and Energy Collector are now not unbreakable in MineClone (I really should test in survival).
+    * Copper blocks are now worth 4 times as much as copper ingots instead of 9 (MineClone).
+    * The Energy Collector now drops its contents when broken (MineClone)
+    * Fixed Exchange Orb energy value (forgot to change it after changing the recipe)
+        * Changed Constructor, Deconstructor, and Collector recipes and energy values to make them cheaper.
+### 3.1
+* Changes:
+    * Added new energy values from Why (and Why's new Minetest Game energy values)
+* Bugfixes:
+    * Fixed crash based on PESA inventory movement
+    * Added `mcl_blackstone` to the mod whitelist
+### 3.2
+    * Changes:
+        * Set MineClone mod namespace to exchangeclone
+### 4.0
+* New features:
+    * The "Features that I plan on adding eventually" list below
+    * Cooldowns for tool abilities to limit lag
+    * Red Katar (combination of sword, axe, hoe, and shears)
+    * Red Morningstar (combination of hammer, pickaxe, and shovel)
+    * Dark Matter Armor (full set gives immunity to lava/fire and drowning)
+    * Red Matter Armor (full set gives lava/fire/drowning immunity PLUS 2000 health, although you may want HUD Bars to see it)
+    * Added energy values for MineClone's new items.
+* Changes:
+    * Changed the amount of damage done by Dark/Red Matter Sword special abilities (used to be `max_damage/distance`, now is `max_damage-distance`)
+    * A whole bunch of things that won't be noticible when playing, mostly code reorganization. It's *possible* that tools that mine multiple nodes at a time (hammer, pickaxe, hoe, katar, and morningstar) will be less laggy
+    * Texture/sound license changed to CC-BY-SA-3.0 (because GPLv3+ isn't really meant as a media license).
+* Bugfixes:
+    * Fixed an issue where MineClone dispensers could ONLY be used with Dark/Red Matter Shears (whoops).
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+### 4.1
+* Bugfixes:
+    * Added energy values for new armor/tools
+    * Removed unnecessary chestplate image (not only is it unused, but I put it in the wrong folder for some reason)
+
+### 4.2
+* New features:
+    * New items from Why (flying sausage, useful green potatoes, etc.)
+* Changes:
+    * The changelog now lives here!
+    * Exchange Orbs now change color based on the amount of energy (black->red->green->blue->magenta)
+    * Water is now worth 0 instead of 1 (since it's infinite)
+* Bugfixes:
+    * Exchange Orbs will now correctly display their energy value (I typed `orb` instead of `exchange_orb` in the energy value list)
+
+### Plans for 5.0
+* New features:
+    * Dark/Red Matter Furnaces
+    * Transmutation Tablet (including portable version)
+    * The ability to upgrade dark/red matter tools to give them fortune, looting, fire aspect, and silk touch
+    * The ability to upgrade dark/red matter armor to give it thorns and frost walker
+    * Ability to smelt with the Philosopher's Stone and coal/charcoal
+    * Mind, Life, Body, and Soul Stones
+
+
+### Features that I plan on adding eventually:
+* Something that places nodes in a square (with varying range), possibly with a low energy cost
+* Exchangeclone guidebook (maybe depend on doc mod?)
+* As soon as Minetest 5.8 comes out, better textures for armor...
+* Energy Condenser
+* Upgraded Energy Collectors
+* Divining Rods
+* Rings (I'll probably add a new PESA-like item for holding rings, or just add more slots to the PESA)
+    * Archangel's Smite (though arrows will not track targets)
+    * Ring of Ignition
+    * Swiftwolf's Rending Gale (though without the force field)
+    * Zero Ring
+    * Harvest Band?
+    * Ring of Arcana (possibly without the Harvest Band)
+* Gem Armor

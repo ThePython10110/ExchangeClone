@@ -5,6 +5,8 @@ else
 	exchangeclone.mineclone = minetest.get_modpath("mcl_core")
 end
 
+exchangeclone.energy_max = 51200000 -- Max capacity of Klein Star Omega
+
 local default_path = minetest.get_modpath("exchangeclone")
 
 exchangeclone.collector_speed = minetest.settings:get("exchangeclone.energy_collector_speed") or 5
@@ -32,4 +34,5 @@ dofile(default_path.."/shovels.lua")
 dofile(default_path.."/red_matter_multitools.lua")
 dofile(default_path.."/philosophers_stone.lua")
 dofile(default_path.."/pesa.lua")
+dofile(default_path.."/transmutation_tablet.lua")
 dofile(default_path.."/energy.lua")

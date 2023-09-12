@@ -75,8 +75,8 @@ local function on_timer(pos, elapsed)
                 end
                 -- only get 1 orb as we can only use one
                 local stored = exchangeclone.get_orb_energy(inv, "dst", 1)
-                if stored + energy_value < stored then
-                    return --will hopefully prevent overflow, not that overflow is likely
+                if stored + energy_value > exchangeclone.energy_max then
+                    return
                 end
                 fuel_stack:set_count(fuel_stack:get_count() - 1)
                 inv:set_stack("main", 1, fuel_stack)

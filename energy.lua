@@ -1,7 +1,7 @@
 -- WARNING: Do not use aliases; they will be ignored.
 exchangeclone.mtg_energy_values = {
     ["exchangeclone"] = {
-        orb = 33792,
+        exchange_orb = 33792,
         element_deconstructor = 67592,
         element_constructor = 92168,
         energy_collector = 23901,
@@ -33,6 +33,19 @@ exchangeclone.mtg_energy_values = {
         red_matter_pickaxe_3x1 = 1974272,
         dark_matter_axe = 434176,
         red_matter_axe = 1974272,
+        red_katar = 7512064,
+        red_katar_3x3 = 7512064,
+        red_morningstar = 7053312,
+        red_morningstar_3x1 = 7053312,
+        red_morningstar_3x3 = 7053312,
+        helmet_dark_matter = 139264*5,
+        chestplate_dark_matter = 139264*8,
+        leggings_dark_matter = 139264*7,
+        boots_dark_matter = 139264*4,
+        helmet_red_matter = (139264+466944)*5,
+        chestplate_red_matter = (139264+466944)*8,
+        leggings_red_matter = (139264+466944)*7,
+        boots_red_matter = (139264+466944)*4,
         pesa = 64,
     },
     ["beds"] = {
@@ -50,8 +63,8 @@ exchangeclone.mtg_energy_values = {
     },
     ["bucket"] = {
         bucket_empty = 768,
-        bucket_water = 769,
-        bucket_river_water = 769,
+        bucket_water = 768,
+        bucket_river_water = 768,
         bucket_lava = 896,
     },
     ["butterflies"] = {
@@ -296,7 +309,7 @@ exchangeclone.mtg_energy_values = {
         sword_pick = 40976,
         sword_smoke = 16483,
         sword_teleport = 16520,
-        sword_water = 1558,
+        sword_water = 1556,
     },
     ["tnt"] = {
         gunpowder = 25,
@@ -322,18 +335,19 @@ exchangeclone.mtg_energy_values = {
         portable_sound_machine = 2608,
     },
     ["fake_liquids"] = {
-        solid_water_source = 4,
+        solid_water_source = 3,
         solid_useless_bean_liquid_source = 0,
-        solid_glue_source = 36,
-        solid_river_water_source = 4,
+        solid_useful_green_potato_liquid_source = 3,
+        solid_glue_source = 35,
+        solid_river_water_source = 3,
         solid_lava_source = 131,
-        bucket_fake_lava = 4865,
+        bucket_fake_lava = 4864,
         bucket_fake_water = 4992,
-        solid_fake_lava_source = 4100,
+        solid_fake_lava_source = 4099,
         solid_fake_water_source = 4227,
     },
     ["sticky_things"] = {
-        bucket_glue = 801,
+        bucket_glue = 800,
         glue_source = 0,
         glue_flowing = 0,
     },
@@ -343,6 +357,24 @@ exchangeclone.mtg_energy_values = {
     ["small_why_things"] = {
         craftable_barrier = 72,
     },
+    ["useful_green_potatoes"] = {
+        useful_green_potato = 256,
+        useful_green_potato_ingot = 256,
+        useful_green_potato_block = 256*9,
+        useful_green_potato_ingot_block = 256*9,
+        axe_useful_green_potato = 256*3+8,
+        pick_useful_green_potato = 256*3+8,
+        sword_useful_green_potato = 256*2+4,
+        shovel_useful_green_potato = 256+8,
+        hoe_useful_green_potato = 256*2+8,
+        helmet_useful_green_potato = 256*5,
+        chestplate_useful_green_potato = 256*8,
+        shield_useful_green_potato = 256*7,
+        leggings_useful_green_potato = 256*7,
+        boots_useful_green_potato = 256*4,
+        bucket_useful_green_potato_liquid = 768, -- renewable
+        useful_green_potato_gold = 2048*8+256
+    }
 }
 
 
@@ -360,7 +392,7 @@ exchangeclone.mcl_energy_values = {
         element_deconstructor = 67592,
         element_constructor = 92168,
         energy_collector = 23883,
-        orb = 33792,
+        exchange_orb = 33792,
         philosophers_stone = 9984,
         alchemical_coal = 512,
         mobius_fuel = 2048,
@@ -389,6 +421,19 @@ exchangeclone.mcl_energy_values = {
         red_matter_pickaxe_3x1 = 1974272,
         dark_matter_axe = 434176,
         red_matter_axe = 1974272,
+        red_katar = 7512064,
+        red_katar_3x3 = 7512064,
+        red_morningstar = 7053312,
+        red_morningstar_3x1 = 7053312,
+        red_morningstar_3x3 = 7053312,
+        helmet_dark_matter = 139264*5,
+        chestplate_dark_matter = 139264*8,
+        leggings_dark_matter = 139264*7,
+        boots_dark_matter = 139264*4,
+        helmet_red_matter = (139264+466944)*5,
+        chestplate_red_matter = (139264+466944)*8,
+        leggings_red_matter = (139264+466944)*7,
+        boots_red_matter = (139264+466944)*4,
         pesa = 64,
     },
     ["mcl_core"] = {
@@ -512,7 +557,7 @@ exchangeclone.mcl_energy_values = {
         helmet_netherite_enchanted = 114688,
         leggings_netherite_enchanted = 131072,
         chestplate_netherite_enchanted = 139264,
-        elytra = 73728*2,
+        elytra = 297216,
     },
     ["mcl_anvils"] = {
         anvil = 7936,
@@ -826,8 +871,8 @@ exchangeclone.mcl_energy_values = {
     },
     ["mcl_sponges"] = {
         sponge = 1024,
-        sponge_wet = 1025,
-        sponge_wet_river_water = 1025,
+        sponge_wet = 1024,
+        sponge_wet_river_water = 1024,
     },
     ["mcl_spyglass"] = {
         spyglass = 426,
@@ -1098,8 +1143,8 @@ exchangeclone.mcl_energy_values = {
     },
     ["mcl_buckets"] = {
         bucket_empty = 768,
-        bucket_water = 769,
-        bucket_river_water = 769,
+        bucket_water = 768,
+        bucket_river_water = 768,
         bucket_lava = 896,
         bucket_cod = 896,
         bucket_salmon = 896,
@@ -1225,19 +1270,25 @@ exchangeclone.mcl_energy_values = {
         portable_sound_machine = 681,
     },
     ["fake_liquids"] = {
-        solid_water_source = 4,
+        solid_water_source = 3,
         solid_milk_source = 67,
         solid_useless_bean_liquid_source = 0,
-        solid_glue_source = 12,
-        solid_river_water_source = 4,
-        solid_fake_lava_source = 68,
+        solid_useful_green_potato_liquid_source = 3,
+        solid_glue_source = 11,
+        solid_river_water_source = 3,
+        solid_fake_lava_source = 67,
         solid_lava_source = 131,
         solid_fake_water_source = 195,
-        bucket_fake_lava = 833,
+        bucket_fake_lava = 832,
         bucket_fake_water = 960,
     },
+    ["flying_sausage"] = {
+        cooked_elytra = 297216,
+        burnt_elytra = 297216,
+        flying_sausage = 297216 + (576*8)
+    },
     ["sticky_things"] = {
-        bucket_glue = 797,
+        bucket_glue = 776,
         glue_source = 0,
         glue_flowing = 0,
         sticky_block = 100,
@@ -1255,6 +1306,7 @@ exchangeclone.mcl_energy_values = {
     },
     ["small_why_things"] = {
         craftable_barrier = 72,
+        blue_feather = 0,
     },
     ["mcl_colorblocks"] = {
         glazed_terracotta_black = 64,
@@ -1273,6 +1325,23 @@ exchangeclone.mcl_energy_values = {
         glazed_terracotta_silver = 64,
         glazed_terracotta_white = 64,
         glazed_terracotta_yellow = 64
+    },
+    ["useful_green_potatoes"] = {
+        useful_green_potato = 256,
+        useful_green_potato_ingot = 256,
+        useful_green_potato_block = 256*9,
+        useful_green_potato_ingot_block = 256*9,
+        axe_useful_green_potato = 256*3+8,
+        pick_useful_green_potato = 256*3+8,
+        sword_useful_green_potato = 256*2+4,
+        shovel_useful_green_potato = 256+8,
+        hoe_useful_green_potato = 256*2+8,
+        helmet_useful_green_potato = 256*5,
+        chestplate_useful_green_potato = 256*8,
+        leggings_useful_green_potato = 256*7,
+        boots_useful_green_potato = 256*4,
+        bucket_useful_green_potato_liquid = 768,
+        useful_green_potato_gold = 2048*8+256
     }
 }
 
@@ -1463,6 +1532,8 @@ exchangeclone.whitelisted_mods = {
     mclx_fences = true,
     mclx_stairs = true,
     meat_blocks = true,
+    flying_sausage = true,
+    useful_green_potatoes = true,
     screwdriver = true,
     slime_things = true,
     small_why_things = true,
@@ -1473,20 +1544,20 @@ exchangeclone.whitelisted_mods = {
 
 --only allow Mesecons in MineClone
 if exchangeclone.mineclone then
-    for k, v in pairs({
-        ["mesecons"] = true,
-        ["mesecons_button"] = true,
-        ["mesecons_delayer"] = true,
-        ["mesecons_lightstone"] = true,
-        ["mesecons_noteblock"] = true,
-        ["mesecons_pistons"] = true,
-        ["mesecons_pressureplates"] = true,
-        ["mesecons_solarpanel"] = true,
-        ["mesecons_torch"] = true,
-        ["mesecons_walllever"] = true,
-        ["mesecons_wires"] = true,
+    for _, mod in ipairs({
+        "mesecons",
+        "mesecons_button",
+        "mesecons_delayer",
+        "mesecons_lightstone",
+        "mesecons_noteblock",
+        "mesecons_pistons",
+        "mesecons_pressureplates",
+        "mesecons_solarpanel",
+        "mesecons_torch",
+        "mesecons_walllever",
+        "mesecons_wires",
     }) do
-        exchangeclone.whitelisted_mods[k] = v
+        exchangeclone.whitelisted_mods[mod] = true
     end
 end
 
@@ -1499,7 +1570,7 @@ local function set_item_energy(itemstring, energy_value)
     if not (item_name and mod_name) then return end
     if exchangeclone.whitelisted_mods[mod_name] then
         if mod_name == "ghost_blocks" then
-            energy_value = 0 --I don't know what to do about ghost blocks.
+            energy_value = 0
         end
         if exchangeclone.mineclone then
             if exchangeclone.mcl_energy_values[mod_name] then
@@ -1556,7 +1627,7 @@ local function set_item_energy(itemstring, energy_value)
 end
 
 local function add_potion_energy(info)
-    local base_cost = 2 --cost of water bottle
+    local base_cost = 1 --cost of water bottle
     --TODO: Change dragon's breath when MineClone does.
     local dragon_breath_cost = 8.5
     base_cost = math.floor(base_cost + (info.ingredient_cost / 3)) --/3 because 3 potions/ingredient

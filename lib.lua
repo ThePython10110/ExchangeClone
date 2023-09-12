@@ -22,6 +22,11 @@ function exchangeclone.round(num)
     end
 end
 
+-- https://forum.unity.com/threads/re-map-a-number-from-one-range-to-another.119437/
+function exchangeclone.map(input, min1, max1, min2, max2)
+	return (input - min1) / (max1 - min1) * (max2 - min2) + min2
+end
+
 function exchangeclone.get_orb_energy(inventory, listname, index)
     if not inventory then return end
     if not listname then listname = "main" end
@@ -33,14 +38,41 @@ function exchangeclone.get_orb_energy(inventory, listname, index)
 end
 
 function exchangeclone.set_orb_energy(inventory, listname, index, amount)
-    if (not inventory) or (not amount) or (amount < 0) then return end
+    if (not inventory) or (not amount) or (amount < 0) or (amount > exchangeclone.energy_max) then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
     if not itemstack then return end
     if not itemstack:get_name() then return end
-    itemstack:get_meta():set_float("stored_energy", amount)
-    itemstack:get_meta():set_string("description", "Exchange Orb\nCurrent Charge: "..amount)
+
+	-- Square roots will hopefully make it less linear
+	-- And if they don't, I don't really care and I don't want to think about math anymore.
+	local sqrt_amount = math.sqrt(amount)
+	local sqrt_max = math.sqrt(exchangeclone.energy_max)
+
+	local r, g, b = 0, 0, 0
+	if amount == 0 then
+		-- do nothing
+	elseif sqrt_amount < (sqrt_max/4) then
+		r = exchangeclone.map(sqrt_amount, 0, sqrt_max/4, 0, 255)
+	elseif sqrt_amount < (sqrt_max/2) then
+		g = exchangeclone.map(sqrt_amount, sqrt_max/4, sqrt_max/2, 0, 255)
+		r = 255 - g
+	elseif sqrt_amount < (3*sqrt_max/4) then
+		b = exchangeclone.map(sqrt_amount, sqrt_max/2, 3*sqrt_max/4, 0, 255)
+		g = 255 - b
+	else
+		r = exchangeclone.map(sqrt_amount, 3*sqrt_max/4, sqrt_max, 0, 255)
+		minetest.log(dump(r))
+		b = 255
+	end
+
+	local colorstring = minetest.rgba(r,g,b)
+
+	local meta = itemstack:get_meta()
+    meta:set_float("stored_energy", amount)
+    meta:set_string("description", "Exchange Orb\nCurrent Charge: "..amount)
+	meta:set_string("color", colorstring)
     inventory:set_stack(listname, index, itemstack)
 end
 
