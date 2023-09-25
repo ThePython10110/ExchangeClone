@@ -40,18 +40,36 @@ local function on_timer(pos, elapsed)
     -- get node above
     pos.y = pos.y + 1
 
+    if meta:get_bool("connected_to_furnace") then
+        -- do nothing, energy is being used for the furnace.
+        return
+    end
+
+
+    local using_orb = true
     if inv:is_empty("main") then
         -- stop timer
-        minetest.get_node_timer(pos):stop()
-        return false
+        using_orb = false
     end
 
     if minetest.get_artificial_light(pos) >= 14 then
-        local dest_orb = inv:get_stack("main", 1)
-        local stored = exchangeclone.get_orb_energy(inv, "main", 1)
-        if stored + exchangeclone.collector_speed > exchangeclone.energy_max then
-            stored = stored + exchangeclone.collector_speed
-            exchangeclone.set_orb_energy(inv, "main", 1, stored)
+        local amount = meta:get_int("collector_amount")
+        if using_orb then
+            local dest_orb = inv:get_stack("main", 1)
+            local stored = exchangeclone.get_orb_energy(inv, "main", 1)
+            if stored + amount < exchangeclone.energy_max then
+                stored = stored + amount`
+                exchangeclone.set_orb_energy(inv, "main", 1, stored)
+            end
+        else
+            local placer = meta:get_string("collector_placer")
+            if placer and placer ~= "" then
+                player = minetest.get_player_by_name(placer)
+                if player then
+                    local player_energy = exchangeclone.get_player_energy(player)
+                    exchangeclone.set_player_energy(player_energy + amount)
+                end
+            end
         end
     end
     return true
@@ -62,8 +80,7 @@ local function on_construct(pos)
     local inv = meta:get_inventory()
     inv:set_size("main", 1)
     meta:set_string("formspec", get_energy_collector_formspec())
-    meta:set_string("infotext", "Energy Collector")
-    on_timer(pos, 1)
+    on_timer(pos, 1, 4)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
@@ -121,39 +138,47 @@ local function on_dig_node(pos, oldnode, oldmetadata, player)
     end
 end
 
-minetest.register_node("exchangeclone:energy_collector", {
-    description = "Energy Collector",
-    tiles = {
-        "exchangeclone_energy_collector_up.png",
-        "exchangeclone_energy_collector_down.png",
-        "exchangeclone_energy_collector_right.png",
-        "exchangeclone_energy_collector_right.png",
-        "exchangeclone_energy_collector_right.png",
-        "exchangeclone_energy_collector_right.png"
-    },
-    groups = {cracky = 2, container = 2, pickaxey = 2},
-    _mcl_hardness = 3,
-	_mcl_blast_resistance = 6,
-    sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
-    is_ground_content = false,
-    can_dig = can_dig,
-    on_timer = on_timer,
-    on_construct = on_construct,
-    after_dig_node = on_dig_node,
-    on_metadata_inventory_move = function(pos)
-        minetest.get_node_timer(pos):start(1)
-    end,
-    on_metadata_inventory_put = function(pos)
-        minetest.get_node_timer(pos):start(1)
-    end,
-    on_metadata_inventory_take = function(pos)
-        minetest.get_node_timer(pos):start(1)
-    end,
-    on_blast = on_blast,
-    allow_metadata_inventory_put = allow_metadata_inventory_put,
-    allow_metadata_inventory_move = allow_metadata_inventory_move,
-    allow_metadata_inventory_take = allow_metadata_inventory_take,
-})
+function exchangeclone.register_energy_collector(itemstring, name, amount, modifier)
+    minetest.register_node(itemstring, {
+        description = "Energy Collector",
+        tiles = {
+            "exchangeclone_energy_collector_up.png"..modifier,
+            "exchangeclone_energy_collector_down.png"..modifier,
+            "exchangeclone_energy_collector_right.png"..modifier,
+            "exchangeclone_energy_collector_right.png"..modifier,
+            "exchangeclone_energy_collector_right.png"..modifier,
+            "exchangeclone_energy_collector_right.png"..modifier
+        },
+        groups = {cracky = 2, container = 2, pickaxey = 2},
+        _mcl_hardness = 3,
+        _mcl_blast_resistance = 6,
+        sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
+        is_ground_content = false,
+        can_dig = can_dig,
+        on_timer = function(pos, elapsed) on_timer(pos, elapsed, amount) end,
+        on_construct = on_construct,
+        after_dig_node = on_dig_node,
+        on_metadata_inventory_move = function(pos)
+            minetest.get_node_timer(pos):start(1)
+        end,
+        on_metadata_inventory_put = function(pos)
+            minetest.get_node_timer(pos):start(1)
+        end,
+        on_metadata_inventory_take = function(pos)
+            minetest.get_node_timer(pos):start(1)
+        end,
+        after_place_node = function(pos, player, itemstack, pointed_thing)
+            local player_name = player:get_player_name()
+            meta:set_int("collector_amount", amount)
+            meta:set_string("collector_placer", player_name)
+            meta:set_string("infotext", name.."\nOwned by"..player_name)
+        end
+        on_blast = on_blast,
+        allow_metadata_inventory_put = allow_metadata_inventory_put,
+        allow_metadata_inventory_move = allow_metadata_inventory_move,
+        allow_metadata_inventory_take = allow_metadata_inventory_take,
+    })
+end
 
 --[[if minetest.get_modpath("pipeworks") then
     minetest.override_item("exchangeclone:energy_collector", {
