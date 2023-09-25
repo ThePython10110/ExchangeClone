@@ -16,7 +16,7 @@ minetest.register_tool("exchangeclone:exchange_orb", {
     color = "#000000",
     on_secondary_use = read_orb_charge,
     on_place = read_orb_charge,
-    groups = {exchange_orb = 1, disable_repair = 1}
+    groups = {exchange_orb = 1, disable_repair = 1, fire_immune = 1}
 })
 
 local recipe_item_1 = "default:steel_ingot"
@@ -41,5 +41,5 @@ minetest.register_craft({
 minetest.register_craft({ --Making it fuel so hopper will work with constructor better
 	type = "fuel",
 	recipe = "exchangeclone:exchange_orb",
-	burntime = 1600 --Basically 2 coal blocks
+	burntime = 24000 --Basically 30 coal blocks... it should be worth it.
 })

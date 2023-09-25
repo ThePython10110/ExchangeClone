@@ -20,9 +20,11 @@ exchangeclone.shovel_action = {
             else
                 if data.path then
                     if (minetest.get_item_group(node.name, "path_creation_possible") == 1) then
-                        minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
-                        data.energy_cost = data.energy_cost + 4
-                        minetest.swap_node(pos, {name="mcl_core:grass_path"})
+                        if minetest.get_node({x=pos.x,y=pos.y+1,z=pos.z}).name == "air" then
+                            minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
+                            data.energy_cost = data.energy_cost + 4
+                            minetest.swap_node(pos, {name="mcl_core:grass_path"})
+                        end
                     end
                 else
                     data.energy_cost = data.energy_cost + 8
@@ -73,7 +75,7 @@ minetest.register_tool("exchangeclone:dark_matter_shovel", {
 	description = "Dark Matter Shovel",
 	wield_image = "exchangeclone_dark_matter_shovel.png",
 	inventory_image = "exchangeclone_dark_matter_shovel.png",
-	groups = { tool=1, shovel=1, dig_speed_class=7, enchantability=0 },
+	groups = { tool=1, shovel=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -98,7 +100,7 @@ minetest.register_tool("exchangeclone:red_matter_shovel", {
 	description = "Red Matter Shovel",
 	wield_image = "exchangeclone_red_matter_shovel.png",
 	inventory_image = "exchangeclone_red_matter_shovel.png",
-	groups = { tool=1, shovel=1, dig_speed_class=8, enchantability=0 },
+	groups = { tool=1, shovel=1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2

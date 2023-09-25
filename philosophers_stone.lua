@@ -5,14 +5,40 @@ local function show_enchanting(player)
     mcl_enchanting.show_enchanting_formspec(player)
 end
 
+local width = (exchangeclone.mineclone and 9) or 8
+local smelting_formspec =
+    "size["..width..",8]"..
+    "label[0.25,0.25;Smelting]"..
+    "label["..(width/3)..",0.75;Input]"..
+    "list[current_player;exchangeclone_smelting_input;"..(width/3)..",1;1,1]"..
+    "label["..(width/3)..",2.25;Coal"..((exchangeclone.mineclone and "/charcoal]") or "]")..
+    "list[current_player;exchangeclone_smelting_fuel;"..(width/3)..",2.5;1,1]"..
+    "label["..(2*width/3)..",0.75;Output]"..
+    "list[current_player;exchangeclone_smelting_output;"..(2*width/3)..",1.5;1,1]"..
+    exchangeclone.inventory_formspec(0,4)..
+    "listring[current_player;main]"..
+    "listring[current_player;exchangeclone_smelting_input]"..
+    "listring[current_player;main]"..
+    "listring[current_player;exchangeclone_smelting_output]"..
+    "listring[current_player;main]"..
+    "listring[current_player;exchangeclone_smelting_fuel]"..
+    "listring[current_player;main]"
+
+if exchangeclone.mineclone then
+    smelting_formspec = smelting_formspec..
+        mcl_formspec.get_itemslot_bg(width/3,1,1,1)..
+        mcl_formspec.get_itemslot_bg(width/3,2.5,1,1)..
+        mcl_formspec.get_itemslot_bg(2*width/3,1.5,1,1)
+end
+
 exchangeclone.node_transmutations = {
     { --use
         ["mcl_core:stone"] = "mcl_core:cobble",
         ["mcl_core:cobble"] = "mcl_core:stone",
         ["mcl_core:dirt_with_grass"] = "mcl_core:sand",
-        ["mcl_core:podzol"] = "mcl_core:redsand",
         ["mcl_core:dirt"] = "mcl_core:sand",
         ["mcl_core:sand"] = "mcl_core:dirt_with_grass",
+        ["mcl_core:podzol"] = "mcl_core:redsand",
         ["mcl_core:redsand"] = "mcl_core:podzol",
         ["mcl_flowers:tallgrass"] = "mcl_core:deadbush",
         ["mcl_nether:netherrack"] = "mcl_core:cobble",
@@ -83,12 +109,15 @@ exchangeclone.node_transmutations = {
         ["mcl_core:bedrock"] = "mcl_core:barrier",
         ["mcl_core:barrier"] = "mcl_core:bedrock",
         ["mcl_end:end_stone"] = "mcl_nether:netherrack",
+        ["mcl_nether:soul_sand"] = "mcl_blackstone:soul_soil",
+        ["mcl_blackstone:soul_soil"] = "mcl_nether:soul_sand",
 
         ["default:stone"] = "default:cobble",
         ["default:desert_stone"] = "default:desert_cobble",
         ["default:cobble"] = "default:stone",
         ["default:desert_cobble"] = "default:desert_stone",
         ["default:dirt_with_grass"] = "default:sand",
+        ["default:dirt_with_snow"] = "default:sand",
         ["default:dirt_with_dry_grass"] = "default:sand",
         ["default:dry_dirt_with_dry_grass"] = "default:desert_sand",
         ["default:dirt"] = "default:sand",
@@ -104,6 +133,9 @@ exchangeclone.node_transmutations = {
         ["default:grass_4"] = "default:dry_shrub",
         ["default:grass_5"] = "default:dry_shrub",
         ["default:gravel"] = "default:sandstone",
+        ["default:sandstone"] = "default:gravel",
+        ["default:desert_sandstone"] = "default:gravel",
+        ["default:silver_sandstone"] = "default:gravel",
         ["default:water_source"] = "default:ice",
         ["default:river_water_source"] = "default:ice",
         ["default:lava_source"] = "default:obsidian",
@@ -137,7 +169,12 @@ exchangeclone.node_transmutations = {
         ["mcl_core:sand"] = "mcl_core:cobble",
         ["mcl_core:redsand"] = "mcl_core:cobble",
         ["mcl_core:dirt_with_grass"] = "mcl_core:cobble",
+        ["mcl_core:dirt"] = "mcl_core:cobble",
         ["mcl_core:podzol"] = "mcl_deepslate:deepslate_cobbled",
+        ["mcl_deepslate:tuff"] = "mcl_core:granite",
+        ["mcl_core:granite"] = "mcl_core:diorite",
+        ["mcl_core:diorite"] = "mcl_core:andesite",
+        ["mcl_core:andesite"] = "mcl_deepslate:tuff",
         ["mcl_core:acacialeaves"] = "mcl_core:spruceleaves",
         ["mcl_core:birchleaves"] = "mcl_core:acacialeaves",
         ["mcl_core:darkleaves"] = "mcl_core:birchleaves",
@@ -153,8 +190,6 @@ exchangeclone.node_transmutations = {
         ["mcl_core:tree"] = "mcl_mangrove:mangrove_tree",
         ["mcl_core:sprucetree"] = "mcl_core:tree",
         ["mcl_nether:netherrack"] = "mcl_end:end_stone",
-        ["mcl_nether:soul_sand"] = "mcl_blackstone:soul_soil",
-        ["mcl_blackstone:soul_soil"] = "mcl_nether:soul_sand",
 
         ["default:stone"] = "default:dirt_with_grass",
         ["default:cobble"] = "default:dirt_with_grass",
@@ -163,16 +198,14 @@ exchangeclone.node_transmutations = {
         ["default:dry_dirt_with_dry_grass"] = "default:desert_cobble",
         ["default:dirt_with_dry_grass"] = "default:cobble",
         ["default:dirt_with_grass"] = "default:cobble",
+        ["default:dirt_with_snow"] = "default:cobble",
+        ["default:dirt"] = "default:cobble",
+        ["default:dry_dirt"] = "default:desert_cobble",
+        ["default:dirt_with_coniferous_litter"] = "default:cobble",
+        ["default:dirt_with_rainforest_litter"] = "default:cobble",
         ["default:sand"] = "default:cobble",
         ["default:desert_sand"] = "default:desert_cobble",
         ["default:silver_sand"] = "default:cobble",
-        ["default:sandstone"] = "default:gravel",
-        ["default:desert_sandstone"] = "default:gravel",
-        ["default:silver_sandstone"] = "default:gravel",
-        ["mcl_core:diorite"] = "mcl_core:andesite",
-        ["mcl_core:andesite"] = "mcl_deepslate:tuff",
-        ["mcl_deepslate:tuff"] = "mcl_core:granite",
-        ["mcl_core:granite"] = "mcl_core:diorite",
         ["default:acacia_tree"] = "default:pine_tree",
         ["default:tree"] = "default:acacia_tree",
         ["default:aspen_tree"] = "default:tree",
@@ -224,10 +257,65 @@ if exchangeclone.mineclone then
         if player:get_player_control().sneak then
             show_enchanting(player)
         else
-            mcl_crafting_table.show_crafting_form(player)
+            if player:get_player_control().aux1 then
+                minetest.show_formspec(player:get_player_name(), "exchangeclone_smelting", smelting_formspec)
+            else
+                mcl_crafting_table.show_crafting_form(player)
+            end
         end
     end
 end
+
+local fuel_items = {
+    ["mcl_core:charcoal_lump"] = true,
+    ["mcl_core:coal_lump"] = true,
+    ["default:coal_lump"] = true,
+}
+
+minetest.register_on_joinplayer(function(player, last_login)
+    local inv = player:get_inventory()
+    inv:set_size("exchangeclone_smelting_input", 1)
+    inv:set_size("exchangeclone_smelting_output", 1)
+    inv:set_size("exchangeclone_smelting_fuel", 1)
+end)
+
+minetest.register_allow_player_inventory_action(function(player, action, inventory, info)
+    if action == "put" then
+        if info.listname == "exchangeclone_smelting_output" then
+            return 0
+        elseif info.listname == "exchangeclone_smelting_fuel" then
+            if not fuel_items[info.stack:get_name()] then
+                return 0
+            end
+        end
+    elseif action == "move" then
+        if info.to_list == "exchangeclone_smelting_output" then
+            return 0
+        elseif info.to_list == "exchangeclone_smelting_fuel" then
+            if not fuel_items[inventory:get_stack(info.from_list, info.from_index):get_name()] then
+                return 0
+            end
+        end
+    end
+end)
+
+local function set_smelting_output(player)
+end
+
+minetest.register_on_player_inventory_action(function(player, action, inventory, info)
+    if action == "put" then
+        if info.listname == "exchangeclone_smelting_input" or info.listname == "exchangeclone_smelting_fuel" then
+            set_smelting_output(player)
+        end
+    elseif action == "take" then
+        if info.listname == "exchangeclone_smelting_input"
+        or info.listname == "exchangeclone_smelting_fuel" then
+            set_smelting_output(player)
+        elseif info.listname == "exchangeclone_smelting_output" then
+            
+        end
+    end
+end)
 
 local function on_right_click(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -281,6 +369,114 @@ if exchangeclone.mineclone then
     usagehelp = usagehelp..extra_stuff
 end
 
+--[[ Could NOT figure out how to make this work. 
+
+for name, def in pairs(minetest.registered_nodes) do
+	local result, _ = minetest.get_craft_result({
+        method = "cooking",
+        width = 1,
+        items = {ItemStack(name)}
+    })
+    local name = result.item:get_name()
+    if minetest.registered_items[name] then
+        minetest.registered_items[name].groups.exchangeclone_cookable = true
+    end
+end
+
+local recipe_table = {"exchangeclone:philosophers_stone"}
+
+minetest.register_craftitem("exchangeclone:cooked_item", {description = "Cooked Item"})
+
+for i = 1,7 do
+    table.insert(recipe_table, "group:exchangeclone_cookable")
+    for fuel, _ in pairs(fuel_items) do
+        recipe_table[2] = fuel
+        minetest.register_craft({
+            output = "exchangeclone:cooked_item "..tostring(i),
+            type = "shapeless",
+            recipe = table.copy(recipe_table)
+        })
+    end
+end
+
+minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
+    if itemstack == ItemStack("exchangeclone:cooked_item") then
+        local phil = 0 -- yes, I'm calling it Phil.
+        local fuel = 0
+        local item_type = false
+        local item_count = 0
+        for _, item in ipairs(old_craft_grid) do
+            local name = item:get_name()
+            if name == "" then
+                -- do nothing
+            elseif name == "exchangeclone:philosophers_stone" then
+                phil = phil + 1
+            elseif fuel_items[name] then
+                fuel = fuel + 1
+            else
+                if item_type and item_type ~= name then
+                    minetest.log(dump({item_type, name}))
+                    return
+                else
+                    item_type = name
+                    item_count = item_count + 1
+                end
+            end
+        end
+        minetest.log(dump({phil=phil,fuel=fuel,item_type=item_type,item_count=item_count}))
+        if not (item_type and (phil == 1) and (fuel == 1)) then return end
+        local result, _ = minetest.get_craft_result({
+            method = "cooking",
+            width = 1,
+            items = {ItemStack(item_type)}
+        })
+        result = result.item
+        if result:get_name() ~= "" then
+            result:set_count(item_count)
+            return result
+        end
+    end
+end)
+
+minetest.register_on_craft(function(itemstack, player, old_craft_grid, craft_inv)
+    if itemstack == ItemStack("exchangeclone:cooked_item") then
+        local phil = 0 -- yes, I'm calling it Phil.
+        local fuel = 0
+        local item_type = false
+        local item_count = 0
+        for _, item in ipairs(old_craft_grid) do
+            local name = item:get_name()
+            if name == "" then
+                -- do nothing
+            elseif name == "exchangeclone:philosophers_stone" then
+                phil = phil + 1
+            elseif fuel_items[name] then
+                fuel = fuel + 1
+            else
+                if item_type and item_type ~= name then
+                    minetest.log(dump({item_type, name}))
+                    return
+                else
+                    item_type = name
+                    item_count = item_count + 1
+                end
+            end
+        end
+        minetest.log(dump({phil=phil,fuel=fuel,item_type=item_type,item_count=item_count}))
+        if not (item_type and (phil == 1) and (fuel == 1)) then return end
+        local result, _ = minetest.get_craft_result({
+            method = "cooking",
+            width = 1,
+            items = {ItemStack(item_type)}
+        })
+        result = result.item
+        if result:get_name() ~= "" then
+            result:set_count(item_count)
+            return result
+        end
+    end
+end) --]]
+
 minetest.register_tool("exchangeclone:philosophers_stone", {
     description = "Philosopher's Stone",
     inventory_image = "exchangeclone_philosophers_stone.png",
@@ -292,7 +488,7 @@ minetest.register_tool("exchangeclone:philosophers_stone", {
     on_use = on_left_click,
     on_place = on_right_click,
     on_secondary_use = on_right_click,
-    groups = {philosophers_stone = 1, disable_repair = 1}
+    groups = {philosophers_stone = 1, disable_repair = 1, fire_immune = 1}
 })
 
 local diamond = "default:diamond"
@@ -416,6 +612,21 @@ minetest.register_craft({
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
+
+minetest.register_craft({
+    output = "mcl_core:iron_ingot 2",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "mcl_copper:copper_ingot",
+        "mcl_copper:copper_ingot",
+        "mcl_copper:copper_ingot",
+        "mcl_copper:copper_ingot",
+        "mcl_copper:copper_ingot",
+        "mcl_copper:copper_ingot",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
 minetest.register_craft({
     output = "default:steel_ingot 5",
     type = "shapeless",
@@ -675,7 +886,7 @@ minetest.register_craft({
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
-if exchangeclone.mineclone then -- no idea why both recipes show up in the craft guide, so added if/else
+if exchangeclone.mineclone then
     minetest.register_craft({
         output = "exchangeclone:alchemical_coal",
         type = "shapeless",

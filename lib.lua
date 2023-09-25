@@ -11,7 +11,7 @@ function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes defa
 end
 
 function exchangeclone.get_item_energy(name)
-    return minetest.registered_items[name].energy_value
+    return minetest.registered_items[name].energy_value or -1
 end
 
 function exchangeclone.round(num)
@@ -27,23 +27,31 @@ function exchangeclone.map(input, min1, max1, min2, max2)
 	return (input - min1) / (max1 - min1) * (max2 - min2) + min2
 end
 
+function exchangeclone.get_orb_itemstack_energy(itemstack)
+    if not itemstack then return -1 end
+    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return -1 end
+    return itemstack:get_meta():get_float("stored_energy") or 0
+end
+
 function exchangeclone.get_orb_energy(inventory, listname, index)
-    if not inventory then return end
+    if not inventory then return -1 end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    if not itemstack then return 0 end
-    if not itemstack:get_name() then return 0 end
-    return itemstack:get_meta():get_float("stored_energy")
+	return exchangeclone.get_orb_itemstack_energy(itemstack)
 end
 
+if default then exchangeclone.sound_mod = default else exchangeclone.sound_mod = mcl_sounds end
+
 function exchangeclone.set_orb_energy(inventory, listname, index, amount)
-    if (not inventory) or (not amount) or (amount < 0) or (amount > exchangeclone.energy_max) then return end
+    if not inventory or amount < 0 then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
     if not itemstack then return end
-    if not itemstack:get_name() then return end
+    if not (itemstack:get_name() and itemstack:get_name() == "exchangeclone:exchange_orb") then return end
+	local old_energy = exchangeclone.get_orb_itemstack_energy(itemstack)
+	if amount > old_energy and old_energy > exchangeclone.energy_max then return end -- don't allow more energy to be put into an over-filled orb
 
 	-- Square roots will hopefully make it less linear
 	-- And if they don't, I don't really care and I don't want to think about math anymore.
@@ -62,8 +70,7 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
 		b = exchangeclone.map(sqrt_amount, sqrt_max/2, 3*sqrt_max/4, 0, 255)
 		g = 255 - b
 	else
-		r = exchangeclone.map(sqrt_amount, 3*sqrt_max/4, sqrt_max, 0, 255)
-		minetest.log(dump(r))
+		r = math.min(exchangeclone.map(sqrt_amount, 3*sqrt_max/4, sqrt_max, 0, 255), 255)
 		b = 255
 	end
 
@@ -76,12 +83,38 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     inventory:set_stack(listname, index, itemstack)
 end
 
+local hud_elements = {}
+
+function exchangeclone.update_hud(player)
+	local hud_text = hud_elements[player:get_player_name()]
+	if not hud_text then minetest.log("!!!") return end
+	player:hud_change(hud_text, "text", "Stored Energy: "..tostring(exchangeclone.get_player_energy(player)))
+end
+
+minetest.register_on_joinplayer(function(player, last_login)
+	hud_elements[player:get_player_name()] = player:hud_add({
+		hud_elem_type = "text",
+		position      = {x = 1, y = 0.01},
+		offset        = {x = 0,   y = 0},
+		text          = "Stored Energy: 0",
+		alignment     = {x = -1, y = 0},
+		scale         = {x = 100, y = 100},
+		number = 0xFFFFFF
+	})
+	exchangeclone.update_hud(player)
+end)
+
+minetest.register_on_leaveplayer(function(player, timed_out)
+	hud_elements[player:get_player_name()] = nil
+end)
+
 function exchangeclone.get_player_energy(player)
-    return exchangeclone.get_orb_energy(player:get_inventory(), "exchangeclone_pesa", 1)
+    return player:get_meta():get_int("exchangeclone_stored_energy") or 0
 end
 
 function exchangeclone.set_player_energy(player, amount)
-    exchangeclone.set_orb_energy(player:get_inventory(), "exchangeclone_pesa", 1, amount)
+    player:get_meta():set_int("exchangeclone_stored_energy", amount)
+	exchangeclone.update_hud(player)
 end
 
 function exchangeclone.get_group_items(groups, allow_duplicates, include_no_group)
@@ -186,6 +219,20 @@ local function get_fortune_drops(fortune_drops, fortune_level)
 		i = i - 1
 	until drop or i < 1
 	return drop or {}
+end
+
+function exchangeclone.inventory_formspec(x,y)
+    local formspec = ""
+    if why.mineclone then
+        formspec = "list[current_player;main;"..tostring(x)..","..tostring(y)..";9,3;9]"..
+            mcl_formspec.get_itemslot_bg(x,y,9,3)..
+            "list[current_player;main;"..tostring(x)..","..tostring(y+3.25)..";9,1]"..
+            mcl_formspec.get_itemslot_bg(x,y+3.25,9,1)
+    else
+        formspec = "list[current_player;main;"..tostring(x)..","..tostring(y)..";8,1]"..
+        "list[current_player;main;"..tostring(x)..","..tostring(y+1.25)..";8,3;8]"
+    end
+    return formspec
 end
 
 local function discrete_uniform_distribution(drops, min_count, max_count, cap)

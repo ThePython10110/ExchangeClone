@@ -1,10 +1,3 @@
-local sound_mod
-if mcl_sounds then
-    sound_mod = mcl_sounds
-else
-    sound_mod = default
-end
-
 --Renamed "fuel" inventory to "main" to (almost) work with hoppers
 
 local function get_element_deconstructor_formspec()
@@ -66,7 +59,7 @@ local function on_timer(pos, elapsed)
             else
                 energy_value = exchangeclone.get_item_energy(fuel_stack:get_name())
             end
-            if energy_value == 0 then
+            if energy_value <= 0 then
                 break
             else
                 local wear = fuel_stack:get_wear()
@@ -154,7 +147,7 @@ minetest.register_node("exchangeclone:element_deconstructor", {
     groups = {cracky = 2, container = 3, pickaxey = 2},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
-    sounds = sound_mod.node_sound_metal_defaults(),
+    sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, player)

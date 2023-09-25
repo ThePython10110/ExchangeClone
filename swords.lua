@@ -173,7 +173,7 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	description = "Dark Matter Sword",
 	wield_image = "exchangeclone_dark_matter_sword.png",
 	inventory_image = "exchangeclone_dark_matter_sword.png",
-	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0 },
+	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -198,7 +198,7 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	description = "Red Matter Sword",
 	wield_image = "exchangeclone_red_matter_sword.png",
 	inventory_image = "exchangeclone_red_matter_sword.png",
-	groups = { tool=1, sword=1, dig_speed_class=8, enchantability=0 },
+	groups = { tool=1, sword=1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2

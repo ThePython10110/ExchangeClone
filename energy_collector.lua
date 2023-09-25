@@ -1,10 +1,3 @@
-local sound_mod
-if mcl_sounds then
-    sound_mod = mcl_sounds
-else
-    sound_mod = default
-end
-
 local function get_energy_collector_formspec()
     local formspec
     if not exchangeclone.mineclone then
@@ -53,11 +46,13 @@ local function on_timer(pos, elapsed)
         return false
     end
 
-    if minetest.get_natural_light(pos) == 15 then
+    if minetest.get_artificial_light(pos) >= 14 then
         local dest_orb = inv:get_stack("main", 1)
         local stored = exchangeclone.get_orb_energy(inv, "main", 1)
-        stored = stored + exchangeclone.collector_speed
-        exchangeclone.set_orb_energy(inv, "main", 1, stored)
+        if stored + exchangeclone.collector_speed > exchangeclone.energy_max then
+            stored = stored + exchangeclone.collector_speed
+            exchangeclone.set_orb_energy(inv, "main", 1, stored)
+        end
     end
     return true
 end
@@ -139,7 +134,7 @@ minetest.register_node("exchangeclone:energy_collector", {
     groups = {cracky = 2, container = 2, pickaxey = 2},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
-    sounds = sound_mod.node_sound_metal_defaults(),
+    sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
     is_ground_content = false,
     can_dig = can_dig,
     on_timer = on_timer,

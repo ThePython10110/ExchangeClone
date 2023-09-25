@@ -13,7 +13,7 @@ if not exchangeclone.mineclone then
 else
     formspec = {
         "size[9,10]",
-        "label[0.5,0.5;Personal Energy Storage Accessor (PESA)]",
+        "label[0.5,0.5;Personal Energy Storage Accessor (PESA)\nWARNING: THIS ITEM IS DEPRECATED AND WILL BE REMOVED SOON.\nREMOVE ANY ORB INSIDE IT.]",
         "list[current_player;exchangeclone_pesa;4,2;1,1;]",
         mcl_formspec.get_itemslot_bg(4,2,1,1),
         "list[current_player;main;0,5;9,3;9]",
@@ -35,11 +35,12 @@ local function on_rightclick(itemstack, player, pointed_thing)
 end
 
 minetest.register_tool("exchangeclone:pesa", {
-    description = "Personal Energy Storage Accessor (PESA)",
+    description = "Personal Energy Storage Accessor (PESA)\nWARNING: DEPRECATED/USELESS, REMOVE ANY ORB INSIDE",
     wield_image = "exchangeclone_pesa.png",
     inventory_image = "exchangeclone_pesa.png",
     on_secondary_use = on_rightclick,
     on_place = on_rightclick,
+    groups = {disable_repair = 1, fire_immune = 1}
 })
 
 minetest.register_on_joinplayer(function(player)
@@ -59,7 +60,7 @@ minetest.register_allow_player_inventory_action(function(player, action, inv, in
             else
                 stack = player:get_inventory():get_stack("main", info.from_index)
             end
-            if stack:get_name() == "exchangeclone:exchange_orb" or action == "take" then
+            if (action == "move" and stack:get_name() == "exchangeclone:exchange_orb") or action == "take" then
                 return stack:get_count()
             else
                 return 0

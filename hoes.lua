@@ -115,7 +115,7 @@ local hoe_def = {
 	wield_scale = exchangeclone.wield_scale,
 	on_place = hoe_on_place,
 	on_secondary_use = hoe_on_place,
-	groups = { tool=1, hoe=1, enchantability=0, dark_matter_hoe = 1 },
+	groups = { tool=1, hoe=1, enchantability=0, dark_matter_hoe = 1, disable_repair = 1, fire_immune = 1 },
 	tool_capabilities = {
 		full_punch_interval = 0.25,
 		damage_groups = { fleshy = 7, },
@@ -142,7 +142,7 @@ minetest.register_tool("exchangeclone:dark_matter_hoe_3x3", table.copy(hoe_3x3_d
 hoe_def.description = "Red Matter Hoe"
 hoe_def.wield_image = "exchangeclone_red_matter_hoe.png"
 hoe_def.inventory_image = "exchangeclone_red_matter_hoe.png"
-hoe_def.groups = { tool=1, hoe=1, enchantability=0, red_matter_hoe = 1 }
+hoe_def.groups = { tool=1, hoe=1, enchantability=0, red_matter_hoe = 1, disable_repair = 1, fire_immune = 1 }
 hoe_def.tool_capabilities = {
 	full_punch_interval = 0.25,
 	damage_groups = { fleshy = 8, },

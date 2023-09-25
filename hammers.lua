@@ -72,7 +72,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 	description = "Dark Matter Hammer",
 	wield_image = "exchangeclone_dark_matter_hammer.png",
 	inventory_image = "exchangeclone_dark_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, dark_matter_hammer = 1 },
+	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, dark_matter_hammer = 1, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -97,7 +97,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer_3x3", {
 	description = "Dark Matter Hammer",
 	wield_image = "exchangeclone_dark_matter_hammer.png",
 	inventory_image = "exchangeclone_dark_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, dark_matter_hammer = 1, not_in_creative_inventory = 1 },
+	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, dark_matter_hammer = 1, not_in_creative_inventory = 1, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -122,7 +122,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
 	description = "Red Matter Hammer",
 	wield_image = "exchangeclone_red_matter_hammer.png",
 	inventory_image = "exchangeclone_red_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, red_matter_hammer = 1 },
+	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, red_matter_hammer = 1, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -147,7 +147,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer_3x3", {
 	description = "Red Matter Hammer",
 	wield_image = "exchangeclone_red_matter_hammer.png",
 	inventory_image = "exchangeclone_red_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, red_matter_hammer = 1, not_in_creative_inventory = 1 },
+	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, red_matter_hammer = 1, not_in_creative_inventory = 1, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2

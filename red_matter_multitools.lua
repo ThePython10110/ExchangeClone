@@ -69,7 +69,7 @@ local katar_def = {
 	inventory_image = "exchangeclone_red_katar.png",
     on_secondary_use = katar_on_use,
     on_place = katar_on_use,
-	groups = { tool=1, red_katar = 1, sword = 1, axe=1, hoe = 1, shears = 1, dig_speed_class=8, enchantability=0 },
+	groups = { tool=1, red_katar = 1, sword = 1, axe=1, hoe = 1, shears = 1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1 },
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		full_punch_interval = 0.3,
@@ -106,9 +106,9 @@ minetest.register_craft({
 	type = "shapeless",
 	recipe = {
 		"exchangeclone:red_matter_sword",
-		"exchangeclone:red_matter_shears",
 		"exchangeclone:red_matter_axe",
 		"group:red_matter_hoe",
+		(exchangeclone.mineclone and "exchangeclone:red_matter_shears") or "exchangeclone:red_matter",
 		"exchangeclone:red_matter",
 		"exchangeclone:red_matter",
 		"exchangeclone:red_matter",
@@ -173,7 +173,10 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 	if pointed_thing.type == "node" then
 		local node = minetest.get_node(pointed_thing.under)
 		center = pointed_thing.under
-		if (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
+		if player:get_player_control().sneak then
+			exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action)
+			return
+		elseif (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
 			if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
 			local player_energy = exchangeclone.get_player_energy(player)
 			exchangeclone.play_ability_sound(player)
@@ -184,9 +187,6 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 				exchangeclone.set_player_energy(player, player_energy - energy_cost)
 			end
 			exchangeclone.start_cooldown(player, "pickaxe", 0.3)
-			return
-		elseif player:get_player_control().sneak then
-			exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action)
 			return
 		else
 			local player_energy = exchangeclone.get_player_energy(player)
@@ -233,7 +233,7 @@ local morningstar_def = {
 	 on_secondary_use = morningstar_on_use,
 	 exchangeclone_pick_mode = "1x1",
 	 on_place = morningstar_on_use,
-	 groups = { tool=1, red_morningstar = 1, shovel = 1, hammer=1, pickaxe = 1, dig_speed_class=8, enchantability=0 },
+	 groups = { tool=1, red_morningstar = 1, shovel = 1, hammer=1, pickaxe = 1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1 },
 	 wield_scale = exchangeclone.wield_scale,
 	 tool_capabilities = {
 		 full_punch_interval = 0.3,

@@ -1,10 +1,3 @@
-local sound_mod
-if mcl_sounds then
-    sound_mod = mcl_sounds
-else
-    sound_mod = default
-end
-
 local function get_level(level)
     if exchangeclone.mineclone then
         return nil
@@ -70,8 +63,7 @@ minetest.register_node("exchangeclone:dark_matter_block", {
     description = "Dark Matter Block",
     tiles = {"exchangeclone_dark_matter_block.png"},
 	is_ground_content = false,
-	light_source = 10,
-	sounds = sound_mod.node_sound_stone_defaults(),
+	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	groups = {pickaxey=5, material_stone=1, cracky = 3, level = get_level(4)}, --ridiculous workaround
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 75,
@@ -82,9 +74,8 @@ minetest.register_node("exchangeclone:red_matter_block", {
     tiles = {"exchangeclone_red_matter_block.png"},
 	is_ground_content = false,
 	light_source = 14,
-	sounds = sound_mod.node_sound_stone_defaults(),
-    -- TODO: Change level to 5 when adding Red Matter tools
-	groups = {pickaxey=5, material_stone=1, cracky = 3, level = get_level(4)},
+	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
+	groups = {pickaxey=5, material_stone=1, cracky = 3, level = get_level(5)},
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 100,
 })
