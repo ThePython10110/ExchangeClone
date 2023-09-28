@@ -1,5 +1,5 @@
 local stone_group = "cracky"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
 	stone_group = "pickaxey"
 end
 

@@ -195,6 +195,10 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 * Bugfixes:
     * Exchange Orbs will now correctly display their energy value (I typed `orb` instead of `exchange_orb` in the energy value list)
 
+### 4.3
+* New Features
+    * Mineclonia Support
+
 ### Plans for 5.0
 * New features:
     * Dark/Red Matter Furnaces

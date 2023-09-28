@@ -4,7 +4,7 @@ exchangeclone.shovel_action = {
         local data = {}
         data.player_energy = exchangeclone.get_player_energy(player)
         data.energy_cost = 0
-        if exchangeclone.mineclone then
+        if exchangeclone.mcl then
             data.path = not player:get_player_control().sneak
         end
         if range > 0 or not data.path then
@@ -19,7 +19,9 @@ exchangeclone.shovel_action = {
                 minetest.record_protection_violation(pos, player:get_player_name())
             else
                 if data.path then
-                    if (minetest.get_item_group(node.name, "path_creation_possible") == 1) then
+                    -- TODO: Fix potential "shovel_on_place" functions that aren't paths in Mineclonia
+                    if minetest.registered_items[node.name]._on_shovel_place or
+                    minetest.get_item_group(node.name, "path_creation_possible") == 1 then
                         minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
                         data.energy_cost = data.energy_cost + 4
                         minetest.swap_node(pos, {name="mcl_core:grass_path"})

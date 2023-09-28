@@ -22,7 +22,7 @@ minetest.register_tool("exchangeclone:exchange_orb", {
 local recipe_item_1 = "default:steel_ingot"
 local recipe_item_2 = "default:diamond"
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     recipe_item_1 = "mcl_core:iron_ingot"
     recipe_item_2 = "mcl_core:diamond"
 end

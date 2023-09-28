@@ -165,14 +165,14 @@ end
 
 
 exchangeclone.wield_scale = {x=1,y=1,z=1}
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     exchangeclone.wield_scale = mcl_vars.tool_wield_scale
 end
 
 exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.5)
 
 exchangeclone.diamond_itemstring = "default:diamond"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     exchangeclone.diamond_itemstring = "mcl_core:diamond"
 end
 
@@ -218,7 +218,7 @@ local function get_drops(drop, toolname, param2, paramtype2)
 end
 
 function exchangeclone.drop_items_on_player(pos, drops, player) --copied from MineClone's code
-    if not exchangeclone.mineclone then
+    if not exchangeclone.mcl then
         return minetest.handle_node_drops(pos, drops, player)
     end
 	-- NOTE: This function override allows player to be nil.

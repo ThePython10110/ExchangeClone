@@ -151,7 +151,7 @@ exchangeclone.morningstar_action = {
 }
 
 local torch_itemstring = "default:torch"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     torch_itemstring = "mcl_torches:torch"
 end
 

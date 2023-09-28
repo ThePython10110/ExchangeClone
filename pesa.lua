@@ -1,7 +1,7 @@
 --Personal Energy Storage Accessor (PESA)
 
 local formspec
-if not exchangeclone.mineclone then
+if not exchangeclone.mcl then
     formspec = {
         "size[8,9]",
         "label[0.5,0.5;Personal Energy Storage Accessor (PESA)]",
@@ -69,7 +69,7 @@ minetest.register_allow_player_inventory_action(function(player, action, inv, in
 end)
 
 local chest_itemstring = "default:chest"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     chest_itemstring = "mcl_chests:chest"
 end
 

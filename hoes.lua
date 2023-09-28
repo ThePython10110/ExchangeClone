@@ -27,7 +27,7 @@ end
 
 local hoe_function
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
 	hoe_function = create_soil
 else
 	hoe_function = farming.hoe_on_use -- assuming farming exists
@@ -94,7 +94,7 @@ local hoe_on_place = function(itemstack, player, pointed_thing)
 	exchangeclone.node_radius_action(player, center, range, exchangeclone.hoe_action, itemstack)
 end
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
 	mcl_autogroup.register_diggroup("exchangeclone_dirt")
 end
 for name, def in pairs(minetest.registered_nodes) do

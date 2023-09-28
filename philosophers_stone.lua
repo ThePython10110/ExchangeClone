@@ -219,7 +219,7 @@ exchangeclone.stone_action = {
 }
 
 local on_left_click = nil
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     on_left_click = function(itemstack, player, pointed_thing)
         if player:get_player_control().sneak then
             show_enchanting(player)
@@ -253,7 +253,7 @@ end
 local tt_help = "(Shift)-right-click: transmute nodes. (Shift)-Aux1-right-click: Change range"
 
 local item1 = "mese crystals"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     item1 = "emeralds"
 end
 
@@ -273,7 +273,7 @@ local usagehelp = "The range can be increased or decreased from 0 to 4 by (shift
                     "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
                     "range is reset when used in a crafting recipe."
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     tt_help = tt_help.."\nClick: crafting table. Shift-click: enchanting table."
     local extra_stuff = "\n\nIn MineClone, clicking opens a 3x3 crafting table and shift+clicking opens an enchanting table (the equivalent of a real "..
                         "enchanting table with eight bookshelves around it)."
@@ -299,7 +299,7 @@ local diamond = "default:diamond"
 local corner = "default:tin_ingot"
 local side = "default:obsidian"
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     diamond = "mcl_core:diamond"
     corner = "mcl_nether:glowstone_dust"
     side = "mesecons:redstone"
@@ -675,7 +675,7 @@ minetest.register_craft({
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
-if exchangeclone.mineclone then -- no idea why both recipes show up in the craft guide, so added if/else
+if exchangeclone.mcl then -- no idea why both recipes show up in the craft guide, so added if/else
     minetest.register_craft({
         output = "exchangeclone:alchemical_coal",
         type = "shapeless",
