@@ -21,7 +21,6 @@ end
 local function is_ore(itemstring)
 	if ores[itemstring] then return true end
 	local exchangeclone_ore = minetest.get_item_group(itemstring, "exchangeclone_ore")
-	minetest.log(tostring(exchangeclone_ore))
 	if exchangeclone_ore and exchangeclone_ore ~= 0 then return true end
 	return false
 end
@@ -34,69 +33,49 @@ local LIGHT_ACTIVE_FURNACE = 13
 -- Formspecs
 --
 
-local function active_formspec(fuel_percent, item_percent, type)
-	return "size[9,8.75]"..
+local base_formspec = 
+-- Craft guide button temporarily removed due to Minetest bug.
+-- TODO: Add it back when the Minetest bug is fixed.
+--"image_button[8,0;1,1;craftguide_book.png;craftguide;]"..
+--"tooltip[craftguide;"..minetest.formspec_escape("Recipe book").."]"..
+	"size[9,8.75]"..
 	"label[0,4;Inventory]"..
 	"list[current_player;main;0,4.5;9,3;9]"..
 	"list[current_player;main;0,7.74;9,1;]"..
-	"label[2.75,0;"..type.." Matter Furnace]"..
 	"list[context;src;2.75,0.5;1,1;]"..
 	"list[context;fuel;2.75,2.5;1,1;]"..
 	"list[context;dst;5.75,1.5;1,1;]"..
+	"listring[context;dst]"..
+	"listring[current_player;main]"..
+	"listring[context;src]"..
+	"listring[current_player;main]"..
+	"listring[context;fuel]"..
+	"listring[current_player;main]"
+
+if exchangeclone.mineclone then
+	base_formspec = base_formspec..
+		mcl_formspec.get_itemslot_bg(0,4.5,9,3)..
+		mcl_formspec.get_itemslot_bg(0,7.74,9,1)..
+		mcl_formspec.get_itemslot_bg(2.75,0.5,1,1)..
+		mcl_formspec.get_itemslot_bg(2.75,2.5,1,1)..
+		mcl_formspec.get_itemslot_bg(5.75,1.5,1,1)
+end
+
+local function inactive_formspec(type) 
+	return base_formspec..
+	"label[2.75,0;"..type.." Matter Furnace]"..
+	"image[2.75,1.5;1,1;default_furnace_fire_bg.png]"..
+	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[transformR270]"
+end
+
+local function active_formspec(fuel_percent, item_percent, type)
+	return base_formspec..
 	"image[2.75,1.5;1,1;default_furnace_fire_bg.png^[lowpart:"..
 	(100-fuel_percent)..":default_furnace_fire_fg.png]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[lowpart:"..
 	(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
-	-- Craft guide button temporarily removed due to Minetest bug.
-	-- TODO: Add it back when the Minetest bug is fixed.
-	--"image_button[8,0;1,1;craftguide_book.png;craftguide;]"..
-	--"tooltip[craftguide;"..minetest.formspec_escape("Recipe book").."]"..
-	"listring[context;dst]"..
-	"listring[current_player;main]"..
-	"listring[context;src]"..
-	"listring[current_player;main]"..
-	"listring[context;fuel]"..
-	"listring[current_player;main]"
+	"label[2.75,0;"..type.." Matter Furnace]"
 end
-
-local function inactive_formspec(type) 
-	return "size[9,8.75]"..
-	"label[0,4;"..minetest.formspec_escape(minetest.colorize("#313131", "Inventory")).."]"..
-	"list[current_player;main;0,4.5;9,3;9]"..
-	mcl_formspec.get_itemslot_bg(0,4.5,9,3)..
-	"list[current_player;main;0,7.74;9,1;]"..
-	mcl_formspec.get_itemslot_bg(0,7.74,9,1)..
-	"label[2.75,0;"..minetest.formspec_escape(minetest.colorize("#313131", type.." Matter Furnace")).."]"..
-	"list[context;src;2.75,0.5;1,1;]"..
-	mcl_formspec.get_itemslot_bg(2.75,0.5,1,1)..
-	"list[context;fuel;2.75,2.5;1,1;]"..
-	mcl_formspec.get_itemslot_bg(2.75,2.5,1,1)..
-	"list[context;dst;5.75,1.5;1,1;]"..
-	mcl_formspec.get_itemslot_bg(5.75,1.5,1,1)..
-	"image[2.75,1.5;1,1;default_furnace_fire_bg.png]"..
-	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[transformR270]"..
-	-- Craft guide button temporarily removed due to Minetest bug.
-	-- TODO: Add it back when the Minetest bug is fixed.
-	--"image_button[8,0;1,1;craftguide_book.png;craftguide;]"..
-	--"tooltip[craftguide;"..minetest.formspec_escape("Recipe book").."]"..
-	"listring[context;dst]"..
-	"listring[current_player;main]"..
-	"listring[context;src]"..
-	"listring[current_player;main]"..
-	"listring[context;fuel]"..
-	"listring[current_player;main]"
-end
-
-if exchangeclone.mineclone then
-	active_formspec = active_formspec..
-	mcl_formspec.get_itemslot_bg(0,4.5,9,3)..
-	mcl_formspec.get_itemslot_bg(0,7.74,9,1)..
-	mcl_formspec.get_itemslot_bg(2.75,0.5,1,1)..
-	mcl_formspec.get_itemslot_bg(2.75,2.5,1,1)..
-	mcl_formspec.get_itemslot_bg(5.75,1.5,1,1)
-	--currently adding mtg compatibility
-end
-
 
 local receive_fields = function(pos, formname, fields, sender)
 	if fields.craftguide then
@@ -303,10 +282,12 @@ local function check_for_collector(pos, set_furnace)
 	local collector_found = false
 	for _, check_pos in ipairs(check_positions) do
 		local check_node = minetest.get_node(vector.add(pos, check_pos))
-		if minetest.get_node_group(check_node.name, "energy_collector") > 0 then
+		minetest.log(minetest.get_meta(check_pos):get_int("has_light"))
+		if minetest.get_item_group(check_node.name, "energy_collector") > 0
+		and minetest.get_meta(check_pos):get_int("has_light") > 0 then
 			collector_found = true
 			if set_furnace ~= nil then
-				minetest.get_meta(check_pos):set_bool("connected_to_furnace", set_furnace)
+				minetest.get_meta(check_pos):set_int("connected_to_furnace", set_furnace)
 			end
 		end
 	end
@@ -372,10 +353,11 @@ local function furnace_node_timer(pos, elapsed)
 			el = math.min(el, cooked.time - src_time)
 		end
 
-		local using_collector = check_for_collector(pos, true)
+		local using_collector = check_for_collector(pos, 1)
 
 		-- Check if we have enough fuel to burn
-		active = (fuel_time < fuel_totaltime) or using_collector
+		active = (fuel_time < fuel_totaltime) or (using_collector and cooked.item ~= ItemStack(""))
+		minetest.log(dump({using_collector, cooked.item}))
 		if cookable and not active then
 			-- We need to get new fuel
 			local afterfuel
@@ -396,9 +378,13 @@ local function furnace_node_timer(pos, elapsed)
 				fuellist = inv:get_list("fuel")
 			end
 		elseif active then
-			el = math.min(el, fuel_totaltime - fuel_time)
-			-- The furnace is currently active and has enough fuel
-			fuel_time = fuel_time + el
+			if using_collector then
+				el = 10
+			else
+				-- The furnace is currently active and has enough fuel
+				el = math.min(el, fuel_totaltime - fuel_time)
+				fuel_time = fuel_time + el
+			end
 		end
 
 		-- If there is a cookable item then check if it is ready yet
@@ -410,11 +396,7 @@ local function furnace_node_timer(pos, elapsed)
 				if is_ore(srclist[1]:get_name()) and (count * 2 <= cooked.item:get_stack_max()) then
 					if type == "Red" or (type == "Dark" and math.random(1,2) == 1) then
 						cooked.item:set_count(count*2)
-					else
-						minetest.log(type)
 					end
-				else
-					minetest.log(tostring(is_ore(cooked.item:get_name())))
 				end
 				inv:add_item("dst", cooked.item)
 				inv:set_stack("src", 1, aftercooked.items[1])
@@ -424,7 +406,6 @@ local function furnace_node_timer(pos, elapsed)
 				--meta:set_int("xp", meta:get_int("xp") + 1)		-- ToDo give each recipe an idividial XP count
 			end
 		end
-
 		elapsed_game_time = elapsed_game_time - el
 	end
 
@@ -526,7 +507,7 @@ local inactive_def = {
 	end,
 	on_destruct = function(pos)
 		mcl_particles.delete_node_particlespawners(pos)
-		check_for_collector(pos, false)
+		check_for_collector(pos, 0)
 		--give_xp(pos)
 	end,
 
@@ -596,7 +577,7 @@ local active_def = {
 	end,
 	on_destruct = function(pos)
 		mcl_particles.delete_node_particlespawners(pos)
-		check_for_collector(pos, false)
+		check_for_collector(pos, 0)
 		--give_xp(pos)
 	end,
 

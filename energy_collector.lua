@@ -40,37 +40,38 @@ local function on_timer(pos, elapsed)
     -- get node above
     pos.y = pos.y + 1
 
-    if meta:get_bool("connected_to_furnace") then
+    if meta:get_int("connected_to_furnace") == 1 then
         -- do nothing, energy is being used for the furnace.
         return
     end
 
-
     local using_orb = true
     if inv:is_empty("main") then
-        -- stop timer
         using_orb = false
     end
 
-    if minetest.get_artificial_light(pos) >= 14 then
+    if minetest.get_natural_light(pos) == 15 then
+        meta:set_int("has_light", 1)
         local amount = meta:get_int("collector_amount")
         if using_orb then
             local dest_orb = inv:get_stack("main", 1)
             local stored = exchangeclone.get_orb_energy(inv, "main", 1)
             if stored + amount < exchangeclone.energy_max then
-                stored = stored + amount`
+                stored = stored + amount
                 exchangeclone.set_orb_energy(inv, "main", 1, stored)
             end
         else
             local placer = meta:get_string("collector_placer")
             if placer and placer ~= "" then
-                player = minetest.get_player_by_name(placer)
+                local player = minetest.get_player_by_name(placer)
                 if player then
                     local player_energy = exchangeclone.get_player_energy(player)
-                    exchangeclone.set_player_energy(player_energy + amount)
+                    exchangeclone.set_player_energy(player, player_energy + amount)
                 end
             end
         end
+    else
+        meta:set_int("has_light", 0)
     end
     return true
 end
@@ -80,7 +81,7 @@ local function on_construct(pos)
     local inv = meta:get_inventory()
     inv:set_size("main", 1)
     meta:set_string("formspec", get_energy_collector_formspec())
-    on_timer(pos, 1, 4)
+    minetest.get_node_timer(pos):start(1)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
@@ -138,7 +139,7 @@ local function on_dig_node(pos, oldnode, oldmetadata, player)
     end
 end
 
-function exchangeclone.register_energy_collector(itemstring, name, amount, modifier)
+function exchangeclone.register_energy_collector(itemstring, name, amount, modifier, recipe)
     minetest.register_node(itemstring, {
         description = "Energy Collector",
         tiles = {
@@ -149,13 +150,13 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
             "exchangeclone_energy_collector_right.png"..modifier,
             "exchangeclone_energy_collector_right.png"..modifier
         },
-        groups = {cracky = 2, container = 2, pickaxey = 2},
+        groups = {cracky = 2, container = 2, pickaxey = 2, energy_collector = 1},
         _mcl_hardness = 3,
         _mcl_blast_resistance = 6,
         sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
         is_ground_content = false,
         can_dig = can_dig,
-        on_timer = function(pos, elapsed) on_timer(pos, elapsed, amount) end,
+        on_timer = on_timer,
         on_construct = on_construct,
         after_dig_node = on_dig_node,
         on_metadata_inventory_move = function(pos)
@@ -169,15 +170,17 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
         end,
         after_place_node = function(pos, player, itemstack, pointed_thing)
             local player_name = player:get_player_name()
+            local meta = minetest.get_meta(pos)
             meta:set_int("collector_amount", amount)
             meta:set_string("collector_placer", player_name)
             meta:set_string("infotext", name.."\nOwned by"..player_name)
-        end
+        end,
         on_blast = on_blast,
         allow_metadata_inventory_put = allow_metadata_inventory_put,
         allow_metadata_inventory_move = allow_metadata_inventory_move,
         allow_metadata_inventory_take = allow_metadata_inventory_take,
     })
+    minetest.register_craft(recipe)
 end
 
 --[[if minetest.get_modpath("pipeworks") then
@@ -219,8 +222,7 @@ if exchangeclone.mineclone then
     recipe_item_3 = "mcl_chests:chest"
 end
 
-minetest.register_craft({
-    type = "shaped",
+exchangeclone.register_energy_collector("exchangeclone:energy_collector", "Energy Collector MK1", 4, "", {
     output = "exchangeclone:energy_collector",
     recipe = {
         {recipe_item_2, recipe_item_2, recipe_item_2},

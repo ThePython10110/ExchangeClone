@@ -7,39 +7,13 @@ Allows players to turn items into energy (stored in orbs), and energy from orbs 
 
 [ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone)
 
+[Wiki](https://github.com/ThePython10110/ExchangeClone/wiki)
+
 [Direct download](https://github.com/ThePython10110/ExchangeClone/archive/refs/heads/main.zip)
 
 Dependencies: Minetest Game or MineClone.
 
-## Features
-* Orb that holds energy (left click while holding it to show charge)
-* Collector that collects energy from the sun
-* Deconstructor that can turn items into energy
-* Constructor that can create items from energy
-* Philosopher's Stone
-* Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
-* Dark and Red Matter Orbs, Blocks, tools, and armor
-
-## Config
-All energy values are in `energy.lua`. You can also change the speed at which the Energy Collector collects energy (default: 5 energy/second) in `minetest.conf` or the Minetest settings.
-
-## New features added by ThePython10110
-*More information in `changelog.txt`.*
-
-* Support for MineClone
-* COMPLETELY redone energy values (originally, you could convert a single diamond into a diamond block... incredibly OP).
-* Shift-clicking works with the Constructor/Deconstructor/Collector (`listring`s)
-* Fixed a bug where items could be placed in the output slot of the Element Constructor
-* Added the ability to add energy values by group
-* Damaged tools now give less energy (based on wear)
-* Added Philosopher's Stone
-    * Aux1-right-click and aux1-sneak-right-click to increase and decrease transmutation range (0-4 nodes away from the node you are currently standing on)
-    * Right-click and sneak-right-click to transmute nodes in range (two different modes with minor differences)
-    * Left-click to open crafting table (MineClone only)
-    * Shift-left-click to open enchanting table (MineClone only)
-    * Ability to exchange resources by crafting (the Philosopher's Stone is always returned)
-* Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
-* Dark and Red Matter Orbs, Blocks, tools, and armor
+See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for a list of features.
 
 ## Known issues:
 * Dark and Red Matter armor look kind of terrible in MineClone. I might fix this eventually...
@@ -220,7 +194,10 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
         * An item copied from Project Expansion
         * Allows you to use hoppers to get items into/out of your Personal Energy (MineClone)
     * Upgraded Energy Collectors
-        * Energy Collector MK1-5
+        * Energy Collector MK1, MK2, MK3, MK4, and MK5
+        * By default, collected energy is sent to the player's personal energy.
+        * If an orb is inside an Energy Collector, energy will be stored in the orb instead.
+        * If it's near a DM/RM Furnace, any Energy Collector will power it instead of the orb or personal energy
     * The ability to upgrade dark/red matter tools to give them fortune, looting, fire aspect, and silk touch
     * The ability to upgrade dark/red matter armor to give it thorns and frost walker
     * Mind, Life, Body, and Soul Stones
