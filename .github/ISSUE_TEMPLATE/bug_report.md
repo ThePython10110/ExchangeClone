@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report to help improve ExchangeClone
 title: "[Bug] Title"
 labels: bug
 assignees: ''
