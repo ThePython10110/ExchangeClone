@@ -35,26 +35,25 @@ end
 
 local function on_timer(pos, elapsed)
     local meta = minetest.get_meta(pos)
+
     local inv = meta:get_inventory()
 
     -- get node above
-    pos.y = pos.y + 1
-
-    if meta:get_int("connected_to_furnace") == 1 then
-        -- do nothing, energy is being used for the furnace.
-        return
-    end
+    local above = vector.add({x=0,y=1,z=0}, pos)
 
     local using_orb = true
     if inv:is_empty("main") then
         using_orb = false
     end
 
-    if minetest.get_natural_light(pos) == 15 then
+    if minetest.get_natural_light(above) >= 14 then
         meta:set_int("has_light", 1)
+        if meta:get_int("connected_to_furnace") == 1 then
+            -- do nothing, energy is being used for the furnace.
+            return
+        end
         local amount = meta:get_int("collector_amount")
         if using_orb then
-            local dest_orb = inv:get_stack("main", 1)
             local stored = exchangeclone.get_orb_energy(inv, "main", 1)
             if stored + amount < exchangeclone.energy_max then
                 stored = stored + amount
@@ -88,8 +87,6 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
     if minetest.is_protected(pos, player:get_player_name()) then
         return 0
     end
-    local meta = minetest.get_meta(pos)
-    local inv = meta:get_inventory()
     if listname == "main" then
         if stack:get_name() == "exchangeclone:exchange_orb" then
             return stack:get_count()
@@ -118,7 +115,7 @@ local function on_blast(pos)
     exchangeclone.get_inventory_drops(pos, "main", drops)
     drops[#drops+1] = "exchangeclone:energy_collector"
     minetest.remove_node(pos)
-    
+
     return drops
 end
 
@@ -141,7 +138,7 @@ end
 
 function exchangeclone.register_energy_collector(itemstring, name, amount, modifier, recipe)
     minetest.register_node(itemstring, {
-        description = "Energy Collector",
+        description = name,
         tiles = {
             "exchangeclone_energy_collector_up.png"..modifier,
             "exchangeclone_energy_collector_down.png"..modifier,
@@ -150,7 +147,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
             "exchangeclone_energy_collector_right.png"..modifier,
             "exchangeclone_energy_collector_right.png"..modifier
         },
-        groups = {cracky = 2, container = 2, pickaxey = 2, energy_collector = 1},
+        groups = {cracky = 2, container = 2, pickaxey = 2, energy_collector = amount},
         _mcl_hardness = 3,
         _mcl_blast_resistance = 6,
         sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
@@ -212,21 +209,57 @@ end
     })
 end]]
 
-local recipe_item_1 = "default:steelblock"
-local recipe_item_2 = "default:obsidian_glass"
-local recipe_item_3 = "default:chest"
+local iron = "default:steelblock"
+local glass = "default:glass"
+local chest = "default:chest"
 
 if exchangeclone.mcl then
-    recipe_item_1 = "mcl_core:ironblock"
-    recipe_item_2 = "mcl_core:glass"
-    recipe_item_3 = "mcl_chests:chest"
+    iron = "mcl_core:ironblock"
+    glass = "mcl_core:glass"
+    chest = "mcl_chests:chest"
 end
 
 exchangeclone.register_energy_collector("exchangeclone:energy_collector", "Energy Collector MK1", 4, "", {
     output = "exchangeclone:energy_collector",
     recipe = {
-        {recipe_item_2, recipe_item_2, recipe_item_2},
-        {"exchangeclone:exchange_orb", recipe_item_3, "exchangeclone:exchange_orb"},
-        {recipe_item_1, recipe_item_1, recipe_item_1}
+        {glass, glass, glass},
+        {"exchangeclone:exchange_orb", chest, "exchangeclone:exchange_orb"},
+        {iron, iron, iron}
+    }
+})
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk2", "Energy Collector MK2", 12, "^[multiply:#555555", {
+    output = "exchangeclone:energy_collector_mk2",
+    recipe = {
+        {iron, iron, iron},
+        {"exchangeclone:energy_collector", "exchangeclone:energy_collector", "exchangeclone:energy_collector"},
+        {iron, iron, iron}
+    }
+})
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk3", "Energy Collector MK3", 40, "^[multiply:#770000", {
+    output = "exchangeclone:energy_collector_mk3",
+    recipe = {
+        {iron, iron, iron},
+        {"exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2"},
+        {iron, iron, iron}
+    }
+})
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", "Energy Collector MK4", 160, "^[multiply:#000077", {
+    output = "exchangeclone:energy_collector_mk4",
+    recipe = {
+        {iron, iron, iron},
+        {"exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3"},
+        {iron, iron, iron}
+    }
+})
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", "Energy Collector MK5", 640, "^[brighten", {
+    output = "exchangeclone:energy_collector_mk5",
+    recipe = {
+        {iron, iron, iron},
+        {"exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4"},
+        {iron, iron, iron}
     }
 })

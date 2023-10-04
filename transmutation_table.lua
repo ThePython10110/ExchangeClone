@@ -38,7 +38,7 @@ function exchangeclone.reload_transmutation_list(player, search)
     local items_to_show = minetest.deserialize(meta:get_string("exchangeclone_transmutation_learned_items")) or {}
 	local lang = minetest.get_player_information(player:get_player_name()).lang_code
     local pages = {}
-    local page_num = 1
+    local page_num
     local i = 0
     if not search or search == "" then search = player:get_meta():get_string("exchangeclone_transmutation_search") or "" end
     if search and search ~= "" then
@@ -116,7 +116,7 @@ local function handle_inventory(player, inventory, to_list, to_index, stack)
         inventory:set_stack(to_list, to_index, nil)
         exchangeclone.show_transmutation_table_formspec(player)
     elseif to_list == "forget" then
-        -- end
+        return
     elseif to_list == "charge" then
         local player_energy = exchangeclone.get_player_energy(player)
         local orb_energy = exchangeclone.get_orb_itemstack_energy(stack)
@@ -218,7 +218,7 @@ function exchangeclone.show_transmutation_table_formspec(player, data)
         formspec = formspec.."item_image[0.5,2.5;0.8,0.8;"..selection.."]"
     end
 
-    if exchangeclone.mineclone then
+    if exchangeclone.mcl then
         formspec = formspec..
             mcl_formspec.get_itemslot_bg(0,1,1,1)..
             mcl_formspec.get_itemslot_bg(1,1,1,1)..
@@ -229,8 +229,8 @@ function exchangeclone.show_transmutation_table_formspec(player, data)
     minetest.show_formspec(player_name, "exchangeclone_transmutation_table", formspec)
 end
 
-minetest.register_on_joinplayer(function(player, last_login)
-    local playername = player:get_player_name()
+minetest.register_on_joinplayer(function(ref, last_login)
+    local playername = ref:get_player_name()
     minetest.create_detached_inventory("exchangeclone_transmutation_"..playername, {
         allow_move = function(inv, from_list, from_index, to_list, to_index, count, player)
             local stack = inv:get_stack(from_list, from_index)
@@ -255,7 +255,7 @@ minetest.register_on_joinplayer(function(player, last_login)
     inventory:set_width("output", 2)
     inventory:set_size("learn", 1)
     inventory:set_size("forget", 1)
-    exchangeclone.reload_transmutation_list(player)
+    exchangeclone.reload_transmutation_list(ref)
 end)
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
@@ -337,7 +337,7 @@ minetest.register_tool("exchangeclone:alchemical_tome", {
 local book = "default:book"
 local obsidian = "default:obsidian"
 local stone = "default:stone"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     book = "mcl_books:book"
     obsidian = "mcl_core:obsidian"
     stone = "mcl_core:stone"

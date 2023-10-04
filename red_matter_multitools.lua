@@ -45,7 +45,7 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 	else
 		local damage_all = itemstack:get_meta():get_int("exchangeclone_damage_all")
 		exchangeclone.aoe_attack{max_damage = 2}
-		if not damage_all == 0 then damage_all = 1 end
+		if damage_all ~= 0 then damage_all = 1 end
 		if player:get_player_control().sneak then
 			if damage_all == 0 then
 				damage_all = 1
@@ -108,7 +108,7 @@ minetest.register_craft({
 		"exchangeclone:red_matter_sword",
 		"exchangeclone:red_matter_axe",
 		"group:red_matter_hoe",
-		(exchangeclone.mineclone and "exchangeclone:red_matter_shears") or "exchangeclone:red_matter",
+		(exchangeclone.mcl and "exchangeclone:red_matter_shears") or "exchangeclone:red_matter",
 		"exchangeclone:red_matter",
 		"exchangeclone:red_matter",
 		"exchangeclone:red_matter",
@@ -171,7 +171,6 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 	local center = player:get_pos()
 
 	if pointed_thing.type == "node" then
-		local node = minetest.get_node(pointed_thing.under)
 		center = pointed_thing.under
 		if player:get_player_control().sneak then
 			exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action)

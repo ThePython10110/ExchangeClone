@@ -1,5 +1,3 @@
-local multidig = {}
-
 function exchangeclone.mine_vein(player, player_energy, start_pos, node_name, pos)
     -- Not very efficient, but it SHOULD work.
     if not player then return 0 end
@@ -85,7 +83,7 @@ end
 for name, def in pairs(minetest.registered_nodes) do
     if name:find("_ore") or name:find("stone_with") or name:find("deepslate_with")
     or name:find("diorite_with") or name:find("andesite_with") or name:find("granite_with")
-    or name:find("tuff_with") or (name == "mcl_blackstone:nether_gold") then
+    or name:find("tuff_with") or (name == "mcl_blackstone:nether_gold") or (name == "mcl_nether:ancient_debris") then
         local groups = table.copy(def.groups)
         groups.exchangeclone_ore = 1
         minetest.override_item(name, {groups = groups})

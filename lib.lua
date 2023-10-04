@@ -134,7 +134,7 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
     if include_no_group then
         result["NO_GROUP"] = {}
     end
-    local in_group = false
+    local in_group
 
 	for name, def in pairs(minetest.registered_items) do
         in_group = false
@@ -222,8 +222,8 @@ local function get_fortune_drops(fortune_drops, fortune_level)
 end
 
 function exchangeclone.inventory_formspec(x,y)
-    local formspec = ""
-    if why.mineclone then
+    local formspec
+    if exchangeclone.mcl then
         formspec = "list[current_player;main;"..tostring(x)..","..tostring(y)..";9,3;9]"..
             mcl_formspec.get_itemslot_bg(x,y,9,3)..
             "list[current_player;main;"..tostring(x)..","..tostring(y+3.25)..";9,1]"..

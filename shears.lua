@@ -239,7 +239,6 @@ end
 local old_honey_harvest = minetest.registered_items["mcl_beehives:bee_nest_5"].on_rightclick
 for _, itemstring in ipairs({"mcl_beehives:bee_nest_5", "mcl_beehives:beehive_5"}) do
     minetest.registered_items[itemstring].on_rightclick = function(pos, node, player, itemstack, pointed_thing)
-        local inv = player:get_inventory()
         local held_name = player:get_wielded_item():get_name()
         local shears = special_shears[held_name]
         local beehive = "mcl_beehives:beehive"
@@ -271,14 +270,10 @@ local new_dispenser_function = function(pos, node)
         dropdir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
         droppos = vector.add(pos, dropdir)
     elseif node.name == "mcl_dispensers:dispenser_up" then
-        dropdir = {x=0, y=1, z=0}
         droppos  = {x=pos.x, y=pos.y+1, z=pos.z}
     elseif node.name == "mcl_dispensers:dispenser_down" then
-        dropdir = {x=0, y=-1, z=0}
         droppos  = {x=pos.x, y=pos.y-1, z=pos.z}
     end
-    local dropnode = minetest.get_node(droppos)
-    local dropnodedef = minetest.registered_nodes[dropnode.name]
     local stacks = {}
     for i=1,inv:get_size("main") do
         local stack = inv:get_stack("main", i)
@@ -299,27 +294,26 @@ local new_dispenser_function = function(pos, node)
         end
 
         local iname = stack:get_name()
-        local igroups = stackdef.groups
 
         if special_shears[iname] then
             for _, obj in pairs(minetest.get_objects_inside_radius(droppos, 1)) do
                 local entity = obj:get_luaentity()
                 if entity and not entity.child and not entity.gotten then
                     local entname = entity.name
-                    local pos = obj:get_pos()
+                    local entity_pos = obj:get_pos()
                     local used = false
                     local texture
                     if entname == "mobs_mc:sheep" then
                         local max_wool = 8
                         if iname == "exchangeclone:red_matter_shears" or iname == "exchangeclone:red_katar" then max_wool = 12 end
-                        minetest.add_item(pos, entity.drops[2].name.." "..math.random(1,max_wool)) --normally 3
+                        minetest.add_item(entity_pos, entity.drops[2].name.." "..math.random(1,max_wool)) --normally 3
                         if not entity.color then
                             entity.color = "unicolor_white"
                         end
                         local chance = 30 --percent
                         if iname == "exchangeclone:red_matter_shears" or iname == "exchangeclone:red_katar" then chance = 60 end
                         if math.random(1, 100) <= chance then
-                            local new_sheep = minetest.add_entity(pos, "mobs_mc:sheep"):get_luaentity() --clone the sheep
+                            local new_sheep = minetest.add_entity(entity_pos, "mobs_mc:sheep"):get_luaentity() --clone the sheep
                             for attribute, value in pairs(entity) do
                                 if attribute ~= "object" then
                                     new_sheep[attribute] = value
@@ -358,7 +352,7 @@ local new_dispenser_function = function(pos, node)
                         local chance = 30 --percent
                         if iname == "exchangeclone:red_matter_shears" or iname == "exchangeclone:red_katar" then chance = 60 end
                         if math.random(1, 100) <= chance then
-                            local new_mooshroom = minetest.add_entity(pos, "mobs_mc:mooshroom"):get_luaentity() --clone the mooshroom
+                            local new_mooshroom = minetest.add_entity(entity_pos, "mobs_mc:mooshroom"):get_luaentity() --clone the mooshroom
                             for attribute, value in pairs(entity) do
                                 if attribute ~= "object" then
                                     new_mooshroom[attribute] = value
@@ -377,7 +371,7 @@ local new_dispenser_function = function(pos, node)
                     if used then
                         obj:set_properties({ textures = texture })
                         entity.gotten = true
-                        minetest.sound_play("mcl_tools_shears_cut", { pos = pos }, true)
+                        minetest.sound_play("mcl_tools_shears_cut", { pos = entity_pos }, true)
                         inv:set_stack("main", stack_id, stack)
                         break
                     end
@@ -393,7 +387,7 @@ for _, itemstring in ipairs({"mcl_dispensers:dispenser", "mcl_dispensers:dispens
     minetest.registered_items[itemstring].mesecons.effector.action_on = new_dispenser_function
 end
 
-local gotten_texture = {
+local snowman_gotten_texture = {
     "mobs_mc_snowman.png",
     "blank.png",
     "blank.png",
@@ -411,7 +405,7 @@ minetest.registered_entities["mobs_mc:snowman"].on_rightclick = function(self, c
         -- Remove pumpkin
         self.gotten = true
         self.object:set_properties({
-            textures = gotten_texture,
+            textures = snowman_gotten_texture,
         })
 
         local pos = self.object:get_pos()

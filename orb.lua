@@ -3,8 +3,8 @@ local function read_orb_charge(itemstack, player, pointed_thing)
     if click_test ~= false then
         return click_test
     end
-    
-    local stored = itemstack:get_meta():get_float("stored_charge") or 0
+
+    local stored = exchangeclone.get_orb_itemstack_energy(itemstack)
     minetest.chat_send_player(player:get_player_name(), "Current Charge: "..stored)
     return itemstack
 end

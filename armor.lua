@@ -7,7 +7,7 @@ local blocked_damage_types = {
 }
 
 local function get_armor_texture(type, matter, preview)
-    local modifier = ""
+    local modifier
     -- hsl only works in 5.8 which hasn't been released yet
     if matter == "dark" then
         modifier = "^[multiply:#222222"
@@ -91,7 +91,7 @@ if exchangeclone.mcl then
     mcl_armor.register_set({
         name = "dark_matter",
         description = "Dark Matter",
-        descriptions = {
+        descriptions = exchangeclone.mineclonia and {
             head = "Dark Matter Helmet",
             torso = "Dark Matter Chestplate",
             legs = "Dark Matter Leggings",
@@ -119,7 +119,7 @@ if exchangeclone.mcl then
     mcl_armor.register_set({
         name = "red_matter",
         description = "Red Matter",
-        descriptions = {
+        descriptions = exchangeclone.mineclonia and {
             head = "Red Matter Helmet",
             torso = "Red Matter Chestplate",
             legs = "Red Matter Leggings",
@@ -271,7 +271,7 @@ else
     armor:register_on_equip(function(player, index, stack)
         exchangeclone.check_armor_health(player)
     end)
-    
+
     armor:register_on_unequip(function(player, index, stack)
         exchangeclone.check_armor_health(player)
     end)

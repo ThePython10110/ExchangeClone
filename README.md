@@ -38,6 +38,7 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
     * Alchemical Coal, Mobius Fuel, and Aeternalis Fuel: modified versions of MineClone's coal texture (CC-BY-SA-3.0).
     * Dark and Red Matter Armor (and eventually Gem Armor): modified versions of diamond armor from 3D Armor (CC-BY-SA-3.0) and `mcl_armor` (CC-BY-SA-3.0).
 * All other textures (and sounds): Created by me, inspired by Equivalent Exchange and licensed under CC-BY-SA-3.0.
+<details><summary><h1>Changelog:</h1></summary>
 
 # Changelog:
 ### 1.0.0
@@ -175,53 +176,31 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 * New Features
     * Mineclonia Support
 
-### 5.0 (another *huge* release)
+### 5.0 (the new most insteresting release so far)
 * New features:
-    * Transmutation Table(t)
-        * A much better (and cheaper) way to manage energy than the Constructor and Deconstructor.
-        * Teach items to the table by putting them in the Learn slot.
-        * Recreate learned items by clicking on them, then the "+1," "+5," "+10," and "+Stack" buttons to add them to the Output slots of the Table(t)
-        * The Table(t) will not show items that cost more energy than the player has.
-        * Charge orbs by putting them in the Charge slot.
-        * The Transmutation Tablet is the portable version of the Transmutation Table, and does exactly the same thing.
-        * All data (learned items, stored energy, etc.) is stored with the player, and will not be lost upon death or breaking/destroying the Transmutation Table(t).
-        * Mod developers can now add energy values to their own mods! Just set `exchangeclone_custom_energy` in the item/node definition.
-    * Alchemical Tome
-        * Feed this item to a Transmutation Table to teach it *all items* with energy. The Tome will NOT turn into energy, and will be completely lost.
-        * This is mostly so you can't just use it, then make a new one for no real cost and give it to someone else.
-    * Dark/Red Matter Furnaces
-        * Much faster than normal furnaces
-        * The Dark Matter Furnace has a 50% chance to duplicate when smelting ores (raw or otherwise).
-        * The Red Matter Furnace ALWAYS duplicates ores.
-        * Can be powered by placing next to an Energy Collector.
-    * Personal Energy Link
-        * An item copied from Project Expansion
-        * Allows you to use hoppers to get items into/out of your Personal Energy (MineClone)
-    * Upgraded Energy Collectors
-        * Energy Collector MK1, MK2, MK3, MK4, and MK5
-        * By default, collected energy is sent to the player's personal energy.
-        * If an orb is inside an Energy Collector, energy will be stored in the orb instead.
-        * If it's near a DM/RM Furnace, any Energy Collector will power it instead of the orb or personal energy
+    * Added a [wiki](https://github.com/ThePython10110/ExchangeClone/wiki)! This is where you can find more complete information on pretty much everything.
+        * Because the wiki exists, I won't be including anywhere near as many details about how features work in the changelog.
+    * Added the Transmutation Table(t): Much better than the constructor/deconstructor.
+    * Alchemical Tome: Instantly teaches every item with an energy value to the Transmutation Table(t).
+    * Dark/Red Matter Furnaces: Can be powered by Energy Collectors, much faster, and sometimes double ores.
+    * Personal Energy Link: Allows you to use hoppers to get items into/out of your Personal Energy (MineClone)
+    * Upgraded Energy Collectors: Now MK1-MK5. They use personal energy unless they have an orb.
     * The ability to upgrade dark/red matter tools to give them fortune, looting, fire aspect, and silk touch
     * The ability to upgrade dark/red matter armor to give it thorns and frost walker
     * Mind, Life, Body, and Soul Stones
-    * Custom Energy Values
-        * Mod developers can now set their own energy values by setting `exchangeclone_custom_energy` in the item/node definition.
-    * Added a [wiki](https://github.com/ThePython10110/ExchangeClone/wiki)!
+    * Mod developers can now set their own energy values by setting `exchangeclone_custom_energy` in the item/node definition.
 * Changes
     * Energy for Dark/Red Matter tool abilities (as well as the Transmutation Table) is no longer stored in an orb, but inside the player.
     * The amount of energy you currently have stored is visible in the top right of the screen.
     * Because of this, the PESA is now useless and deprecated. It will be removed after a few releases (so probably a couple months at least). Remove any Exchange Orbs from your personal storage.
     * A lot of items (including DM/RM tools and armor) will not burn in lava in MineClone2.
     * Energy Collectors now send their energy to the placer's personal energy by default.
-        * Placing an orb into an Energy Collector causes energy to go into the orb instead.
-        * If the Collector is near a DM/RM Furnace, all energy will be used to fuel the furnace.
-        * Red Matter Armor now sets your maximum health to 200 instead of 2000
-    * Energy Collectors now require less light to work (15->14)
+    * Red Matter Armor now sets your maximum health to 200 instead of 2000
     * Exchange Orbs are now 18x better as fuel than they used to be
     * DM/RM Shovels will now only create paths on blocks below air.
 * Bugfixes:
     * I must have skipped a row while going through MineClone's mod list. Several mods starting with `mcl_b` or `mcl_c` have been added to the whitelist.
+    * Fixed right-clicking with an orb not showing charge
     * Removed unnecessary tool repair recipes from dark/red matter tools/armor
     * Fixed a couple of armor texture issues in Minetest Game (though it still looks like diamond armor; 3D Armor doesn't support texture modifiers)
     * The Red Katar is now actually craftable in Minetest Game (I just forgot that shears were only in MCL2)
@@ -237,8 +216,10 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 * Rings (I'll probably add a new PESA-like item for holding rings)
     * Archangel's Smite (though arrows will not track targets)
     * Ring of Ignition
-    * Swiftwolf's Rending Gale (but without the force field)
     * Zero Ring
+    * Swiftwolf's Rending Gale (but without the force field; basically Why's Flying Sausage with a different texture)
     * Harvest Band?
     * Ring of Arcana (possibly without the Harvest Band)
 * Gem Armor
+
+</details>

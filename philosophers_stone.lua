@@ -5,13 +5,13 @@ local function show_enchanting(player)
     mcl_enchanting.show_enchanting_formspec(player)
 end
 
-local width = (exchangeclone.mineclone and 9) or 8
+local width = (exchangeclone.mcl and 9) or 8
 local smelting_formspec =
     "size["..width..",8]"..
     "label[0.25,0.25;Smelting]"..
     "label["..(width/3)..",0.75;Input]"..
     "list[current_player;exchangeclone_smelting_input;"..(width/3)..",1;1,1]"..
-    "label["..(width/3)..",2.25;Coal"..((exchangeclone.mineclone and "/charcoal]") or "]")..
+    "label["..(width/3)..",2.25;Coal"..((exchangeclone.mcl and "/charcoal]") or "]")..
     "list[current_player;exchangeclone_smelting_fuel;"..(width/3)..",2.5;1,1]"..
     "label["..(2*width/3)..",0.75;Output]"..
     "list[current_player;exchangeclone_smelting_output;"..(2*width/3)..",1.5;1,1]"..
@@ -24,7 +24,7 @@ local smelting_formspec =
     "listring[current_player;exchangeclone_smelting_fuel]"..
     "listring[current_player;main]"
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     smelting_formspec = smelting_formspec..
         mcl_formspec.get_itemslot_bg(width/3,1,1,1)..
         mcl_formspec.get_itemslot_bg(width/3,2.5,1,1)..
@@ -312,7 +312,7 @@ minetest.register_on_player_inventory_action(function(player, action, inventory,
         or info.listname == "exchangeclone_smelting_fuel" then
             set_smelting_output(player)
         elseif info.listname == "exchangeclone_smelting_output" then
-            
+            -- TODO
         end
     end
 end)
@@ -369,7 +369,7 @@ if exchangeclone.mcl then
     usagehelp = usagehelp..extra_stuff
 end
 
---[[ Could NOT figure out how to make this work. 
+--[[ Could NOT figure out how to make this work.
 
 for name, def in pairs(minetest.registered_nodes) do
 	local result, _ = minetest.get_craft_result({
