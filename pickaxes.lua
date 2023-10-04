@@ -26,7 +26,7 @@ function exchangeclone.mine_vein(player, player_energy, start_pos, node_name, po
 end
 
 local torch_itemstring = "default:torch"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     torch_itemstring = "mcl_torches:torch"
 end
 

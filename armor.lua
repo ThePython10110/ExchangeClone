@@ -17,7 +17,7 @@ local function get_armor_texture(type, matter, preview)
         --modifier = "^[hsl:-180:100:-100"
     end
     local result
-    if exchangeclone.mineclone then
+    if exchangeclone.mcl then
         result = "exchangeclone_mcl_"..type.."_base.png"..modifier
     else
         result = "exchangeclone_mtg_"..type.."_base"
@@ -31,7 +31,7 @@ end
 function exchangeclone.check_armor_health(obj)
     local max_armor = 5
     local armor_pieces = 0
-    if exchangeclone.mineclone then
+    if exchangeclone.mcl then
         max_armor = 4
         local inv = mcl_util.get_inventory(obj)
         if inv then
@@ -87,10 +87,16 @@ minetest.register_on_respawnplayer(function(ObjectRef)
     exchangeclone.check_armor_health(ObjectRef)
 end)
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     mcl_armor.register_set({
         name = "dark_matter",
         description = "Dark Matter",
+        descriptions = {
+            head = "Dark Matter Helmet",
+            torso = "Dark Matter Chestplate",
+            legs = "Dark Matter Leggings",
+            feet = "Dark Matter Boots"
+        },
         durability = -1,
         enchantability = 0,
         points = {
@@ -113,6 +119,12 @@ if exchangeclone.mineclone then
     mcl_armor.register_set({
         name = "red_matter",
         description = "Red Matter",
+        descriptions = {
+            head = "Red Matter Helmet",
+            torso = "Red Matter Chestplate",
+            legs = "Red Matter Leggings",
+            feet = "Red Matter Boots"
+        },
         durability = -1,
         enchantability = 0,
         points = {

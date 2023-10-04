@@ -4,7 +4,7 @@ exchangeclone.axe_action = {
         local data = {}
         data.player_energy = exchangeclone.get_player_energy(player)
         data.energy_cost = 0
-        if exchangeclone.mineclone then
+        if exchangeclone.mcl then
             data.strip = not player:get_player_control().sneak
         end
         if range > 0 or not data.strip then

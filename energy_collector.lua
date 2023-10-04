@@ -1,6 +1,6 @@
 local function get_energy_collector_formspec()
     local formspec
-    if not exchangeclone.mineclone then
+    if not exchangeclone.mcl then
         formspec = {
             "size[8,9]",
             "label[3,2;Orb]",
@@ -27,7 +27,7 @@ local function get_energy_collector_formspec()
 end
 
 local function can_dig(pos, player)
-    if exchangeclone.mineclone then return true end
+    if exchangeclone.mcl then return true end
     local meta = minetest.get_meta(pos);
     local inv = meta:get_inventory()
     return inv:is_empty("main")
@@ -123,7 +123,7 @@ local function on_blast(pos)
 end
 
 local function on_dig_node(pos, oldnode, oldmetadata, player)
-    if exchangeclone.mineclone then
+    if exchangeclone.mcl then
         local meta = minetest.get_meta(pos)
         local meta2 = meta:to_table()
         meta:from_table(oldmetadata)
@@ -216,7 +216,7 @@ local recipe_item_1 = "default:steelblock"
 local recipe_item_2 = "default:obsidian_glass"
 local recipe_item_3 = "default:chest"
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     recipe_item_1 = "mcl_core:ironblock"
     recipe_item_2 = "mcl_core:glass"
     recipe_item_3 = "mcl_chests:chest"

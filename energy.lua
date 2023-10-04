@@ -1577,7 +1577,7 @@ exchangeclone.whitelisted_mods = {
 
 
 --only allow Mesecons in MineClone
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     for _, mod in ipairs({
         "mesecons",
         "mesecons_button",
@@ -1606,7 +1606,7 @@ local function set_item_energy(itemstring, energy_value)
         if mod_name == "ghost_blocks" then
             energy_value = 0
         end
-        if exchangeclone.mineclone then
+        if exchangeclone.mcl then
             if exchangeclone.mcl_energy_values[mod_name] then
                 energy_value = exchangeclone.mcl_energy_values[mod_name][item_name] or energy_value --override if possible
             end
@@ -1641,7 +1641,7 @@ local function set_item_energy(itemstring, energy_value)
     --minetest.log(itemstring.." "..energy_value.." "..reason)
     if mod_name ~= "ghost_blocks" and mod_name ~= "mcl_stairs" and mod_name ~= "stairs" then
         local other_itemstrings = {}
-        if exchangeclone.mineclone then
+        if exchangeclone.mcl then
             other_itemstrings = {
                 {"mcl_stairs:slab_"..item_name, energy_value/2},
                 {"mcl_stairs:stair_"..item_name, energy_value*1.5},
@@ -1703,7 +1703,7 @@ end
 --Wait until all mods are loaded (to make sure all nodes have been registered)
 --This is much easier than making it depend on every single MineClone mod.
 minetest.register_on_mods_loaded(function()
-    if exchangeclone.mineclone then --Set all items to MineClone values
+    if exchangeclone.mcl then --Set all items to MineClone values
         local groupnames = {}
         for index, group in ipairs(exchangeclone.mcl_group_values) do
             groupnames[#groupnames + 1] = group[1] --Get list of group names

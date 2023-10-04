@@ -1,5 +1,5 @@
 local function get_element_constructor_formspec()
-    if not exchangeclone.mineclone then
+    if not exchangeclone.mcl then
         local formspec = {
             "size[8,9]",
             "label[2,1;Orb]",
@@ -45,7 +45,7 @@ local function get_element_constructor_formspec()
 end
 
 local function can_dig(pos, player)
-    if exchangeclone.mineclone then return true end
+    if exchangeclone.mcl then return true end
     local meta = minetest.get_meta(pos);
     local inv = meta:get_inventory()
     return inv:is_empty("fuel") and inv:is_empty("src") and inv:is_empty("dst")
@@ -63,7 +63,7 @@ local function on_timer(pos, elapsed)
             -- make sure the stack at dst is same as the src
             if not inv:is_empty("dst") then
                 if not(src_stack:get_name() == dst_stack:get_name()) then
-                    if exchangeclone.mineclone then
+                    if exchangeclone.mcl then
                         if not(string.sub(src_stack:get_name(), -10, -1) == "_enchanted"
                         and string.sub(src_stack:get_name(), 1, -11) == dst_stack:get_name()
                         and src_stack:get_name() ~= "mcl_core:apple_gold_enchanted") then
@@ -87,7 +87,7 @@ local function on_timer(pos, elapsed)
                 -- "convert" charge into a node at dst
                 if dst_stack:is_empty() then
                     -- create a new stack
-                    if exchangeclone.mineclone
+                    if exchangeclone.mcl
                     and string.sub(src_stack:get_name(), -10, -1) == "_enchanted"
                     and src_stack:get_name() ~= "mcl_core:apple_gold_enchanted" then
                         dst_stack = ItemStack(string.sub(src_stack:get_name(), 1, -11))
@@ -181,7 +181,7 @@ minetest.register_node("exchangeclone:element_constructor", {
     is_ground_content = false,
     can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, player)
-        if exchangeclone.mineclone then
+        if exchangeclone.mcl then
             local meta = minetest.get_meta(pos)
             local meta2 = meta:to_table()
             meta:from_table(oldmetadata)
@@ -215,7 +215,7 @@ minetest.register_node("exchangeclone:element_constructor", {
 
 local recipe_ingredient = "default:pick_diamond"
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     recipe_ingredient = "mcl_tools:pick_diamond"
 end
 minetest.register_craft({

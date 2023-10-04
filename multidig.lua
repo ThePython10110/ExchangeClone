@@ -1,12 +1,12 @@
 exchangeclone.multidig = {}
 
 local stone_group = "cracky"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
 	stone_group = "pickaxey"
 end
 
 local dirt_group = "crumbly"
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
 	dirt_group = "shovely"
 end
 

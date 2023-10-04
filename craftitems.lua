@@ -1,5 +1,5 @@
 local function get_level(level)
-    if exchangeclone.mineclone then
+    if exchangeclone.mcl then
         return nil
     else
         return level
@@ -79,7 +79,7 @@ minetest.register_node("exchangeclone:red_matter_block", {
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 100,
 })
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     minetest.register_craft({
         output = "exchangeclone:dark_matter",
         recipe = {

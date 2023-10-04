@@ -128,7 +128,7 @@ exchangeclone.aoe_attack = function(info)
 							if not obj:is_player() then
 								return
 							end
-							if exchangeclone.mineclone then
+							if exchangeclone.mcl then
 								mcl_util.deal_damage(obj, damage, { type = "generic", direct = player})
 							else
 								obj:set_hp(obj:get_hp() - damage)
@@ -136,7 +136,7 @@ exchangeclone.aoe_attack = function(info)
 							obj:add_velocity(vector.multiply(punch_dir, knockback/distance))
 						end)
 				else
-					if exchangeclone.mineclone then
+					if exchangeclone.mcl then
 						mcl_util.deal_damage(obj, damage, { type = "generic", direct = player})
 					else
 						obj:set_hp(obj:get_hp() - damage)

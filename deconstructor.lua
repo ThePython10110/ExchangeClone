@@ -1,7 +1,7 @@
 --Renamed "fuel" inventory to "main" to (almost) work with hoppers
 
 local function get_element_deconstructor_formspec()
-    if not exchangeclone.mineclone then
+    if not exchangeclone.mcl then
         local formspec = {
             "size[8,9]",
             "label[2,1;Fuel]",
@@ -38,7 +38,7 @@ local function get_element_deconstructor_formspec()
 end
 
 local function can_dig(pos, player)
-    if exchangeclone.mineclone then return true end
+    if exchangeclone.mcl then return true end
     local meta = minetest.get_meta(pos);
     local inv = meta:get_inventory()
     return inv:is_empty("main") and inv:is_empty("dst")
@@ -151,7 +151,7 @@ minetest.register_node("exchangeclone:element_deconstructor", {
     is_ground_content = false,
     can_dig = can_dig,
     after_dig_node = function(pos, oldnode, oldmetadata, player)
-        if exchangeclone.mineclone then
+        if exchangeclone.mcl then
             local meta = minetest.get_meta(pos)
             local meta2 = meta:to_table()
             meta:from_table(oldmetadata)
@@ -185,7 +185,7 @@ minetest.register_node("exchangeclone:element_deconstructor", {
 
 local recipe_ingredient = "default:furnace"
 
-if exchangeclone.mineclone then
+if exchangeclone.mcl then
     recipe_ingredient = "mcl_furnaces:furnace"
 end
 
