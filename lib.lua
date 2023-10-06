@@ -1,3 +1,5 @@
+-- Just a collection of a whole bunch of functions used here. There's very little order.
+
 function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes default dependency
 	local inv = minetest.get_meta(pos):get_inventory()
 	local n = #drops
@@ -51,12 +53,12 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     if not itemstack then return end
     if not (itemstack:get_name() and itemstack:get_name() == "exchangeclone:exchange_orb") then return end
 	local old_energy = exchangeclone.get_orb_itemstack_energy(itemstack)
-	if amount > old_energy and old_energy > exchangeclone.energy_max then return end -- don't allow more energy to be put into an over-filled orb
+	if amount > old_energy and old_energy > exchangeclone.orb_max then return end -- don't allow more energy to be put into an over-filled orb
 
 	-- Square roots will hopefully make it less linear
 	-- And if they don't, I don't really care and I don't want to think about math anymore.
 	local sqrt_amount = math.sqrt(amount)
-	local sqrt_max = math.sqrt(exchangeclone.energy_max)
+	local sqrt_max = math.sqrt(exchangeclone.orb_max)
 
 	local r, g, b = 0, 0, 0
 	if amount == 0 then
@@ -87,19 +89,18 @@ local hud_elements = {}
 
 function exchangeclone.update_hud(player)
 	local hud_text = hud_elements[player:get_player_name()]
-	if not hud_text then minetest.log("!!!") return end
-	player:hud_change(hud_text, "text", "Stored Energy: "..tostring(exchangeclone.get_player_energy(player)))
+	player:hud_change(hud_text, "text", "Personal Energy: "..tostring(exchangeclone.get_player_energy(player)))
 end
 
 minetest.register_on_joinplayer(function(player, last_login)
 	hud_elements[player:get_player_name()] = player:hud_add({
 		hud_elem_type = "text",
-		position      = {x = 1, y = 0.01},
+		position      = {x = 1, y = 1},
 		offset        = {x = 0,   y = 0},
-		text          = "Stored Energy: 0",
-		alignment     = {x = -1, y = 0},
+		text          = "Personal Energy: 0",
+		alignment     = {x = -1, y = -1},
 		scale         = {x = 100, y = 100},
-		number = 0xFFFFFF
+		number = 0xDDDDDD
 	})
 	exchangeclone.update_hud(player)
 end)

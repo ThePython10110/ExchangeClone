@@ -24,7 +24,6 @@ local function get_armor_texture(type, matter, preview)
         if preview then result = result.."_preview" end
         result = result..".png"..modifier
     end
-    minetest.log(result)
     return result
 end
 
@@ -46,7 +45,7 @@ function exchangeclone.check_armor_health(obj)
         end
     else
         local name, armor_inv = armor:get_valid_player(obj, "[checking for red matter]")
-        if not armor_inv then minetest.log("Inventory is nil") return end
+        if not armor_inv then return end
         local list = armor_inv:get_list("armor")
         if type(list) ~= "table" then
             return
@@ -66,7 +65,7 @@ function exchangeclone.check_armor_health(obj)
     if armor_pieces >= max_armor then
         obj:set_properties({hp_max = 200})
         if already_has_health == 0 then
-            -- TODO: fix this if MineCraft changes to max_hp instead of hardcoding 20
+            -- TODO: fix this if MineClone changes to max_hp instead of hardcoding 20
             obj:set_hp(200-math.max(20-obj:get_hp(), 0))
             obj:get_meta():set_int("exchangeclone_red_matter_armor", 1)
         end

@@ -5,7 +5,7 @@ local function show_enchanting(player)
     mcl_enchanting.show_enchanting_formspec(player)
 end
 
-local width = (exchangeclone.mcl and 9) or 8
+--[[local width = (exchangeclone.mcl and 9) or 8
 local smelting_formspec =
     "size["..width..",8]"..
     "label[0.25,0.25;Smelting]"..
@@ -29,7 +29,7 @@ if exchangeclone.mcl then
         mcl_formspec.get_itemslot_bg(width/3,1,1,1)..
         mcl_formspec.get_itemslot_bg(width/3,2.5,1,1)..
         mcl_formspec.get_itemslot_bg(2*width/3,1.5,1,1)
-end
+end]]
 
 exchangeclone.node_transmutations = {
     { --use
@@ -257,16 +257,16 @@ if exchangeclone.mcl then
         if player:get_player_control().sneak then
             show_enchanting(player)
         else
-            if player:get_player_control().aux1 then
+            --[[if player:get_player_control().aux1 then
                 minetest.show_formspec(player:get_player_name(), "exchangeclone_smelting", smelting_formspec)
-            else
+            else --]]
                 mcl_crafting_table.show_crafting_form(player)
-            end
+            --end
         end
     end
 end
 
-local fuel_items = {
+--[[ local fuel_items = {
     ["mcl_core:charcoal_lump"] = true,
     ["mcl_core:coal_lump"] = true,
     ["default:coal_lump"] = true,
@@ -315,7 +315,7 @@ minetest.register_on_player_inventory_action(function(player, action, inventory,
             -- TODO
         end
     end
-end)
+end)   --]]
 
 local function on_right_click(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -641,10 +641,12 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "default:tin_ingot 2",
+    output = "default:tin_ingot 4",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
+        "default:copper_ingot",
+        "default:copper_ingot",
         "default:copper_ingot",
         "default:copper_ingot",
         "default:copper_ingot",
@@ -653,10 +655,12 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "default:copper_ingot 3",
+    output = "default:copper_ingot 5",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
+        "default:tin_ingot",
+        "default:tin_ingot",
         "default:tin_ingot",
         "default:tin_ingot",
     },

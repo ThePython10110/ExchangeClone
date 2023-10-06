@@ -10,7 +10,7 @@ end
 exchangeclone.mineclonia = minetest.get_game_info().id == "mineclonia" -- if exchangeclone.mineclonia, exchangeclone.mcl will also be defined.
 
 
-exchangeclone.energy_max = 51200000 -- Max capacity of Klein Star Omega
+exchangeclone.orb_max = 51200000 -- Max capacity of Klein Star Omega
 
 local modpath = minetest.get_modpath("exchangeclone")
 

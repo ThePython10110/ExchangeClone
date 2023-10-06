@@ -26,6 +26,31 @@ local function get_energy_collector_formspec()
     return table.concat(formspec, "")
 end
 
+local check_positions = {
+	{x=0,y=0,z=1},
+	{x=0,y=0,z=-1},
+	{x=0,y=1,z=0},
+	{x=0,y=-1,z=0},
+	{x=1,y=0, z=0},
+	{x=-1,y=0,z=0},
+}
+
+local function check_for_furnaces(pos, set_furnace)
+	local found = false
+	for _, check_pos in ipairs(check_positions) do
+		local new_pos = vector.add(pos, check_pos)
+		local node = minetest.get_node(new_pos)
+		if minetest.get_item_group(node.name, "exchangeclone_furnace") > 0 then
+            found = true
+			if set_furnace ~= nil then
+                local meta = minetest.get_meta(new_pos)
+                meta:set_int("using_collector", set_furnace)
+			end
+		end
+	end
+	return found
+end
+
 local function can_dig(pos, player)
     if exchangeclone.mcl then return true end
     local meta = minetest.get_meta(pos);
@@ -47,18 +72,19 @@ local function on_timer(pos, elapsed)
     end
 
     if minetest.get_natural_light(above) >= 14 then
-        meta:set_int("has_light", 1)
-        if meta:get_int("connected_to_furnace") == 1 then
+        if check_for_furnaces(pos, 1) then
             -- do nothing, energy is being used for the furnace.
             return
         end
         local amount = meta:get_int("collector_amount")
         if using_orb then
             local stored = exchangeclone.get_orb_energy(inv, "main", 1)
-            if stored + amount < exchangeclone.energy_max then
+            if stored + amount <= exchangeclone.orb_max then
                 stored = stored + amount
-                exchangeclone.set_orb_energy(inv, "main", 1, stored)
+            else
+                stored = math.max(stored, exchangeclone.orb_max)
             end
+            exchangeclone.set_orb_energy(inv, "main", 1, stored)
         else
             local placer = meta:get_string("collector_placer")
             if placer and placer ~= "" then
@@ -70,7 +96,7 @@ local function on_timer(pos, elapsed)
             end
         end
     else
-        meta:set_int("has_light", 0)
+        check_for_furnaces(pos, 0)
     end
     return true
 end
@@ -165,6 +191,9 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
         on_metadata_inventory_take = function(pos)
             minetest.get_node_timer(pos):start(1)
         end,
+        on_destruct = function(pos, large)
+            check_for_furnaces(pos, 0)
+        end,
         after_place_node = function(pos, player, itemstack, pointed_thing)
             local player_name = player:get_player_name()
             local meta = minetest.get_meta(pos)
@@ -246,7 +275,7 @@ exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk3", "E
     }
 })
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", "Energy Collector MK4", 160, "^[multiply:#000077", {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", "Energy Collector MK4", 160, "^[multiply:#007700", {
     output = "exchangeclone:energy_collector_mk4",
     recipe = {
         {iron, iron, iron},
@@ -255,7 +284,7 @@ exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", "E
     }
 })
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", "Energy Collector MK5", 640, "^[brighten", {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", "Energy Collector MK5", 640, "^[multiply:#000077", {
     output = "exchangeclone:energy_collector_mk5",
     recipe = {
         {iron, iron, iron},

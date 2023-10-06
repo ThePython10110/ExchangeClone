@@ -1,9 +1,8 @@
--- WARNING: Do not use aliases; they will be ignored.
 exchangeclone.mtg_energy_values = {
     ["exchangeclone"] = {
         exchange_orb = 33792,
-        element_deconstructor = 67592,
-        element_constructor = 92168,
+        deconstructor = 67592,
+        constructor = 92168,
         energy_collector = 23901,
         philosophers_stone = 9984,
         alchemical_coal = 512,
@@ -392,8 +391,8 @@ I had to change some since they weren't as "equivalent" as they were supposed to
 I also didn't type out the ones with a value of 1, since that's the default.]]
 exchangeclone.mcl_energy_values = {
     ["exchangeclone"] = {
-        element_deconstructor = 67592,
-        element_constructor = 92168,
+        deconstructor = 67592,
+        constructor = 92168,
         energy_collector = 23883,
         exchange_orb = 33792,
         philosophers_stone = 9984,
@@ -1596,6 +1595,7 @@ if exchangeclone.mcl then
 end
 
 local function set_item_energy(itemstring, energy_value)
+    itemstring = minetest.registered_aliases[itemstring] or itemstring
     local def = minetest.registered_items[itemstring]
     if not def then return end
     if not def.groups then return end
@@ -1640,7 +1640,7 @@ local function set_item_energy(itemstring, energy_value)
     })
     --minetest.log(itemstring.." "..energy_value.." "..reason)
     if mod_name ~= "ghost_blocks" and mod_name ~= "mcl_stairs" and mod_name ~= "stairs" then
-        local other_itemstrings = {}
+        local other_itemstrings
         if exchangeclone.mcl then
             other_itemstrings = {
                 {"mcl_stairs:slab_"..item_name, energy_value/2},
@@ -1654,7 +1654,7 @@ local function set_item_energy(itemstring, energy_value)
                 {"stairs:stair_outer_"..item_name, energy_value*1.5},
             }
         end
-        
+
         for _, info in pairs(other_itemstrings) do
             if minetest.registered_items[info[1]] then
                 slabs_and_stairs[#slabs_and_stairs+1] = info
@@ -1747,7 +1747,7 @@ minetest.register_on_mods_loaded(function()
             end
         end
     end
-    
+
     for _, item in ipairs(slabs_and_stairs) do
         set_item_energy(item[1], item[2])
     end

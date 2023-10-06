@@ -2,7 +2,11 @@
 local ores = {
 	["mcl_raw_ores:raw_gold"] = true,
 	["mcl_raw_ores:raw_iron"] = true,
-	["mcl_copper:raw_copper"] = true
+	["mcl_copper:raw_copper"] = true,
+	["default:copper_lump"] = true,
+	["default:gold_lump"] = true,
+	["default:iron_lump"] = true,
+	["default:tin_lump"] = true,
 }
 
 local furnace_itemstring = "default:furnace"
@@ -38,10 +42,9 @@ local base_formspec =
 -- TODO: Add it back when the Minetest bug is fixed.
 --"image_button[8,0;1,1;craftguide_book.png;craftguide;]"..
 --"tooltip[craftguide;"..minetest.formspec_escape("Recipe book").."]"..
-	"size[9,8.75]"..
+	"size[10,8.75]"..
 	"label[0,4;Inventory]"..
-	"list[current_player;main;0,4.5;9,3;9]"..
-	"list[current_player;main;0,7.74;9,1;]"..
+	exchangeclone.inventory_formspec(0,4.5)..
 	"list[context;src;2.75,0.5;1,1]"..
 	"list[context;fuel;2.75,2.5;1,1;]"..
 	"list[context;dst;5.75,1.5;1,1;]"..
@@ -64,7 +67,7 @@ end
 local function inactive_formspec(type)
 	local num_columns = (type == "Dark" and 2) or 3
 	return base_formspec..
-	"list[context;src;0,1;"..tostring(num_columns)..",3;2]"..
+	"list[context;src;0,1;"..tostring(num_columns)..",3;1]"..
 	"label[2.75,0;"..type.." Matter Furnace]"..
 	"image[2.75,1.5;1,1;default_furnace_fire_bg.png]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[transformR270]"
@@ -75,14 +78,14 @@ local function active_formspec(fuel_percent, item_percent, type)
 	return base_formspec..
 	"image[2.75,1.5;1,1;default_furnace_fire_bg.png^[lowpart:"..
 		(100-fuel_percent)..":default_furnace_fire_fg.png]"..
-	"list[context;src;0,1;"..tostring(num_columns)..",3;2]"..
+	"list[context;src;0,1;"..tostring(num_columns)..",3;1]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[lowpart:"..
 		(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
 	"label[2.75,0;"..type.." Matter Furnace]"
 end
 
 local receive_fields = function(pos, formname, fields, sender)
-	if fields.craftguide then
+	if fields.craftguide and exchangeclone.mcl then
 		mcl_craftguide.show(sender:get_player_name())
 	end
 end
@@ -160,7 +163,7 @@ end
 
 local function on_metadata_inventory_take(pos, listname, index, stack, player)
 	-- Award smelting achievements
-	if listname == "dst" then
+	if exchangeclone.mcl and listname == "dst" then
 		if stack:get_name() == "mcl_core:iron_ingot" then
 			awards.unlock(player:get_player_name(), "mcl:acquireIron")
 		end
@@ -169,6 +172,7 @@ local function on_metadata_inventory_take(pos, listname, index, stack, player)
 end
 
 local function spawn_flames(pos, param2)
+	if not exchangeclone.mcl then return end
 	local minrelpos, maxrelpos
 	local dir = minetest.facedir_to_dir(param2)
 	if dir.x > 0 then
@@ -211,7 +215,7 @@ local function swap_node(pos, name)
 	minetest.swap_node(pos, node)
 	if name == "exchangeclone:dark_matter_furnace_active" or name == "exchangeclone:red_matter_furnace_active" then
 		spawn_flames(pos, node.param2)
-	else
+	elseif exchangeclone.mcl then
 		mcl_particles.delete_node_particlespawners(pos)
 	end
 end
@@ -266,46 +270,22 @@ local function furnace_get_delta_time(pos, elapsed)
 	return meta, elapsed_game_time
 end
 
-
-local check_positions = {
-	{x=0,y=0,z=1},
-	{x=0,y=0,z=-1},
-	{x=0,y=1,z=0},
-	{x=0,y=-1,z=0},
-	{x=1,y=0, z=0},
-	{x=-1,y=0,z=0},
-}
-
-local function check_for_collector(pos, set_furnace)
-	local collector_found = false
-	for _, check_pos in ipairs(check_positions) do
-		minetest.log(dump(vector.add(pos, check_pos)))
-		local check_node = minetest.get_node(vector.add(pos, check_pos))
-		if minetest.get_item_group(check_node.name, "energy_collector") > 0 then
-			minetest.log(minetest.get_meta(check_pos):get_int("has_light"))
-			if set_furnace ~= nil then
-				minetest.get_meta(check_pos):set_int("connected_to_furnace", set_furnace)
-			end
-			if minetest.get_meta(check_pos):get_int("has_light") > 0 then
-				collector_found = true
-			end
-		end
-	end
-	return collector_found
-end
-
 local function check_srclist(pos)
-	local meta = minetest:get_meta(pos)
+	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 	if not inv:get_stack("src", 1):is_empty() then
-		return
+		return "not empty"
 	end
-	for i=2,inv:get_size("src") do
+	local size = inv:get_size("src")
+	minetest.log(size)
+	for i=2,size do
 		local stack = inv:get_stack("src", i)
+		minetest.log(dump(stack))
 		if not stack:is_empty() then
+			minetest.log("Setting stacks")
 			inv:set_stack("src", 1, stack)
 			inv:set_stack("src", i, ItemStack(""))
-			return
+			return true
 		end
 	end
 end
@@ -328,7 +308,7 @@ local function furnace_node_timer(pos, elapsed)
 	local active = true
 	local fuel
 
-	local using_collector = check_for_collector(pos, 1)
+	local using_collector = meta:get_int("using_collector") > 0
 
 	local type = "Dark"
 	local speed = 22 -- /10 to get items/second
@@ -373,7 +353,6 @@ local function furnace_node_timer(pos, elapsed)
 
 		-- Check if we have enough fuel to burn
 		active = (fuel_time < fuel_totaltime) or (using_collector and cooked.item ~= ItemStack(""))
-		minetest.log(dump({using_collector, cooked.item}))
 		if cookable and not active then
 			-- We need to get new fuel
 			local afterfuel
@@ -429,7 +408,7 @@ local function furnace_node_timer(pos, elapsed)
 		fuel_totaltime = fuel.time * 5.5
 	end
 	if srclist and srclist[1]:is_empty() then
-		check_srclist(pos)
+		active = check_srclist(pos)
 		if srclist and srclist[1]:is_empty() then
 			src_time = 0
 		end
@@ -482,7 +461,9 @@ if minetest.get_modpath("screwdriver") then
 	on_rotate = screwdriver.rotate_simple
 	after_rotate_active = function(pos)
 		local node = minetest.get_node(pos)
-		mcl_particles.delete_node_particlespawners(pos)
+		if exchangeclone.mcl then
+			mcl_particles.delete_node_particlespawners(pos)
+		end
 		if node.name == "exchangeclone:dark_matter_furnace" or node.name == "exchangeclone:red_matter_furnace" then
 			return
 		end
@@ -501,7 +482,7 @@ local inactive_def = {
 		"exchangeclone_dark_matter_furnace.png",
 	},
 	paramtype2 = "facedir",
-	groups = {pickaxey=5, cracky = 3, container=4, material_stone=1, level = get_level(4)},
+	groups = {pickaxey=5, cracky = 3, container=4, material_stone=1, level = get_level(4), exchangeclone_furnace = 1},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 
@@ -534,31 +515,34 @@ local inactive_def = {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", inactive_formspec("Dark"))
-		check_for_collector(pos, 1)
 		local inv = meta:get_inventory()
 		inv:set_size("src", 7)
 		inv:set_size("fuel", 1)
 		inv:set_size("dst", 1)
 	end,
 	on_destruct = function(pos)
-		mcl_particles.delete_node_particlespawners(pos)
-		check_for_collector(pos, 0)
+		if exchangeclone.mcl then
+			mcl_particles.delete_node_particlespawners(pos)
 		--give_xp(pos)
+		end
 	end,
 
 	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
+		check_srclist(pos)
 	end,
 	on_metadata_inventory_put = function(pos)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
+		check_srclist(pos)
 		-- start timer function, it will sort out whether furnace can burn or not.
 		minetest.get_node_timer(pos):start(0.45)
 	end,
 	on_metadata_inventory_take = function(pos, listname, index, stack, player)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
+		check_srclist(pos)
 		-- start timer function, it will helpful if player clears dst slot
 		minetest.get_node_timer(pos):start(0.45)
 
@@ -588,7 +572,7 @@ local active_def = {
 	paramtype = "light",
 	light_source = LIGHT_ACTIVE_FURNACE,
 	drop = "exchangeclone:dark_matter_furnace",
-	groups = {pickaxey=5, not_in_creative_inventory = 1, container = 4, material_stone=1, cracky = 3, level = get_level(4)},
+	groups = {pickaxey=5, not_in_creative_inventory = 1, container = 4, material_stone=1, cracky = 3, level = get_level(4), exchangeclone_furnace = 1},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	on_timer = furnace_node_timer,
@@ -623,9 +607,10 @@ local active_def = {
 		spawn_flames(pos, node.param2)
 	end,
 	on_destruct = function(pos)
-		mcl_particles.delete_node_particlespawners(pos)
-		check_for_collector(pos, 0)
-		--give_xp(pos)
+		if exchangeclone.mcl then
+			mcl_particles.delete_node_particlespawners(pos)
+			--give_xp(pos)
+		end
 	end,
 
 	allow_metadata_inventory_put = allow_metadata_inventory_put,
@@ -654,23 +639,26 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		"exchangeclone_red_matter_block.png",
 		"exchangeclone_red_matter_furnace.png",
 	},
-	groups = {pickaxey=5, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5)},
+	groups = {pickaxey=5, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2},
 	_mcl_hardness = 100,
 
 	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
+		check_srclist(pos)
 		minetest.get_node_timer(pos):start(0.16)
 	end,
 	on_metadata_inventory_put = function(pos)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
+		check_srclist(pos)
 		-- start timer function, it will sort out whether furnace can burn or not.
 		minetest.get_node_timer(pos):start(0.16)
 	end,
 	on_metadata_inventory_take = function(pos, listname, index, stack, player)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
+		check_srclist(pos)
 		-- start timer function, it will helpful if player clears dst slot
 		minetest.get_node_timer(pos):start(0.16)
 
@@ -724,7 +712,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		"exchangeclone_red_matter_furnace.png",
 	},
 	drop = "exchangeclone:red_matter_furnace",
-	groups = {pickaxey=5, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5)},
+	groups = {pickaxey=5, not_in_creative_inventory = 1, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2},
 	_mcl_hardness = 100,
 
 	on_construct = function(pos)
@@ -776,7 +764,7 @@ minetest.register_craft({
 	output = "exchangeclone:red_matter_furnace",
 	recipe = {
 		{ "", "exchangeclone:red_matter_block", "" },
-		{ "exchangeclone:red_matter_block", "mcl_core:furnace", "exchangeclone:red_matter_block" },
+		{ "exchangeclone:red_matter_block", "exchangeclone:dark_matter_furnace", "exchangeclone:red_matter_block" },
 	}
 })
 

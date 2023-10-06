@@ -76,12 +76,13 @@ local function add_to_output(player, amount, show)
         local max_amount = math.min(amount, stack_max, math.floor(player_energy/energy_value))
         local inventory = minetest.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..player:get_player_name()})
         local added_amount = max_amount - inventory:add_item("output", ItemStack(item.." "..max_amount)):get_count()
-        exchangeclone.set_player_energy(player, player_energy - (energy_value * added_amount))
+        exchangeclone.set_player_energy(player, math.min(player_energy, player_energy - (energy_value * added_amount))) -- not sure if "math.min()" is necessary
         if show then exchangeclone.show_transmutation_table_formspec(player) end
     end
 end
 
-local function handle_inventory(player, inventory, to_list, to_index, stack)
+local function handle_inventory(player, inventory, to_list)
+    local stack = inventory:get_stack(to_list, 1)
     if to_list == "learn" then
         local list = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
         if stack:get_name() == "exchangeclone:alchemical_tome" then
@@ -95,35 +96,44 @@ local function handle_inventory(player, inventory, to_list, to_index, stack)
             end
             table.sort(list)
             player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
+            inventory:set_stack(to_list, 1, nil)
         else
             local individual_energy_value = exchangeclone.get_item_energy(stack:get_name())
             if individual_energy_value <= 0 then return end
-            local energy_value = individual_energy_value * stack:get_count()
+            local wear = stack:get_wear()
+            if wear and wear > 1 then
+                individual_energy_value = math.floor(individual_energy_value * (65536 / wear))
+            end
             if stack:get_name() == "exchangeclone:exchange_orb" then
-                energy_value = energy_value + exchangeclone.get_orb_itemstack_energy(stack)
+                individual_energy_value = individual_energy_value + exchangeclone.get_orb_itemstack_energy(stack)
             end
             local player_energy = exchangeclone.get_player_energy(player)
+            local max_count = math.floor((2147483647 - player_energy)/individual_energy_value)
+            local add_count = math.min(max_count, stack:get_count())
+            local energy_value = individual_energy_value * add_count
             local result = player_energy + energy_value
             if result < 0 or result > 2147483647 then return end
-            exchangeclone.set_player_energy(player, exchangeclone.get_player_energy(player) + energy_value)
+            exchangeclone.set_player_energy(player, result)
             local item_index = table.indexof(list, stack:get_name())
             if item_index == -1 then
                 list[#list+1] = stack:get_name()
                 table.sort(list)
                 player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
             end
+            stack:set_count(stack:get_count() - add_count)
+            if stack:get_count() == 0 then stack = ItemStack("") end
+            inventory:set_stack(to_list, 1, stack)
         end
-        inventory:set_stack(to_list, to_index, nil)
         exchangeclone.show_transmutation_table_formspec(player)
     elseif to_list == "forget" then
         return
     elseif to_list == "charge" then
         local player_energy = exchangeclone.get_player_energy(player)
         local orb_energy = exchangeclone.get_orb_itemstack_energy(stack)
-        local charge_amount = math.min(exchangeclone.energy_max - orb_energy, player_energy)
+        local charge_amount = math.min(exchangeclone.orb_max - orb_energy, player_energy)
         if charge_amount > 0 then
             exchangeclone.set_player_energy(player, player_energy - charge_amount)
-            exchangeclone.set_orb_energy(inventory, to_list, to_index, orb_energy + charge_amount)
+            exchangeclone.set_orb_energy(inventory, to_list, 1, orb_energy + charge_amount)
             exchangeclone.show_transmutation_table_formspec(player)
         end
     end
@@ -374,8 +384,8 @@ minetest.register_craft({
 
 minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
     if itemstack == ItemStack("exchangeclone:alchemical_tome") then
-        if exchangeclone.get_orb_itemstack_energy(old_craft_grid[4]) >= exchangeclone.energy_max
-        and exchangeclone.get_orb_itemstack_energy(old_craft_grid[6]) >= exchangeclone.energy_max then
+        if exchangeclone.get_orb_itemstack_energy(old_craft_grid[4]) >= exchangeclone.orb_max
+        and exchangeclone.get_orb_itemstack_energy(old_craft_grid[6]) >= exchangeclone.orb_max then
             return
         else
             return ItemStack("")

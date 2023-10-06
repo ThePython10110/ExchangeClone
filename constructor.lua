@@ -1,4 +1,4 @@
-local function get_element_constructor_formspec()
+local function get_constructor_formspec()
     if not exchangeclone.mcl then
         local formspec = {
             "size[8,9]",
@@ -44,6 +44,17 @@ local function get_element_constructor_formspec()
     end
 end
 
+-- Register LBM to update constructors
+minetest.register_lbm({
+    name = "exchangeclone:constructor_alert",
+    nodenames = {"exchangeclone:constructor"},
+    run_at_every_load = true,
+    action = function(pos, node)
+        local meta = minetest.get_meta(pos)
+        meta:set_string("formspec", "size[3,1]label[0,0;BREAK AND REPLACE]")
+    end,
+})
+
 local function can_dig(pos, player)
     if exchangeclone.mcl then return true end
     local meta = minetest.get_meta(pos);
@@ -51,62 +62,41 @@ local function can_dig(pos, player)
     return inv:is_empty("fuel") and inv:is_empty("src") and inv:is_empty("dst")
 end
 
-local function on_timer(pos, elapsed)
+local function constructor_action(pos)
     local inv = minetest.get_meta(pos):get_inventory()
-    local update = true
-    while elapsed > 0 and update do
-        update = false
-        local src_stack = inv:get_stack("src", 1)
-        local dst_stack = inv:get_stack("dst", 1)
+    local src_stack = inv:get_stack("src", 1)
+    local dst_stack = inv:get_stack("dst", 1)
 
-        if not inv:is_empty("fuel") and not inv:is_empty("src") then
-            -- make sure the stack at dst is same as the src
-            if not inv:is_empty("dst") then
-                if not(src_stack:get_name() == dst_stack:get_name()) then
-                    if exchangeclone.mcl then
-                        if not(string.sub(src_stack:get_name(), -10, -1) == "_enchanted"
-                        and string.sub(src_stack:get_name(), 1, -11) == dst_stack:get_name()
-                        and src_stack:get_name() ~= "mcl_core:apple_gold_enchanted") then
-                            break
-                        end
-                    else
-                        break
+    if not inv:is_empty("fuel") and not inv:is_empty("src") then
+        -- make sure the stack at dst is same as the src (including enchantments)
+        if not inv:is_empty("dst") then
+            if src_stack:get_name() ~= dst_stack:get_name() then
+                if exchangeclone.mcl then
+                    if not(string.sub(src_stack:get_name(), -10, -1) == "_enchanted"
+                    and string.sub(src_stack:get_name(), 1, -11) == dst_stack:get_name()
+                    and src_stack:get_name() ~= "mcl_core:apple_gold_enchanted") then
+                        return
                     end
-                end
-            end
-            -- make sure orb has enough charge
-            local orb_charge = exchangeclone.get_orb_energy(inv, "fuel", 1)
-            local energy_cost = exchangeclone.get_item_energy(src_stack:get_name())
-            if energy_cost > 0 then
-                orb_charge = orb_charge - energy_cost
-                if orb_charge < 0 then
-                    break
-                end
-                -- give orb new charge value
-                exchangeclone.set_orb_energy(inv, "fuel", 1, orb_charge)
-                -- "convert" charge into a node at dst
-                if dst_stack:is_empty() then
-                    -- create a new stack
-                    if exchangeclone.mcl
-                    and string.sub(src_stack:get_name(), -10, -1) == "_enchanted"
-                    and src_stack:get_name() ~= "mcl_core:apple_gold_enchanted" then
-                        dst_stack = ItemStack(string.sub(src_stack:get_name(), 1, -11))
-                    else
-                        dst_stack = ItemStack(src_stack:get_name())
-                    end
-                elseif not dst_stack:item_fits(src_stack:get_name()) then
-                    break
                 else
-                    -- add one node into stack
-                    dst_stack:set_count(dst_stack:get_count() + 1)
+                    return
                 end
-                inv:set_stack("dst", 1, dst_stack)
-                update = true
             end
         end
+        local result = src_stack:get_name()
+        if exchangeclone.mcl
+        and string.sub(result, -10, -1) == "_enchanted"
+        and result ~= "mcl_core:apple_gold_enchanted" then
+            result = string.sub(src_stack:get_name(), 1, -11)
+        end
+        -- make sure orb has enough charge
+        local orb_charge = exchangeclone.get_orb_energy(inv, "fuel", 1)
+        local energy_value = exchangeclone.get_item_energy(src_stack:get_name())
+        if energy_value > 0 then
+            local max_amount = math.min(src_stack:get_stack_max(), math.floor(orb_charge/energy_value))
+            local added_amount = max_amount - inv:add_item("dst", ItemStack(result.." "..max_amount)):get_count()
+            exchangeclone.set_orb_energy(inv, "fuel", 1, math.min(orb_charge, orb_charge - (energy_value * added_amount))) -- not sure if "math.min()" is necessary
+        end
     end
-    minetest.get_node_timer(pos):stop()
-    return false
 end
 
 local function on_construct(pos)
@@ -115,17 +105,15 @@ local function on_construct(pos)
     inv:set_size("fuel", 1)
     inv:set_size("src", 1)
     inv:set_size("dst", 1)
-    meta:set_string("formspec", get_element_constructor_formspec())
-    meta:set_string("infotext", "Element Constructor")
-    on_timer(pos, 0)
+    meta:set_string("formspec", get_constructor_formspec())
+    meta:set_string("infotext", "Constructor")
+    constructor_action(pos)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
     if minetest.is_protected(pos, player:get_player_name()) then
         return 0
     end
-    local meta = minetest.get_meta(pos)
-    local inv = meta:get_inventory()
     if listname == "fuel" then
         if stack:get_name() == "exchangeclone:exchange_orb" then
             return stack:get_count()
@@ -159,13 +147,13 @@ local function on_blast(pos)
     exchangeclone.get_inventory_drops(pos, "fuel", drops)
     exchangeclone.get_inventory_drops(pos, "src", drops)
     exchangeclone.get_inventory_drops(pos, "dst", drops)
-    drops[#drops+1] = "exchangeclone:element_constructor"
+    drops[#drops+1] = "exchangeclone:constructor"
     minetest.remove_node(pos)
     return drops
 end
 
-minetest.register_node("exchangeclone:element_constructor", {
-    description = "Element Constructor",
+minetest.register_node("exchangeclone:constructor", {
+    description = "Constructor",
     tiles = {
         "exchangeclone_constructor_up.png",
         "exchangeclone_constructor_down.png",
@@ -196,17 +184,11 @@ minetest.register_node("exchangeclone:element_constructor", {
             meta:from_table(meta2)
         end
 	end,
-    on_timer = on_timer,
+    on_timer = constructor_action,
     on_construct = on_construct,
-    on_metadata_inventory_move = function(pos)
-        minetest.get_node_timer(pos):start(1.0)
-    end,
-    on_metadata_inventory_put = function(pos)
-        minetest.get_node_timer(pos):start(1.0)
-    end,
-    on_metadata_inventory_take = function(pos)
-        minetest.get_node_timer(pos):start(1.0)
-    end,
+    on_metadata_inventory_move = constructor_action,
+    on_metadata_inventory_put = constructor_action,
+    on_metadata_inventory_take = constructor_action,
     on_blast = on_blast,
     allow_metadata_inventory_put = allow_metadata_inventory_put,
     allow_metadata_inventory_move = allow_metadata_inventory_move,
@@ -220,7 +202,7 @@ if exchangeclone.mcl then
 end
 minetest.register_craft({
     type = "shaped",
-    output = "exchangeclone:element_constructor",
+    output = "exchangeclone:constructor",
     recipe = {
         {"", "exchangeclone:exchange_orb",""},
         {"", recipe_ingredient, ""},
