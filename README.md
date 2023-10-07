@@ -40,33 +40,37 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 
 <details><summary><h1>Changelog:</h1></summary>
 
-### 5.0 (the new most insteresting release so far)
-#### You MUST break and replace any existing Deconstructors when updating from any previous version.
+### 5.0 (the most insteresting release so far)
+#### You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost.
 * New features:
     * Added a [wiki](https://github.com/ThePython10110/ExchangeClone/wiki)! This is where you can find more complete information on pretty much everything.
         * Because the wiki exists, I won't be including anywhere near as many details about how features work in the changelog.
     * Added the Transmutation Table(t): Much better than the constructor/deconstructor.
     * Alchemical Tome: Instantly teaches every item with an energy value to the Transmutation Table(t).
     * Dark/Red Matter Furnaces: Can be powered by Energy Collectors, much faster, and sometimes double ores.
-    * Personal Energy Link: Allows you to use hoppers to get items into/out of your Personal Energy (MineClone)
-    * Upgraded Energy Collectors: Now MK1-MK5. They use personal energy unless they have an orb.
-    * The ability to upgrade dark/red matter tools to give them fortune, looting, fire aspect, and silk touch
-    * The ability to upgrade dark/red matter armor to give it thorns and frost walker
-    * Mind, Life, Body, and Soul Stones
+    * Upgraded Energy Collectors: Now MK1-MK5, each giving more energy per second. They now use personal energy by default.
+    * Upgrades (MCL only)
+        * Upgrades can give dark/red matter tools fortune, looting, fire aspect, and silk touch (note: abilities ignore enchantments)
+        * Upgrades can give dark/red matter armor thorns and frost walker
     * Mod developers can now set their own energy values by setting `exchangeclone_custom_energy` in the item/node definition.
 * Changes
     * The changelog now has the most recent updates first, to make things easier to find.
-    * Energy for Dark/Red Matter tool abilities (as well as the Transmutation Table) is no longer stored in an orb, but inside the player.
-    * The amount of energy you currently have stored is visible in the bottom right of the screen.
-    * Because of this, the PESA is now useless and deprecated. It will be removed after a few releases (so probably a couple months at least). Remove any Exchange Orbs from your personal storage.
+    * Energy for Dark/Red Matter tool abilities (as well as the Transmutation Table) is no longer stored in an orb, but inside the player (called "personal energy").
+        * The amount of energy you currently have stored is visible in the bottom right of the screen.
+        * Because of this, the PESA is now useless and deprecated. It will be removed after a few releases (so probably a couple months at least). Remove any Exchange Orbs from your personal storage.
+        * Energy Collectors, Deconstructors, and Constructors now send their energy to the placer's personal energy when they do not contain an orb.
     * A lot of items (including DM/RM tools and armor) will not burn in lava in MineClone2.
-    * Energy Collectors now send their energy to the placer's personal energy by default.
+    * Deconstructors and Constructors now work with hoppers and don't have that weird lag thing when deconstructing
+        * The lag was caused by the fact that Enchant97 copied used node timers. Now they don't.
+        * **You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost.**
     * Red Matter Armor now sets your maximum health to 200 instead of 2000
     * Exchange Orbs are now 18x better as fuel than they used to be
     * DM/RM Shovels will now only create paths on blocks below air.
 * Bugfixes:
     * I must have skipped a row while going through MineClone's mod list. Several mods starting with `mcl_b` or `mcl_c` have been added to the whitelist.
     * Fixed right-clicking with an orb not showing charge
+    * Fixed unnecessary chat logging when deconstructing/constructing
+    * The names for Dark and Red Matter Armor now are correct in MineClone2
     * Removed unnecessary tool repair recipes from dark/red matter tools/armor
     * Fixed a couple of armor texture issues in Minetest Game (though it still looks like diamond armor; 3D Armor doesn't support texture modifiers)
     * The Red Katar is now actually craftable in Minetest Game (I just forgot that shears were only in MCL2)
@@ -123,7 +127,7 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
     * Fixed crash based on PESA inventory movement
     * Added `mcl_blackstone` to the mod whitelist
 
-### 3.0 (the most interesting release so far)
+### 3.0 (the formerly most interesting release)
 * New features:
     * Added Alchemical Coal, Mobius Fuel, Aeternalis Fuel, Dark Matter (blocks and orbs), and Red Matter (blocks and orbs)
     * Added PESA (Personal Energy Storage Accessor)
@@ -213,7 +217,8 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 </details>
 
 ### Features that I plan on adding eventually:
-* Something that places nodes in a square (with varying range), possibly with a low energy cost
+* Mind, Life, Body, and Soul Stones
+* Mercurial Eye (?)
 * Ability to smelt with the Philosopher's Stone and coal/charcoal (maybe?)
 * Exchangeclone guidebook (maybe depend on doc mod?)
 * As soon as Minetest 5.8 comes out, better textures for armor...

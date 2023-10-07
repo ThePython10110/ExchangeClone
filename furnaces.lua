@@ -45,8 +45,8 @@ local base_formspec =
 	"size[10,8.75]"..
 	"label[0,4;Inventory]"..
 	exchangeclone.inventory_formspec(0,4.5)..
-	"list[context;src;2.75,0.5;1,1]"..
-	"list[context;fuel;2.75,2.5;1,1;]"..
+	"list[context;src;2.9,0.5;1,1]"..
+	"list[context;fuel;2.9,2.5;1,1;]"..
 	"list[context;dst;5.75,1.5;1,1;]"..
 	"listring[context;dst]"..
 	"listring[current_player;main]"..
@@ -59,29 +59,43 @@ if exchangeclone.mcl then
 	base_formspec = base_formspec..
 		mcl_formspec.get_itemslot_bg(0,4.5,9,3)..
 		mcl_formspec.get_itemslot_bg(0,7.74,9,1)..
-		mcl_formspec.get_itemslot_bg(2.75,0.5,1,1)..
-		mcl_formspec.get_itemslot_bg(2.75,2.5,1,1)..
+		mcl_formspec.get_itemslot_bg(2.9,0.5,1,1)..
+		mcl_formspec.get_itemslot_bg(2.9,2.5,1,1)..
 		mcl_formspec.get_itemslot_bg(5.75,1.5,1,1)
 end
 
 local function inactive_formspec(type)
 	local num_columns = (type == "Dark" and 2) or 3
-	return base_formspec..
-	"list[context;src;0,1;"..tostring(num_columns)..",3;1]"..
-	"label[2.75,0;"..type.." Matter Furnace]"..
-	"image[2.75,1.5;1,1;default_furnace_fire_bg.png]"..
+	local result = base_formspec..
+	"list[context;src;0,0.5;"..tostring(num_columns)..",3;1]"..
+	"list[context;dst;7,0.5;"..tostring(num_columns)..",3;1]"..
+	"label[2.9,0;"..type.." Matter Furnace]"..
+	"image[2.9,1.5;1,1;default_furnace_fire_bg.png]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[transformR270]"
+	if exchangeclone.mcl then
+		result = result..
+			mcl_formspec.get_itemslot_bg(0,0.5,num_columns,3)..
+			mcl_formspec.get_itemslot_bg(7,0.5,num_columns,3)
+	end
+	return result
 end
 
 local function active_formspec(fuel_percent, item_percent, type)
 	local num_columns = (type == "Dark" and 2) or 3
-	return base_formspec..
-	"image[2.75,1.5;1,1;default_furnace_fire_bg.png^[lowpart:"..
+	local result =  base_formspec..
+	"image[2.9,1.5;1,1;default_furnace_fire_bg.png^[lowpart:"..
 		(100-fuel_percent)..":default_furnace_fire_fg.png]"..
-	"list[context;src;0,1;"..tostring(num_columns)..",3;1]"..
+	"list[context;src;0,0.5;"..tostring(num_columns)..",3;1]"..
+	"list[context;dst;7,0.5;"..tostring(num_columns)..",3;1]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[lowpart:"..
 		(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
-	"label[2.75,0;"..type.." Matter Furnace]"
+	"label[2.9,0;"..type.." Matter Furnace]"
+	if exchangeclone.mcl then
+		result = result..
+			mcl_formspec.get_itemslot_bg(0,0.5,num_columns,3)..
+			mcl_formspec.get_itemslot_bg(7,0.5,num_columns,3)
+	end
+	return result
 end
 
 local receive_fields = function(pos, formname, fields, sender)
@@ -277,12 +291,9 @@ local function check_srclist(pos)
 		return "not empty"
 	end
 	local size = inv:get_size("src")
-	minetest.log(size)
 	for i=2,size do
 		local stack = inv:get_stack("src", i)
-		minetest.log(dump(stack))
 		if not stack:is_empty() then
-			minetest.log("Setting stacks")
 			inv:set_stack("src", 1, stack)
 			inv:set_stack("src", i, ItemStack(""))
 			return true
@@ -493,7 +504,7 @@ local inactive_def = {
 		meta:from_table(oldmetadata)
 		local inv = meta:get_inventory()
 		for _, listname in ipairs({"src", "dst", "fuel"}) do
-			if listname == "src" then
+			if listname == "src" or listname == "dst" then
 				for i = 1,7 do
 					local stack = inv:get_stack(listname, i)
 					if not stack:is_empty() then
@@ -518,7 +529,7 @@ local inactive_def = {
 		local inv = meta:get_inventory()
 		inv:set_size("src", 7)
 		inv:set_size("fuel", 1)
-		inv:set_size("dst", 1)
+		inv:set_size("dst", 7)
 	end,
 	on_destruct = function(pos)
 		if exchangeclone.mcl then
@@ -583,7 +594,7 @@ local active_def = {
 		meta:from_table(oldmetadata)
 		local inv = meta:get_inventory()
 		for _, listname in ipairs({"src", "dst", "fuel"}) do
-			if listname == "src" then
+			if listname == "src" or listname == "dst" then
 				for i = 1,7 do
 					local stack = inv:get_stack(listname, i)
 					if not stack:is_empty() then
@@ -671,7 +682,7 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		local inv = meta:get_inventory()
 		inv:set_size("src", 10)
 		inv:set_size("fuel", 1)
-		inv:set_size("dst", 1)
+		inv:set_size("dst", 10)
 	end,
 
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
@@ -680,7 +691,7 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		meta:from_table(oldmetadata)
 		local inv = meta:get_inventory()
 		for _, listname in ipairs({"src", "dst", "fuel"}) do
-			if listname == "src" then
+			if listname == "src" or listname == "dst" then
 				for i = 1,10 do
 					local stack = inv:get_stack(listname, i)
 					if not stack:is_empty() then
@@ -721,7 +732,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		local inv = meta:get_inventory()
 		inv:set_size("src", 10)
 		inv:set_size("fuel", 1)
-		inv:set_size("dst", 1)
+		inv:set_size("dst", 10)
 	end,
 
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
@@ -730,7 +741,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		meta:from_table(oldmetadata)
 		local inv = meta:get_inventory()
 		for _, listname in ipairs({"src", "dst", "fuel"}) do
-			if listname == "src" then
+			if listname == "src" or listname == "dst" then
 				for i = 1,10 do
 					local stack = inv:get_stack(listname, i)
 					if not stack:is_empty() then

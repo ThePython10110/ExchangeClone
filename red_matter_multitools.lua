@@ -69,7 +69,7 @@ local katar_def = {
 	inventory_image = "exchangeclone_red_katar.png",
     on_secondary_use = katar_on_use,
     on_place = katar_on_use,
-	groups = { tool=1, red_katar = 1, sword = 1, axe=1, hoe = 1, shears = 1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1 },
+	groups = { tool=1, red_katar = 1, sword = 1, axe=1, hoe = 1, shears = 1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		full_punch_interval = 0.3,
@@ -232,7 +232,7 @@ local morningstar_def = {
 	 on_secondary_use = morningstar_on_use,
 	 exchangeclone_pick_mode = "1x1",
 	 on_place = morningstar_on_use,
-	 groups = { tool=1, red_morningstar = 1, shovel = 1, hammer=1, pickaxe = 1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1 },
+	 groups = { tool=1, red_morningstar = 1, shovel = 1, hammer=1, pickaxe = 1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	 wield_scale = exchangeclone.wield_scale,
 	 tool_capabilities = {
 		 full_punch_interval = 0.3,

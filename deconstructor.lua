@@ -35,14 +35,16 @@ local function get_deconstructor_formspec()
     end
 end
 
+minetest.register_alias("exchangeclone:element_deconstructor", "exchangeclone:deconstructor")
+
 -- Register LBM to update deconstructors
 minetest.register_lbm({
     name = "exchangeclone:deconstructor_alert",
     nodenames = {"exchangeclone:deconstructor"},
-    run_at_every_load = true,
+    run_at_every_load = false,
     action = function(pos, node)
         local meta = minetest.get_meta(pos)
-        meta:set_string("formspec", "size[3,1]label[0,0;BREAK AND REPLACE]")
+        meta:set_string("formspec", "size[3,1]label[0,0;Break and replace.\nNothing will be lost.]")
     end,
 })
 
@@ -54,9 +56,17 @@ local function can_dig(pos, player)
 end
 
 local function deconstructor_action(pos)
+    local limit = exchangeclone.orb_max
+    local using_orb = true
+    local player
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
-    if inv:get_stack("fuel", 1):get_name() ~= "exchangeclone:exchange_orb" then return end
+    if inv:get_stack("fuel", 1):get_name() ~= "exchangeclone:exchange_orb" then
+        limit = 2147483647
+        using_orb = false
+        player = minetest.get_player_by_name(meta:get_string("exchangeclone_placer"))
+        if not (player and player ~= "") then return end
+    end
     local stack = inv:get_stack("src", 1)
     local individual_energy_value = exchangeclone.get_item_energy(stack:get_name())
     if individual_energy_value <= 0 then return end
@@ -67,13 +77,22 @@ local function deconstructor_action(pos)
     if stack:get_name() == "exchangeclone:exchange_orb" then
         individual_energy_value = individual_energy_value + exchangeclone.get_orb_itemstack_energy(stack)
     end
-    local orb_energy = exchangeclone.get_orb_energy(inv, "fuel", 1)
-    local max_count = math.floor((exchangeclone.orb_max - orb_energy)/individual_energy_value)
+    local current_energy
+    if using_orb then
+        current_energy = exchangeclone.get_orb_energy(inv, "fuel", 1)
+    else
+        current_energy = exchangeclone.get_player_energy(player)
+    end
+    local max_count = math.floor((limit - current_energy)/individual_energy_value)
     local add_count = math.min(max_count, stack:get_count())
     local energy_value = individual_energy_value * add_count
-    local result = orb_energy + energy_value
-    if result < 0 or result > exchangeclone.orb_max then return end
-    exchangeclone.set_orb_energy(inv, "fuel", 1, result)
+    local result = current_energy + energy_value
+    if result < 0 or result > limit then return end
+    if using_orb then
+        exchangeclone.set_orb_energy(inv, "fuel", 1, result)
+    else
+        exchangeclone.set_player_energy(player, result)
+    end
     stack:set_count(stack:get_count() - add_count)
     if stack:get_count() == 0 then stack = ItemStack("") end
     inv:set_stack("src", 1, stack)
@@ -162,11 +181,18 @@ minetest.register_node("exchangeclone:deconstructor", {
             meta:from_table(meta2)
         end
 	end,
+    after_place_node = function(pos, player, itemstack, pointed_thing)
+        local meta = minetest.get_meta(pos)
+        meta:set_string("exchangeclone_placer", player:get_player_name())
+    end,
     on_timer = deconstructor_action,
     on_construct = on_construct,
     on_metadata_inventory_move = deconstructor_action,
     on_metadata_inventory_put = deconstructor_action,
-    on_metadata_inventory_take = deconstructor_action,
+    on_metadata_inventory_take = function(pos, listname, index, stack, player)
+        if listname == "fuel" then return end
+        deconstructor_action(pos)
+    end,
     on_blast = on_blast,
     allow_metadata_inventory_put = allow_metadata_inventory_put,
     allow_metadata_inventory_move = allow_metadata_inventory_move,

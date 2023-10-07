@@ -25,11 +25,11 @@ dofile(modpath.."/craftitems.lua")
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then
 	dofile(modpath.."/armor.lua")
 end
-dofile(modpath.."/multidig.lua")
 if exchangeclone.mcl then
 	mcl_item_id.set_mod_namespace("exchangeclone")
 	dofile(modpath.."/shears.lua")
 end
+dofile(modpath.."/multidig.lua")
 dofile(modpath.."/swords.lua")
 dofile(modpath.."/axes.lua")
 dofile(modpath.."/hoes.lua")
@@ -37,6 +37,9 @@ dofile(modpath.."/pickaxes.lua")
 dofile(modpath.."/hammers.lua")
 dofile(modpath.."/shovels.lua")
 dofile(modpath.."/red_matter_multitools.lua")
+if exchangeclone.mcl then
+	dofile(modpath.."/tool_upgrades.lua")
+end
 dofile(modpath.."/philosophers_stone.lua")
 dofile(modpath.."/pesa.lua")
 dofile(modpath.."/transmutation_table.lua")

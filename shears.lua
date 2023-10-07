@@ -75,7 +75,7 @@ minetest.register_tool("exchangeclone:dark_matter_shears", {
     wield_image = "exchangeclone_dark_matter_shears.png",
     inventory_image = "exchangeclone_dark_matter_shears.png",
     stack_max = 1,
-    groups = { tool=1, shears=1, dig_speed_class=7, disable_repair = 1, fire_immune = 1 },
+    groups = { tool=1, shears=1, dig_speed_class=7, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
     tool_capabilities = {
             full_punch_interval = 0.4,
             max_drop_level=1,
@@ -97,7 +97,7 @@ minetest.register_tool("exchangeclone:red_matter_shears", {
     wield_image = "exchangeclone_red_matter_shears.png",
     inventory_image = "exchangeclone_red_matter_shears.png",
     stack_max = 1,
-    groups = { tool=1, shears=1, dig_speed_class=8, disable_repair = 1, fire_immune = 1 },
+    groups = { tool=1, shears=1, dig_speed_class=8, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
     tool_capabilities = {
             full_punch_interval = 0.3,
             max_drop_level=1,

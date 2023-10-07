@@ -349,8 +349,6 @@ local longdesc =    "A mysterious device discovered by alchemists millenia ago. 
                     "It has the ability to transmute nearby nodes into other nodes. The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking.\n"..
                     "Transmute nodes by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
                     "the node directly below you, with a radius equal to the range.\n"..
-                    "The ancient tome (entitled the \"Tekkit Wiki\") vaguely mentioned a \"cooldown\" when used to transmute large areas, "..
-                    "but ThePython was far to lazy to implement such a thing (maybe just have the charge level/radius reset every time?).\n\n"..
                     "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
                     "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
                     "range is reset when used in a crafting recipe."
@@ -478,7 +476,7 @@ minetest.register_on_craft(function(itemstack, player, old_craft_grid, craft_inv
 end) --]]
 
 minetest.register_tool("exchangeclone:philosophers_stone", {
-    description = "Philosopher's Stone",
+    description = "Philosopher's Stone\nAlways returned when crafting",
     inventory_image = "exchangeclone_philosophers_stone.png",
     wield_image = "exchangeclone_philosophers_stone.png",
     _tt_help = tt_help,

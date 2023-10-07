@@ -44,14 +44,16 @@ local function get_constructor_formspec()
     end
 end
 
+minetest.register_alias("exchangeclone:element_constructor", "exchangeclone:constructor")
+
 -- Register LBM to update constructors
 minetest.register_lbm({
     name = "exchangeclone:constructor_alert",
     nodenames = {"exchangeclone:constructor"},
-    run_at_every_load = true,
+    run_at_every_load = false,
     action = function(pos, node)
         local meta = minetest.get_meta(pos)
-        meta:set_string("formspec", "size[3,1]label[0,0;BREAK AND REPLACE]")
+        meta:set_string("formspec", "size[3,1]label[0,0;Break and replace.\nNothing will be lost.]")
     end,
 })
 
@@ -63,11 +65,19 @@ local function can_dig(pos, player)
 end
 
 local function constructor_action(pos)
-    local inv = minetest.get_meta(pos):get_inventory()
+    local using_orb = true
+    local player
+    local meta = minetest.get_meta(pos)
+    local inv = meta:get_inventory()
+    if inv:get_stack("fuel", 1):get_name() ~= "exchangeclone:exchange_orb" then
+        using_orb = false
+        player = minetest.get_player_by_name(meta:get_string("exchangeclone_placer"))
+        if not (player and player ~= "") then return end
+    end
     local src_stack = inv:get_stack("src", 1)
     local dst_stack = inv:get_stack("dst", 1)
 
-    if not inv:is_empty("fuel") and not inv:is_empty("src") then
+    if not inv:is_empty("src") then
         -- make sure the stack at dst is same as the src (including enchantments)
         if not inv:is_empty("dst") then
             if src_stack:get_name() ~= dst_stack:get_name() then
@@ -88,13 +98,23 @@ local function constructor_action(pos)
         and result ~= "mcl_core:apple_gold_enchanted" then
             result = string.sub(src_stack:get_name(), 1, -11)
         end
-        -- make sure orb has enough charge
-        local orb_charge = exchangeclone.get_orb_energy(inv, "fuel", 1)
+        -- make sure orb/player has enough energy
+        local current_energy
+        if using_orb then
+            current_energy = exchangeclone.get_orb_energy(inv, "fuel", 1)
+        else
+            current_energy = exchangeclone.get_player_energy(player)
+        end
         local energy_value = exchangeclone.get_item_energy(src_stack:get_name())
         if energy_value > 0 then
-            local max_amount = math.min(src_stack:get_stack_max(), math.floor(orb_charge/energy_value))
+            local max_amount = math.min(src_stack:get_stack_max(), math.floor(current_energy/energy_value))
             local added_amount = max_amount - inv:add_item("dst", ItemStack(result.." "..max_amount)):get_count()
-            exchangeclone.set_orb_energy(inv, "fuel", 1, math.min(orb_charge, orb_charge - (energy_value * added_amount))) -- not sure if "math.min()" is necessary
+            local result_energy = math.min(current_energy, current_energy - (energy_value * added_amount)) -- not sure if "math.min()" is necessary
+            if using_orb then
+                exchangeclone.set_orb_energy(inv, "fuel", 1, result_energy)
+            else
+                exchangeclone.set_player_energy(player, result_energy)
+            end
         end
     end
 end
@@ -107,7 +127,6 @@ local function on_construct(pos)
     inv:set_size("dst", 1)
     meta:set_string("formspec", get_constructor_formspec())
     meta:set_string("infotext", "Constructor")
-    constructor_action(pos)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
@@ -184,11 +203,17 @@ minetest.register_node("exchangeclone:constructor", {
             meta:from_table(meta2)
         end
 	end,
-    on_timer = constructor_action,
+    after_place_node = function(pos, player, itemstack, pointed_thing)
+        local meta = minetest.get_meta(pos)
+        meta:set_string("exchangeclone_placer", player:get_player_name())
+    end,
     on_construct = on_construct,
     on_metadata_inventory_move = constructor_action,
     on_metadata_inventory_put = constructor_action,
-    on_metadata_inventory_take = constructor_action,
+    on_metadata_inventory_take = function(pos, listname, index, stack, player)
+        if listname == "fuel" then return end
+        constructor_action(pos)
+    end,
     on_blast = on_blast,
     allow_metadata_inventory_put = allow_metadata_inventory_put,
     allow_metadata_inventory_move = allow_metadata_inventory_move,

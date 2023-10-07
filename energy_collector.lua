@@ -26,6 +26,19 @@ local function get_energy_collector_formspec()
     return table.concat(formspec, "")
 end
 
+minetest.register_alias("exchangeclone:energy_collector", "exchangeclone:energy_collector_mk1")
+
+-- Register LBM to update deconstructors
+minetest.register_lbm({
+    name = "exchangeclone:collector_alert",
+    nodenames = {"exchangeclone:energy_collector_mk1"},
+    run_at_every_load = false,
+    action = function(pos, node)
+        local meta = minetest.get_meta(pos)
+        meta:set_string("formspec", "size[3,1]label[0,0;Break and replace.\nNothing will be lost.]")
+    end,
+})
+
 local check_positions = {
 	{x=0,y=0,z=1},
 	{x=0,y=0,z=-1},
@@ -35,13 +48,24 @@ local check_positions = {
 	{x=-1,y=0,z=0},
 }
 
-local function check_for_furnaces(pos, set_furnace)
+local function check_for_furnaces(pos, set_furnace, start)
 	local found = false
 	for _, check_pos in ipairs(check_positions) do
 		local new_pos = vector.add(pos, check_pos)
 		local node = minetest.get_node(new_pos)
-		if minetest.get_item_group(node.name, "exchangeclone_furnace") > 0 then
+        local furnace = minetest.get_item_group(node.name, "exchangeclone_furnace")
+		if furnace > 0 then
             found = true
+            if start then
+                local timer = minetest.get_node_timer(new_pos)
+                if not timer:is_started() then
+                    if furnace == 1 then -- Dark Matter
+                        timer:start(0.45)
+                    elseif furnace == 2 then -- Red Matter
+                        timer:start(0.16)
+                    end
+                end
+            end
 			if set_furnace ~= nil then
                 local meta = minetest.get_meta(new_pos)
                 meta:set_int("using_collector", set_furnace)
@@ -72,9 +96,9 @@ local function on_timer(pos, elapsed)
     end
 
     if minetest.get_natural_light(above) >= 14 then
-        if check_for_furnaces(pos, 1) then
+        if check_for_furnaces(pos, 1, true) then
             -- do nothing, energy is being used for the furnace.
-            return
+            return true
         end
         local amount = meta:get_int("collector_amount")
         if using_orb then
@@ -86,7 +110,7 @@ local function on_timer(pos, elapsed)
             end
             exchangeclone.set_orb_energy(inv, "main", 1, stored)
         else
-            local placer = meta:get_string("collector_placer")
+            local placer = meta:get_string("exchangeclone_placer")
             if placer and placer ~= "" then
                 local player = minetest.get_player_by_name(placer)
                 if player then
@@ -151,12 +175,10 @@ local function on_dig_node(pos, oldnode, oldmetadata, player)
         local meta2 = meta:to_table()
         meta:from_table(oldmetadata)
         local inv = meta:get_inventory()
-        for _, listname in ipairs({"main"}) do
-            local stack = inv:get_stack(listname, 1)
-            if not stack:is_empty() then
-                local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-                minetest.add_item(p, stack)
-            end
+        local stack = inv:get_stack("main", 1)
+        if not stack:is_empty() then
+            local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
+            minetest.add_item(p, stack)
         end
         meta:from_table(meta2)
     end
@@ -198,7 +220,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
             local player_name = player:get_player_name()
             local meta = minetest.get_meta(pos)
             meta:set_int("collector_amount", amount)
-            meta:set_string("collector_placer", player_name)
+            meta:set_string("exchangeclone_placer", player_name)
             meta:set_string("infotext", name.."\nOwned by"..player_name)
         end,
         on_blast = on_blast,
@@ -206,7 +228,10 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
         allow_metadata_inventory_move = allow_metadata_inventory_move,
         allow_metadata_inventory_take = allow_metadata_inventory_take,
     })
-    minetest.register_craft(recipe)
+    minetest.register_craft({
+        output = itemstring,
+        recipe = recipe
+    })
 end
 
 --[[if minetest.get_modpath("pipeworks") then
@@ -248,47 +273,37 @@ if exchangeclone.mcl then
     chest = "mcl_chests:chest"
 end
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector", "Energy Collector MK1", 4, "", {
-    output = "exchangeclone:energy_collector",
-    recipe = {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk1", "Energy Collector MK1", 4, "", {
         {glass, glass, glass},
         {"exchangeclone:exchange_orb", chest, "exchangeclone:exchange_orb"},
         {iron, iron, iron}
     }
-})
+)
 
 exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk2", "Energy Collector MK2", 12, "^[multiply:#555555", {
-    output = "exchangeclone:energy_collector_mk2",
-    recipe = {
         {iron, iron, iron},
-        {"exchangeclone:energy_collector", "exchangeclone:energy_collector", "exchangeclone:energy_collector"},
+        {"exchangeclone:energy_collector_mk1", "exchangeclone:energy_collector_mk1", "exchangeclone:energy_collector_mk1"},
         {iron, iron, iron}
     }
-})
+)
 
 exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk3", "Energy Collector MK3", 40, "^[multiply:#770000", {
-    output = "exchangeclone:energy_collector_mk3",
-    recipe = {
         {iron, iron, iron},
         {"exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2"},
         {iron, iron, iron}
     }
-})
+)
 
 exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", "Energy Collector MK4", 160, "^[multiply:#007700", {
-    output = "exchangeclone:energy_collector_mk4",
-    recipe = {
         {iron, iron, iron},
         {"exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3"},
         {iron, iron, iron}
     }
-})
+)
 
 exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", "Energy Collector MK5", 640, "^[multiply:#000077", {
-    output = "exchangeclone:energy_collector_mk5",
-    recipe = {
         {iron, iron, iron},
         {"exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4"},
         {iron, iron, iron}
     }
-})
+)

@@ -29,6 +29,7 @@ read_globals = {
     "mcl_particles",
     "screwdriver",
     "mcl_crafting_table",
+    "mcl_enchantments",
 
     "Raycast",
     "Settings",

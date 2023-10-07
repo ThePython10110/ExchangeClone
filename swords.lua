@@ -151,7 +151,7 @@ end
 
 local red_matter_sword_action = function(itemstack, player, pointed_thing)
 	local damage_all = itemstack:get_meta():get_int("exchangeclone_damage_all")
-	if not damage_all == 0 then damage_all = 1 end
+	if damage_all ~= 0 then damage_all = 1 end
 
 	if player:get_player_control().sneak then
 		if damage_all == 0 then
@@ -173,7 +173,7 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	description = "Dark Matter Sword",
 	wield_image = "exchangeclone_dark_matter_sword.png",
 	inventory_image = "exchangeclone_dark_matter_sword.png",
-	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1 },
+	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -198,7 +198,7 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	description = "Red Matter Sword",
 	wield_image = "exchangeclone_red_matter_sword.png",
 	inventory_image = "exchangeclone_red_matter_sword.png",
-	groups = { tool=1, sword=1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1 },
+	groups = { tool=1, sword=1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2

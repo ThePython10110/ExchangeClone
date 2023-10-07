@@ -81,9 +81,15 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
 end
 
 for name, def in pairs(minetest.registered_nodes) do
-    if name:find("_ore") or name:find("stone_with") or name:find("deepslate_with")
-    or name:find("diorite_with") or name:find("andesite_with") or name:find("granite_with")
-    or name:find("tuff_with") or (name == "mcl_blackstone:nether_gold") or (name == "mcl_nether:ancient_debris") then
+    if name:find("_ore")
+    or name:find("stone_with")
+    or name:find("deepslate_with")
+    or name:find("diorite_with")
+    or name:find("andesite_with")
+    or name:find("granite_with")
+    or name:find("tuff_with")
+    or (name == "mcl_blackstone:nether_gold")
+    or (name == "mcl_nether:ancient_debris") then
         local groups = table.copy(def.groups)
         groups.exchangeclone_ore = 1
         minetest.override_item(name, {groups = groups})
@@ -95,7 +101,7 @@ local pick_def = {
 	wield_image = "exchangeclone_dark_matter_pickaxe.png",
 	inventory_image = "exchangeclone_dark_matter_pickaxe.png",
     exchangeclone_pick_mode = "1x1",
-	groups = { tool=1, pickaxe=1, dig_speed_class=7, enchantability=0, dark_matter_pickaxe=1, disable_repair = 1, fire_immune = 1 },
+	groups = { tool=1, pickaxe=1, dig_speed_class=7, enchantability=0, dark_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
