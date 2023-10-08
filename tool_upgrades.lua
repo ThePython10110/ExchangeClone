@@ -142,7 +142,6 @@ local after_dig_node = function(pos, oldnode, oldmetadata, player)
             end
         end
         meta:from_table(meta2)
-        local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
     end
 end
 
@@ -200,6 +199,16 @@ minetest.register_node("exchangeclone:upgrader", {
 	_mcl_hardness = 75,
 })
 
+minetest.register_craft({
+    output = "exchangeclone:upgrader",
+    recipe = {
+        {"exchangeclone:dark_matter_block", "mcl_deepslate:tuff", "exchangeclone:dark_matter_block"}, -- Tuff has to be useful SOMEHOW...
+        {"mcl_deepslate:tuff", "exchangeclone:philosophers_stone", "mcl_deepslate:tuff"},
+        {"exchangeclone:red_matter_block", "mcl_deepslate:tuff", "exchangeclone:red_matter_block"}
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
 
 minetest.register_craftitem("exchangeclone:blank_upgrade", {
     description = "Blank Upgrade",
@@ -210,9 +219,9 @@ minetest.register_craftitem("exchangeclone:blank_upgrade", {
 minetest.register_craft({
     output = "exchangeclone:blank_upgrade",
     recipe = {
-        {"exchangeclone:dark_matter_block", "mcl_deepslate:tuff", "exchangeclone:dark_matter_block"}, -- Tuff has to be useful SOMEHOW...
+        {"mcl_copper:copper_ingot", "mcl_deepslate:tuff", "mcl_copper:copper_ingot"}, -- Copper and tuff because they're useless.
         {"mcl_deepslate:tuff", "exchangeclone:philosophers_stone", "mcl_deepslate:tuff"},
-        {"exchangeclone:red_matter_block", "mcl_deepslate:tuff", "exchangeclone:red_matter_block"}
+        {"mcl_copper:copper_ingot", "mcl_deepslate:tuff", "mcl_copper:copper_ingot"}
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
@@ -248,6 +257,48 @@ exchangeclone.register_upgrade(
         {"exchangeclone:dark_matter", "mcl_nether:magma", "exchangeclone:dark_matter"},
     },
     "fire_aspect",
+    2,
+    {
+        ["exchangeclone:dark_matter_sword"] = true,
+        ["exchangeclone:red_matter_sword"] = true,
+        ["exchangeclone:dark_matter_axe"] = true,
+        ["exchangeclone:red_matter_axe"] = true,
+        ["exchangeclone:red_katar"] = true,
+        ["exchangeclone:red_katar_3x3"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
+    "exchangeclone:knockback_1_upgrade",
+    "Knockback I Upgrade",
+    "^[multiply:#777777",
+    {
+        {"exchangeclone:dark_matter", "mcl_core:slimeblock", "exchangeclone:dark_matter"},
+        {"mcl_core:slimeblock", "exchangeclone:blank_upgrade", "mcl_core:slimeblock"},
+        {"exchangeclone:dark_matter", "mcl_core:slimeblock", "exchangeclone:dark_matter"},
+    },
+    "knockback",
+    1,
+    {
+        ["exchangeclone:dark_matter_sword"] = true,
+        ["exchangeclone:red_matter_sword"] = true,
+        ["exchangeclone:dark_matter_axe"] = true,
+        ["exchangeclone:red_matter_axe"] = true,
+        ["exchangeclone:red_katar"] = true,
+        ["exchangeclone:red_katar_3x3"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
+    "exchangeclone:knockback_2_upgrade",
+    "Knockback II Upgrade",
+    "^[multiply:#aaaaaa",
+    {
+        {"exchangeclone:dark_matter", "mcl_core:slimeblock", "exchangeclone:dark_matter"},
+        {"mcl_core:slimeblock", "exchangeclone:knockback_1_upgrade", "mcl_core:slimeblock"},
+        {"exchangeclone:dark_matter", "mcl_core:slimeblock", "exchangeclone:dark_matter"},
+    },
+    "knockback",
     2,
     {
         ["exchangeclone:dark_matter_sword"] = true,
@@ -408,6 +459,108 @@ exchangeclone.register_upgrade(
 )
 
 exchangeclone.register_upgrade(
+    "exchangeclone:depth_strider_1_upgrade",
+    "Depth Strider I Upgrade",
+    "^[multiply:#000066",
+    {
+        {"exchangeclone:dark_matter", "mcl_fishing:salmon_raw", "exchangeclone:dark_matter"},
+        {"mcl_fishing:salmon_raw", "exchangeclone:blank_upgrade", "mcl_fishing:salmon_raw"},
+        {"exchangeclone:dark_matter", "mcl_fishing:salmon_raw", "exchangeclone:dark_matter"},
+    },
+    "depth_strider",
+    1,
+    {
+        ["exchangeclone:boots_dark_matter"] = true,
+        ["exchangeclone:boots_red_matter"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
+    "exchangeclone:depth_strider_2_upgrade",
+    "Depth Strider II Upgrade",
+    "^[multiply:#0000aa",
+    {
+        {"exchangeclone:dark_matter", "mcl_fishing:salmon_raw", "exchangeclone:dark_matter"},
+        {"mcl_fishing:salmon_raw", "exchangeclone:depth_strider_1_upgrade", "mcl_fishing:salmon_raw"},
+        {"exchangeclone:dark_matter", "mcl_fishing:salmon_raw", "exchangeclone:dark_matter"},
+    },
+    "depth_strider",
+    2,
+    {
+        ["exchangeclone:boots_dark_matter"] = true,
+        ["exchangeclone:boots_red_matter"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
+    "exchangeclone:depth_strider_3_upgrade",
+    "Depth Strider III Upgrade",
+    "^[multiply:#0000ff",
+    {
+        {"exchangeclone:dark_matter", "mcl_fishing:salmon_raw", "exchangeclone:dark_matter"},
+        {"mcl_fishing:salmon_raw", "exchangeclone:depth_strider_2_upgrade", "mcl_fishing:salmon_raw"},
+        {"exchangeclone:dark_matter", "mcl_fishing:salmon_raw", "exchangeclone:dark_matter"},
+    },
+    "depth_strider",
+    3,
+    {
+        ["exchangeclone:boots_dark_matter"] = true,
+        ["exchangeclone:boots_red_matter"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
+    "exchangeclone:soul_speed_1_upgrade",
+    "Soul Speed I Upgrade",
+    "^[brighten^[invert:rgb^[brighten^[multiply:#181400",
+    {
+        {"exchangeclone:dark_matter", "mcl_blackstone:soul_soil", "exchangeclone:dark_matter"},
+        {"mcl_blackstone:soul_soil", "exchangeclone:blank_upgrade", "mcl_blackstone:soul_soil"},
+        {"exchangeclone:dark_matter", "mcl_blackstone:soul_soil", "exchangeclone:dark_matter"},
+    },
+    "soul_speed",
+    1,
+    {
+        ["exchangeclone:boots_dark_matter"] = true,
+        ["exchangeclone:boots_red_matter"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
+    "exchangeclone:soul_speed_2_upgrade",
+    "Soul Speed II Upgrade",
+    "^[brighten^[invert^[brighten:rgb^[multiply:#2c2000",
+    {
+        {"exchangeclone:dark_matter", "mcl_blackstone:soul_soil", "exchangeclone:dark_matter"},
+        {"mcl_blackstone:soul_soil", "exchangeclone:soul_speed_1_upgrade", "mcl_blackstone:soul_soil"},
+        {"exchangeclone:dark_matter", "mcl_blackstone:soul_soil", "exchangeclone:dark_matter"},
+    },
+    "soul_speed",
+    2,
+    {
+        ["exchangeclone:boots_dark_matter"] = true,
+        ["exchangeclone:boots_red_matter"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
+    "exchangeclone:soul_speed_3_upgrade",
+    "Soul Speed III Upgrade",
+    "^[brighten^[invert^[brighten^[multiply:#352700",
+    {
+        {"exchangeclone:dark_matter", "mcl_blackstone:soul_soil", "exchangeclone:dark_matter"},
+        {"mcl_blackstone:soul_soil", "exchangeclone:soul_speed_2_upgrade", "mcl_blackstone:soul_soil"},
+        {"exchangeclone:dark_matter", "mcl_blackstone:soul_soil", "exchangeclone:dark_matter"},
+    },
+    "soul_speed",
+    3,
+    {
+        ["exchangeclone:boots_dark_matter"] = true,
+        ["exchangeclone:boots_red_matter"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
     "exchangeclone:silk_touch_upgrade",
     "Silk Touch Upgrade",
     "^[brighten",
@@ -528,5 +681,38 @@ exchangeclone.register_upgrade(
         ["group:red_matter_hammer"] = true,
         ["group:red_katar"] = true,
         ["group:red_morningstar"] = true,
+    }
+)
+
+exchangeclone.register_upgrade(
+    "exchangeclone:curse_of_vanishing_upgrade",
+    "Curse of Vanishing \"Upgrade\"",
+    "^[invert:rgb",
+    {
+        {"exchangeclone:dark_matter", "xpanes:pane_silver_flat", "exchangeclone:dark_matter"},
+        {"xpanes:pane_silver_flat", "exchangeclone:blank_upgrade", "xpanes:pane_silver_flat"},
+        {"exchangeclone:dark_matter", "xpanes:pane_silver_flat", "exchangeclone:dark_matter"},
+    },
+    "curse_of_vanishing",
+    1,
+    {
+        ["exchangeclone:dark_matter_sword"] = true,
+        ["exchangeclone:red_matter_sword"] = true,
+        ["exchangeclone:dark_matter_axe"] = true,
+        ["exchangeclone:red_matter_axe"] = true,
+        ["exchangeclone:dark_matter_shovel"] = true,
+        ["exchangeclone:red_matter_shovel"] = true,
+        ["exchangeclone:dark_matter_shears"] = true,
+        ["exchangeclone:red_matter_shears"] = true,
+        ["group:dark_matter_pickaxe"] = true,
+        ["group:red_matter_pickaxe"] = true,
+        ["group:dark_matter_hoe"] = true,
+        ["group:red_matter_hoe"] = true,
+        ["group:dark_matter_hammer"] = true,
+        ["group:red_matter_hammer"] = true,
+        ["group:red_katar"] = true,
+        ["group:red_morningstar"] = true,
+        ["group:dark_matter_armor"] = true,
+        ["group:red_matter_armor"] = true,
     }
 )

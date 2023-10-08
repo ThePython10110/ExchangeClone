@@ -28,6 +28,7 @@ local function get_armor_texture(type, matter, preview)
 end
 
 function exchangeclone.check_armor_health(obj)
+    if not obj:is_player() then return end
     local max_armor = 5
     local armor_pieces = 0
     if exchangeclone.mcl then
@@ -166,9 +167,7 @@ if exchangeclone.mcl then
     end
 
     mcl_damage.register_modifier(function(obj, damage, reason)
-        if reason.type == "fall" then
-            return damage/5
-        elseif not blocked_damage_types[reason.type] then return end
+        if reason.type ~= "fall" and not blocked_damage_types[reason.type] then return end
         local inv = mcl_util.get_inventory(obj)
         if inv then
             local armor_pieces = 0
@@ -182,7 +181,11 @@ if exchangeclone.mcl then
                 end
             end
             if armor_pieces >= 4 then
-                return 0
+                if reason.type == "fall" then
+                    return damage/5
+                else
+                    return 0
+                end
             end
         end
     end, 0)

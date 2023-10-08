@@ -1,5 +1,23 @@
 # ExchangeClone
-Allows players to turn items into energy (stored in orbs), and energy from orbs into items. Supports all items in Minetest Game and MineClone 2! Includes other things from Equivalent Exchange (the MineCraft mod)
+Allows players to turn items into energy (stored in orbs), and energy from orbs into items. Supports all items in Minetest Game and MineClone 2!
+
+## ExchangeClone's Features:
+* Philosopher's Stone
+* Transmutation Table
+* Energy
+* Alchemical Tome
+* Exchange Orb
+* Deconstructor
+* Constructor
+* Energy Collectors
+* Upgraded Fuels
+* Dark Matter and Red Matter
+* Dark and Red Matter Tools
+* Dark and Red Matter Armor
+* Dark and Red Matter Furnaces
+* PESA (deprecated)
+
+See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more information
 
 [GitHub repo](https://github.com/thepython10110/exchangeclone)
 
@@ -13,24 +31,21 @@ Allows players to turn items into energy (stored in orbs), and energy from orbs 
 
 Dependencies: Minetest Game or MineClone.
 
-See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for a list of features.
 
 ## Known issues:
-* There is an error reported in MineClone related to Red Matter armor setting health.
 * In MineClone, it is impossible to heal past 20 health (10 hearts) without potions of healing (or the soul/life stones, which I haven't added yet)
-* With a full set of red matter armor, you can almost instantly go back to 2000 health (1000 hearts), no matter what you health is, by removing one piece of red matter armor and putting it back on. I don't really know what to do about this, because of the previous issue. Normally, I would simply make 2000 the maximum health, and leave the player's health how it is, but that doesn't really work because the extra maximum health would be useless because it's unreachable.
-* When items are inserted into the Energy Collector, Deconstructor, or Constructor with MineClone hoppers, it does not trigger the machines to start. I could probably fix this just by looking at the hopper API, so this could be fixed eventually.
+    * With a full set of red matter armor, you can almost instantly go back to 200 health (100 hearts), no matter what you health is, by removing one piece of red matter armor and putting it back on. I don't really know what to do about this. If I could, I would simply make 200 the maximum health, and leave the player's health how it is, but that doesn't really work because the extra maximum health would be useless because it's unreachable.
 * When machines are exploded, they (and the items inside) do not drop. I can't figure out why.
 * Dark/Red matter shears will sometimes (randomly) be treated as normal shears when used by MineClone dispensers. This will not be fixed.
 * Nodes destroyed by special abilities will not usually update surrounding nodes (so you may end up with floating gravel, flowers, torches, etc.). This will *probably* not be fixed, unless a change to Minetest makes it easier.
 
-If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).
+**If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
-![MineClone Screenshot](screenshot.png)
-![Minetest Game Screenshot](screenshot_mtg.png)
+![Screenshot](screenshot.png)
+![Transmutation GUI Screenshot](transmutation_screenshot.png)
 
 ## Sources/license:
-* Code: Forked and *heavily* modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Both this mod and Element Exchange are licenced under GPLv3+. Based on Equivalent Exchange and ProjectE, mods for MineCraft.
+* Code: Forked and *heavily* modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (at this point, I'd say 95% of the code is my own). Both this mod and Element Exchange are licenced under GPLv3+. Based on Equivalent Exchange and ProjectE, mods for MineCraft.
 * Textures:
     * Energy Collector, Deconstructor, Constructor: Directly from Element Exchange, GPLv3+.
     * Exchange Orb: *Slightly* modified from Element Exchange (I just changed the color to white so it could change colors correctly)
@@ -41,39 +56,43 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 <details><summary><h1>Changelog:</h1></summary>
 
 ### 5.0 (the most insteresting release so far)
-#### You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost.
+**You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost (hopefully). In Minetest Game, this is a bit of a problem (try blowing it up maybe? I don't know, sorry).**
 * New features:
     * Added a [wiki](https://github.com/ThePython10110/ExchangeClone/wiki)! This is where you can find more complete information on pretty much everything.
         * Because the wiki exists, I won't be including anywhere near as many details about how features work in the changelog.
     * Added the Transmutation Table(t): Much better than the constructor/deconstructor.
     * Alchemical Tome: Instantly teaches every item with an energy value to the Transmutation Table(t).
     * Dark/Red Matter Furnaces: Can be powered by Energy Collectors, much faster, and sometimes double ores.
-    * Upgraded Energy Collectors: Now MK1-MK5, each giving more energy per second. They now use personal energy by default.
+    * Upgraded Energy Collectors: Now MK1-MK5, use personal energy by default.
     * Upgrades (MCL only)
         * Upgrades can give dark/red matter tools fortune, looting, fire aspect, and silk touch (note: abilities ignore enchantments)
         * Upgrades can give dark/red matter armor thorns and frost walker
+    * Energy values for [Portability](https://github.com/thepython10110/Portability).
+    * Added energy value for Why's Falling Block Tool
     * Mod developers can now set their own energy values by setting `exchangeclone_custom_energy` in the item/node definition.
 * Changes
     * The changelog now has the most recent updates first, to make things easier to find.
     * Energy for Dark/Red Matter tool abilities (as well as the Transmutation Table) is no longer stored in an orb, but inside the player (called "personal energy").
         * The amount of energy you currently have stored is visible in the bottom right of the screen.
         * Because of this, the PESA is now useless and deprecated. It will be removed after a few releases (so probably a couple months at least). Remove any Exchange Orbs from your personal storage.
-        * Energy Collectors, Deconstructors, and Constructors now send their energy to the placer's personal energy when they do not contain an orb.
+        * Energy Collectors, Deconstructors, and Constructors now use the placer's personal energy when they do not contain an orb.
     * A lot of items (including DM/RM tools and armor) will not burn in lava in MineClone2.
-    * Deconstructors and Constructors now work with hoppers and don't have that weird lag thing when deconstructing
-        * The lag was caused by the fact that Enchant97 copied used node timers. Now they don't.
-        * **You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost.**
+    * Deconstructors and Constructors now work with hoppers and don't have that annoying lag thing when deconstructing
+        * The lag (not *technically* lag, but still) was caused by the fact that Enchant97 had them use node timers. Now they don't.
+        * (De)constructors also now use the placer's personal energy when they do not contain an orb.
     * Red Matter Armor now sets your maximum health to 200 instead of 2000
     * Exchange Orbs are now 18x better as fuel than they used to be
-    * DM/RM Shovels will now only create paths on blocks below air.
+    * DM/RM Shovels will now only create paths on nodes below air.
 * Bugfixes:
-    * I must have skipped a row while going through MineClone's mod list. Several mods starting with `mcl_b` or `mcl_c` have been added to the whitelist.
+    * Fall damage now works normally when not wearing dark/red matter armor... I accidentally made it decrease regardless of whether armor was worn or not.
+    * I must have skipped a row while going through MineClone's mod list. Several mods starting with `mcl_b...` or `mcl_c...` have been added to the whitelist.
     * Fixed right-clicking with an orb not showing charge
-    * Fixed unnecessary chat logging when deconstructing/constructing
+    * Removed unnecessary chat logging when deconstructing/constructing
     * The names for Dark and Red Matter Armor now are correct in MineClone2
     * Removed unnecessary tool repair recipes from dark/red matter tools/armor
     * Fixed a couple of armor texture issues in Minetest Game (though it still looks like diamond armor; 3D Armor doesn't support texture modifiers)
     * The Red Katar is now actually craftable in Minetest Game (I just forgot that shears were only in MCL2)
+    * A couple other minor things that I've forgotten about.
 
 ### 4.4
 * New Features
@@ -216,19 +235,21 @@ If you have a suggestion or notice a bug, visit the [GitHub issues page](https:/
 
 </details>
 
+### Plans for 6.0
+* Automatically generated energy values based on crafting recipes
+* A slightly better method for tools that break multiple nodes (hammer, hoe, pickaxe, morningstar, katar) that may decrease lag.
+* Mind, Life, Body, and Soul Stones (although MTG will only have the soul stone).
+* Ability to smelt with the Philosopher's Stone and coal/charcoal (irritatingly difficult, so maybe not)
+* Mercurial Eye (maybe)
+
 ### Features that I plan on adding eventually:
-* Mind, Life, Body, and Soul Stones
-* Mercurial Eye (?)
-* Ability to smelt with the Philosopher's Stone and coal/charcoal (maybe?)
-* Exchangeclone guidebook (maybe depend on doc mod?)
 * As soon as Minetest 5.8 comes out, better textures for armor...
-* Energy Condenser
 * Divining Rods
 * Rings (I'll probably add a new PESA-like item for holding rings)
     * Archangel's Smite (though arrows will not track targets)
     * Ring of Ignition
     * Zero Ring
     * Swiftwolf's Rending Gale (but without the force field; basically Why's Flying Sausage with a different texture)
-    * Harvest Band?
+    * Harvest Band (maybe not)
     * Ring of Arcana (possibly without the Harvest Band)
 * Gem Armor
