@@ -54,6 +54,9 @@ Dependencies: Minetest Game or MineClone.
 
 <details><summary><h1>Changelog:</h1></summary>
 
+### 5.2
+* Removed unnecessary logging every time players take damage (I was testing stuff out with the armor)
+
 ### 5.1
 * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups).
 * Added new Mineclonia items (pottery, sculk, smithing templates, suspicious sand, etc.)

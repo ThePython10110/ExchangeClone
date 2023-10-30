@@ -111,7 +111,6 @@ if exchangeclone.mcl then
     end
 
     mcl_damage.register_modifier(function(obj, damage, reason)
-        minetest.log(dump({damage, reason}))
         local blocked = blocked_damage_types[reason.type]
         local inv = mcl_util.get_inventory(obj)
         if inv then
