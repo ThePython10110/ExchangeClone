@@ -1,6 +1,3 @@
-exchangeclone = {}
-
-
 if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
     error("ExchangeClone requires 'default' or 'mcl_core,' but Minetest doesn't let me mark one or the other as a dependency.")
 else
@@ -44,4 +41,3 @@ dofile(modpath.."/philosophers_stone.lua")
 dofile(modpath.."/pesa.lua")
 dofile(modpath.."/transmutation_table.lua")
 dofile(modpath.."/furnaces.lua")
-dofile(modpath.."/energy.lua")

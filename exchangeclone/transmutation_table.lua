@@ -108,11 +108,11 @@ local function handle_inventory(player, inventory, to_list)
                 individual_energy_value = individual_energy_value + exchangeclone.get_orb_itemstack_energy(stack)
             end
             local player_energy = exchangeclone.get_player_energy(player)
-            local max_count = math.floor((2147483647 - player_energy)/individual_energy_value)
+            local max_count = math.floor((exchangeclone.limit - player_energy)/individual_energy_value)
             local add_count = math.min(max_count, stack:get_count())
             local energy_value = individual_energy_value * add_count
             local result = player_energy + energy_value
-            if result < 0 or result > 2147483647 then return end
+            if result < 0 or result > exchangeclone.limit then return end
             exchangeclone.set_player_energy(player, result)
             local item_index = table.indexof(list, stack:get_name())
             if item_index == -1 then

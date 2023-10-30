@@ -62,7 +62,7 @@ local function deconstructor_action(pos)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
     if inv:get_stack("fuel", 1):get_name() ~= "exchangeclone:exchange_orb" then
-        limit = 2147483647
+        limit = exchangeclone.limit
         using_orb = false
         player = minetest.get_player_by_name(meta:get_string("exchangeclone_placer"))
         if not (player and player ~= "") then return end
