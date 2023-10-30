@@ -33,8 +33,7 @@ Dependencies: Minetest Game or MineClone.
 
 
 ## Known issues:
-* In MineClone, it is impossible to heal past 20 health (10 hearts) without potions of healing (or the soul/life stones, which I haven't added yet)
-    * With a full set of red matter armor, you can almost instantly go back to 200 health (100 hearts), no matter what you health is, by removing one piece of red matter armor and putting it back on. I don't really know what to do about this. If I could, I would simply make 200 the maximum health, and leave the player's health how it is, but that doesn't really work because the extra maximum health would be useless because it's unreachable.
+* It is impossible to die from most things when wearing DM/RM armor... MineClone's damage system is annoying.
 * When machines are exploded, they (and the items inside) do not drop. I can't figure out why.
 * Dark/Red matter shears will sometimes (randomly) be treated as normal shears when used by MineClone dispensers. This will not be fixed.
 * Nodes destroyed by special abilities will not usually update surrounding nodes (so you may end up with floating gravel, flowers, torches, etc.). This will *probably* not be fixed, unless a change to Minetest makes it easier.
@@ -54,6 +53,15 @@ Dependencies: Minetest Game or MineClone.
 * All other textures (and sounds): Created by me, inspired by Equivalent Exchange and licensed under CC-BY-SA-3.0.
 
 <details><summary><h1>Changelog:</h1></summary>
+
+### 5.1
+* Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups).
+* Added new Mineclonia items (pottery, sculk, smithing templates, suspicious sand, etc.)
+* Changed a couple of energy values (enchanted golden apple was way too cheap, clay seemed too expensive)
+* Sword/Katar AOE damage now matches ProjectE (DM sword = 12, RM sword = 16, katar = 1000... kinda OP). All AOE cooldowns (including swinging swords/katar) are now 0.7 seconds.
+* DM/RM pickaxe/hammer/morningstar dig times now are approximately the same as ProjectE (at full charge), meaning they are now maybe too fast.
+* Red Matter Armor no longer increases player health (the wiki lied to me).
+* A couple of changes to DM/RM armor in MineClone, which may or may not be noticeable. I really don't know.
 
 ### 5.0 (the most insteresting release so far)
 **You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost (hopefully). In Minetest Game, this is a bit of a problem (try blowing it up maybe? I don't know, sorry).**
@@ -129,7 +137,7 @@ Dependencies: Minetest Game or MineClone.
     * Red Matter Armor (full set gives lava/fire/drowning immunity PLUS 2000 health, although you may want HUD Bars to see it)
     * Added energy values for MineClone's new items.
 * Changes:
-    * Changed the amount of damage done by Dark/Red Matter Sword special abilities (used to be `max_damage/distance`, now is `max_damage-distance`)
+    * Changed the amount of damage done by Dark/Red Matter Sword special abilities (used to be `damage/distance`, now is `damage-distance`)
     * A whole bunch of things that won't be noticible when playing, mostly code reorganization. It's *possible* that tools that mine multiple nodes at a time (hammer, pickaxe, hoe, katar, and morningstar) will be slightly less laggy
     * Texture/sound license changed to CC-BY-SA-3.0 (because GPLv3+ isn't really meant as a media license).
 * Bugfixes:
@@ -237,19 +245,24 @@ Dependencies: Minetest Game or MineClone.
 
 ### Plans for 6.0
 * Automatically generated energy values based on crafting recipes
-* A slightly better method for tools that break multiple nodes (hammer, hoe, pickaxe, morningstar, katar) that may decrease lag.
+* A slightly better method for tools that break multiple nodes at once (hammer, hoe, pickaxe, morningstar, and katar) that may slightly decrease lag.
+* Alchemical Chest
+* Repair Talisman (maybe, would only work in Alchemical Chest)
+* Covalence Dust (maybe custom repairer machine)
 * Mind, Life, Body, and Soul Stones (although MTG will only have the soul stone).
 * Ability to smelt with the Philosopher's Stone and coal/charcoal (irritatingly difficult, so maybe not)
 * Mercurial Eye (maybe)
+* Energy Condenser (maybe, IDK why anyone would use it)
 
 ### Features that I plan on adding eventually:
 * As soon as Minetest 5.8 comes out, better textures for armor...
 * Divining Rods
 * Rings (I'll probably add a new PESA-like item for holding rings)
-    * Archangel's Smite (though arrows will not track targets)
+    * Archangel's Smite (arrows will not track targets, MineClone only)
     * Ring of Ignition
     * Zero Ring
-    * Swiftwolf's Rending Gale (but without the force field; basically Why's Flying Sausage with a different texture)
+    * Swiftwolf's Rending Gale (but without the force field; basically Why's Flying Sausage with a different texture and maybe lightning in MCL)
     * Harvest Band (maybe not)
     * Ring of Arcana (possibly without the Harvest Band)
 * Gem Armor
+* Catalytic Lens

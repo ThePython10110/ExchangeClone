@@ -77,12 +77,12 @@ minetest.register_tool("exchangeclone:dark_matter_shovel", {
 	description = "Dark Matter Shovel",
 	wield_image = "exchangeclone_dark_matter_shovel.png",
 	inventory_image = "exchangeclone_dark_matter_shovel.png",
-	groups = { tool=1, shovel=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, shovel=1, dig_speed_class=6, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
 		full_punch_interval = 0.5,
-		max_drop_level=5,
+		max_drop_level=6,
 		damage_groups = {fleshy=7},
 		punch_attack_uses = 0,
 		groupcaps={
@@ -102,12 +102,12 @@ minetest.register_tool("exchangeclone:red_matter_shovel", {
 	description = "Red Matter Shovel",
 	wield_image = "exchangeclone_red_matter_shovel.png",
 	inventory_image = "exchangeclone_red_matter_shovel.png",
-	groups = { tool=1, shovel=1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, shovel=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
 		full_punch_interval = 0.5,
-		max_drop_level=5,
+		max_drop_level=7,
 		damage_groups = {fleshy=9},
 		punch_attack_uses = 0,
 		groupcaps={

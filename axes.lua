@@ -73,7 +73,7 @@ minetest.register_tool("exchangeclone:dark_matter_axe", {
 	tool_capabilities = {
 		-- 1/1.2
 		full_punch_interval = 0.5,
-		max_drop_level=5,
+		max_drop_level=6,
 		damage_groups = {fleshy=16},
 		punch_attack_uses = 0,
 		groupcaps={
@@ -98,7 +98,7 @@ minetest.register_tool("exchangeclone:red_matter_axe", {
 	tool_capabilities = {
 		-- 1/1.2
 		full_punch_interval = 0.4,
-		max_drop_level=5,
+		max_drop_level=7,
 		damage_groups = {fleshy=19},
 		punch_attack_uses = 0,
 		groupcaps={

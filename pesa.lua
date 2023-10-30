@@ -1,4 +1,5 @@
---Personal Energy Storage Accessor (PESA)
+-- Personal Energy Storage Accessor (PESA)
+-- Deprecated now that personal energy exists.
 
 local formspec
 if not exchangeclone.mcl then

@@ -57,15 +57,15 @@ end)
 
 exchangeclone.aoe_attack = function(info)
 	if not info then return end
-	local max_damage = info.max_damage
+	local damage = info.damage or 12 -- 12 = DM sword AOE
 	local knockback = info.knockback
 	local radius = info.radius
 	local damage_all = info.damage_all --damage all mobs/players or just hostile ones
-	local cooldown = info.cooldown or 0
-	if not max_damage or not knockback or not radius then return end
+	local cooldown = info.cooldown or 0.7
+	if not (damage and radius and knockback) then return end
 	if damage_all == nil then damage_all = 1 end
 
-	return function(itemstack, player, pointed_thing) --copied from MineClone's TNT; I would simply use the explosion function but it would hurt the player.
+	return function(itemstack, player, pointed_thing) --modified from MineClone's TNT; I would simply use the explosion function but it would hurt the player.
 		-- Use pointed node's on_rightclick function first, if present
 		local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
         if click_test ~= false then
@@ -99,7 +99,6 @@ exchangeclone.aoe_attack = function(info)
 				and obj:get_hp() > 0 and obj ~= player then
 
 				local opos = obj:get_pos()
-				
 				local distance = math.max(1, vector.distance(pos, opos))
 
 				-- Punch entity with damage depending on explosion exposure and
@@ -107,7 +106,6 @@ exchangeclone.aoe_attack = function(info)
 				local punch_vec = vector.subtract(opos, pos)
 				local punch_dir = vector.normalize(punch_vec)
 				punch_dir = {x=punch_dir.x, y=punch_dir.y+0.3, z=punch_dir.z} -- knockback should be more upward
-				local damage = math.min(max_damage, max_damage-distance)
 				--minetest.log(dump({name=ent.name, distance=distance, damage=damage}))
 
 				local sleep_formspec_doesnt_close_mt53 = false
@@ -165,7 +163,7 @@ local red_matter_sword_action = function(itemstack, player, pointed_thing)
 		return itemstack
 	end
 
-	local aoe_function = exchangeclone.aoe_attack({max_damage = 12, knockback = 20, radius = 7, damage_all = damage_all, cooldown = 0.2})
+	local aoe_function = exchangeclone.aoe_attack({damage = 16, knockback = 20, radius = 7.5, damage_all = damage_all, cooldown = 0.7})
 	aoe_function(itemstack, player, pointed_thing)
 end
 
@@ -173,20 +171,20 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	description = "Dark Matter Sword",
 	wield_image = "exchangeclone_dark_matter_sword.png",
 	inventory_image = "exchangeclone_dark_matter_sword.png",
-	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, sword=1, dig_speed_class=6, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
-		full_punch_interval = 0.25,
-		max_drop_level=5,
-		damage_groups = {fleshy=12},
+		full_punch_interval = 0.7,
+		max_drop_level=6,
+		damage_groups = {fleshy=15},
 		punch_attack_uses = 0,
 		groupcaps={
 			snappy = {times={[1]=0.95, [2]=0.45, [3]=0.15}, uses=0, maxlevel=4},
 		},
 	},
-	on_secondary_use = exchangeclone.aoe_attack({max_damage = 10, knockback = 12, radius = 5, cooldown = 0.5}),
-	on_place = exchangeclone.aoe_attack({max_damage = 10, knockback = 12, radius = 5, cooldown = 0.5}),
+	on_secondary_use = exchangeclone.aoe_attack({damage = 12, knockback = 12, radius = 5, cooldown = 0.7}),
+	on_place = exchangeclone.aoe_attack({damage = 12, knockback = 12, radius = 5, cooldown = 0.7}),
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
@@ -198,13 +196,13 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	description = "Red Matter Sword",
 	wield_image = "exchangeclone_red_matter_sword.png",
 	inventory_image = "exchangeclone_red_matter_sword.png",
-	groups = { tool=1, sword=1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
-		full_punch_interval = 0.17,
-		max_drop_level=6,
-		damage_groups = {fleshy=14},
+		full_punch_interval = 0.7,
+		max_drop_level=7,
+		damage_groups = {fleshy=20},
 		punch_attack_uses = 0,
 		groupcaps={
 			snappy = {times={[1]=0.6, [2]=0.25, [3]=0.1}, uses=0, maxlevel=5},

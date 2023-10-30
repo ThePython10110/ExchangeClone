@@ -106,17 +106,17 @@ local pick_def = {
 	tool_capabilities = {
 		-- 1/1.2
 		full_punch_interval = 0.5,
-		max_drop_level=5,
+		max_drop_level=6,
 		damage_groups = {fleshy=7},
 		punch_attack_uses = 0,
 		groupcaps={
-			cracky = {times={[1]=1.5, [2]=0.75, [3]=0.325}, uses=0, maxlevel=4},
+			cracky = {times={[1]=0.4, [2]=0.2, [3]=0.1}, uses=0, maxlevel=4},
 		},
 	},
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 16, level = 7, uses = 0 }
+		pickaxey = { speed = 40, level = 7, uses = 0 }
 	},
     on_secondary_use = pickaxe_on_use,
     on_place = pickaxe_on_use,
@@ -127,8 +127,8 @@ minetest.register_tool("exchangeclone:dark_matter_pickaxe", table.copy(pick_def)
 local pick_def_3x1 = table.copy(pick_def)
 pick_def_3x1.exchangeclone_pick_mode = "tall"
 pick_def_3x1.groups.not_in_creative_inventory = 1
-pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=1.8, [2]=0.9, [3]=0.5}
-pick_def_3x1._mcl_diggroups.pickaxey.speed = 12
+pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.45, [2]=0.27, [3]=0.11}
+pick_def_3x1._mcl_diggroups.pickaxey.speed = 35
 
 minetest.register_tool("exchangeclone:dark_matter_pickaxe_3x1", table.copy(pick_def_3x1))
 
@@ -140,22 +140,22 @@ pick_def.groups.red_matter_pickaxe = 1
 pick_def.groups.dig_speed_class = 8
 pick_def.tool_capabilities = {
     full_punch_interval = 0.5,
-    max_drop_level=5,
+    max_drop_level=7,
     damage_groups = {fleshy=9},
     punch_attack_uses = 0,
     groupcaps={
-        cracky = {times={[1]=1.2, [2]=0.7, [3]=0.4}, uses=0, maxlevel=5},
+        cracky = {times={[1]=0.27, [2]=0.13, [3]=0.07}, uses=0, maxlevel=5},
     },
 }
-pick_def._mcl_diggroups.pickaxey = { speed = 20, level = 8, uses = 0 }
+pick_def._mcl_diggroups.pickaxey = { speed = 60, level = 8, uses = 0 }
 
 minetest.register_tool("exchangeclone:red_matter_pickaxe", table.copy(pick_def))
 
 local pick_def_3x1 = table.copy(pick_def)
 pick_def_3x1.exchangeclone_pick_mode = "tall"
 pick_def_3x1.groups.not_in_creative_inventory = 1
-pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=1.2, [2]=0.7, [3]=0.4}
-pick_def_3x1._mcl_diggroups.pickaxey.speed = 16
+pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.32, [2]=0.16, [3]=0.08}
+pick_def_3x1._mcl_diggroups.pickaxey.speed = 52
 
 minetest.register_tool("exchangeclone:red_matter_pickaxe_3x1", table.copy(pick_def_3x1))
 

@@ -44,7 +44,6 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 		end
 	else
 		local damage_all = itemstack:get_meta():get_int("exchangeclone_damage_all")
-		exchangeclone.aoe_attack{max_damage = 2}
 		if damage_all ~= 0 then damage_all = 1 end
 		if player:get_player_control().sneak then
 			if damage_all == 0 then
@@ -58,7 +57,7 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 			return itemstack
 		end
 
-		local aoe_function = exchangeclone.aoe_attack({max_damage = 16, knockback = 20, radius = 9, damage_all = damage_all, cooldown = 0.2})
+		local aoe_function = exchangeclone.aoe_attack({damage = 1000, knockback = 20, radius = 10, damage_all = damage_all, cooldown = 0.7})
 		aoe_function(itemstack, player, pointed_thing)
 	end
 end
@@ -73,8 +72,8 @@ local katar_def = {
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		full_punch_interval = 0.3,
-		max_drop_level=5,
-		damage_groups = {fleshy=21},
+		max_drop_level=8,
+		damage_groups = {fleshy=28},
 		punch_attack_uses = 0,
 		groupcaps={
 			exchangeclone_dirt = {times={[1]=0.15, [2]=0.15, [3]=0.15}, uses=0, maxlevel=4},
@@ -236,19 +235,19 @@ local morningstar_def = {
 	 wield_scale = exchangeclone.wield_scale,
 	 tool_capabilities = {
 		 full_punch_interval = 0.3,
-		 max_drop_level=5,
-		 damage_groups = {fleshy=20},
+		 max_drop_level=8,
+		 damage_groups = {fleshy=25},
 		 punch_attack_uses = 0,
 		 groupcaps={
-			 cracky = {times={[1]=0.5, [2]=0.3, [3]=0.15}, uses=0, maxlevel=5},
-			 crumbly = {times={[1]=0.5, [2]=0.3, [3]=0.15}, uses=0, maxlevel=5},
-			 choppy = {times={[1]=0.5, [2]=0.3, [3]=0.15}, uses=0, maxlevel=5},
+			 cracky = {times={[1]=0.2, [2]=0.1, [3]=0.05}, uses=0, maxlevel=5},
+			 crumbly = {times={[1]=0.2, [2]=0.1, [3]=0.05}, uses=0, maxlevel=5},
+			 choppy = {times={[1]=0.2, [2]=0.1, [3]=0.05}, uses=0, maxlevel=5},
 		 },
 	 },
 	 sound = { breaks = "default_tool_breaks" },
 	 _mcl_toollike_wield = true,
 	 _mcl_diggroups = {
-		pickaxey = {speed = 22, level = 8, uses = 0},
+		pickaxey = {speed = 80, level = 8, uses = 0},
 		shovely = {speed = 22, level = 8, uses = 0},
 		axey = { speed = 22, level = 8, uses = 0 }
 	 },
@@ -258,7 +257,7 @@ minetest.register_tool("exchangeclone:red_morningstar", table.copy(morningstar_d
 
 for k, v in pairs({cracky = "pickaxey", crumbly = "shovely"}) do
 	morningstar_def.tool_capabilities.groupcaps[k].times = {[1]=0.7,[2]=0.5,[3]=0.25}
-	morningstar_def._mcl_diggroups[v].speed = 18
+	morningstar_def._mcl_diggroups[v].speed = 70
 end
 morningstar_def.groups.not_in_creative_inventory = 1
 morningstar_def.exchangeclone_pick_mode = "3x3"
@@ -267,7 +266,7 @@ minetest.register_tool("exchangeclone:red_morningstar_3x3", table.copy(morningst
 
 for k, v in pairs({cracky = "pickaxey", crumbly = "shovely"}) do
 	morningstar_def.tool_capabilities.groupcaps[k].times = {[1]=0.6,[2]=0.4,[3]=0.20}
-	morningstar_def._mcl_diggroups[v].speed = 20
+	morningstar_def._mcl_diggroups[v].speed = 60
 end
 morningstar_def.exchangeclone_pick_mode = "tall"
 

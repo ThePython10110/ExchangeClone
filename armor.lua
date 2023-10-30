@@ -1,9 +1,12 @@
+-- true = blocks all damage
+-- {base_block, block_per_rm}: Amount blocked by full dark matter, extra amount per red matter armor piece
 local blocked_damage_types = {
     drown = true,
     lava = true,
     in_fire = true,
     on_fire = true,
     hot_floor = true,
+    fall = {0.9, 0.0125},
 }
 
 local function get_armor_texture(type, matter, preview)
@@ -27,63 +30,16 @@ local function get_armor_texture(type, matter, preview)
     return result
 end
 
+-- Reset health
 function exchangeclone.check_armor_health(obj)
-    if not obj:is_player() then return end
-    local max_armor = 5
-    local armor_pieces = 0
-    if exchangeclone.mcl then
-        max_armor = 4
-        local inv = mcl_util.get_inventory(obj)
-        if inv then
-            for name, element in pairs(mcl_armor.elements) do
-                local itemstack = inv:get_stack("armor", element.index)
-                if not itemstack:is_empty() then
-                    if minetest.get_item_group(itemstack:get_name(), "red_matter_armor") > 0 then
-                        armor_pieces = armor_pieces + 1
-                    end
-                end
-            end
-        end
-    else
-        local name, armor_inv = armor:get_valid_player(obj, "[checking for red matter]")
-        if not armor_inv then return end
-        local list = armor_inv:get_list("armor")
-        if type(list) ~= "table" then
-            return
-        end
-        for i, stack in ipairs(list) do
-            if stack:get_count() == 1 then
-                if minetest.get_item_group(stack:get_name(), "red_matter_armor") > 0  then
-                    armor_pieces = armor_pieces + 1
-                end
-            end
-        end
-    end
-    local already_has_health = 0
-    if obj:is_player() then
-        already_has_health = obj:get_meta():get_int("exchangeclone_red_matter_armor") or 0
-    end
-    if armor_pieces >= max_armor then
-        obj:set_properties({hp_max = 200})
-        if already_has_health == 0 then
-            -- TODO: fix this if MineClone changes to max_hp instead of hardcoding 20
-            obj:set_hp(200-math.max(20-obj:get_hp(), 0))
-            obj:get_meta():set_int("exchangeclone_red_matter_armor", 1)
-        end
-    else
-        if already_has_health == 1 then
-            obj:set_hp(math.min(obj:get_hp(), 20))
-            obj:set_properties({hp_max = 20})
-            obj:get_meta():set_int("exchangeclone_red_matter_armor", 0)
-        end
+    if obj:get_meta():get_int("exchangeclone_red_matter_armor") == 1 then
+        obj:set_hp(math.min(obj:get_hp(), 20))
+        obj:set_properties({hp_max = 20})
+        obj:get_meta():set_int("exchangeclone_red_matter_armor", 0)
     end
 end
 
 minetest.register_on_joinplayer(function(ObjectRef, last_login)
-    exchangeclone.check_armor_health(ObjectRef)
-end)
-
-minetest.register_on_respawnplayer(function(ObjectRef)
     exchangeclone.check_armor_health(ObjectRef)
 end)
 
@@ -100,9 +56,9 @@ if exchangeclone.mcl then
         durability = -1,
         enchantability = 0,
         points = {
-            head = 5,
-            torso = 8,
-            legs = 7,
+            head = 6,
+            torso = 10,
+            legs = 8,
             feet = 4,
         },
         textures = {
@@ -130,7 +86,7 @@ if exchangeclone.mcl then
         points = {
             head = 7,
             torso = 12,
-            legs = 8,
+            legs = 9,
             feet = 5,
         },
         textures = {
@@ -143,18 +99,6 @@ if exchangeclone.mcl then
         groups = {red_matter_armor = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
         craft_material = "exchangeclone:red_matter",
         cook_material = "exchangeclone:dark_matter",
-        on_equip_callbacks = {
-            head=exchangeclone.check_armor_health,
-            torso=exchangeclone.check_armor_health,
-            legs=exchangeclone.check_armor_health,
-            feet=exchangeclone.check_armor_health
-        },
-        on_unequip_callbacks = {
-            head=exchangeclone.check_armor_health,
-            torso=exchangeclone.check_armor_health,
-            legs=exchangeclone.check_armor_health,
-            feet=exchangeclone.check_armor_health
-        }
     })
 
     for _, matter in ipairs({"dark", "red"}) do
@@ -167,28 +111,34 @@ if exchangeclone.mcl then
     end
 
     mcl_damage.register_modifier(function(obj, damage, reason)
-        if reason.type ~= "fall" and not blocked_damage_types[reason.type] then return end
+        minetest.log(dump({damage, reason}))
+        local blocked = blocked_damage_types[reason.type]
         local inv = mcl_util.get_inventory(obj)
         if inv then
             local armor_pieces = 0
+            local red_armor_pieces = 0
             for name, element in pairs(mcl_armor.elements) do
                 local itemstack = inv:get_stack("armor", element.index)
                 if not itemstack:is_empty() then
-                    if minetest.get_item_group(itemstack:get_name(), "dark_matter_armor") > 0
-                    or minetest.get_item_group(itemstack:get_name(), "red_matter_armor") > 0 then
+                    if minetest.get_item_group(itemstack:get_name(), "dark_matter_armor") > 0 then
                         armor_pieces = armor_pieces + 1
+                    elseif minetest.get_item_group(itemstack:get_name(), "red_matter_armor") > 0 then
+                        armor_pieces = armor_pieces + 1
+                        red_armor_pieces = red_armor_pieces + 1
                     end
                 end
             end
             if armor_pieces >= 4 then
-                if reason.type == "fall" then
-                    return damage/5
-                else
-                    return 0
+                if blocked then
+                    if blocked == true then
+                        return 0
+                    else
+                        return (blocked[1] + blocked[2]*red_armor_pieces) * damage
+                    end
                 end
             end
         end
-    end, 0)
+    end)
 else
     armor:register_armor("exchangeclone:helmet_dark_matter", {
         description = "Dark Matter Helmet",
@@ -196,7 +146,7 @@ else
         inventory_image = get_armor_texture("inv_helmet","dark"),
         preview = get_armor_texture("helmet","dark", true),
         armor_groups = {fleshy = 13},
-        groups = {["armor_head"] = 1, ["dark_matter_armor"] = 1, armor_heal = 5, armor_fire = 1, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_head = 1, dark_matter_armor = 1, armor_heal = 5, armor_fire = 1, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:chestplate_dark_matter", {
         description = "Dark Matter Chestplate",
@@ -204,7 +154,7 @@ else
         inventory_image = get_armor_texture("inv_chestplate","dark"),
         preview = get_armor_texture("chestplate","dark", true),
         armor_groups = {fleshy = 21},
-        groups = {["armor_torso"] = 1, ["dark_matter_armor"] = 1, armor_heal = 8, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_torso = 1, dark_matter_armor = 1, armor_heal = 8, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:leggings_dark_matter", {
         description = "Dark Matter Leggings",
@@ -212,7 +162,7 @@ else
         inventory_image = get_armor_texture("inv_leggings","dark"),
         preview = get_armor_texture("leggings","dark", true),
         armor_groups = {fleshy = 18},
-        groups = {["armor_legs"] = 1, ["dark_matter_armor"] = 1, armor_heal = 7, armor_fire = 1, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_legs = 1, dark_matter_armor = 1, armor_heal = 7, armor_fire = 1, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:boots_dark_matter", {
         description = "Dark Matter Boots",
@@ -220,7 +170,7 @@ else
         inventory_image = get_armor_texture("inv_boots","dark"),
         preview = get_armor_texture("boots","dark", true),
         armor_groups = {fleshy = 10},
-        groups = {["armor_feet"] = 1, ["dark_matter_armor"] = 1, armor_heal = 4, armor_fire = 1, armor_water = 1, armor_feather = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_feet = 1, dark_matter_armor = 1, armor_heal = 4, armor_fire = 1, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:shield_dark_matter", {
         description = "Dark Matter Shield",
@@ -228,7 +178,7 @@ else
         inventory_image = get_armor_texture("inv_shield","dark"),
         preview = get_armor_texture("shield","dark", true),
         armor_groups = {fleshy = 18},
-        groups = {["armor_shield"] = 1, ["dark_matter_armor"] = 1, armor_heal = 7, armor_fire = 1, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_shield = 1, dark_matter_armor = 1, armor_heal = 7, armor_fire = 1, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:helmet_red_matter", {
         description = "Red Matter Helmet",
@@ -236,7 +186,7 @@ else
         inventory_image = get_armor_texture("inv_helmet","red"),
         preview = get_armor_texture("helmet","red", true),
         armor_groups = {fleshy = 15},
-        groups = {["armor_head"] = 1, ["red_matter_armor"] = 1, armor_heal = 10, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_head = 1, red_matter_armor = 1, armor_heal = 10, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:chestplate_red_matter", {
         description = "Red Matter Chestplate",
@@ -244,7 +194,7 @@ else
         inventory_image = get_armor_texture("inv_chestplate","red"),
         preview = get_armor_texture("chestplate","red", true),
         armor_groups = {fleshy = 23},
-        groups = {["armor_torso"] = 1, ["red_matter_armor"] = 1, armor_heal = 16, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_torso = 1, red_matter_armor = 1, armor_heal = 16, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:leggings_red_matter", {
         description = "Red Matter Leggings",
@@ -252,7 +202,7 @@ else
         inventory_image = get_armor_texture("inv_leggings","red"),
         preview = get_armor_texture("leggings","red", true),
         armor_groups = {fleshy = 20},
-        groups = {["armor_legs"] = 1, ["red_matter_armor"] = 1, armor_heal = 14, armor_fire = 2, armor_water = 1, armor_feather = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_legs = 1, red_matter_armor = 1, armor_heal = 14, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:boots_red_matter", {
         description = "Red Matter Boots",
@@ -260,7 +210,7 @@ else
         inventory_image = get_armor_texture("inv_boots","red"),
         preview = get_armor_texture("boots","red", true),
         armor_groups = {fleshy = 12},
-        groups = {["armor_feet"] = 1, ["red_matter_armor"] = 1, armor_heal = 8, armor_fire = 2, armor_water = 1, armor_feather = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_feet = 1, red_matter_armor = 1, armor_heal = 8, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:shield_red_matter", {
         description = "Red Matter Shield",
@@ -268,15 +218,8 @@ else
         inventory_image = get_armor_texture("inv_shield","red"),
         preview = get_armor_texture("shield","red", true),
         armor_groups = {fleshy = 20},
-        groups = {["armor_shield"] = 1, ["red_matter_armor"] = 1, armor_heal = 14, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+        groups = {armor_shield = 1, red_matter_armor = 1, armor_heal = 14, armor_fire = 2, armor_water = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
-    armor:register_on_equip(function(player, index, stack)
-        exchangeclone.check_armor_health(player)
-    end)
-
-    armor:register_on_unequip(function(player, index, stack)
-        exchangeclone.check_armor_health(player)
-    end)
 end
 local d = "exchangeclone:dark_matter"
 local r = "exchangeclone:red_matter"
