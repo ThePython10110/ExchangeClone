@@ -1,5 +1,5 @@
 # ExchangeClone
-Allows players to turn items into energy (stored in orbs), and energy from orbs into items. Supports all items in Minetest Game and MineClone 2!
+Allows players to turn items into energy, and energy into items. Supports all items in Minetest Game and MineClone 2! Also adds a whole bunch of other stuff.
 
 ## ExchangeClone's Features:
 * Philosopher's Stone
