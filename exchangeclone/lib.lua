@@ -1,5 +1,6 @@
 -- Just a collection of a whole bunch of functions used here. There's very little order.
 
+-- Don't know if this even works.
 function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes default dependency
     local inv = minetest.get_meta(pos):get_inventory()
     local n = #drops
@@ -12,10 +13,27 @@ function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes defa
     end
 end
 
-function exchangeclone.get_item_energy(name)
-    return minetest.registered_items[name].energy_value or -1
+-- Gets the energy value from an itemstring or itemstack
+function exchangeclone.get_item_energy(item)
+    if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then
+        local item_group = item:sub(7,-1)
+        for _, group in ipairs(exchangeclone.group_values) do
+            if item_group == group[1] then return group[2] end
+        end
+        return
+    end
+    item = ItemStack(item)
+    local def = minetest.registered_items[item:get_name()]
+    if not def then return end
+    if item:get_name() == "exchangeclone:exchange_orb" then
+        return def.energy_value or 0 + exchangeclone.get_orb_itemstack_energy(item)
+    end
+    if def.energy_value then
+        return (def.energy_value) * item:get_count()
+    end
 end
 
+-- Rounds to the nearest integer
 function exchangeclone.round(num)
     if num % 1 < 0.5 then
         return math.floor(num)
@@ -25,16 +43,19 @@ function exchangeclone.round(num)
 end
 
 -- https://forum.unity.com/threads/re-map-a-number-from-one-range-to-another.119437/
+-- Remaps a number from one range to another
 function exchangeclone.map(input, min1, max1, min2, max2)
     return (input - min1) / (max1 - min1) * (max2 - min2) + min2
 end
 
+-- Gets the energy stored in a specified exchange_orb itemstack.
 function exchangeclone.get_orb_itemstack_energy(itemstack)
-    if not itemstack then return -1 end
-    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return -1 end
+    if not itemstack then return end
+    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
     return itemstack:get_meta():get_float("stored_energy") or 0
 end
 
+-- Gets the amount of energy stored in an orb in a specific inventory slot
 function exchangeclone.get_orb_energy(inventory, listname, index)
     if not inventory then return -1 end
     if not listname then listname = "main" end
@@ -43,8 +64,10 @@ function exchangeclone.get_orb_energy(inventory, listname, index)
     return exchangeclone.get_orb_itemstack_energy(itemstack)
 end
 
+-- Decides what mod to use for sounds
 if default then exchangeclone.sound_mod = default else exchangeclone.sound_mod = mcl_sounds end
 
+-- Sets the amount of energy in an orb in a specific inventory slot
 function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     if not inventory or amount < 0 then return end
     if not listname then listname = "main" end
@@ -85,6 +108,7 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     inventory:set_stack(listname, index, itemstack)
 end
 
+-- Hud stuff (show energy value in bottom right)
 local hud_elements = {}
 
 function exchangeclone.update_hud(player)
@@ -114,7 +138,7 @@ minetest.register_on_joinplayer(function(player, last_login)
     local energy = meta:get_int("exchangeclone_stored_energy")
     if energy > 0 then
         -- Not sure at all whether this is necessary
-        meta:set_int("exchangeclone_stored_energy", energy)
+        meta:set_int("exchangeclone_stored_energy", 0)
         meta:set_string("exchangeclone_stored_energy", string.format("%.16e", energy))
     end
 end)

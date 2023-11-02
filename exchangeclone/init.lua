@@ -1,13 +1,14 @@
+exchangeclone = {}
+
 if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
     error("ExchangeClone requires 'default' or 'mcl_core,' but Minetest doesn't let me mark one or the other as a dependency.")
 else
 	exchangeclone.mcl = minetest.get_modpath("mcl_core")
 end
-
 exchangeclone.mineclonia = minetest.get_game_info().id == "mineclonia" -- if exchangeclone.mineclonia, exchangeclone.mcl will also be defined.
 
 
-exchangeclone.orb_max = 51200000 -- Max capacity of Klein Star Omega
+exchangeclone.orb_max = 51200000 -- Max capacity of Klein Star Omega in ProjectE
 
 local modpath = minetest.get_modpath("exchangeclone")
 
