@@ -1,10 +1,10 @@
-exchangeclone = {}
+exchangeclone = {recipes = {}}
 
 local old_func = minetest.register_craft
-function minetest.register_craft(...)
-    local arg = {...}
-    if arg.replacements then
-        table.insert(exchangeclone.recipes, table.copy(arg))
+function minetest.register_craft(arg)
+    if arg.output then
+        exchangeclone.recipes[arg.output] = exchangeclone.recipes[arg.output] or {}
+        table.insert(exchangeclone.recipes[arg.output], table.copy(arg))
     end
-    old_func(...)
+    old_func(arg)
 end

@@ -54,17 +54,30 @@ Dependencies: Minetest Game or MineClone.
 
 <details><summary><h1>Changelog:</h1></summary>
 
+### 6.0
+* New features
+    * ExchangeClone can now generate energy values automatically based on crafting recipes! This means the list of energy values can be much shorter (although it does mean that it takes longer to load a world..... sorry).
+* Changes
+    * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s). *Every single mod* in the modpack is required, regardless of what it says the dependencies are.
+    * The 2-billion-ish energy limit is has been increased to the actual maximum Lua allows. This may mean some precision is lost when your energy reaches a few quadrillion... but that's unlikely to happen, and at that point, it probably doesn't matter, so I'm not testing it.
+* Bugfixes
+    * 
+
 ### 5.2
-* Removed unnecessary logging every time players take damage (I was testing stuff out with the armor)
+* Bugfixes
+    * Removed unnecessary logging every time players take damage (I was testing stuff out with the armor)
 
 ### 5.1
-* Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups).
-* Added new Mineclonia items (pottery, sculk, smithing templates, suspicious sand, etc.)
-* Changed a couple of energy values (enchanted golden apple was way too cheap, clay seemed too expensive)
-* Sword/Katar AOE damage now matches ProjectE (DM sword = 12, RM sword = 16, katar = 1000... kinda OP). All AOE cooldowns (including swinging swords/katar) are now 0.7 seconds.
-* DM/RM pickaxe/hammer/morningstar dig times now are approximately the same as ProjectE (at full charge), meaning they are now maybe too fast.
-* Red Matter Armor no longer increases player health (the wiki lied to me).
-* A couple of changes to DM/RM armor in MineClone, which may or may not be noticeable. I really don't know.
+* New features
+    * Added new Mineclonia items (pottery, sculk, smithing templates, suspicious sand, etc.)
+* Changes
+    * Changed a couple of energy values (enchanted golden apple was way too cheap, clay seemed too expensive)
+    * Sword/Katar AOE damage now matches ProjectE (DM sword = 12, RM sword = 16, katar = 1000... kinda OP). All AOE cooldowns (including swinging swords/katar) are now 0.7 seconds.
+    * DM/RM pickaxe/hammer/morningstar dig times now are approximately the same as ProjectE (at full charge), meaning they are now maybe too fast.
+    * Red Matter Armor no longer increases player health (the wiki lied to me).
+    * A couple of changes to DM/RM armor in MineClone, which may or may not be noticeable. I really don't know.
+* Bugfixes
+    * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups).
 
 ### 5.0 (the most insteresting release so far)
 **You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost (hopefully). In Minetest Game, this is a bit of a problem (try blowing it up maybe? I don't know, sorry).**

@@ -12,8 +12,33 @@ function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes defa
     end
 end
 
-function exchangeclone.get_item_energy(name)
-    return minetest.registered_items[name].energy_value or -1
+function exchangeclone.get_item_energy(item)
+    if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then
+        local item_group = item:sub(7,-1)
+        for _, group in ipairs(exchangeclone.group_values) do
+            if item_group == group[1] then return group[2] end
+        end
+        local group_items = exchangeclone.get_group_items(item_group)
+        local cheapest
+        for _, group_item in ipairs(group_items[item_group]) do
+            local energy_value = exchangeclone.get_item_energy(group_item)
+            if energy_value > 0 and ((not cheapest) or energy_value < cheapest) then
+                cheapest = energy_value
+            end
+        end
+        return cheapest
+    end
+    item = ItemStack(item)
+    local def = minetest.registered_items[item:get_name()]
+    if not def then return 0 end
+    if item:get_name() == "exchangeclone:exchange_orb" then
+        return def.energy_value or 0 + exchangeclone.get_orb_itemstack_energy(item)
+    end
+    if def.energy_value then
+        return (def.energy_value) * item:get_count()
+    else
+        return
+    end
 end
 
 function exchangeclone.round(num)
@@ -30,20 +55,20 @@ function exchangeclone.map(input, min1, max1, min2, max2)
 end
 
 function exchangeclone.get_orb_itemstack_energy(itemstack)
-    if not itemstack then return -1 end
-    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return -1 end
+    if not itemstack then return end
+    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
     return itemstack:get_meta():get_float("stored_energy") or 0
 end
 
 function exchangeclone.get_orb_energy(inventory, listname, index)
-    if not inventory then return -1 end
+    if not inventory then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
     return exchangeclone.get_orb_itemstack_energy(itemstack)
 end
 
-if default then exchangeclone.sound_mod = default else exchangeclone.sound_mod = mcl_sounds end
+if exchangeclone.mcl then exchangeclone.sound_mod = mcl_sounds else exchangeclone.sound_mod = default end
 
 function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     if not inventory or amount < 0 then return end
@@ -51,7 +76,7 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
     if not itemstack then return end
-    if not (itemstack:get_name() and itemstack:get_name() == "exchangeclone:exchange_orb") then return end
+    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
     local old_energy = exchangeclone.get_orb_itemstack_energy(itemstack)
     if amount > old_energy and old_energy > exchangeclone.orb_max then return end -- don't allow more energy to be put into an over-filled orb
 
@@ -128,7 +153,7 @@ function exchangeclone.set_player_energy(player, amount)
     exchangeclone.update_hud(player)
 end
 
--- copied from http://lua-users.org/wiki/IntegerDomain
+-- copied from http://lua-users.org/wiki/IntegerDomain {
 -- get highest power of 2 which Lua can still handle as integer
 local step = 2
 while true do
@@ -150,9 +175,15 @@ while step > 0 do
 	step = math.floor(step/2)
 end
 
-function exchangeclone.get_group_items(groups, allow_duplicates, include_no_group)
+-- }
+
+function exchangeclone.get_group_items(groups, allow_duplicates, include_no_group, use_cache)
     if type(groups) ~= "table" then
-        return nil
+        if type(groups) == "string" then
+            groups = {groups}
+        else
+            return
+        end
     end
 
     allow_duplicates = allow_duplicates or false
