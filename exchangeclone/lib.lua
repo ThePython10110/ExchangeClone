@@ -24,13 +24,14 @@ function exchangeclone.get_item_energy(item)
     end
     item = ItemStack(item)
     local def = minetest.registered_items[item:get_name()]
-    if not def then return end
+    if not def then return -1 end
     if item:get_name() == "exchangeclone:exchange_orb" then
-        return def.energy_value or 0 + exchangeclone.get_orb_itemstack_energy(item)
+        return (def.energy_value or 0) + exchangeclone.get_orb_itemstack_energy(item)
     end
     if def.energy_value then
         return (def.energy_value) * item:get_count()
     end
+    return -1
 end
 
 -- Rounds to the nearest integer
@@ -50,14 +51,14 @@ end
 
 -- Gets the energy stored in a specified exchange_orb itemstack.
 function exchangeclone.get_orb_itemstack_energy(itemstack)
-    if not itemstack then return end
-    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
+    if not itemstack then return 0 end
+    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return 0 end
     return itemstack:get_meta():get_float("stored_energy") or 0
 end
 
 -- Gets the amount of energy stored in an orb in a specific inventory slot
 function exchangeclone.get_orb_energy(inventory, listname, index)
-    if not inventory then return -1 end
+    if not inventory then return 0 end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
@@ -108,7 +109,7 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     inventory:set_stack(listname, index, itemstack)
 end
 
--- Hud stuff (show energy value in bottom right)
+-- HUD stuff (show energy value in bottom right)
 local hud_elements = {}
 
 function exchangeclone.update_hud(player)
@@ -133,9 +134,10 @@ minetest.register_on_leaveplayer(function(player, timed_out)
     hud_elements[player:get_player_name()] = nil
 end)
 
+-- Go from old integer energy to fancy new string energy
 minetest.register_on_joinplayer(function(player, last_login)
     local meta = player:get_meta()
-    local energy = meta:get_int("exchangeclone_stored_energy")
+    local energy = meta:get_int("exchangeclone_stored_energy") or 0
     if energy > 0 then
         -- Not sure at all whether this is necessary
         meta:set_int("exchangeclone_stored_energy", 0)
@@ -143,16 +145,20 @@ minetest.register_on_joinplayer(function(player, last_login)
     end
 end)
 
+-- Get a player's personal energy
 function exchangeclone.get_player_energy(player)
     return tonumber(player:get_meta():get_string("exchangeclone_stored_energy")) or 0
 end
 
+-- Set a player's personal energy
 function exchangeclone.set_player_energy(player, amount)
     player:get_meta():set_string("exchangeclone_stored_energy", string.format("%.16e", amount))
     exchangeclone.update_hud(player)
 end
 
 -- copied from http://lua-users.org/wiki/IntegerDomain
+-- Basically gets the highest number Lua supports
+
 -- get highest power of 2 which Lua can still handle as integer
 local step = 2
 while true do
@@ -174,9 +180,14 @@ while step > 0 do
 	step = math.floor(step/2)
 end
 
+-- Returns a table of all items in the specified group(s).
 function exchangeclone.get_group_items(groups, allow_duplicates, include_no_group)
     if type(groups) ~= "table" then
-        return nil
+        if type(groups) == "string" then
+            groups = {groups}
+        else
+            return
+        end
     end
 
     allow_duplicates = allow_duplicates or false
@@ -213,6 +224,7 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
     return result
 end
 
+-- Plays the sound caused by ExchangeClone abilities
 function exchangeclone.play_ability_sound(player, base_pitch)
     if not player then return end
     if not base_pitch then base_pitch = 1 end
@@ -220,6 +232,7 @@ function exchangeclone.play_ability_sound(player, base_pitch)
     minetest.sound_play("exchangeclone_ability", {pitch = new_pitch, pos = player:get_pos(), max_hear_distance = 20, })
 end
 
+-- Check the clicked node for a right-click function.
 function exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
     if pointed_thing.type ~= "node" then return false end
     if player:get_player_control().sneak then return false end
@@ -232,6 +245,7 @@ function exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
     return false
 end
 
+-- Update the range of an ExchangeClone tool
 function exchangeclone.range_update(itemstack, player, max)
     if not max then max = 4 end
     local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
@@ -253,31 +267,21 @@ function exchangeclone.range_update(itemstack, player, max)
     return itemstack
 end
 
-
+-- Make ExchangeClone tools slightly larger...
 exchangeclone.wield_scale = {x=1,y=1,z=1}
 if exchangeclone.mcl then
     exchangeclone.wield_scale = mcl_vars.tool_wield_scale
 end
 
-exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.5)
+exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.4)
 
+-- Diamonds are used a lot.
 exchangeclone.diamond_itemstring = "default:diamond"
 if exchangeclone.mcl then
     exchangeclone.diamond_itemstring = "mcl_core:diamond"
 end
 
-local doTileDrops = minetest.settings:get_bool("mcl_doTileDrops", true)
-
-local function get_fortune_drops(fortune_drops, fortune_level)
-    local drop
-    local i = fortune_level
-    repeat
-        drop = fortune_drops[i]
-        i = i - 1
-    until drop or i < 1
-    return drop or {}
-end
-
+-- Returns a player's inventory formspec with the correct width and hotbar position for the current game
 function exchangeclone.inventory_formspec(x,y)
     local formspec
     if exchangeclone.mcl then
@@ -290,6 +294,19 @@ function exchangeclone.inventory_formspec(x,y)
         "list[current_player;main;"..tostring(x)..","..tostring(y+1.25)..";8,3;8]"
     end
     return formspec
+end
+
+-- Copied from MineClone2
+local doTileDrops = minetest.settings:get_bool("mcl_doTileDrops", true)
+
+local function get_fortune_drops(fortune_drops, fortune_level)
+    local drop
+    local i = fortune_level
+    repeat
+        drop = fortune_drops[i]
+        i = i - 1
+    until drop or i < 1
+    return drop or {}
 end
 
 local function discrete_uniform_distribution(drops, min_count, max_count, cap)
@@ -321,6 +338,7 @@ local function get_drops(drop, toolname, param2, paramtype2)
     return drops
 end
 
+-- Modified from MineClone2
 function exchangeclone.drop_items_on_player(pos, drops, player) --copied from MineClone's code
     if not exchangeclone.mcl then
         return minetest.handle_node_drops(pos, drops, player)
@@ -384,7 +402,7 @@ function exchangeclone.drop_items_on_player(pos, drops, player) --copied from Mi
         end
     end
 
---[[]]    if tool and nodedef._mcl_fortune_drop and enchantments.fortune then
+    if tool and nodedef._mcl_fortune_drop and enchantments.fortune then
         local fortune_level = enchantments.fortune
         local fortune_drop = nodedef._mcl_fortune_drop
         if fortune_drop.discrete_uniform_distribution then
@@ -433,6 +451,7 @@ function exchangeclone.drop_items_on_player(pos, drops, player) --copied from Mi
     end
 end
 
+-- Get the direction a player is facing (rounded to -1, 0, and 1 for each axis)
 function exchangeclone.get_face_direction(player)
     local h_look = player:get_look_horizontal()
     local v_look = player:get_look_vertical()
@@ -458,6 +477,7 @@ function exchangeclone.get_face_direction(player)
     return result
 end
 
+-- Execute an action for every node within a cubic radius
 function exchangeclone.node_radius_action(player, center, range, functions, extra_info)
     if not functions.action then return end
     local data
@@ -489,6 +509,7 @@ function exchangeclone.node_radius_action(player, center, range, functions, extr
     return data
 end
 
+-- Cooldowns
 exchangeclone.cooldowns = {}
 
 minetest.register_on_joinplayer(function(player, last_login)
@@ -499,6 +520,7 @@ minetest.register_on_leaveplayer(function(player, timed_out)
     exchangeclone.cooldowns[player:get_player_name()] = nil
 end)
 
+-- Start a <time>-second cooldown called <name> for <player> 
 function exchangeclone.start_cooldown(player, name, time)
     local player_name = player:get_player_name()
     exchangeclone.cooldowns[player_name][name] = time
@@ -509,6 +531,7 @@ function exchangeclone.start_cooldown(player, name, time)
     end)
 end
 
+-- Returns the TOTAL time of a cooldown called <name> for <player> or nil if no matching cooldown is running.
 function exchangeclone.check_cooldown(player, name)
     local player_name = player:get_player_name()
     if exchangeclone.cooldowns[player_name] then
