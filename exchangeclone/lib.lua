@@ -138,10 +138,11 @@ end)
 minetest.register_on_joinplayer(function(player, last_login)
     local meta = player:get_meta()
     local energy = meta:get_int("exchangeclone_stored_energy") or 0
+    minetest.log(energy)
     if energy > 0 then
         -- Not sure at all whether this is necessary
         meta:set_int("exchangeclone_stored_energy", 0)
-        meta:set_string("exchangeclone_stored_energy", string.format("%.16e", energy))
+        meta:set_string("exchangeclone_stored_energy", tonumber(energy))
     end
 end)
 
@@ -152,7 +153,7 @@ end
 
 -- Set a player's personal energy
 function exchangeclone.set_player_energy(player, amount)
-    player:get_meta():set_string("exchangeclone_stored_energy", string.format("%.16e", amount))
+    player:get_meta():set_string("exchangeclone_stored_energy", tonumber(amount))
     exchangeclone.update_hud(player)
 end
 
