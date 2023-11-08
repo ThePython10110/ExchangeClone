@@ -49,7 +49,9 @@ exchangeclone.node_transmutations = {
         ["mcl_farming:melon"] = "mcl_farming:pumpkin",
         ["mcl_core:water_source"] = "mcl_core:ice",
         ["mclx_core:river_water_source"] = "mcl_core:ice",
+        ["mcl_core:ice"] = "mcl_core:water_source",
         ["mcl_core:lava_source"] = "mcl_core:obsidian",
+        ["mcl_core:obsidian"] = "mcl_core:lava_source",
         ["mcl_flowers:dandelion"] = "mcl_flowers:poppy",
         ["mcl_flowers:poppy"] = "mcl_flowers:dandelion",
         ["mcl_mushrooms:mushroom_brown"] = "mcl_mushrooms:mushroom_red",
@@ -106,8 +108,6 @@ exchangeclone.node_transmutations = {
         ["mcl_deepslate:deepslate_with_redstone"] = "mcl_core:stone_with_redstone",
         ["mcl_deepslate:deepslate_with_diamond"] = "mcl_core:stone_with_diamond",
         ["mcl_deepslate:deepslate_with_copper"] = "mcl_copper:stone_with_copper",
-        ["mcl_core:bedrock"] = "mcl_core:barrier",
-        ["mcl_core:barrier"] = "mcl_core:bedrock",
         ["mcl_end:end_stone"] = "mcl_nether:netherrack",
         ["mcl_nether:soul_sand"] = "mcl_blackstone:soul_soil",
         ["mcl_blackstone:soul_soil"] = "mcl_nether:soul_sand",
@@ -138,7 +138,9 @@ exchangeclone.node_transmutations = {
         ["default:silver_sandstone"] = "default:gravel",
         ["default:water_source"] = "default:ice",
         ["default:river_water_source"] = "default:ice",
+        ["default:ice"] = "default:water_source",
         ["default:lava_source"] = "default:obsidian",
+        ["default:obsidian"] = "default:lava_source",
         ["flowers:mushroom_brown"] = "flowers:mushroom_red",
         ["flowers:mushroom_red"] = "flowers:mushroom_brown",
         ["flowers:dandelion_yellow"] = "flowers:rose",
@@ -266,56 +268,7 @@ if exchangeclone.mcl then
     end
 end
 
---[[ local fuel_items = {
-    ["mcl_core:charcoal_lump"] = true,
-    ["mcl_core:coal_lump"] = true,
-    ["default:coal_lump"] = true,
-}
 
-minetest.register_on_joinplayer(function(player, last_login)
-    local inv = player:get_inventory()
-    inv:set_size("exchangeclone_smelting_input", 1)
-    inv:set_size("exchangeclone_smelting_output", 1)
-    inv:set_size("exchangeclone_smelting_fuel", 1)
-end)
-
-minetest.register_allow_player_inventory_action(function(player, action, inventory, info)
-    if action == "put" then
-        if info.listname == "exchangeclone_smelting_output" then
-            return 0
-        elseif info.listname == "exchangeclone_smelting_fuel" then
-            if not fuel_items[info.stack:get_name()] then
-                return 0
-            end
-        end
-    elseif action == "move" then
-        if info.to_list == "exchangeclone_smelting_output" then
-            return 0
-        elseif info.to_list == "exchangeclone_smelting_fuel" then
-            if not fuel_items[inventory:get_stack(info.from_list, info.from_index):get_name()] then
-                return 0
-            end
-        end
-    end
-end)
-
-local function set_smelting_output(player)
-end
-
-minetest.register_on_player_inventory_action(function(player, action, inventory, info)
-    if action == "put" then
-        if info.listname == "exchangeclone_smelting_input" or info.listname == "exchangeclone_smelting_fuel" then
-            set_smelting_output(player)
-        end
-    elseif action == "take" then
-        if info.listname == "exchangeclone_smelting_input"
-        or info.listname == "exchangeclone_smelting_fuel" then
-            set_smelting_output(player)
-        elseif info.listname == "exchangeclone_smelting_output" then
-            -- TODO
-        end
-    end
-end)   --]]
 
 local function on_right_click(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -367,114 +320,6 @@ if exchangeclone.mcl then
     usagehelp = usagehelp..extra_stuff
 end
 
---[[ Could NOT figure out how to make this work.
-
-for name, def in pairs(minetest.registered_nodes) do
-	local result, _ = minetest.get_craft_result({
-        method = "cooking",
-        width = 1,
-        items = {ItemStack(name)}
-    })
-    local name = result.item:get_name()
-    if minetest.registered_items[name] then
-        minetest.registered_items[name].groups.exchangeclone_cookable = true
-    end
-end
-
-local recipe_table = {"exchangeclone:philosophers_stone"}
-
-minetest.register_craftitem("exchangeclone:cooked_item", {description = "Cooked Item"})
-
-for i = 1,7 do
-    table.insert(recipe_table, "group:exchangeclone_cookable")
-    for fuel, _ in pairs(fuel_items) do
-        recipe_table[2] = fuel
-        minetest.register_craft({
-            output = "exchangeclone:cooked_item "..tostring(i),
-            type = "shapeless",
-            recipe = table.copy(recipe_table)
-        })
-    end
-end
-
-minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
-    if itemstack == ItemStack("exchangeclone:cooked_item") then
-        local phil = 0 -- yes, I'm calling it Phil.
-        local fuel = 0
-        local item_type = false
-        local item_count = 0
-        for _, item in ipairs(old_craft_grid) do
-            local name = item:get_name()
-            if name == "" then
-                -- do nothing
-            elseif name == "exchangeclone:philosophers_stone" then
-                phil = phil + 1
-            elseif fuel_items[name] then
-                fuel = fuel + 1
-            else
-                if item_type and item_type ~= name then
-                    minetest.log(dump({item_type, name}))
-                    return
-                else
-                    item_type = name
-                    item_count = item_count + 1
-                end
-            end
-        end
-        minetest.log(dump({phil=phil,fuel=fuel,item_type=item_type,item_count=item_count}))
-        if not (item_type and (phil == 1) and (fuel == 1)) then return end
-        local result, _ = minetest.get_craft_result({
-            method = "cooking",
-            width = 1,
-            items = {ItemStack(item_type)}
-        })
-        result = result.item
-        if result:get_name() ~= "" then
-            result:set_count(item_count)
-            return result
-        end
-    end
-end)
-
-minetest.register_on_craft(function(itemstack, player, old_craft_grid, craft_inv)
-    if itemstack == ItemStack("exchangeclone:cooked_item") then
-        local phil = 0 -- yes, I'm calling it Phil.
-        local fuel = 0
-        local item_type = false
-        local item_count = 0
-        for _, item in ipairs(old_craft_grid) do
-            local name = item:get_name()
-            if name == "" then
-                -- do nothing
-            elseif name == "exchangeclone:philosophers_stone" then
-                phil = phil + 1
-            elseif fuel_items[name] then
-                fuel = fuel + 1
-            else
-                if item_type and item_type ~= name then
-                    minetest.log(dump({item_type, name}))
-                    return
-                else
-                    item_type = name
-                    item_count = item_count + 1
-                end
-            end
-        end
-        minetest.log(dump({phil=phil,fuel=fuel,item_type=item_type,item_count=item_count}))
-        if not (item_type and (phil == 1) and (fuel == 1)) then return end
-        local result, _ = minetest.get_craft_result({
-            method = "cooking",
-            width = 1,
-            items = {ItemStack(item_type)}
-        })
-        result = result.item
-        if result:get_name() ~= "" then
-            result:set_count(item_count)
-            return result
-        end
-    end
-end) --]]
-
 minetest.register_tool("exchangeclone:philosophers_stone", {
     description = "Philosopher's Stone\nAlways returned when crafting",
     inventory_image = "exchangeclone_philosophers_stone.png",
@@ -489,7 +334,7 @@ minetest.register_tool("exchangeclone:philosophers_stone", {
     groups = {philosophers_stone = 1, disable_repair = 1, fire_immune = 1}
 })
 
-local diamond = "default:diamond"
+local diamond = exchangeclone.itemstrings.diamond
 local corner = "default:tin_ingot"
 local side = "default:obsidian"
 
@@ -532,43 +377,22 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "mcl_core:iron_ingot",
+    output = exchangeclone.itemstrings.iron,
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "mcl_core:coal_lump",
-        "mcl_core:coal_lump"
+        exchangeclone.itemstrings.coal,
+        exchangeclone.itemstrings.coal,
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "default:steel_ingot",
+    output = exchangeclone.itemstrings.coal.." 2",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "default:coal_lump",
-        "default:coal_lump"
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:coal_lump 2",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_core:iron_ingot",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "default:coal_lump 2",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "default:steel_ingot",
+        exchangeclone.itemstrings.iron
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
@@ -606,6 +430,18 @@ minetest.register_craft({
         "mcl_copper:copper_ingot",
         "mcl_copper:copper_ingot",
         "mcl_copper:copper_ingot",
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "mcl_throwing:ender_pearl",
+    recipe = {
+        "exchangeclone:philosophers_stone",
+        "mcl_core:iron_ingot",
+        "mcl_core:iron_ingot",
+        "mcl_core:iron_ingot",
+        "mcl_core:iron_ingot",
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
@@ -666,139 +502,70 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "mcl_core:iron_ingot 8",
+    output = exchangeclone.itemstrings.iron.." 8",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "mcl_core:gold_ingot"
+        exchangeclone.itemstrings.gold
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "default:steel_ingot 8",
+    output = exchangeclone.itemstrings.gold,
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "default:gold_ingot"
+        exchangeclone.itemstrings.iron,
+        exchangeclone.itemstrings.iron,
+        exchangeclone.itemstrings.iron,
+        exchangeclone.itemstrings.iron,
+        exchangeclone.itemstrings.iron,
+        exchangeclone.itemstrings.iron,
+        exchangeclone.itemstrings.iron,
+        exchangeclone.itemstrings.iron,
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "mcl_core:gold_ingot",
+    output = exchangeclone.itemstrings.meseworth,
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "mcl_core:iron_ingot",
-        "mcl_core:iron_ingot",
-        "mcl_core:iron_ingot",
-        "mcl_core:iron_ingot",
-        "mcl_core:iron_ingot",
-        "mcl_core:iron_ingot",
-        "mcl_core:iron_ingot",
-        "mcl_core:iron_ingot",
+        exchangeclone.itemstrings.gold,
+        exchangeclone.itemstrings.gold,
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "default:gold_ingot",
+    output = exchangeclone.itemstrings.gold.." 2",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
+        exchangeclone.itemstrings.meseworth,
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "default:mese_crystal",
+    output = exchangeclone.itemstrings.diamond,
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "default:gold_ingot",
-        "default:gold_ingot",
+        exchangeclone.itemstrings.meseworth,
+        exchangeclone.itemstrings.meseworth,
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "default:gold_ingot 2",
+    output = exchangeclone.itemstrings.meseworth.." 2",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "default:mese_crystal",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "default:diamond",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "default:mese_crystal",
-        "default:mese_crystal",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "default:mese_crystal 2",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "default:diamond"
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:emerald",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_core:gold_ingot",
-        "mcl_core:gold_ingot",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:gold_ingot 2",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_core:emerald"
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:diamond",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_core:emerald",
-        "mcl_core:emerald",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:emerald 2",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_core:diamond"
+        exchangeclone.itemstrings.diamond
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
@@ -888,46 +655,21 @@ minetest.register_craft({
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
-if exchangeclone.mcl then
-    minetest.register_craft({
-        output = "exchangeclone:alchemical_coal",
-        type = "shapeless",
-        recipe = {
-            "exchangeclone:philosophers_stone",
-            "mcl_core:coal_lump",
-            "mcl_core:coal_lump",
-            "mcl_core:coal_lump",
-            "mcl_core:coal_lump",
-        },
-        replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-    })
-else
-    minetest.register_craft({
-        output = "exchangeclone:alchemical_coal",
-        type = "shapeless",
-        recipe = {
-            "exchangeclone:philosophers_stone",
-            "default:coal_lump",
-            "default:coal_lump",
-            "default:coal_lump",
-            "default:coal_lump",
-        },
-        replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-    })
-end
-
 minetest.register_craft({
-    output = "default:coal_lump 4",
+    output = "exchangeclone:alchemical_coal",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "exchangeclone:alchemical_coal",
+        exchangeclone.itemstrings.coal,
+        exchangeclone.itemstrings.coal,
+        exchangeclone.itemstrings.coal,
+        exchangeclone.itemstrings.coal,
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "mcl_core:coal_lump 4",
+    output = exchangeclone.itemstrings.coal.." 4",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",

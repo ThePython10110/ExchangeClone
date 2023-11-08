@@ -40,5 +40,6 @@ if exchangeclone.mcl then
 end
 dofile(modpath.."/philosophers_stone.lua")
 dofile(modpath.."/pesa.lua")
+dofile(modpath.."/infinite_food.lua")
 dofile(modpath.."/transmutation_table.lua")
 dofile(modpath.."/furnaces.lua")

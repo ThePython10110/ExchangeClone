@@ -276,11 +276,14 @@ end
 
 exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.4)
 
--- Diamonds are used a lot.
-exchangeclone.diamond_itemstring = "default:diamond"
-if exchangeclone.mcl then
-    exchangeclone.diamond_itemstring = "mcl_core:diamond"
-end
+-- Itemstrings for various items
+exchangeclone.itemstrings = {
+    diamond = exchangeclone.mcl and "mcl_core:diamond" or "default:diamond",
+    gold = exchangeclone.mcl and "mcl_core:gold_ingot" or "default:gold_ingot",
+    iron = exchangeclone.mcl and "mcl_core:iron_ingot" or "default:steel_ingot",
+    coal = exchangeclone.mcl and "mcl_core:coal_lump" or "default:coal_lump",
+    meseworth = exchangeclone.mcl and "mcl_core:emerald" or "default:mese_crystal"
+}
 
 -- Returns a player's inventory formspec with the correct width and hotbar position for the current game
 function exchangeclone.inventory_formspec(x,y)
@@ -297,7 +300,7 @@ function exchangeclone.inventory_formspec(x,y)
     return formspec
 end
 
--- Copied from MineClone2
+-- Modified from MineClone2 {
 local doTileDrops = minetest.settings:get_bool("mcl_doTileDrops", true)
 
 local function get_fortune_drops(fortune_drops, fortune_level)
@@ -339,7 +342,6 @@ local function get_drops(drop, toolname, param2, paramtype2)
     return drops
 end
 
--- Modified from MineClone2
 function exchangeclone.drop_items_on_player(pos, drops, player) --copied from MineClone's code
     if not exchangeclone.mcl then
         return minetest.handle_node_drops(pos, drops, player)
@@ -422,7 +424,6 @@ function exchangeclone.drop_items_on_player(pos, drops, player) --copied from Mi
             drops = get_drops(drop, tool:get_name(), dug_node.param2, nodedef.paramtype2)
         end
     end
---]]
 
     if player and mcl_experience.throw_xp and not silk_touch_drop then
         local experience_amount = minetest.get_item_group(dug_node.name, "xp")
@@ -451,6 +452,8 @@ function exchangeclone.drop_items_on_player(pos, drops, player) --copied from Mi
         end
     end
 end
+
+-- }
 
 -- Get the direction a player is facing (rounded to -1, 0, and 1 for each axis)
 function exchangeclone.get_face_direction(player)

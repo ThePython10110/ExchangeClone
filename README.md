@@ -54,17 +54,36 @@ Dependencies: Minetest Game or MineClone.
 
 <details><summary><h1>Changelog:</h1></summary>
 
+### 6.0
+* New Features:
+    * Infinite food (costs 64 energy to use, equal to steak)
+    * Alchemical Chest
+    * Repair Talisman (maybe, would only work in Alchemical Chest)
+    * Covalence Dust (Aux1+right-click with Philosopher's Stone to open repairer, does not work with modded (non-Why) tools)
+    * Mind, Life, Body, and Soul Stones (although MTG only has the soul stone).
+    * Mercurial Eye (maybe)
+* Changes:
+    * Tools that break multiple nodes at once (hammer, hoe, pickaxe, morningstar, and katar) use a better method that may (?) slightly decrease lag.
+    * Ender pearls can now be crafted with 4 iron and the Philosopher's Stone.
+    * A couple changes the Philosopher's Stone's transmutation:
+        * Ice and obsidian can now be transmuted into water and lava, respectively.
+        * It is now impossible to transmute between bedrock and barriers (MCL). I don't know why I did it in the first place :D
+
 ### 5.2
-* Removed unnecessary logging every time players take damage (I was testing stuff out with the armor)
+* Bugfixes
+    * Removed unnecessary logging every time players take damage (I was testing stuff out with the armor)
 
 ### 5.1
-* Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups).
-* Added new Mineclonia items (pottery, sculk, smithing templates, suspicious sand, etc.)
-* Changed a couple of energy values (enchanted golden apple was way too cheap, clay seemed too expensive)
-* Sword/Katar AOE damage now matches ProjectE (DM sword = 12, RM sword = 16, katar = 1000... kinda OP). All AOE cooldowns (including swinging swords/katar) are now 0.7 seconds.
-* DM/RM pickaxe/hammer/morningstar dig times now are approximately the same as ProjectE (at full charge), meaning they are now maybe too fast.
-* Red Matter Armor no longer increases player health (the wiki lied to me).
-* A couple of changes to DM/RM armor in MineClone, which may or may not be noticeable. I really don't know.
+* New Features:
+    * Added new Mineclonia items (pottery, sculk, smithing templates, suspicious sand, etc.)
+* Changes:
+    * Changed a couple of energy values (enchanted golden apple was way too cheap, clay seemed too expensive)
+    * Sword/Katar AOE damage now matches ProjectE (DM sword = 12, RM sword = 16, katar = 1000... kinda OP). All AOE cooldowns (including swinging swords/katar) are now 0.7 seconds.
+    * DM/RM pickaxe/hammer/morningstar dig times now are approximately the same as ProjectE (at full charge), meaning they are now probably annoying fast.
+    * Red Matter Armor no longer increases player health (the wiki lied to me).
+    * A couple of changes to DM/RM armor in MineClone, which may or may not be noticeable. I really don't know.
+* Bugfixes:
+    * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups).
 
 ### 5.0 (the most insteresting release so far)
 **You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost (hopefully). In Minetest Game, this is a bit of a problem (try blowing it up maybe? I don't know, sorry).**
@@ -245,17 +264,6 @@ Dependencies: Minetest Game or MineClone.
     * Honestly, I'm going to count the broken energy values as a bug...
 
 </details>
-
-### Plans for 6.0
-* Automatically generated energy values based on crafting recipes
-* A slightly better method for tools that break multiple nodes at once (hammer, hoe, pickaxe, morningstar, and katar) that may slightly decrease lag.
-* Alchemical Chest
-* Repair Talisman (maybe, would only work in Alchemical Chest)
-* Covalence Dust (maybe custom repairer machine)
-* Mind, Life, Body, and Soul Stones (although MTG will only have the soul stone).
-* Ability to smelt with the Philosopher's Stone and coal/charcoal (irritatingly difficult, so maybe not)
-* Mercurial Eye (maybe)
-* Energy Condenser (maybe, IDK why anyone would use it)
 
 ### Features that I plan on adding eventually:
 * As soon as Minetest 5.8 comes out, better textures for armor...
