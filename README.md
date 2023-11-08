@@ -56,6 +56,7 @@ Dependencies: Minetest Game or MineClone.
 
 ### 6.0
 * New Features:
+    * Automatically generated energy values! Based on crafting and cooking recipes.
     * Infinite food (costs 64 energy to use, equal to steak)
     * Alchemical Chest
     * Repair Talisman (maybe, would only work in Alchemical Chest)
@@ -63,6 +64,9 @@ Dependencies: Minetest Game or MineClone.
     * Mind, Life, Body, and Soul Stones (although MTG only has the soul stone).
     * Mercurial Eye (maybe)
 * Changes:
+    * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s). *Every single mod* in the modpack is required, regardless of what it says the dependencies are. Disable and then enable it for everything to work correctly.
+    * The default energy value is no longer 1 but none.
+    * The 2-billion-ish personal energy limit is has been increased to the actual maximum Lua allows. This may mean some precision is lost when your personal energy reaches a few quadrillion... but that's unlikely to happen, and at that point, it probably doesn't matter, so I'm not testing it.
     * Tools that break multiple nodes at once (hammer, hoe, pickaxe, morningstar, and katar) use a better method that may (?) slightly decrease lag.
     * Ender pearls can now be crafted with 4 iron and the Philosopher's Stone.
     * A couple changes the Philosopher's Stone's transmutation:
