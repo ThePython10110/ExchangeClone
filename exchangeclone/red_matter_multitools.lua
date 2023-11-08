@@ -189,7 +189,7 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 		else
 			local player_energy = exchangeclone.get_player_energy(player)
 			torch_on_place(ItemStack(torch_itemstring), player, pointed_thing)
-			exchangeclone.set_player_energy(player, player_energy - exchangeclone.get_item_energy(torch_itemstring))
+			exchangeclone.set_player_energy(player, player_energy - math.max(exchangeclone.get_item_energy(torch_itemstring) or 0, 8))
 			-- If the torch could not be placed, it still costs energy... not sure how to fix that
 			exchangeclone.start_cooldown(player, "pickaxe", 0.3)
 			return

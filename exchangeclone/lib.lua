@@ -13,6 +13,7 @@ function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes defa
 end
 
 function exchangeclone.get_item_energy(item)
+    if not item then return end
     if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then
         local item_group = item:sub(7,-1)
         for _, group in ipairs(exchangeclone.group_values) do
@@ -21,9 +22,13 @@ function exchangeclone.get_item_energy(item)
         local group_items = exchangeclone.get_group_items(item_group)
         local cheapest
         for _, group_item in ipairs(group_items[item_group]) do
-            local energy_value = exchangeclone.get_item_energy(group_item)
-            if energy_value > 0 and ((not cheapest) or energy_value < cheapest) then
-                cheapest = energy_value
+            if group_item then
+                local energy_value = exchangeclone.get_item_energy(group_item)
+                if energy_value then
+                    if energy_value > 0 and ((not cheapest) or energy_value < cheapest) then
+                        cheapest = energy_value
+                    end
+                end
             end
         end
         return cheapest

@@ -106,7 +106,7 @@ local function constructor_action(pos)
             current_energy = exchangeclone.get_player_energy(player)
         end
         local energy_value = exchangeclone.get_item_energy(src_stack:get_name())
-        if energy_value > 0 then
+        if energy_value and energy_value > 0 then
             local max_amount = math.min(src_stack:get_stack_max(), math.floor(current_energy/energy_value))
             local added_amount = max_amount - inv:add_item("dst", ItemStack(result.." "..max_amount)):get_count()
             local result_energy = math.min(current_energy, current_energy - (energy_value * added_amount)) -- not sure if "math.min()" is necessary

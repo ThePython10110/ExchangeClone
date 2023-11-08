@@ -5,96 +5,15 @@ if exchangeclone.mcl then
 
 --[[ Some energy values taken from https://technicpack.fandom.com/wiki/Alchemical_Math
 I had to change some since they weren't as "equivalent" as they were supposed to be.
-I also didn't type out the ones with a value of 1, since that's the default.]]
 
 --[[ Groups are organized so that order matters. Groups that are lower on the
 list will have their energies applied later, making them  higher priority. It's
 unnecessary for single items because order doesn't matter for them. The NO_GROUP
-value is for values that are not in any other group. Only items that match a group
-in the list will have values applied, meaning that NO_GROUP is basically mandatory. ]]
+value is for values that are not in any other group. ]]
 
     energy_values = {
         ["exchangeclone"] = {
-            exchange_orb = 33792,
-            deconstructor = 67592,
-            constructor = 92168,
-            energy_collector_mk1 = 74499,
-            energy_collector_mk2 = (54*256)+(3*74499),
-            energy_collector_mk3 = (54*256)+(3*237321),
-            energy_collector_mk4 = (54*256)+(3*725787),
-            energy_collector_mk5 = (54*256)+(3*2191185),
-            philosophers_stone = 9984,
-            alchemical_coal = 512,
-            mobius_fuel = 2048,
-            aeternalis_fuel = 8192,
-            dark_matter = 139264,
-            dark_matter_block = 139264,
-            red_matter = 466944,
-            red_matter_block = 466944,
-            dark_matter_sword = 286720,
-            red_matter_sword = 892928,
-            dark_matter_shears = 147456,
-            red_matter_shears = 614400,
-            dark_matter_hoe = 294912,
-            red_matter_hoe = 1368064,
-            dark_matter_hoe_3x3 = 294912,
-            red_matter_hoe_3x3 = 1368064,
-            dark_matter_shovel = 155648,
-            red_matter_shovel = 761856,
-            dark_matter_hammer = 303104,
-            red_matter_hammer = 1515520,
-            dark_matter_hammer_3x3 = 303104,
-            red_matter_hammer_3x3 = 1515520,
-            dark_matter_pickaxe = 434176,
-            red_matter_pickaxe = 1974272,
-            dark_matter_pickaxe_3x1 = 434176,
-            red_matter_pickaxe_3x1 = 1974272,
-            dark_matter_axe = 434176,
-            red_matter_axe = 1974272,
-            red_katar = 7512064,
-            red_katar_3x3 = 7512064,
-            red_morningstar = 7053312,
-            red_morningstar_3x1 = 7053312,
-            red_morningstar_3x3 = 7053312,
-            helmet_dark_matter = 139264*5,
-            chestplate_dark_matter = 139264*8,
-            leggings_dark_matter = 139264*7,
-            boots_dark_matter = 139264*4,
-            helmet_red_matter = (139264+466944)*5,
-            chestplate_red_matter = (139264+466944)*8,
-            leggings_red_matter = (139264+466944)*7,
-            boots_red_matter = (139264+466944)*4,
-            pesa = 64,
-            transmutation_table = (64*4)+4,
-            transmutation_tablet = (64*4)+4+(139264*4)+4,
             alchemical_tome = 0,
-            dark_matter_furnace = 8+(139264*8),
-            red_matter_furnace = 1114120+(466944*3),
-            blank_upgrade = 344,
-            fire_aspect_1_upgrade = 344 + (139264*4) + (4*4),
-            fire_aspect_2_upgrade = 557416 + (139264*4) + (4*4),
-            fortune_1_upgrade = 344 + (139264*4) + (8192*4),
-            fortune_2_upgrade = 590168 + (139264*4) + (8192*4),
-            fortune_3_upgrade = 1179992 + (139264*4) + (8192*4),
-            frost_walker_1_upgrade = 344 + (139264*4) + (9*4),
-            frost_walker_2_upgrade = 557436 + (139264*4) + (9*4),
-            looting_1_upgrade = 344 + (139264*4) + (1536*4),
-            looting_2_upgrade = 563544 + (139264*4) + (1536*4),
-            looting_3_upgrade = 1126744 + (139264*4) + (1536*4),
-            silk_touch_upgrade = 344 + (139264*4) + (12*4),
-            curse_of_vanishing_upgrade = 344 + (139264*4) + 2,
-            thorns_1_upgrade = 344 + (139264*4) + (8*4),
-            thorns_2_upgrade = 557432 + (139264*4) + (8*4),
-            thorns_3_upgrade = 1114520 + (139264*4) + (8*4),
-            depth_strider_1_upgrade = 344 + (139264*4) + (48*4),
-            depth_strider_2_upgrade = 557592 + (139264*4) + (48*4),
-            depth_strider_3_upgrade = 1114840 + (139264*4) + (48*4),
-            knockback_1_upgrade = 344 + (139264*4) + (216*4),
-            knockback_2_upgrade = 558264 + (139264*4) + (216*4),
-            soul_speed_1_upgrade = 344 + (139264*4) + (49*4),
-            soul_speed_2_upgrade = 557596 + (139264*4) + (49*4),
-            soul_speed_3_upgrade = 1114844 + (139264*4) + (49*4),
-            upgrader = (139264*2) + (466944*2) + 4,
         },
         ["mcl_core"] = {
             light_0 = 0,
@@ -112,6 +31,14 @@ in the list will have values applied, meaning that NO_GROUP is basically mandato
             light_12 = 0,
             light_13 = 0,
             light_14 = 0,
+            cobble = 1,
+            stone = 1,
+            andesite = 1,
+            diorite = 1,
+            granite = 1,
+            dirt = 1,
+            grass = 1,
+            mycelium = 1,
             stonebrickmossy = 9,
             bedrock = 0,
             deadbush = 4,
@@ -1230,7 +1157,6 @@ in the list will have values applied, meaning that NO_GROUP is basically mandato
         {"concrete_powder", 2},
         {"useless", 0},
         {"decorated_pot_recipe", 4}, -- has to be 4 because of brick.
-        {"NO_GROUP", 1},
     }
 
 else
@@ -1622,7 +1548,6 @@ else
 }
 
     exchangeclone.group_values = {
-        {"NO_GROUP", 1},
         {"tree", 16},
         {"wood", 8},
         {"sapling", 32},
@@ -1657,6 +1582,7 @@ exchangeclone.mcl_potion_data = { -- automatically assumes base cost is awkward 
 exchangeclone.cheapest_items = {}
 
 local function get_cheapest_recipe(recipes)
+    if not recipes then return end
     local cheapest
     for _, recipe in ipairs(recipes) do
         local ingredient_cost = 0
@@ -1667,31 +1593,39 @@ local function get_cheapest_recipe(recipes)
                 for _, item in ipairs(row) do
                     if item ~= "" then
                         local cost = exchangeclone.get_item_energy(item)
-                        if not cost then skip = true end
-                        if cost == 0 then skip = true end
-                        ingredient_cost = ingredient_cost + cost
+                        if (not cost) or cost == 0 then
+                            skip = true
+                        else
+                            ingredient_cost = ingredient_cost + cost
+                        end
                     end
                 end
             end
         elseif recipe.type == "shapeless" then
             for _, item in ipairs(recipe.recipe) do
                 local cost = exchangeclone.get_item_energy(item)
-                if not cost then skip = true end
-                if cost == 0 then skip = true end
-                ingredient_cost = ingredient_cost + cost
+                if (not cost) or cost == 0 then
+                    skip = true
+                else
+                    ingredient_cost = ingredient_cost + cost
+                end
             end
         elseif recipe.type == "cooking" then
             local cost = exchangeclone.get_item_energy(recipe.recipe)
-            if not cost then skip = true end
-            if cost == 0 then skip = true end
-            ingredient_cost = ingredient_cost + cost
+            if (not cost) or cost == 0 then
+                skip = true
+            else
+                ingredient_cost = ingredient_cost + cost
+            end
         end
         if recipe.replacements and not skip then
             for _, item in ipairs(recipe.replacements) do
                 local cost = exchangeclone.get_item_energy(item[2])
-                if not cost then skip = true end
-                if cost == 0 then skip = true end
-                ingredient_cost = ingredient_cost - cost
+                if (not cost) or cost == 0 then
+                    skip = true
+                else
+                    ingredient_cost = ingredient_cost - cost
+                end
             end
         end
         if not skip then
@@ -1701,7 +1635,7 @@ local function get_cheapest_recipe(recipes)
             end
         end
     end
-    minetest.log(dump(cheapest))
+    --minetest.log(dump(cheapest))
     --if cheapest and cheapest[2].output:find("stair") then minetest.log(dump(cheapest)) end
     return cheapest and cheapest[1]
 end
@@ -1736,8 +1670,8 @@ local function add_potion_energy(info)
     local base_cost = 1 --cost of water bottle
     --TODO: Change dragon's breath when MineClone does.
     local dragon_breath_cost = 8.5
-    base_cost = math.floor(base_cost + (info.ingredient_cost / 3)) --/3 because 3 potions/ingredient
-    base_cost = base_cost + (info.custom_base_cost or 8) --8 = 1/3 of nether wart.
+    base_cost = math.floor(base_cost + (info.ingredient_cost / 3)) -- /3 because 3 potions/ingredient
+    base_cost = base_cost + (info.custom_base_cost or 8) -- 8 = nether wart/3.
     local splash_cost = base_cost + 64
     local lingering_cost = math.floor(base_cost + (dragon_breath_cost / 3))
     set_item_energy("mcl_potions:"..info.name, base_cost)
@@ -1769,8 +1703,8 @@ local function add_potion_energy(info)
     end
 end
 
---Wait until all mods are loaded (to make sure all nodes have been registered)
---This is much easier than making it depend on every single mod.
+-- Wait until all mods are loaded (to make sure all nodes have been registered)
+-- This is much easier than making it depend on every single mod.
 minetest.register_on_mods_loaded(function()
     local waiting = {}
     local groupnames = {}
@@ -1795,14 +1729,11 @@ minetest.register_on_mods_loaded(function()
             set_item_energy("mcl_clock:clock_"..i, 8256)
         end
         set_item_energy("mcl_clock:clock", 8256)
-        --It's almost like the "compass" and "clock" groups don't exist. I tried using them, but it just didn't work.
+        -- It's almost like the "compass" and "clock" groups don't exist. I tried using them, but it just didn't work.
         set_item_energy("mcl_bone_meal:bone_meal", 48)
-        --Bone meal just doesn't work either, for some reason.
+        -- Bone meal just doesn't work either, for some reason.
         for i = 1, 8 do --faster than doing everything individually.
             set_item_energy("mcl_jukebox:record_"..i, 8192)
-        end
-        for _, info in ipairs(exchangeclone.mcl_potion_data) do
-            add_potion_energy(info)
         end
     end
     for itemstring, def in pairs(minetest.registered_items) do
@@ -1813,21 +1744,17 @@ minetest.register_on_mods_loaded(function()
             and mod_name
             and def.description
             and def.description ~= ""
-            and minetest.get_item_group(itemstring, "not_in_creative_inventory") <= 0
+            and (minetest.get_item_group(itemstring, "not_in_creative_inventory") <= 0)
+            and (not def.energy_value)
         ) then
             if def.exchangeclone_custom_energy then
                 set_item_energy(itemstring, def.exchangeclone_custom_energy)
             elseif energy_values[mod_name] and energy_values[mod_name][item_name] then
                 set_item_energy(itemstring, energy_values[mod_name][item_name])
             else
-                --minetest.log(itemstring)
-                if exchangeclone.recipes[itemstring] then
-                    local cheapest = get_cheapest_recipe(exchangeclone.recipes[itemstring])
-                    if cheapest then
-                        set_item_energy(itemstring, cheapest)
-                    else
-                        waiting[itemstring] = def
-                    end
+                -- This does mean that other items in mcl_potions will be ignored unless explicitly specified above...
+                if itemstring:sub(1,12) ~= "mcl_potions:" then
+                    waiting[itemstring] = def
                 end
             end
         end
@@ -1835,11 +1762,20 @@ minetest.register_on_mods_loaded(function()
     for i = 1,10 do
         if waiting == {} then break end
         for itemstring, def in pairs(waiting) do
+            minetest.log(itemstring)
             local cheapest = get_cheapest_recipe(exchangeclone.recipes[itemstring])
             if cheapest then
                 --waiting[itemstring] = nil
                 set_item_energy(itemstring, cheapest)
             end
+        end
+    end
+    for itemstring, def in pairs(waiting) do
+        minetest.log(itemstring)
+    end
+    if exchangeclone.mcl then
+        for _, info in ipairs(exchangeclone.mcl_potion_data) do
+            add_potion_energy(info)
         end
     end
     -- Free up memory (I assume this will do that?)

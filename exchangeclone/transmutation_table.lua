@@ -55,7 +55,7 @@ function exchangeclone.reload_transmutation_list(player, search)
     end
     for _, item in ipairs(items_to_show) do
         local energy_value = exchangeclone.get_item_energy(item)
-        if energy_value <= player_energy and energy_value > 0 then
+        if energy_value and energy_value <= player_energy and energy_value > 0 then
             page_num = math.floor(i/16) + 1
             if not pages[page_num] then pages[page_num] = {} end
             pages[page_num][(i % 16) + 1] = item
@@ -70,6 +70,7 @@ local function add_to_output(player, amount, show)
     local item = player:get_meta():get_string("exchangeclone_transmutation_selection")
     if minetest.registered_items[item] then
         local energy_value = exchangeclone.get_item_energy(item)
+        if not energy_value then return end
         local player_energy = exchangeclone.get_player_energy(player)
         local stack_max = ItemStack(item):get_stack_max()
         if amount == true then amount = stack_max end
@@ -89,7 +90,8 @@ local function handle_inventory(player, inventory, to_list)
             list = {}
             local i = 0
             for name, def in pairs(minetest.registered_items) do
-                if exchangeclone.get_item_energy(name) > 0 and not def.groups.not_in_creative_inventory then
+                local energy_value = exchangeclone.get_item_energy(name)
+                if energy_value and energy_value > 0 and not def.groups.not_in_creative_inventory then
                     i = i + 1
                     list[i] = name
                 end
@@ -99,7 +101,7 @@ local function handle_inventory(player, inventory, to_list)
             inventory:set_stack(to_list, 1, nil)
         else
             local individual_energy_value = exchangeclone.get_item_energy(stack:get_name())
-            if individual_energy_value <= 0 then return end
+            if not individual_energy_value or individual_energy_value <= 0 then return end
             local wear = stack:get_wear()
             if wear and wear > 1 then
                 individual_energy_value = math.floor(individual_energy_value * (65536 / wear))
@@ -161,6 +163,7 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
         if stack:get_name() == "exchangeclone:alchemical_tome" then return count end
         local name = stack:get_name()
         local energy_value = exchangeclone.get_item_energy(stack:get_name())
+        if not energy_value then return 0 end
         local def = minetest.registered_items[name]
         if energy_value <= 0 or def.groups.not_in_creative_inventory == 1 then
             return 0
