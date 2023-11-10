@@ -73,6 +73,9 @@ Dependencies: Minetest Game or MineClone.
         * Ice and obsidian can now be transmuted into water and lava, respectively.
         * It is now impossible to transmute between bedrock and barriers (MCL). I don't know why I did it in the first place :D
 
+### 5.3
+* Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
+
 ### 5.2
 * Bugfixes
     * Removed unnecessary logging every time players take damage (I was testing stuff out with the armor)
@@ -87,7 +90,7 @@ Dependencies: Minetest Game or MineClone.
     * Red Matter Armor no longer increases player health (the wiki lied to me).
     * A couple of changes to DM/RM armor in MineClone, which may or may not be noticeable. I really don't know.
 * Bugfixes:
-    * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups).
+    * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups, thanks @Ranko-Saotome for reporting this).
 
 ### 5.0 (the most insteresting release so far)
 **You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost (hopefully). In Minetest Game, this is a bit of a problem (try blowing it up maybe? I don't know, sorry).**
