@@ -241,7 +241,7 @@ for _, itemstring in ipairs({"mcl_beehives:bee_nest_5", "mcl_beehives:beehive_5"
     minetest.registered_items[itemstring].on_rightclick = function(pos, node, player, itemstack, pointed_thing)
         local held_name = player:get_wielded_item():get_name()
         local shears = special_shears[held_name]
-        local beehive = "mcl_beehives:beehive"
+        local beehive
         local campfire_area = vector.offset(pos, 0, -5, 0)
         local campfire = minetest.find_nodes_in_area(pos, campfire_area, "group:lit_campfire")
 
@@ -256,7 +256,7 @@ for _, itemstring in ipairs({"mcl_beehives:bee_nest_5", "mcl_beehives:beehive_5"
             minetest.set_node(pos, node)
             if not campfire[1] then mcl_util.deal_damage(player, 3) end --significantly less damage
         else
-            old_honey_harvest()
+            old_honey_harvest(pos, node, player, itemstack, pointed_thing)
         end
     end
 end

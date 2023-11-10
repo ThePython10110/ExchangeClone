@@ -54,8 +54,14 @@ Dependencies: Minetest Game or MineClone.
 
 <details><summary><h1>Changelog:</h1></summary>
 
+### 5.3
+* Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
+
+### 5.2
+* Removed unnecessary logging (thanks @Ranko-Saotome!).
+
 ### 5.1
-* Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups).
+* Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups, thanks @Ranko-Saotome for reporting this).
 * Added new Mineclonia items (pottery, sculk, smithing templates, suspicious sand, etc.)
 * Changed a couple of energy values (enchanted golden apple was way too cheap, clay seemed too expensive)
 * Sword/Katar AOE damage now matches ProjectE (DM sword = 12, RM sword = 16, katar = 1000... kinda OP). All AOE cooldowns (including swinging swords/katar) are now 0.7 seconds.
