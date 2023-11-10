@@ -57,28 +57,33 @@ Dependencies: Minetest Game or MineClone.
 ### 6.0
 * New Features:
     * Automatically generated energy values! Based on crafting and cooking recipes.
+        * For reasons beyond my control, things kind of vary a bit between loads because of which items are added to the list first (which is kind of random). For instance, the Lookup Tool in MineClone2 might sometimes have an energy value of 5 (1 stick + 1 glass) or 16 (4 sticks) depending on whether the energy value for glass is added first or not. At least, I assume that's the reason.
     * Infinite food (costs 64 energy to use, equal to steak)
     * Alchemical Chest
     * Repair Talisman (maybe, would only work in Alchemical Chest)
-    * Covalence Dust (Aux1+right-click with Philosopher's Stone to open repairer, does not work with modded (non-Why) tools)
+    * Covalence Dust (Aux1+right-click with Philosopher's Stone to open repairer, only tools with an energy value can be repaired)
     * Mind, Life, Body, and Soul Stones (although MTG only has the soul stone).
     * Mercurial Eye (maybe)
 * Changes:
+    * Energy values are now in `_exchangeclone_energy/energy_values.lua`, and are laid out differently, and aliases now work.
     * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s). *Every single mod* in the modpack is required, regardless of what it says the dependencies are. Disable and then enable it for everything to work correctly.
     * The default energy value is no longer 1 but none.
-    * The 2-billion-ish personal energy limit is has been increased to the actual maximum Lua allows. This may mean some precision is lost when your personal energy reaches a few quadrillion... but that's unlikely to happen, and at that point, it probably doesn't matter, so I'm not testing it.
+    * The 2-billion-ish personal energy limit is has been increased to the actual maximum Lua allows. This may mean some precision might be lost when your personal energy reaches a few quadrillion... but at that point, you don't really care about the exact number.
     * Tools that break multiple nodes at once (hammer, hoe, pickaxe, morningstar, and katar) use a better method that may (?) slightly decrease lag.
     * Ender pearls can now be crafted with 4 iron and the Philosopher's Stone.
     * A couple changes the Philosopher's Stone's transmutation:
         * Ice and obsidian can now be transmuted into water and lava, respectively.
         * It is now impossible to transmute between bedrock and barriers (MCL). I don't know why I did it in the first place :D
+* Bugfixes:
+    * Fixed potion energy values
 
 ### 5.3
-* Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
+* Bugfixes
+    * Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
 
 ### 5.2
 * Bugfixes
-    * Removed unnecessary logging every time players take damage (I was testing stuff out with the armor)
+    * Removed unnecessary logging every time players take damage (I was testing stuff out with the armor, thanks @Ranko-Saotome for reporting)
 
 ### 5.1
 * New Features:

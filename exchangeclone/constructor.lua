@@ -229,8 +229,8 @@ minetest.register_craft({
     type = "shaped",
     output = "exchangeclone:constructor",
     recipe = {
-        {"", "exchangeclone:exchange_orb",""},
-        {"", recipe_ingredient, ""},
-        {"", "exchangeclone:exchange_orb",  ""}
+        {"exchangeclone:exchange_orb"},
+        {recipe_ingredient},
+        {"exchangeclone:exchange_orb"}
     }
 })

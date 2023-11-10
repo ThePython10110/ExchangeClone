@@ -14,7 +14,7 @@ function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes defa
 end
 
 function exchangeclone.get_item_energy(item)
-    if not item then return end
+    if (item == "") or not item then return end
     if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then
         local item_group = item:sub(7,-1)
         for _, group in ipairs(exchangeclone.group_values) do
@@ -35,15 +35,19 @@ function exchangeclone.get_item_energy(item)
         return cheapest
     end
     item = ItemStack(item)
+    local meta_energy_value = item:get_meta():get_int("exchangeclone_energy_value")
+    if meta_energy_value > 0 then
+        return meta_energy_value
+    end
     local def = minetest.registered_items[item:get_name()]
-    if not def then return 0 end
+    if not def then return end
     if item:get_name() == "exchangeclone:exchange_orb" then
-        return def.energy_value or 0 + exchangeclone.get_orb_itemstack_energy(item)
+        if def.energy_value then
+            return def.energy_value + exchangeclone.get_orb_itemstack_energy(item)
+        end
     end
     if def.energy_value then
         return (def.energy_value) * item:get_count()
-    else
-        return
     end
 end
 
@@ -66,7 +70,7 @@ end
 function exchangeclone.get_orb_itemstack_energy(itemstack)
     if not itemstack then return end
     if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
-    return itemstack:get_meta():get_float("stored_energy") or 0
+    return math.max(itemstack:get_meta():get_float("stored_energy"), 0)
 end
 
 -- Gets the amount of energy stored in an orb in a specific inventory slot
@@ -98,7 +102,7 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     local sqrt_max = math.sqrt(exchangeclone.orb_max)
 
     local r, g, b = 0, 0, 0
-    if amount == 0 then
+    if amount >= 0 then
         -- do nothing
     elseif sqrt_amount < (sqrt_max/4) then
         r = exchangeclone.map(sqrt_amount, 0, sqrt_max/4, 0, 255)
@@ -151,7 +155,6 @@ end)
 minetest.register_on_joinplayer(function(player, last_login)
     local meta = player:get_meta()
     local energy = meta:get_int("exchangeclone_stored_energy") or 0
-    minetest.log(energy)
     if energy > 0 then
         -- Not sure at all whether this is necessary
         meta:set_int("exchangeclone_stored_energy", 0)
@@ -541,7 +544,7 @@ minetest.register_on_leaveplayer(function(player, timed_out)
     exchangeclone.cooldowns[player:get_player_name()] = nil
 end)
 
--- Start a <time>-second cooldown called <name> for <player> 
+-- Start a <time>-second cooldown called <name> for <player>
 function exchangeclone.start_cooldown(player, name, time)
     local player_name = player:get_player_name()
     exchangeclone.cooldowns[player_name][name] = time

@@ -45,7 +45,7 @@ function exchangeclone.reload_transmutation_list(player, search)
         local filtered_items = {}
         for _,name in ipairs(items_to_show) do
             local def = minetest.registered_items[name]
-            if def and (not def.groups.not_in_creative_inventory or def.groups.not_in_creative_inventory == 0) and def.description and def.description ~= "" then
+            if def and def.description and def.description ~= "" then
                 if filter_item(string.lower(def.name), def.description, lang, search) then
                     table.insert(filtered_items, name)
                 end
@@ -91,7 +91,7 @@ local function handle_inventory(player, inventory, to_list)
             local i = 0
             for name, def in pairs(minetest.registered_items) do
                 local energy_value = exchangeclone.get_item_energy(name)
-                if energy_value and energy_value > 0 and not def.groups.not_in_creative_inventory then
+                if energy_value and energy_value > 0 then
                     i = i + 1
                     list[i] = name
                 end
@@ -165,7 +165,7 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
         local energy_value = exchangeclone.get_item_energy(stack:get_name())
         if not energy_value then return 0 end
         local def = minetest.registered_items[name]
-        if energy_value <= 0 or def.groups.not_in_creative_inventory == 1 then
+        if energy_value <= 0 then
             return 0
         else
             return count

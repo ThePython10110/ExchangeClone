@@ -206,11 +206,10 @@ if exchangeclone.mcl then
 end
 
 minetest.register_craft({
-    type = "shaped",
     output = "exchangeclone:deconstructor",
     recipe = {
-        {"", "exchangeclone:exchange_orb",""},
-        {"", recipe_ingredient, ""},
-        {"", "exchangeclone:exchange_orb",  ""}
+        {"exchangeclone:exchange_orb"},
+        {recipe_ingredient},
+        {"exchangeclone:exchange_orb"}
     }
 })

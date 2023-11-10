@@ -106,7 +106,6 @@ function exchangeclone.aoe_attack(info)
 				local punch_vec = vector.subtract(opos, pos)
 				local punch_dir = vector.normalize(punch_vec)
 				punch_dir = {x=punch_dir.x, y=punch_dir.y+0.3, z=punch_dir.z} -- knockback should be more upward
-				--minetest.log(dump({name=ent.name, distance=distance, damage=damage}))
 
 				local sleep_formspec_doesnt_close_mt53 = false
 				if obj:is_player() then
