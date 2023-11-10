@@ -32,7 +32,6 @@ value is for values that are not in any other group. ]]
             light_13 = 0,
             light_14 = 0,
             cobble = 1,
-            stone = 1,
             andesite = 1,
             diorite = 1,
             granite = 1,
@@ -597,27 +596,6 @@ value is for values that are not in any other group. ]]
             totem = 106496,
         },
         ["mcl_tools"] = {
-            shears = 512,
-            shovel_stone = 9,
-            sword_stone = 6,
-            pick_stone = 11,
-            axe_stone = 11,
-            shovel_wood = 16,
-            sword_wood = 20,
-            pick_wood = 32,
-            axe_wood = 32,
-            shovel_gold = 2056,
-            sword_gold = 5000,
-            pick_gold = 6152,
-            axe_gold = 6152,
-            shovel_iron = 264,
-            sword_iron = 516,
-            pick_iron = 796,
-            axe_iron = 796,
-            shovel_diamond = 8200,
-            sword_diamond = 16392,
-            pick_diamond = 24584,
-            axe_diamond = 24584,
             shovel_netherite = 81928,
             sword_netherite = 90120,
             pick_netherite = 98312,
@@ -1124,38 +1102,16 @@ value is for values that are not in any other group. ]]
 
     }
     exchangeclone.group_values = {
-        {"not_in_creative_inventory", 0},
         {"banner", 292},
-        {"sandstone", 4},
-        {"wood", 8},
-        {"button", 8},
-        {"dye", 8},
-        {"fence_wood", 13},
         {"flower", 8},
         {"pane", 0.5},
-        {"pressure_plate", 16},
-        {"trapdoor", 24},
-        {"door", 16},
-        {"fence_gate", 32},
         {"sapling", 32},
         {"mushroom", 32},
         {"tree", 32},
-        {"boat", 40},
         {"wool", 48},
-        {"bed", 168},
-        {"shulker_box", 4198},
-        {"bark", 43},
-        {"glass", 2}, --undyed glass is 1
-        {"huge_mushroom", 0}, --if you want energy, break it into mushrooms; doesn't always drop.
-        {"carpet", 32},
-        {"spawn_egg", 0},
-        {"hardened_clay", 16},
-        {"wood_slab", 4},
-        {"wood_stairs", 12},
         {"smithing_template", 8192*7+1792*2},
         {"concrete", 2},
         {"concrete_powder", 2},
-        {"useless", 0},
         {"decorated_pot_recipe", 4}, -- has to be 4 because of brick.
     }
 
@@ -1549,13 +1505,10 @@ else
 
     exchangeclone.group_values = {
         {"tree", 16},
-        {"wood", 8},
         {"sapling", 32},
-        {"fence", 10},
         {"wool", 48},
         {"dye", 8},
         {"flower", 32},
-        {"useless", 0},
     }
 
 end
@@ -1635,8 +1588,6 @@ local function get_cheapest_recipe(recipes)
             end
         end
     end
-    --minetest.log(dump(cheapest))
-    --if cheapest and cheapest[2].output:find("stair") then minetest.log(dump(cheapest)) end
     return cheapest and cheapest[1]
 end
 
@@ -1656,8 +1607,8 @@ local function set_item_energy(itemstring, energy_value)
         end
         description = description.."Energy Value: "..(energy_value)
     end
-    if def.exchangeclone_custom_energy then
-        energy_value = def.exchangeclone_custom_energy
+    if itemstring == "mcl_core:stone" then
+        minetest.log(description)
     end
     minetest.override_item(itemstring, {
         description = description,
@@ -1705,6 +1656,7 @@ end
 
 -- Wait until all mods are loaded (to make sure all nodes have been registered)
 -- This is much easier than making it depend on every single mod.
+-- Actually, I'm kind of surprised that override_item still works...
 minetest.register_on_mods_loaded(function()
     local waiting = {}
     local groupnames = {}
@@ -1737,36 +1689,35 @@ minetest.register_on_mods_loaded(function()
         end
     end
     for itemstring, def in pairs(minetest.registered_items) do
-        local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
-        if (
-            def
-            and item_name
-            and mod_name
-            and def.description
-            and def.description ~= ""
-            and (minetest.get_item_group(itemstring, "not_in_creative_inventory") <= 0)
-            and (not def.energy_value)
-        ) then
-            if def.exchangeclone_custom_energy then
-                set_item_energy(itemstring, def.exchangeclone_custom_energy)
-            elseif energy_values[mod_name] and energy_values[mod_name][item_name] then
+        if def.exchangeclone_custom_energy then
+            set_item_energy(itemstring, def.exchangeclone_custom_energy)
+        else
+            local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
+            if energy_values[mod_name] and energy_values[mod_name][item_name] then
                 set_item_energy(itemstring, energy_values[mod_name][item_name])
-            else
-                -- This does mean that other items in mcl_potions will be ignored unless explicitly specified above...
-                if itemstring:sub(1,12) ~= "mcl_potions:" then
-                    waiting[itemstring] = def
-                end
+            elseif (
+                def
+                and item_name
+                and mod_name
+                and def.description
+                and def.description ~= ""
+                and (minetest.get_item_group(itemstring, "not_in_creative_inventory") <= 0)
+                and (not def.energy_value)
+                and (itemstring:sub(1,12) ~= "mcl_potions:")
+                -- This does mean that other items in mcl_potions will be ignored unless explicitly specified,
+                -- and items that are in groups mentioned above.
+            ) then
+                waiting[itemstring] = true
             end
         end
     end
-    for i = 1,10 do
+    for i = 1,exchangeclone.num_passes do
         if waiting == {} then break end
-        for itemstring, def in pairs(waiting) do
-            minetest.log(itemstring)
+        for itemstring, _ in pairs(waiting) do
             local cheapest = get_cheapest_recipe(exchangeclone.recipes[itemstring])
             if cheapest then
-                --waiting[itemstring] = nil
                 set_item_energy(itemstring, cheapest)
+                waiting[itemstring] = nil
             end
         end
     end

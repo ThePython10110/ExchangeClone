@@ -423,7 +423,7 @@ minetest.register_craft({
     output = "exchangeclone:dark_matter_shears",
     recipe = {
         {"", "exchangeclone:dark_matter"},
-        {exchangeclone.diamond_itemstring, ""},
+        {exchangeclone.itemstrings.diamond, ""},
     }
 })
 

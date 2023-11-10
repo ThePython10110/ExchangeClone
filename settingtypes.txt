@@ -1,1 +1,5 @@
-exchangeclone.energy_collector_speed (Energy Collector energy/second) int 5
+# Exchange Orb maximum energy (default 51200000)
+exchangeclone.orb_max (Exchange Orb maximum energy) int 51200000
+
+# The number of times ExchangeClone goes through the items (more = longer load, but it's more likely that more energy values will be registered)
+exchangeclone.num_passes (Energy value number of passes) int 10

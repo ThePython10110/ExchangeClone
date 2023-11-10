@@ -436,6 +436,7 @@ minetest.register_craft({
 
 minetest.register_craft({
     output = "mcl_throwing:ender_pearl",
+    type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
         "mcl_core:iron_ingot",
@@ -529,7 +530,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = exchangeclone.itemstrings.meseworth,
+    output = exchangeclone.itemstrings.emeraldworth,
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
@@ -544,7 +545,7 @@ minetest.register_craft({
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        exchangeclone.itemstrings.meseworth,
+        exchangeclone.itemstrings.emeraldworth,
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
@@ -554,14 +555,14 @@ minetest.register_craft({
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        exchangeclone.itemstrings.meseworth,
-        exchangeclone.itemstrings.meseworth,
+        exchangeclone.itemstrings.emeraldworth,
+        exchangeclone.itemstrings.emeraldworth,
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = exchangeclone.itemstrings.meseworth.." 2",
+    output = exchangeclone.itemstrings.emeraldworth.." 2",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
@@ -622,34 +623,46 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "mcl_core:lapis 2",
+    output = "mcl_nether:glowstone_dust",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "mesecons_torch:redstoneblock",
-        "mesecons_torch:redstoneblock",
-        "mesecons_torch:redstoneblock",
+        "mesecons:redstone",
+        "mesecons:redstone",
+        "mesecons:redstone",
+        "mesecons:redstone",
+        "mesecons:redstone",
+        "mesecons:redstone",
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "mesecons:redstone 27",
+    output = "mesecons:redstone 6",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "mcl_core:lapis",
-        "mcl_core:lapis",
+        "mcl_nether:glowstone_dust",
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
 minetest.register_craft({
-    output = "mesecons:redstone 27",
+    output = "mcl_core:lapis",
     type = "shapeless",
     recipe = {
         "exchangeclone:philosophers_stone",
-        "mcl_core:lapis",
+        "mcl_nether:glowstone_dust",
+        "mcl_nether:glowstone_dust"
+    },
+    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+})
+
+minetest.register_craft({
+    output = "mcl_nether:glowstone_dust 2",
+    type = "shapeless",
+    recipe = {
+        "exchangeclone:philosophers_stone",
         "mcl_core:lapis",
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}

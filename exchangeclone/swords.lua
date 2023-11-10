@@ -55,7 +55,7 @@ minetest.register_on_mods_loaded(function()
 	end
 end)
 
-exchangeclone.aoe_attack = function(info)
+function exchangeclone.aoe_attack(info)
 	if not info then return end
 	local damage = info.damage or 12 -- 12 = DM sword AOE
 	local knockback = info.knockback
@@ -222,7 +222,7 @@ minetest.register_craft({
     recipe = {
         {"exchangeclone:dark_matter"},
         {"exchangeclone:dark_matter"},
-        {exchangeclone.diamond_itemstring}
+        {exchangeclone.itemstrings.diamond}
     }
 })
 

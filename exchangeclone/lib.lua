@@ -71,7 +71,7 @@ end
 
 -- Gets the amount of energy stored in an orb in a specific inventory slot
 function exchangeclone.get_orb_energy(inventory, listname, index)
-    if not inventory then return 0 end
+    if not inventory then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
@@ -166,6 +166,7 @@ end
 
 -- Set a player's personal energy
 function exchangeclone.set_player_energy(player, amount)
+    if not (player and amount) then return end
     player:get_meta():set_string("exchangeclone_stored_energy", tonumber(amount))
     exchangeclone.update_hud(player)
 end
@@ -291,11 +292,14 @@ exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.4)
 
 -- Itemstrings for various items
 exchangeclone.itemstrings = {
-    diamond = exchangeclone.mcl and "mcl_core:diamond" or "default:diamond",
-    gold = exchangeclone.mcl and "mcl_core:gold_ingot" or "default:gold_ingot",
-    iron = exchangeclone.mcl and "mcl_core:iron_ingot" or "default:steel_ingot",
+    cobble = exchangeclone.mcl and "mcl_core:cobble" or "default:cobble",
+    redstoneworth = exchangeclone.mcl and "mesecons:redstone" or "default:obsidian",
+    glowstoneworth = exchangeclone.mcl and "mcl_nether:glowstone_dust" or "default:tin_ingot",
     coal = exchangeclone.mcl and "mcl_core:coal_lump" or "default:coal_lump",
-    meseworth = exchangeclone.mcl and "mcl_core:emerald" or "default:mese_crystal"
+    iron = exchangeclone.mcl and "mcl_core:iron_ingot" or "default:steel_ingot",
+    gold = exchangeclone.mcl and "mcl_core:gold_ingot" or "default:gold_ingot",
+    emeraldworth = exchangeclone.mcl and "mcl_core:emerald" or "default:mese_crystal",
+    diamond = exchangeclone.mcl and "mcl_core:diamond" or "default:diamond",
 }
 
 -- Returns a player's inventory formspec with the correct width and hotbar position for the current game

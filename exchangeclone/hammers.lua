@@ -171,9 +171,9 @@ minetest.register_tool("exchangeclone:red_matter_hammer_3x3", {
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hammer",
     recipe = {
-        {"exchangeclone:dark_matter", exchangeclone.diamond_itemstring, "exchangeclone:dark_matter"},
-        {"", exchangeclone.diamond_itemstring, ""},
-        {"", exchangeclone.diamond_itemstring, ""}
+        {"exchangeclone:dark_matter", exchangeclone.itemstrings.diamond, "exchangeclone:dark_matter"},
+        {"", exchangeclone.itemstrings.diamond, ""},
+        {"", exchangeclone.itemstrings.diamond, ""}
     }
 })
 

@@ -129,8 +129,8 @@ minetest.register_craft({
     output = "exchangeclone:dark_matter_shovel",
     recipe = {
         {"exchangeclone:dark_matter"},
-        {exchangeclone.diamond_itemstring},
-        {exchangeclone.diamond_itemstring}
+        {exchangeclone.itemstrings.diamond},
+        {exchangeclone.itemstrings.diamond}
     }
 })
 

@@ -163,8 +163,8 @@ minetest.register_craft({
     output = "exchangeclone:dark_matter_pickaxe",
     recipe = {
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter", "exchangeclone:dark_matter"},
-        {"", exchangeclone.diamond_itemstring, ""},
-        {"", exchangeclone.diamond_itemstring, ""}
+        {"", exchangeclone.itemstrings.diamond, ""},
+        {"", exchangeclone.itemstrings.diamond, ""}
     }
 })
 
