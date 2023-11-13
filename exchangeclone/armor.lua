@@ -294,9 +294,9 @@ if minetest.get_modpath("3d_armor") then
     minetest.register_craft({
         output = "exchangeclone:shield_red_matter",
         recipe = {
-            {d,d,d},
-            {d,d,d},
-            {"exchangeclone:shield_dark_matter",d,""},
+            {r,r,r},
+            {r,r,r},
+            {"exchangeclone:shield_dark_matter",r,""},
         }
     })
 end

@@ -17,7 +17,7 @@ for _, color in colors do
     local itemstring = "exchangeclone:"..lower_color.."_advanced_alchemical_chest"
     minetest.register_node(itemstring, {
         description = color.." Alchemical Chest",
-        groups = {container = 1, alchemical_chest = 1},
+        groups = {container = 2, alchemical_chest = 1},
         after_place_node = function(pos, player, itemstack, pointed_thing)
             local meta = minetest.get_meta(pos)
             meta:set_string("formspec", alchemical_formspec(color))

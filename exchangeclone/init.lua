@@ -14,7 +14,7 @@ exchangeclone.orb_max = 51200000 -- Max capacity of Klein Star Omega in ProjectE
 
 local modpath = minetest.get_modpath("exchangeclone")
 
-exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 5
+exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000
 exchangeclone.num_passes = minetest.settings:get("exchangeclone.num_passes") or 10
 
 dofile(modpath.."/lib.lua")
@@ -29,6 +29,7 @@ end
 if exchangeclone.mcl then
 	mcl_item_id.set_mod_namespace("exchangeclone")
 	dofile(modpath.."/shears.lua")
+	dofile(modpath.."/tool_upgrades.lua")
 end
 dofile(modpath.."/multidig.lua")
 dofile(modpath.."/swords.lua")
@@ -38,8 +39,8 @@ dofile(modpath.."/pickaxes.lua")
 dofile(modpath.."/hammers.lua")
 dofile(modpath.."/shovels.lua")
 dofile(modpath.."/red_matter_multitools.lua")
-if exchangeclone.mcl then
-	dofile(modpath.."/tool_upgrades.lua")
+if minetest.get_modpath("hopper") then
+	dofile(modpath.."/hopper_compat.lua")
 end
 dofile(modpath.."/philosophers_stone.lua")
 dofile(modpath.."/pesa.lua")

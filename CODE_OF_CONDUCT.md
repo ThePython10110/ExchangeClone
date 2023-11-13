@@ -1,5 +1,5 @@
 # Code of Conduct
-Don't be evil. 
+Don't be evil.
 
 That's it.
 

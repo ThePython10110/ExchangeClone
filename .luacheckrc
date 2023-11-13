@@ -30,6 +30,7 @@ read_globals = {
     "screwdriver",
     "mcl_crafting_table",
     "mcl_enchantments",
+    "technic",
 
     "Raycast",
     "Settings",

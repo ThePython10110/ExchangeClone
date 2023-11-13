@@ -109,7 +109,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "exchangeclone:dark_matter_block 4",
+    output = "exchangeclone:dark_matter_block",
     recipe = {
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter"},
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter"}
@@ -117,7 +117,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "exchangeclone:red_matter_block 4",
+    output = "exchangeclone:red_matter_block",
     recipe = {
         {"exchangeclone:red_matter", "exchangeclone:red_matter"},
         {"exchangeclone:red_matter", "exchangeclone:red_matter"}
@@ -127,15 +127,13 @@ minetest.register_craft({
 minetest.register_craft({
     output = "exchangeclone:dark_matter 4",
     recipe = {
-        {"exchangeclone:dark_matter_block","exchangeclone:dark_matter_block"},
-        {"exchangeclone:dark_matter_block","exchangeclone:dark_matter_block"}
+        {"exchangeclone:dark_matter_block"}
     }
 })
 
 minetest.register_craft({
     output = "exchangeclone:red_matter 4",
     recipe = {
-        {"exchangeclone:red_matter_block","exchangeclone:red_matter_block"},
-        {"exchangeclone:red_matter_block","exchangeclone:red_matter_block"}
+        {"exchangeclone:red_matter_block",}
     }
 })

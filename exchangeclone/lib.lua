@@ -15,6 +15,7 @@ end
 
 function exchangeclone.get_item_energy(item)
     if (item == "") or not item then return end
+    -- handle groups
     if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then
         local item_group = item:sub(7,-1)
         for _, group in ipairs(exchangeclone.group_values) do
@@ -34,9 +35,10 @@ function exchangeclone.get_item_energy(item)
         end
         return cheapest
     end
+    -- handle items/itemstacks
     item = ItemStack(item)
-    local meta_energy_value = item:get_meta():get_int("exchangeclone_energy_value")
-    if meta_energy_value > 0 then
+    local meta_energy_value = tonumber(item:get_meta():get_string("exchangeclone_energy_value"))
+    if meta_energy_value and meta_energy_value > 0 then
         return meta_energy_value
     end
     local def = minetest.registered_items[item:get_name()]
@@ -85,16 +87,11 @@ end
 -- Decides what mod to use for sounds
 if exchangeclone.mcl then exchangeclone.sound_mod = mcl_sounds else exchangeclone.sound_mod = default end
 
--- Sets the amount of energy in an orb in a specific inventory slot
-function exchangeclone.set_orb_energy(inventory, listname, index, amount)
-    if not inventory or amount < 0 then return end
-    if not listname then listname = "main" end
-    if not index then index = 1 end
-    local itemstack = inventory:get_stack(listname, index)
-    if not itemstack then return end
-    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
+function exchangeclone.set_orb_itemstack_energy(itemstack, amount)
+    if not itemstack or not amount then return minetest.log(">:(") end
+    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then minetest.log(":O") return end
     local old_energy = exchangeclone.get_orb_itemstack_energy(itemstack)
-    if amount > old_energy and old_energy > exchangeclone.orb_max then return end -- don't allow more energy to be put into an over-filled orb
+    if amount > old_energy and old_energy > exchangeclone.orb_max then minetest.log(":(") return end -- don't allow more energy to be put into an over-filled orb
 
     -- Square roots will hopefully make it less linear
     -- And if they don't, I don't really care and I don't want to think about math anymore.
@@ -102,7 +99,7 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     local sqrt_max = math.sqrt(exchangeclone.orb_max)
 
     local r, g, b = 0, 0, 0
-    if amount >= 0 then
+    if amount <= 0 then
         -- do nothing
     elseif sqrt_amount < (sqrt_max/4) then
         r = exchangeclone.map(sqrt_amount, 0, sqrt_max/4, 0, 255)
@@ -118,12 +115,23 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     end
 
     local colorstring = minetest.rgba(r,g,b)
-
+    minetest.log(colorstring)
     local meta = itemstack:get_meta()
     meta:set_float("stored_energy", amount)
     meta:set_string("description", "Exchange Orb\nCurrent Charge: "..amount)
     meta:set_string("color", colorstring)
-    inventory:set_stack(listname, index, itemstack)
+    return itemstack
+end
+
+-- Sets the amount of energy in an orb in a specific inventory slot
+function exchangeclone.set_orb_energy(inventory, listname, index, amount)
+    if not inventory or not amount or amount < 0 then return end
+    if not listname then listname = "main" end
+    if not index then index = 1 end
+    local itemstack = inventory:get_stack(listname, index)
+    local new_stack = exchangeclone.set_orb_itemstack_energy(itemstack, amount)
+    if not new_stack then minetest.log("D:") return end
+    inventory:set_stack(listname, index, new_stack)
 end
 
 -- HUD stuff (show energy value in bottom right)
@@ -170,8 +178,15 @@ end
 -- Set a player's personal energy
 function exchangeclone.set_player_energy(player, amount)
     if not (player and amount) then return end
+    if amount < 0 or amount > exchangeclone.limit then return end
     player:get_meta():set_string("exchangeclone_stored_energy", tonumber(amount))
     exchangeclone.update_hud(player)
+end
+
+-- Add to a player's personal energy (amount can be negative)
+function exchangeclone.add_player_energy(player, amount)
+    if not (player and amount) then return end
+    exchangeclone.set_player_energy(exchangeclone.get_player_energy(player) + amount)
 end
 
 -- copied from http://lua-users.org/wiki/IntegerDomain
@@ -198,6 +213,19 @@ while step > 0 do
 	step = math.floor(step/2)
 end
 
+exchangeclone.limit = exchangeclone.limit/100 -- (to account for .25)
+
+function exchangeclone.split (input, sep)
+    if sep == nil then
+            sep = "%s"
+    end
+    local result={}
+    for str in string.gmatch(input, "([^"..sep.."]+)") do
+            table.insert(result, str)
+    end
+    return result
+end
+
 -- Returns a table of all items in the specified group(s).
 function exchangeclone.get_group_items(groups, allow_duplicates, include_no_group)
     if type(groups) ~= "table" then
@@ -211,10 +239,10 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
     allow_duplicates = allow_duplicates or false
     include_no_group = include_no_group or false
 
-    local g_cnt = #groups
+    local num_groups = #groups
 
     local result = {}
-    for i = 1, g_cnt do
+    for i = 1, num_groups do
         result[groups[i]] = {}
     end
     if include_no_group then
@@ -224,9 +252,17 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
 
     for name, def in pairs(minetest.registered_items) do
         in_group = false
-        for i = 1, g_cnt do
+        for i = 1, num_groups do
             local grp = groups[i]
-            if def.groups[grp] ~= nil then
+            local subgroups = exchangeclone.split(grp, ",")
+            local success = true
+            for _, subgroup in ipairs(subgroups) do
+                if not def.groups[subgroup] then
+                    success = false
+                    break
+                end
+            end
+            if success then
                 result[grp][#result[grp]+1] = name
                 in_group = true
                 if allow_duplicates == false then

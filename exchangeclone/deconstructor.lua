@@ -69,7 +69,7 @@ local function deconstructor_action(pos)
     end
     local stack = inv:get_stack("src", 1)
     local individual_energy_value = exchangeclone.get_item_energy(stack:get_name())
-    if individual_energy_value and individual_energy_value <= 0 then return end
+    if not (individual_energy_value and individual_energy_value > 0) then return end
     local wear = stack:get_wear()
     if wear and wear > 1 then
         individual_energy_value = math.floor(individual_energy_value * (65536 / wear))

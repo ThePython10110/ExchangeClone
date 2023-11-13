@@ -1,5 +1,7 @@
-exchangeclone.group_values = {}
-exchangeclone.energy_values = {}
+-- Just in case people want to add stuff to these lists in their mods...
+exchangeclone.group_values = exchangeclone.group_values or {}
+exchangeclone.energy_values = exchangeclone.energy_values or {}
+
 if exchangeclone.mcl then
     --[[ Groups are organized so that order matters. Groups that are lower on the
     list will have their energies applied later, making them  higher priority. It's
@@ -14,18 +16,24 @@ if exchangeclone.mcl then
     }
 
     exchangeclone.energy_values = {
+        -- TODO
         ["doc_identifier:identifier_liquid"] = 5,
+
         ["fake_liquids:bucket_fake_lava"] = 832,
         ["fake_liquids:bucket_fake_water"] = 960,
+
         ["lava_sponge:lava_sponge_wet"] = 1160,
+
         ["mcl_amethyst:amethyst_cluster"] = 512,
         ["mcl_amethyst:amethyst_shard"] = 256,
         ["mcl_amethyst:calcite"] = 128,
         ["mcl_amethyst:large_amethyst_bud"] = 426,
         ["mcl_amethyst:medium_amethyst_bud"] = 341,
         ["mcl_amethyst:small_amethyst_bud"] = 256,
+
         ["mcl_anvils:anvil_damage_1"] = 5632,
         ["mcl_anvils:anvil_damage_2"] = 3328,
+
         ["mcl_armor:boots_chain"] = 768,
         ["mcl_armor:boots_chain_enchanted"] = 768,
         ["mcl_armor:boots_diamond_enchanted"] = 32768,
@@ -59,23 +67,31 @@ if exchangeclone.mcl then
         ["mcl_armor:leggings_leather_enchanted"] = 448,
         ["mcl_armor:leggings_netherite"] = 131072,
         ["mcl_armor:leggings_netherite_enchanted"] = 131072,
+
         ["mcl_bamboo:bamboo"] = 2,
         ["mcl_bamboo:bamboo_block_stripped"] = 16,
+
         ["mcl_banners:pattern_globe"] = 360,
         ["mcl_banners:pattern_piglin"] = 300,
+
         ["mcl_beehives:beehive"] = 144,
+
         ["mcl_bells:bell"] = 8192,
+
         ["mcl_blackstone:basalt"] = 1,
         ["mcl_blackstone:blackstone"] = 1,
         ["mcl_blackstone:blackstone_gilded"] = 2048,
         ["mcl_blackstone:nether_gold"] = 2048,
         ["mcl_blackstone:soul_soil"] = 49,
+
         ["mcl_books:book"] = 150,
         ["mcl_books:written_book"] = 206,
+
         ["mcl_bows:bow_enchanted"] = 48,
         ["mcl_bows:crossbow_enchanted"] = 295,
         ["mcl_bows:crossbow_loaded"] = 298,
         ["mcl_bows:crossbow_loaded_enchanted"] = 298,
+
         ["mcl_buckets:bucket_axolotl"] = 1024,
         ["mcl_buckets:bucket_cod"] = 896,
         ["mcl_buckets:bucket_lava"] = 896,
@@ -83,10 +99,14 @@ if exchangeclone.mcl then
         ["mcl_buckets:bucket_salmon"] = 896,
         ["mcl_buckets:bucket_tropical_fish"] = 896,
         ["mcl_buckets:bucket_water"] = 768,
+
         ["mcl_campfires:campfire"] = 140,
         ["mcl_campfires:soul_campfire"] = 157,
+
         ["mcl_cocoas:cocoa_beans"] = 128,
+
         ["mcl_copper:raw_copper"] = 85,
+
         ["mcl_core:andesite"] = 1,
         ["mcl_core:apple"] = 128,
         ["mcl_core:apple_gold_enchanted"] = 147584,
@@ -115,17 +135,22 @@ if exchangeclone.mcl then
         ["mcl_core:reeds"] = 32,
         ["mcl_core:sand"] = 1,
         ["mcl_core:vine"] = 8,
+
         ["mcl_crimson:shroomlight"] = 64,
         ["mcl_crimson:twisting_vines"] = 8,
         ["mcl_crimson:warped_wart_block"] = 216,
         ["mcl_crimson:weeping_vines"] = 8,
+
         ["mcl_deepslate:deepslate_cobbled"] = 1,
         ["mcl_deepslate:tuff"] = 1,
+
         ["mcl_end:chorus_flower"] = 32,
         ["mcl_end:chorus_fruit"] = 16,
         ["mcl_end:dragon_egg"] = 139264,
         ["mcl_end:end_stone"] = 1,
+
         ["mcl_experience:bottle"] = 2048,
+
         ["mcl_farming:beetroot_item"] = 24,
         ["mcl_farming:beetroot_seeds"] = 16,
         ["mcl_farming:carrot_item"] = 24,
@@ -144,25 +169,32 @@ if exchangeclone.mcl then
         ["mcl_farming:sweet_berry"] = 16,
         ["mcl_farming:wheat_item"] = 24,
         ["mcl_farming:wheat_seeds"] = 16,
+
         ["mcl_fishing:clownfish_raw"] = 64,
         ["mcl_fishing:fish_raw"] = 40,
         ["mcl_fishing:fishing_rod_enchanted"] = 36,
         ["mcl_fishing:pufferfish_raw"] = 64,
         ["mcl_fishing:salmon_raw"] = 48,
+
         ["mcl_flowers:waterlily"] = 16,
         ["mcl_flowers:wither_rose"] = 128,
+
         ["mcl_heads:creeper"] = 256,
         ["mcl_heads:skeleton"] = 256,
         ["mcl_heads:steve"] = 256,
         ["mcl_heads:wither_skeleton"] = 50000,
         ["mcl_heads:zombie"] = 256,
+
         ["mcl_honey:honey_bottle"] = 33,
         ["mcl_honey:honeycomb"] = 32,
+
         ["mcl_lush_caves:cave_vines"] = 8,
         ["mcl_lush_caves:cave_vines_lit"] = 0,
         ["mcl_lush_caves:glow_berry"] = 36,
         ["mcl_lush_caves:spore_blossom"] = 32,
+
         ["mcl_mangrove:mangrove_roots"] = 1,
+
         ["mcl_maps:filled_map"] = 1120,
         ["mcl_maps:filled_map_mcl_skins_base_18D471DFF_female_crea"] = 1120,
         ["mcl_maps:filled_map_mcl_skins_base_18D471DFF_female_surv"] = 1120,
@@ -176,6 +208,7 @@ if exchangeclone.mcl then
         ["mcl_maps:filled_map_mcl_skins_base_1EEB592FF_female_surv"] = 1120,
         ["mcl_maps:filled_map_mcl_skins_base_1EEB592FF_male_crea"] = 1120,
         ["mcl_maps:filled_map_mcl_skins_base_1EEB592FF_male_surv"] = 1120,
+
         ["mcl_mobitems:beef"] = 64,
         ["mcl_mobitems:blaze_rod"] = 1536,
         ["mcl_mobitems:bone"] = 144,
@@ -206,14 +239,18 @@ if exchangeclone.mcl then
         ["mcl_mobitems:slimeball"] = 24,
         ["mcl_mobitems:spider_eye"] = 128,
         ["mcl_mobitems:string"] = 12,
+
         ["mcl_mobs:nametag"] = 128,
+
         ["mcl_mud:mud"] = 1,
+
         ["mcl_nether:ancient_debris"] = 16384,
         ["mcl_nether:glowstone_dust"] = 384,
         ["mcl_nether:nether_wart_item"] = 24,
         ["mcl_nether:netherrack"] = 1,
         ["mcl_nether:quartz"] = 128,
         ["mcl_nether:soul_sand"] = 49,
+
         ["mcl_ocean:brain_coral"] = 8,
         ["mcl_ocean:brain_coral_block"] = 8,
         ["mcl_ocean:brain_coral_fan"] = 8,
@@ -249,47 +286,54 @@ if exchangeclone.mcl then
         ["mcl_ocean:tube_coral"] = 8,
         ["mcl_ocean:tube_coral_block"] = 8,
         ["mcl_ocean:tube_coral_fan"] = 8,
+
         ["mcl_potions:dragon_breath"] = 8.5,
         ["mcl_potions:fermented_spider_eye"] = 192,
         ["mcl_potions:glass_bottle"] = 1,
         ["mcl_potions:speckled_melon"] = 1852,
+
         ["mcl_pottery_sherds:pot"] = 16,
+
         ["mcl_raw_ores:raw_gold"] = 2048,
         ["mcl_raw_ores:raw_iron"] = 256,
+
         ["mcl_sponges:sponge"] = 1024,
         ["mcl_sponges:sponge_wet"] = 1024,
         ["mcl_sponges:sponge_wet_river_water"] = 1024,
+
         ["mcl_throwing:egg"] = 32,
         ["mcl_throwing:ender_pearl"] = 1024,
         ["mcl_throwing:snowball"] = 0.25,
-        ["mcl_tools:axe_stone_enchanted"] = 11,
+
+        ["mcl_tools:axe_netherite"] = 98312,
         ["mcl_tools:axe_wood_enchanted"] = 32,
+        ["mcl_tools:axe_stone_enchanted"] = 11,
         ["mcl_tools:axe_iron_enchanted"] = 796,
         ["mcl_tools:axe_gold_enchanted"] = 6152,
         ["mcl_tools:axe_diamond_enchanted"] = 24584,
-        ["mcl_tools:axe_netherite"] = 98312,
         ["mcl_tools:axe_netherite_enchanted"] = 98312,
+        ["mcl_tools:pick_netherite"] = 98312,
+        ["mcl_tools:pick_wood_enchanted"] = 32,
         ["mcl_tools:pick_stone_enchanted"] = 11,
         ["mcl_tools:pick_iron_enchanted"] = 796,
         ["mcl_tools:pick_gold_enchanted"] = 6152,
         ["mcl_tools:pick_diamond_enchanted"] = 24584,
-        ["mcl_tools:pick_netherite"] = 98312,
         ["mcl_tools:pick_netherite_enchanted"] = 98312,
-        ["mcl_tools:pick_wood_enchanted"] = 32,
-        ["mcl_tools:shovel_diamond_enchanted"] = 8200,
-        ["mcl_tools:shovel_gold_enchanted"] = 2056,
-        ["mcl_tools:shovel_iron_enchanted"] = 264,
         ["mcl_tools:shovel_netherite"] = 81928,
-        ["mcl_tools:shovel_netherite_enchanted"] = 81928,
-        ["mcl_tools:shovel_stone_enchanted"] = 9,
         ["mcl_tools:shovel_wood_enchanted"] = 16,
-        ["mcl_tools:sword_diamond_enchanted"] = 16392,
-        ["mcl_tools:sword_gold_enchanted"] = 5000,
-        ["mcl_tools:sword_iron_enchanted"] = 516,
+        ["mcl_tools:shovel_stone_enchanted"] = 9,
+        ["mcl_tools:shovel_iron_enchanted"] = 264,
+        ["mcl_tools:shovel_gold_enchanted"] = 2056,
+        ["mcl_tools:shovel_diamond_enchanted"] = 8200,
+        ["mcl_tools:shovel_netherite_enchanted"] = 81928,
         ["mcl_tools:sword_netherite"] = 90120,
-        ["mcl_tools:sword_netherite_enchanted"] = 90120,
-        ["mcl_tools:sword_stone_enchanted"] = 6,
         ["mcl_tools:sword_wood_enchanted"] = 20,
+        ["mcl_tools:sword_stone_enchanted"] = 6,
+        ["mcl_tools:sword_iron_enchanted"] = 516,
+        ["mcl_tools:sword_gold_enchanted"] = 5000,
+        ["mcl_tools:sword_diamond_enchanted"] = 16392,
+        ["mcl_tools:sword_netherite_enchanted"] = 90120,
+
         ["mcl_totems:totem"] = 106496,
         ["meat_blocks:meatball"] = 64,
         ["mesecons:redstone"] = 64,
@@ -316,17 +360,16 @@ if exchangeclone.mcl then
 else
     exchangeclone.energy_values = {
         ["bones:bones"] = 4,
+
         ["bucket:bucket_lava"] = 896,
         ["bucket:bucket_river_water"] = 768,
         ["bucket:bucket_water"] = 768,
-        ["butterflies:butterfly_red"] = 0,
-        ["butterflies:butterfly_violet"] = 0,
-        ["butterflies:butterfly_white"] = 0,
+
         ["default:acacia_bush_leaves"] = 1,
         ["default:acacia_bush_sapling"] = 32,
         ["default:acacia_bush_stem"] = 8,
         ["default:apple"] = 5,
-        ["default:blueberries"] = 8,
+        ["default:blueberries"] = 16,
         ["default:blueberry_bush_leaves"] = 1,
         ["default:blueberry_bush_leaves_with_berries"] = 9,
         ["default:blueberry_bush_sapling"] = 32,
@@ -375,16 +418,30 @@ else
         ["default:snowblock"] = 5,
         ["default:stick"] = 4,
         ["default:tin_lump"] = 384,
+
         ["farming:cotton"] = 12,
         ["farming:cotton_wild"] = 12,
         ["farming:seed_cotton"] = 10,
         ["farming:seed_wheat"] = 16,
         ["farming:wheat"] = 24,
+
+        ["moreores:mithril_lump"] = 16384,
+        ["moreores:silver_lump"] = 4000,
+
+        ["technic:chromium_lump"] = 4096,
+        ["technic:granite"] = 1,
+        ["technic:lead_lump"] = 256,
+        ["technic:marble"] = 1,
+        ["technic:sulfur_lump"] = 128,
+        ["technic:uranium_lump"] = 8192,
+        ["technic:zinc_lump"] = 512,
+
         ["useful_green_potatoes:useful_green_potato"] = 256
     }
 
     exchangeclone.group_values = {
         {"flower", 32},
+        --{"dye", 8},
     }
 
 end

@@ -20,7 +20,7 @@ local function get_cheapest_recipe(recipes)
                     end
                 end
             end
-        elseif recipe.type == "shapeless" then
+        elseif (recipe.type == "shapeless") or (recipe.type == "technic") then
             for _, item in ipairs(recipe.recipe) do
                 local cost = exchangeclone.get_item_energy(item)
                 if (not cost) or cost == 0 then
@@ -52,8 +52,6 @@ local function get_cheapest_recipe(recipes)
             if (not cheapest) or (cheapest[1] > ingredient_cost) then
                 cheapest = {ingredient_cost, recipe}
             end
-        else
-            minetest.log("info", "\tMissing "..dump(skip))
         end
     end
     return cheapest and cheapest[1]
@@ -184,7 +182,7 @@ minetest.register_on_mods_loaded(function()
         end
     end
     for i = 1, exchangeclone.num_passes do
-        minetest.log("info", "PASS #"..i..":")
+        minetest.log("action", "PASS #"..i..":")
         if auto == {} then break end
         for itemstring, _ in pairs(auto) do
             local cheapest = get_cheapest_recipe(exchangeclone.recipes[itemstring])
@@ -206,6 +204,15 @@ minetest.register_on_mods_loaded(function()
             set_item_energy("mcl_shields:shield_"..color, (exchangeclone.get_item_energy("mcl_banners:banner_item_"..color) or 340) + (exchangeclone.get_item_energy("mcl_shields:shield") or 304))
         end
     end
+
+    for output, recipes in pairs(exchangeclone.recipes) do
+        if output:find("silicon") then
+            for _, recipe in ipairs(recipes) do
+                minetest.log(dump(recipe))
+            end
+        end
+    end
+
     -- Free up memory (I assume this will do that?)
     exchangeclone.recipes = nil
     exchangeclone.energy_values = nil

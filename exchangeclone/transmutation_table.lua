@@ -134,7 +134,7 @@ local function handle_inventory(player, inventory, to_list)
         local orb_energy = exchangeclone.get_orb_itemstack_energy(stack)
         local charge_amount = math.min(exchangeclone.orb_max - orb_energy, player_energy)
         if charge_amount > 0 then
-            exchangeclone.set_player_energy(player, player_energy - charge_amount)
+            exchangeclone.add_player_energy(player, 0-charge_amount)
             exchangeclone.set_orb_energy(inventory, to_list, 1, orb_energy + charge_amount)
             exchangeclone.show_transmutation_table_formspec(player)
         end
