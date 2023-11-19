@@ -59,35 +59,29 @@ end
 
 local function set_item_energy(itemstring, energy_value)
     if not (energy_value and itemstring) then return end
+    energy_value = math.floor(energy_value*4)/4 -- floor to nearest .25
     if energy_value < 0 then return end
-    if energy_value < 10 then
-        energy_value = math.floor(energy_value*4)/4 -- floor to nearest .5
-    end
-    itemstring = minetest.registered_aliases[itemstring] or itemstring
     local def = minetest.registered_items[itemstring]
     if not def then return end
-    local description = def.description
-    local groups = def.groups and table.copy(def.groups) or {}
-    description = description:gsub("Energy Value: ([%d%.]+)", "")
-    local existing_energy_value = description:find("Energy Value: ([%d%.]+)")
+    local description = def.description or ""
+    local existing_energy_value = description:find("Energy Value: ([%d%.,]+)")
     if existing_energy_value then
-        description = description:gsub("Energy Value: ([%d%.]+)", "Energy Value: "..energy_value)
+        description = description:gsub("Energy Value: ([%d%.,]+)", "Energy Value: "..exchangeclone.format_number(energy_value))
     else
         if description[#description] ~= "\n" then
             description = description.."\n"
         end
-        description = description.."Energy Value: "..(energy_value)
+        description = description.."Energy Value: "..exchangeclone.format_number(energy_value)
     end
     minetest.override_item(itemstring, {
         description = description,
         energy_value = energy_value,
-        groups = groups
     })
 end
 
 local function add_potion_energy(info)
     local base_cost = exchangeclone.get_item_energy("mcl_potions:water") or 1 --cost of water bottle
-    --TODO: Change dragon's breath when MineClone does.
+    -- TODO: Change dragon's breath when MineClone does.
     local dragon_breath_cost = exchangeclone.get_item_energy("mcl_potions:dragon_breath") or 8.5
     base_cost = math.floor(base_cost + (info.ingredient_cost / 3)) -- /3 because 3 potions/ingredient
     base_cost = base_cost + (info.custom_base_cost or (exchangeclone.get_item_energy("mcl_nether:nether_wart_item") or 24)/3)
@@ -130,7 +124,9 @@ end
 -- This is much easier than making it depend on every single mod.
 -- Actually, I'm kind of surprised that override_item still works...
 minetest.register_on_mods_loaded(function()
+    minetest.log("action", "ExchangeClone: Registering energy values")
     local auto = {}
+
     local groupnames = {}
     for index, group in ipairs(exchangeclone.group_values) do
         groupnames[#groupnames + 1] = group[1] --Get list of group names
@@ -141,25 +137,21 @@ minetest.register_on_mods_loaded(function()
             set_item_energy(item, group[2])
         end
     end
+
     if exchangeclone.mcl then
         for i = 0, 31 do
-            set_item_energy("mcl_compass:"..i.."_recovery", 443456)
-        end
-        for i = 0, 31 do
-            set_item_energy("mcl_compass:"..i, (exchangeclone.get_item_energy("mcl_core:iron_ingot") or 256)*4+(exchangeclone.get_item_energy("mesecons:redstone") or 64))
+            exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i)
         end
         for i = 0, 63 do
-            set_item_energy("mcl_clock:clock_"..i, (exchangeclone.get_item_energy("mcl_core:gold_ingot") or 256)*4+(exchangeclone.get_item_energy("mesecons:redstone") or 64))
+            exchangeclone.register_energy_alias("mcl_clock:clock", "mcl_clock:clock_"..i)
         end
-        -- It's almost like the "compass" and "clock" groups don't exist. I tried using them, but it just didn't work.
-        -- Bone meal just doesn't work either, for some reason.
-        for i = 1, 8 do --faster than doing everything individually.
-            set_item_energy("mcl_jukebox:record_"..i, 16384)
-        end
+        exchangeclone.register_energy_alias("doc_identifier:identifier_solid", "doc_identifier:identifier_liquid")
     end
+
     for itemstring, energy_value in pairs(exchangeclone.energy_values) do
         set_item_energy(itemstring, energy_value)
     end
+
     for itemstring, def in pairs(minetest.registered_items) do
         if def.exchangeclone_custom_energy then
             set_item_energy(itemstring, def.exchangeclone_custom_energy)
@@ -171,8 +163,9 @@ minetest.register_on_mods_loaded(function()
                 and mod_name
                 and def.description
                 and def.description ~= ""
-                and (minetest.get_item_group(itemstring, "not_in_creative_inventory") < 1)
-                and (not def.energy_value)
+                -- I hate recovery compasses.
+                and ((minetest.get_item_group(itemstring, "not_in_creative_inventory") < 1) or (mod_name == "mcl_compass"))
+                and (not exchangeclone.get_item_energy(itemstring))
                 and (itemstring:sub(1,12) ~= "mcl_potions:")
                 -- This does mean that other items in mcl_potions will be ignored unless explicitly specified,
                 -- and items that are in groups mentioned above.
@@ -181,8 +174,17 @@ minetest.register_on_mods_loaded(function()
             end
         end
     end
+
+    -- handle aliases in exchangeclone.recipes
+    for itemstring, recipes in pairs(exchangeclone.recipes) do
+        local new_name = ItemStack(itemstring):get_name()
+        if new_name ~= itemstring then
+            exchangeclone.recipes[new_name] = recipes
+        end
+    end
+
     for i = 1, exchangeclone.num_passes do
-        minetest.log("action", "PASS #"..i..":")
+        minetest.log("action", "ExchangeClone: \tPASS #"..i..":")
         if auto == {} then break end
         for itemstring, _ in pairs(auto) do
             local cheapest = get_cheapest_recipe(exchangeclone.recipes[itemstring])
@@ -192,6 +194,9 @@ minetest.register_on_mods_loaded(function()
             end
         end
     end
+
+    --minetest.log(dump(auto))
+
     if exchangeclone.mcl then
         for _, info in ipairs(exchangeclone.mcl_potion_data) do
             add_potion_energy(info)
@@ -199,22 +204,41 @@ minetest.register_on_mods_loaded(function()
         for _, state in ipairs({"exposed", "weathered", "oxidized"}) do
             set_item_energy("mcl_copper:block_"..state, exchangeclone.get_item_energy("mcl_copper:block"))
         end
+        -- Concrete and banners/shields (don't remember why the shields don't work)
         for _, color in ipairs({"red", "orange", "yellow", "green", "dark_green", "cyan", "light_blue", "blue", "purple", "magenta", "pink", "black", "white", "silver", "grey", "brown"}) do
             set_item_energy("mcl_colorblocks:concrete_"..color, exchangeclone.get_item_energy("mcl_colorblocks:concrete_powder_"..color) or 2)
             set_item_energy("mcl_shields:shield_"..color, (exchangeclone.get_item_energy("mcl_banners:banner_item_"..color) or 340) + (exchangeclone.get_item_energy("mcl_shields:shield") or 304))
         end
-    end
-
-    for output, recipes in pairs(exchangeclone.recipes) do
-        if output:find("silicon") then
-            for _, recipe in ipairs(recipes) do
-                minetest.log(dump(recipe))
+        -- Enchanted/netherite tools
+        for name, def in pairs(minetest.registered_items) do
+            if def._mcl_enchanting_enchanted_tool then
+                exchangeclone.register_energy_alias(name, def._mcl_enchanting_enchanted_tool)
+            end
+            if def._mcl_upgrade_item then
+                if not name:find("enchanted") then
+                    set_item_energy(def._mcl_upgrade_item, (exchangeclone.get_item_energy(name) or 0)+(exchangeclone.get_item_energy("mcl_nether:netherite_ingot") or 73728))
+                end
             end
         end
+        -- Recovery compasses use a random compass frame for the crafting recipe... Incredibly irritating.
+        for i = 0, 31 do
+            if exchangeclone.get_item_energy("mcl_compass:"..i.."_recovery") then
+                minetest.log(i)
+                for j = 0, 31 do
+                    exchangeclone.register_energy_alias("mcl_compass:"..i.."_recovery", "mcl_compass:"..j.."_recovery")
+                end
+                break
+            end
+        end
+    end
+
+    -- Adds energy values to aliased items, even though they're not used (just so it's displayed)
+    for alias, itemstring in pairs(exchangeclone.energy_aliases) do
+        set_item_energy(alias, exchangeclone.get_item_energy(itemstring))
     end
 
     -- Free up memory (I assume this will do that?)
     exchangeclone.recipes = nil
     exchangeclone.energy_values = nil
-end
-)
+    minetest.log("action", "ExchangeClone: Done registering energy values.")
+end)

@@ -1,23 +1,20 @@
 exchangeclone.shear_action = {
-    start_action = function(player, center, range)
+    start_action = function(player, center, range, itemstack)
         if exchangeclone.check_cooldown(player, "shears") then return end
         local data = {}
-        data.player_energy = exchangeclone.get_player_energy(player)
-        if data.player_energy < 8 then return end
         exchangeclone.play_ability_sound(player)
-        data.energy_cost = 0
+        data.itemstack = itemstack
         return data
     end,
     action = function(player, pos, node, data)
-        if data.energy_cost + 8 > data.player_energy then return end
         local node_def = minetest.registered_items[node.name]
         if (node_def.groups.shearsy or node_def.groups.shearsy_cobweb) and node.name ~= "mcl_flowers:double_grass_top" then
             if minetest.is_protected(pos, player:get_player_name()) then
                 minetest.record_protection_violation(pos, player:get_player_name())
             else
-                data.energy_cost = data.energy_cost + 8
-                local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_shears")
+                local drops = minetest.get_node_drops(node.name, data.itemstack)
                 exchangeclone.drop_items_on_player(pos, drops, player)
+                -- Annoying manual override
                 if node.name:sub(1,18) == "mcl_ocean:seagrass" then
                     minetest.set_node(pos, {name="sand"})
                 else
@@ -28,7 +25,6 @@ exchangeclone.shear_action = {
         return data
     end,
     end_action = function(player, center, range, data)
-        exchangeclone.set_player_energy(player, data.player_energy - data.energy_cost)
         exchangeclone.start_cooldown(player, "shears", (range+1)/7)
         return data
     end
@@ -66,7 +62,7 @@ local shears_rightclick = function(itemstack, player, pointed_thing)
         center = pointed_thing.under
     end
     local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
-    exchangeclone.node_radius_action(player, center, range, exchangeclone.shear_action)
+    exchangeclone.node_radius_action(player, center, range, exchangeclone.shear_action, itemstack)
     return itemstack
 end
 

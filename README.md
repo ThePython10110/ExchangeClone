@@ -64,7 +64,7 @@ Dependencies: Minetest Game or MineClone.
         * Technic recipe types (grinding, alloying, etc.) now also work, as long as their `output_size` is 1.
     * Added energy values for Basic Materials and Technic!
     * Infinite food (costs 64 energy to use, equal to steak)
-    * Alchemical Chest
+    * Alchemical Chests, Alchemical Bags, and Advanced Alchemical Chests
     * Support for pipeworks and (non-MCL) hoppers!
     * Repair Talisman
     * Covalence Dust (Aux1+right-click with Philosopher's Stone to open repairer, only tools with an energy value can be repaired)
@@ -77,7 +77,8 @@ Dependencies: Minetest Game or MineClone.
     * Energy values are now in `_exchangeclone_energy/energy_values.lua`, and are laid out differently, and aliases now work.
     * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s). *Every single mod* in the modpack is required, regardless of what it says the dependencies are. Disable and then enable it for everything to work correctly.
     * The default energy value is no longer 1 but none.
-    * The 2-billion-ish personal energy limit is has been increased to the actual maximum Lua allows. This may mean some precision might be lost when your personal energy reaches a few quadrillion... but at that point, you don't really care about the exact number.
+    * The 2-billion-ish personal energy limit is has been increased to 1,000,000,000,000 (1 trillion). Any higher and there are precision-based exploits like being able to create infinite glass panes when you have enough energy.
+    * Added comma separators when energy is shown (to make it easier to identify large numbers)
     * Tools that break multiple nodes at once (hammers, hoes, katar, and morningstar) use a better method that may (?) slightly decrease lag.
     * Ender pearls can now be crafted with 4 iron and the Philosopher's Stone.
     * A couple changes the Philosopher's Stone's transmutation:
@@ -88,6 +89,7 @@ Dependencies: Minetest Game or MineClone.
 * Bugfixes:
     * Fixed potion energy values
     * Fixed Red Matter Shield recipe
+    * Fixed other modes of DM/RM tools not having energy values
 
 ### 5.3
 * Bugfixes

@@ -1,7 +1,21 @@
--- Just a collection of a whole bunch of functions used here. There's very little order.
+-- A ton of functions with approximately zero organization. At least there are comments now.
 
--- Don't know if this even works.
-function exchangeclone.get_inventory_drops(pos, inventory, drops) --removes default dependency
+local S = minetest.get_translator()
+
+-- Rounds to the nearest integer
+function exchangeclone.round(num)
+    if num % 1 < 0.5 then
+        return math.floor(num)
+    else
+        return math.ceil(num)
+    end
+end
+
+-- Decides what mod to use for sounds
+if exchangeclone.mcl then exchangeclone.sound_mod = mcl_sounds else exchangeclone.sound_mod = default end
+
+-- Don't think this even works correctly.
+function exchangeclone.get_inventory_drops(pos, inventory, drops)
     local inv = minetest.get_meta(pos):get_inventory()
     local n = #drops
     for i = 1, inv:get_size(inventory) do
@@ -37,9 +51,12 @@ function exchangeclone.get_item_energy(item)
     end
     -- handle items/itemstacks
     item = ItemStack(item)
+    if item == ItemStack("") then return end
+    item:set_name(exchangeclone.handle_alias(item))
     local meta_energy_value = tonumber(item:get_meta():get_string("exchangeclone_energy_value"))
-    if meta_energy_value and meta_energy_value > 0 then
-        return meta_energy_value
+    if meta_energy_value then
+        if meta_energy_value < 0 then return 0 end
+        if meta_energy_value > 0 then return meta_energy_value end
     end
     local def = minetest.registered_items[item:get_name()]
     if not def then return end
@@ -50,15 +67,6 @@ function exchangeclone.get_item_energy(item)
     end
     if def.energy_value then
         return (def.energy_value) * item:get_count()
-    end
-end
-
--- Rounds to the nearest integer
-function exchangeclone.round(num)
-    if num % 1 < 0.5 then
-        return math.floor(num)
-    else
-        return math.ceil(num)
     end
 end
 
@@ -84,14 +92,11 @@ function exchangeclone.get_orb_energy(inventory, listname, index)
     return exchangeclone.get_orb_itemstack_energy(itemstack)
 end
 
--- Decides what mod to use for sounds
-if exchangeclone.mcl then exchangeclone.sound_mod = mcl_sounds else exchangeclone.sound_mod = default end
-
 function exchangeclone.set_orb_itemstack_energy(itemstack, amount)
-    if not itemstack or not amount then return minetest.log(">:(") end
-    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then minetest.log(":O") return end
+    if not itemstack or not amount then return end
+    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
     local old_energy = exchangeclone.get_orb_itemstack_energy(itemstack)
-    if amount > old_energy and old_energy > exchangeclone.orb_max then minetest.log(":(") return end -- don't allow more energy to be put into an over-filled orb
+    if amount > old_energy and old_energy > exchangeclone.orb_max then return end -- don't allow more energy to be put into an over-filled orb
 
     -- Square roots will hopefully make it less linear
     -- And if they don't, I don't really care and I don't want to think about math anymore.
@@ -115,10 +120,9 @@ function exchangeclone.set_orb_itemstack_energy(itemstack, amount)
     end
 
     local colorstring = minetest.rgba(r,g,b)
-    minetest.log(colorstring)
     local meta = itemstack:get_meta()
     meta:set_float("stored_energy", amount)
-    meta:set_string("description", "Exchange Orb\nCurrent Charge: "..amount)
+    meta:set_string("description", S("Exchange Orb").."\n"..S("Current Charge: @1", exchangeclone.format_number(amount)))
     meta:set_string("color", colorstring)
     return itemstack
 end
@@ -130,7 +134,7 @@ function exchangeclone.set_orb_energy(inventory, listname, index, amount)
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
     local new_stack = exchangeclone.set_orb_itemstack_energy(itemstack, amount)
-    if not new_stack then minetest.log("D:") return end
+    if not new_stack then return end
     inventory:set_stack(listname, index, new_stack)
 end
 
@@ -139,7 +143,7 @@ local hud_elements = {}
 
 function exchangeclone.update_hud(player)
     local hud_text = hud_elements[player:get_player_name()]
-    player:hud_change(hud_text, "text", "Personal Energy: "..tostring(exchangeclone.get_player_energy(player)))
+    player:hud_change(hud_text, "text", S("Personal Energy: @1", exchangeclone.format_number(exchangeclone.get_player_energy(player))))
 end
 
 minetest.register_on_joinplayer(function(player, last_login)
@@ -147,7 +151,7 @@ minetest.register_on_joinplayer(function(player, last_login)
         hud_elem_type = "text",
         position      = {x = 1, y = 1},
         offset        = {x = 0,   y = 0},
-        text          = "Personal Energy: 0",
+        text          = S("Personal Energy: @1", 0),
         alignment     = {x = -1, y = -1},
         scale         = {x = 100, y = 100},
         number = 0xDDDDDD
@@ -157,17 +161,6 @@ end)
 
 minetest.register_on_leaveplayer(function(player, timed_out)
     hud_elements[player:get_player_name()] = nil
-end)
-
--- Go from old integer energy to fancy new string energy
-minetest.register_on_joinplayer(function(player, last_login)
-    local meta = player:get_meta()
-    local energy = meta:get_int("exchangeclone_stored_energy") or 0
-    if energy > 0 then
-        -- Not sure at all whether this is necessary
-        meta:set_int("exchangeclone_stored_energy", 0)
-        meta:set_string("exchangeclone_stored_energy", tonumber(energy))
-    end
 end)
 
 -- Get a player's personal energy
@@ -189,32 +182,27 @@ function exchangeclone.add_player_energy(player, amount)
     exchangeclone.set_player_energy(exchangeclone.get_player_energy(player) + amount)
 end
 
--- copied from http://lua-users.org/wiki/IntegerDomain
--- Basically gets the highest number Lua supports
+-- Through trial and error, I have found that this number (1 trillion) works the best.
+-- When a player has any more energy (as in ANY more), precision-based exploits such as creating infinite glass panes are possible.
+-- I temporarily considered finding some Lua library that allowed for arbitrary precision (and therefore infinite masimum energy)
+-- but I decided not to.
+exchangeclone.limit = 1000000000000
 
--- get highest power of 2 which Lua can still handle as integer
-local step = 2
-while true do
-	local nextstep = step*2
-	if nextstep - (nextstep-1) == 1 and nextstep > 0 then
-		step = nextstep
-	else
-		break
-	end
-end
+-- From https://stackoverflow.com/questions/10989788/format-integer-in-lua
+-- Formats an integer with commas, accounting for decimal points.
+function exchangeclone.format_number(number)
+    -- Quit if not a number
+    if not tonumber(tostring(number)) then return tostring(number) end
 
--- now get the highest number which Lua can still handle as integer
-exchangeclone.limit, step = step, math.floor(step/2)
-while step > 0 do
-	local nextlimit = exchangeclone.limit + step
-	if nextlimit - (nextlimit-1) == 1 and nextlimit > 0 then
-		exchangeclone.limit = nextlimit
-	end
-	step = math.floor(step/2)
-end
+    local _, _, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+    -- reverse the int-string and append a comma to all blocks of 3 digits
+    int = int:reverse():gsub("(%d%d%d)", "%1,")
+    -- reverse the int-string back remove an optional comma and put the
+    -- optional minus and fractional part back
+    return minus .. int:reverse():gsub("^,", "") .. fraction
+  end
 
-exchangeclone.limit = exchangeclone.limit/100 -- (to account for .25)
-
+  -- Splits a string into a table using a delimiter (copied from somewhere, I don't remember)
 function exchangeclone.split (input, sep)
     if sep == nil then
             sep = "%s"
@@ -316,7 +304,7 @@ function exchangeclone.range_update(itemstack, player, max)
             range = range + 1
         end
     end
-    minetest.chat_send_player(player:get_player_name(), "Current Range: "..range)
+    minetest.chat_send_player(player:get_player_name(), S("Current Range: @1", range))
     itemstack:get_meta():set_int("exchangeclone_item_range", range)
     return itemstack
 end
@@ -327,9 +315,9 @@ if exchangeclone.mcl then
     exchangeclone.wield_scale = mcl_vars.tool_wield_scale
 end
 
-exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.4)
+exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.3)
 
--- Itemstrings for various items
+-- Itemstrings for various items used in crafting recipes.
 exchangeclone.itemstrings = {
     cobble = exchangeclone.mcl and "mcl_core:cobble" or "default:cobble",
     redstoneworth = exchangeclone.mcl and "mesecons:redstone" or "default:obsidian",
@@ -341,22 +329,45 @@ exchangeclone.itemstrings = {
     diamond = exchangeclone.mcl and "mcl_core:diamond" or "default:diamond",
 }
 
+exchangeclone.energy_aliases = {}
+
+-- <itemstring> will be treated as <alias> in Deconstructors, Constructors, Transmutation Table(t)s, etc.
+-- When you put <itemstring> into a TT, you will learn <alias> instead.
+function exchangeclone.register_energy_alias_force(alias, itemstring)
+    exchangeclone.energy_aliases[itemstring] = alias
+end
+
+function exchangeclone.register_energy_alias(alias, itemstring)
+    if not exchangeclone.energy_aliases[alias] then
+        exchangeclone.register_energy_alias_force(alias, itemstring)
+    end
+end
+
+-- Returns the correct itemstring, handling aliases.
+function exchangeclone.handle_alias(item)
+    item = ItemStack(item)
+    if not item:is_empty() then
+        local de_aliased = exchangeclone.energy_aliases[item:get_name()] or item:get_name()
+        return ItemStack(de_aliased):get_name() -- Not at all sure if this is necessary to resolve MT aliases
+    end
+end
+
 -- Returns a player's inventory formspec with the correct width and hotbar position for the current game
 function exchangeclone.inventory_formspec(x,y)
     local formspec
     if exchangeclone.mcl then
-        formspec = "list[current_player;main;"..tostring(x)..","..tostring(y)..";9,3;9]"..
+        formspec = "list[current_player;main;"..x..","..y..";9,3;9]"..
             mcl_formspec.get_itemslot_bg(x,y,9,3)..
-            "list[current_player;main;"..tostring(x)..","..tostring(y+3.25)..";9,1]"..
+            "list[current_player;main;"..x..","..(y+3.25)..";9,1]"..
             mcl_formspec.get_itemslot_bg(x,y+3.25,9,1)
     else
-        formspec = "list[current_player;main;"..tostring(x)..","..tostring(y)..";8,1]"..
-        "list[current_player;main;"..tostring(x)..","..tostring(y+1.25)..";8,3;8]"
+        formspec = "list[current_player;main;"..x..","..y..";8,1]"..
+        "list[current_player;main;"..x..","..(y+1.25)..";8,3;8]"
     end
     return formspec
 end
 
--- Modified from MineClone2 {
+-- Modified from MineClone2, basically helps drop items on the player {
 local doTileDrops = minetest.settings:get_bool("mcl_doTileDrops", true)
 
 local function get_fortune_drops(fortune_drops, fortune_level)
@@ -398,7 +409,8 @@ local function get_drops(drop, toolname, param2, paramtype2)
     return drops
 end
 
-function exchangeclone.drop_items_on_player(pos, drops, player) --copied from MineClone's code
+-- This function gets the drops from a node and drops them at the player's position
+function exchangeclone.drop_items_on_player(pos, drops, player) -- modified from MineClone's code
     if not exchangeclone.mcl then
         return minetest.handle_node_drops(pos, drops, player)
     end
@@ -440,7 +452,7 @@ function exchangeclone.drop_items_on_player(pos, drops, player) --copied from Mi
     * table: Drop every itemstring in this table when dug by shears _mcl_silk_touch_drop
     ]]
 
-    local enchantments = tool and mcl_enchanting.get_enchantments(tool)
+local enchantments = tool and mcl_enchanting.get_enchantments(tool)
 
     local silk_touch_drop = false
     local nodedef = minetest.registered_nodes[dug_node.name]
@@ -538,6 +550,7 @@ function exchangeclone.get_face_direction(player)
 end
 
 -- Execute an action for every node within a cubic radius
+-- extra_info is usually used for the tool's itemstack.
 function exchangeclone.node_radius_action(player, center, range, functions, extra_info)
     if not functions.action then return end
     local data

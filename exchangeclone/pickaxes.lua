@@ -1,24 +1,23 @@
-function exchangeclone.mine_vein(player, player_energy, start_pos, node_name, pos)
-    -- Not very efficient, but it SHOULD work.
-    if not player then return 0 end
-    if not start_pos then return 0 end
+local S = minetest.get_translator()
+
+function exchangeclone.mine_vein(player, start_pos, node_name, pos, depth)
+    -- Not very efficient, but it works.
+    if not player then return end
+    if not start_pos then return end
     if not pos then pos = start_pos end
+    depth = depth or 0
+    --minetest.log(dump(pos))
     local node = minetest.get_node(pos)
     if not node_name then node_name = node.name end
     local distance = vector.distance(pos, start_pos)
-    if distance > 10 then return 0 end
-    if player_energy < 8 then return 0 end
     if node_name == node.name then
-        local energy_cost = 8
         exchangeclone.drop_items_on_player(pos, minetest.get_node_drops(node.name, "exchangeclone:red_matter_pickaxe"), player)
         minetest.set_node(pos, {name = "air"})
         for x = pos.x-1,pos.x+1 do for y = pos.y-1,pos.y+1 do for z = pos.z-1,pos.z+1 do
-            local cost = exchangeclone.mine_vein(player, player_energy, start_pos, node_name, {x=x,y=y,z=z})
-            if cost and cost > 0 then
-                energy_cost = energy_cost + cost
+            if depth <= 10 then
+                exchangeclone.mine_vein(player, start_pos, node_name, {x=x,y=y,z=z}, depth+1)
             end
         end end end
-        return energy_cost
     end
     return 0
 end
@@ -44,17 +43,17 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
         if current_mode == "1x1" then
             itemstack:set_name(current_name.."_3x1") -- set to 3x1 pick
             meta:set_string("exchangeclone_pick_mode", "tall")
-            minetest.chat_send_player(player:get_player_name(), "3x1 tall mode")
+            minetest.chat_send_player(player:get_player_name(), S("3x1 tall mode"))
         elseif current_mode == "tall" then
             meta:set_string("exchangeclone_pick_mode", "wide")
-            minetest.chat_send_player(player:get_player_name(), "3x1 wide mode")
+            minetest.chat_send_player(player:get_player_name(), S("3x1 wide mode"))
         elseif current_mode == "wide" then
             meta:set_string("exchangeclone_pick_mode", "long")
-            minetest.chat_send_player(player:get_player_name(), "3x1 long mode")
+            minetest.chat_send_player(player:get_player_name(), S("3x1 long mode"))
         elseif current_mode == "long" then
             itemstack:set_name(string.sub(current_name, 1, -5)) -- set to 1x1 pick
             meta:set_string("exchangeclone_pick_mode", "1x1")
-            minetest.chat_send_player(player:get_player_name(), "Single node mode")
+            minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
         end
 		return itemstack
 	end
@@ -62,14 +61,10 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
     if pointed_thing.type == "node" then
         if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
         if (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
-            local player_energy = exchangeclone.get_player_energy(player)
             exchangeclone.play_ability_sound(player)
             exchangeclone.multidig[player:get_player_name()] = true
-            local energy_cost = exchangeclone.mine_vein(player, player_energy, pointed_thing.under)
+            exchangeclone.mine_vein(player, pointed_thing.under)
             exchangeclone.multidig[player:get_player_name()] = nil
-            if energy_cost then
-                exchangeclone.set_player_energy(player, player_energy - energy_cost)
-            end
         elseif itemstack:get_name():find("red") then
             local player_energy = exchangeclone.get_player_energy(player)
             torch_on_place(ItemStack(torch_itemstring), player, pointed_thing)
@@ -88,6 +83,7 @@ for name, def in pairs(minetest.registered_nodes) do
     or name:find("andesite_with")
     or name:find("granite_with")
     or name:find("tuff_with")
+    or name:find("mineral_")
     or (name == "mcl_blackstone:nether_gold")
     or (name == "mcl_nether:ancient_debris") then
         local groups = table.copy(def.groups)
@@ -97,7 +93,7 @@ for name, def in pairs(minetest.registered_nodes) do
 end
 
 local pick_def = {
-	description = "Dark Matter Pickaxe",
+	description = S("Dark Matter Pickaxe").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_dark_matter_pickaxe.png",
 	inventory_image = "exchangeclone_dark_matter_pickaxe.png",
     exchangeclone_pick_mode = "1x1",
@@ -125,6 +121,7 @@ local pick_def = {
 minetest.register_tool("exchangeclone:dark_matter_pickaxe", table.copy(pick_def))
 
 local pick_def_3x1 = table.copy(pick_def)
+pick_def_3x1.description = S("Dark Matter Pickaxe").."\n"..S("3x1 mode")
 pick_def_3x1.exchangeclone_pick_mode = "tall"
 pick_def_3x1.groups.not_in_creative_inventory = 1
 pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.45, [2]=0.27, [3]=0.11}
@@ -132,7 +129,9 @@ pick_def_3x1._mcl_diggroups.pickaxey.speed = 35
 
 minetest.register_tool("exchangeclone:dark_matter_pickaxe_3x1", table.copy(pick_def_3x1))
 
-pick_def.description = "Red Matter Pickaxe"
+exchangeclone.register_energy_alias("exchangeclone:dark_matter_pickaxe", "exchangeclone:dark_matter_pickaxe_3x1")
+
+pick_def.description = S("Red Matter Pickaxe").."\n"..S("Single node mode")
 pick_def.wield_image = "exchangeclone_red_matter_pickaxe.png"
 pick_def.inventory_image = "exchangeclone_red_matter_pickaxe.png"
 pick_def.groups.dark_matter_pickaxe = nil
@@ -151,13 +150,16 @@ pick_def._mcl_diggroups.pickaxey = { speed = 60, level = 8, uses = 0 }
 
 minetest.register_tool("exchangeclone:red_matter_pickaxe", table.copy(pick_def))
 
-local pick_def_3x1 = table.copy(pick_def)
+pick_def_3x1.description = S("Red Matter Pickaxe").."\n"..S("3x1 mode")
+pick_def_3x1 = table.copy(pick_def)
 pick_def_3x1.exchangeclone_pick_mode = "tall"
 pick_def_3x1.groups.not_in_creative_inventory = 1
 pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.32, [2]=0.16, [3]=0.08}
 pick_def_3x1._mcl_diggroups.pickaxey.speed = 52
 
 minetest.register_tool("exchangeclone:red_matter_pickaxe_3x1", table.copy(pick_def_3x1))
+
+exchangeclone.register_energy_alias("exchangeclone:red_matter_pickaxe", "exchangeclone:red_matter_pickaxe_3x1")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_pickaxe",

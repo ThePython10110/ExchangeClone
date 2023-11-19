@@ -21,7 +21,6 @@ end
 if minetest.get_modpath("technic") then
     local function register_technic_recipe(recipe)
         local result = {recipe = recipe.input, output = recipe.output, type = "technic"}
-        --minetest.log(dump(result))
         local output_itemstring = ItemStack(recipe.output):get_name()
         exchangeclone.recipes[output_itemstring] = exchangeclone.recipes[output_itemstring] or {}
         table.insert(exchangeclone.recipes[output_itemstring], result)

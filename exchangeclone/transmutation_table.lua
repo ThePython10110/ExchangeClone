@@ -43,7 +43,7 @@ function exchangeclone.reload_transmutation_list(player, search)
     if not search or search == "" then search = player:get_meta():get_string("exchangeclone_transmutation_search") or "" end
     if search and search ~= "" then
         local filtered_items = {}
-        for _,name in ipairs(items_to_show) do
+        for _, name in pairs(items_to_show) do
             local def = minetest.registered_items[name]
             if def and def.description and def.description ~= "" then
                 if filter_item(string.lower(def.name), def.description, lang, search) then
@@ -53,14 +53,27 @@ function exchangeclone.reload_transmutation_list(player, search)
             items_to_show = table.copy(filtered_items)
         end
     end
-    for _, item in ipairs(items_to_show) do
-        local energy_value = exchangeclone.get_item_energy(item)
-        if energy_value and energy_value <= player_energy and energy_value > 0 then
-            page_num = math.floor(i/16) + 1
-            if not pages[page_num] then pages[page_num] = {} end
-            pages[page_num][(i % 16) + 1] = item
-            i = i + 1
+    local no_duplicates = {}
+    for _, item in pairs(items_to_show) do
+        if type(item) == "string" then
+            local energy_value = exchangeclone.get_item_energy(item)
+            if energy_value and energy_value <= player_energy and energy_value > 0 then
+                no_duplicates[exchangeclone.handle_alias(item)] = true -- gets rid of duplicates
+            end
         end
+    end
+
+    items_to_show = {}
+    for item, _ in pairs(no_duplicates) do
+        table.insert(items_to_show, item)
+    end
+    table.sort(items_to_show)
+
+    for _, item in ipairs(items_to_show) do
+        page_num = math.floor(i/16) + 1
+        if not pages[page_num] then pages[page_num] = {} end
+        pages[page_num][(i % 16) + 1] = item
+        i = i + 1
     end
     player:get_meta():set_string("exchangeclone_transmutation", minetest.serialize(pages))
     return pages
@@ -84,9 +97,11 @@ end
 
 local function handle_inventory(player, inventory, to_list)
     local stack = inventory:get_stack(to_list, 1)
+    local itemstring = stack:get_name()
+    itemstring = exchangeclone.energy_aliases[itemstring] or itemstring
     if to_list == "learn" then
         local list = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
-        if stack:get_name() == "exchangeclone:alchemical_tome" then
+        if itemstring == "exchangeclone:alchemical_tome" then
             list = {}
             local i = 0
             for name, def in pairs(minetest.registered_items) do
@@ -100,13 +115,13 @@ local function handle_inventory(player, inventory, to_list)
             player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
             inventory:set_stack(to_list, 1, nil)
         else
-            local individual_energy_value = exchangeclone.get_item_energy(stack:get_name())
+            local individual_energy_value = exchangeclone.get_item_energy(itemstring)
             if not individual_energy_value or individual_energy_value <= 0 then return end
             local wear = stack:get_wear()
             if wear and wear > 1 then
                 individual_energy_value = math.floor(individual_energy_value * (65536 / wear))
             end
-            if stack:get_name() == "exchangeclone:exchange_orb" then
+            if itemstring == "exchangeclone:exchange_orb" then
                 individual_energy_value = individual_energy_value + exchangeclone.get_orb_itemstack_energy(stack)
             end
             local player_energy = exchangeclone.get_player_energy(player)
@@ -116,9 +131,9 @@ local function handle_inventory(player, inventory, to_list)
             local result = player_energy + energy_value
             if result < 0 or result > exchangeclone.limit then return end
             exchangeclone.set_player_energy(player, result)
-            local item_index = table.indexof(list, stack:get_name())
+            local item_index = table.indexof(list, itemstring)
             if item_index == -1 then
-                list[#list+1] = stack:get_name()
+                list[#list+1] = itemstring
                 table.sort(list)
                 player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
             end
@@ -161,10 +176,8 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
         return 0
     elseif to_list == "learn" then
         if stack:get_name() == "exchangeclone:alchemical_tome" then return count end
-        local name = stack:get_name()
-        local energy_value = exchangeclone.get_item_energy(stack:get_name())
+        local energy_value = exchangeclone.get_item_energy(exchangeclone.handle_alias(stack))
         if not energy_value then return 0 end
-        local def = minetest.registered_items[name]
         if energy_value <= 0 then
             return 0
         else
@@ -198,7 +211,7 @@ function exchangeclone.show_transmutation_table_formspec(player, data)
     local selection = data.selection or player:get_meta():get_string("exchangeclone_transmutation_selection")
     local player_name = player:get_player_name()
     local inventory_name = "detached:exchangeclone_transmutation_"..player_name
-    local label = "Transmutation\n"..tostring(player_energy).." energy"
+    local label = "Transmutation\n"..exchangeclone.format_number(player_energy).." energy"
 
     local formspec =
     "size[9,11]"..

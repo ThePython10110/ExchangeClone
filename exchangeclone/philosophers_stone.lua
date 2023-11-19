@@ -1,7 +1,9 @@
+local S = minetest.get_translator()
+
 local function show_enchanting(player)
     local player_meta = player:get_meta()
     player_meta:set_int("mcl_enchanting:num_bookshelves", 8) -- 15 for max enchantments
-    player_meta:set_string("mcl_enchanting:table_name", "Enchanting Table")
+    player_meta:set_string("mcl_enchanting:table_name", S("Enchanting Table").." (".. S("Philosopher's Stone")..")")
     mcl_enchanting.show_enchanting_formspec(player)
 end
 
@@ -229,6 +231,7 @@ exchangeclone.node_transmutations = {
 
 exchangeclone.stone_action = {
     start_action = function(player, center, range, mode)
+        -- Yes, I named the cooldown Phil. His last name is Osophersstone.
         if exchangeclone.check_cooldown(player, "phil") then return end
         exchangeclone.play_ability_sound(player)
         return mode
@@ -268,8 +271,6 @@ if exchangeclone.mcl then
     end
 end
 
-
-
 local function on_right_click(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
     if click_test ~= false then
@@ -291,42 +292,10 @@ local function on_right_click(itemstack, player, pointed_thing)
     end
 end
 
-local tt_help = "(Shift)-right-click: transmute nodes. (Shift)-Aux1-right-click: Change range"
-
-local item1 = "mese crystals"
-if exchangeclone.mcl then
-    item1 = "emeralds"
-end
-
-local longdesc =    "A mysterious device discovered by alchemists millenia ago. The crafting recipe was recently rediscovered by ThePython.\n\n"..
-                    "It has the ability to transmute nearby nodes into other nodes. The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking.\n"..
-                    "Transmute nodes by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
-                    "the node directly below you, with a radius equal to the range.\n"..
-                    "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
-                    "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
-                    "range is reset when used in a crafting recipe."
-
-local usagehelp = "The range can be increased or decreased from 0 to 4 by (shift-)aux1-right-clicking. Transmute nodes by (shift-)right-clicking (holding shift causes a few differences in transmutation). They are changed in a cube centered on "..
-                    "the node directly below you, with a radius equal to the range.\n\n"..
-                    "The Philosopher's Stone is also useful in converting various resources, such as turning coal into iron, or gold into "..item1..".\n"..
-                    "See the crafting guide for recipes. The Philosopher's Stone is NEVER used up in crafting recipes (if it is, it's a bug). The transmutation "..
-                    "range is reset when used in a crafting recipe."
-
-if exchangeclone.mcl then
-    tt_help = tt_help.."\nClick: crafting table. Shift-click: enchanting table."
-    local extra_stuff = "\n\nIn MineClone, clicking opens a 3x3 crafting table and shift+clicking opens an enchanting table (the equivalent of a real "..
-                        "enchanting table with eight bookshelves around it)."
-    longdesc = longdesc..extra_stuff
-    usagehelp = usagehelp..extra_stuff
-end
-
 minetest.register_tool("exchangeclone:philosophers_stone", {
-    description = "Philosopher's Stone\nAlways returned when crafting",
+    description = S("Philosopher's Stone").."\n"..S("Always returned when crafting"),
     inventory_image = "exchangeclone_philosophers_stone.png",
     wield_image = "exchangeclone_philosophers_stone.png",
-    _tt_help = tt_help,
-    _doc_items_longdesc = longdesc,
-    _doc_items_usagehelp = usagehelp,
     exchangeclone_item_range = 0,
     on_use = on_left_click,
     on_place = on_right_click,

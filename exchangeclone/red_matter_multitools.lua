@@ -1,3 +1,5 @@
+local S = minetest.get_translator()
+
 --------------------------------------RED KATAR--------------------------------------
 
 local katar_on_use = function(itemstack, player, pointed_thing)
@@ -38,9 +40,9 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 				exchangeclone.node_radius_action(player, center, range, exchangeclone.hoe_action, itemstack)
 			end
 		elseif minetest.get_item_group(node.name, "tree") > 0 then
-			exchangeclone.node_radius_action(player, center, range, exchangeclone.axe_action)
+			exchangeclone.node_radius_action(player, center, range, exchangeclone.axe_action, itemstack)
 		elseif minetest.get_item_group(node.name, "shearsy") > 0 or minetest.get_item_group(node.name, "shearsy_cobweb") > 0 then
-			exchangeclone.node_radius_action(player, center, range, exchangeclone.shear_action)
+			exchangeclone.node_radius_action(player, center, range, exchangeclone.shear_action, itemstack)
 		end
 	else
 		local damage_all = itemstack:get_meta():get_int("exchangeclone_damage_all")
@@ -63,7 +65,7 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 end
 
 local katar_def = {
-    description = "Red Katar",
+    description = S("Red Katar").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_red_katar.png",
 	inventory_image = "exchangeclone_red_katar.png",
     on_secondary_use = katar_on_use,
@@ -95,10 +97,15 @@ local katar_def = {
 }
 
 minetest.register_tool("exchangeclone:red_katar", table.copy(katar_def))
+
+katar_def.description = S("Red Katar").."\n"..S("3x3 mode")
 katar_def.groups.not_in_creative_inventory = 1
 katar_def._mcl_diggroups.exchangeclone_dirt = {speed = 8, level = 8, uses = 0}
 katar_def.tool_capabilities.groupcaps.exchangeclone_dirt = {times={[1]=0.25,[2]=0.25,[3]=0.25}}
+
 minetest.register_tool("exchangeclone:red_katar_3x3", table.copy(katar_def))
+
+exchangeclone.register_energy_alias("exchangeclone:red_katar", "exchangeclone:red_katar_3x3")
 
 minetest.register_craft({
 	output = "exchangeclone:red_katar",
@@ -118,24 +125,21 @@ minetest.register_craft({
 
 --------------------------------------RED MORNINGSTAR--------------------------------------
 exchangeclone.morningstar_action = {
-    start_action = function(player, center, range)
+    start_action = function(player, center, range, itemstack)
         if exchangeclone.check_cooldown(player, "shovel") then return end
         if exchangeclone.check_cooldown(player, "hammer") then return end
         local data = {}
-        data.player_energy = exchangeclone.get_player_energy(player)
-        data.energy_cost = 0
+		data.itemstack = itemstack
 		exchangeclone.play_ability_sound(player)
         return data
     end,
     action = function(player, pos, node, data)
-        if data.energy_cost + 8 > data.player_energy then return end
         if ((minetest.get_item_group(node.name, "crumbly") > 0) or (minetest.get_item_group(node.name, "shovely") > 0))
 		or ((minetest.get_item_group(node.name, "cracky") > 0) or (minetest.get_item_group(node.name, "pickaxey") > 0)) then
             if minetest.is_protected(pos, player:get_player_name()) then
                 minetest.record_protection_violation(pos, player:get_player_name())
             else
-				data.energy_cost = data.energy_cost + 8
-				local drops = minetest.get_node_drops(node.name, "exchangeclone:red_morningstar")
+				local drops = minetest.get_node_drops(node.name, data.itemstack)
 				exchangeclone.drop_items_on_player(pos, drops, player)
 				minetest.set_node(pos, {name = "air"})
             end
@@ -143,7 +147,6 @@ exchangeclone.morningstar_action = {
         return data
     end,
     end_action = function(player, center, range, data)
-		exchangeclone.set_player_energy(player, data.player_energy - data.energy_cost)
 		exchangeclone.start_cooldown(player, "shovel", range/4) -- Longish cooldown
 		exchangeclone.start_cooldown(player, "hammer", range/2)
     end
@@ -172,18 +175,14 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 	if pointed_thing.type == "node" then
 		center = pointed_thing.under
 		if player:get_player_control().sneak then
-			exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action)
+			exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action, itemstack)
 			return
 		elseif (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
 			if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
-			local player_energy = exchangeclone.get_player_energy(player)
 			exchangeclone.play_ability_sound(player)
 			exchangeclone.multidig[player:get_player_name()] = true
-			local energy_cost = exchangeclone.mine_vein(player, player_energy, pointed_thing.under)
+			exchangeclone.mine_vein(player, pointed_thing.under)
 			exchangeclone.multidig[player:get_player_name()] = nil
-			if energy_cost then
-				exchangeclone.set_player_energy(player, player_energy - energy_cost)
-			end
 			exchangeclone.start_cooldown(player, "pickaxe", 0.3)
 			return
 		else
@@ -202,30 +201,30 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 		if current_mode == "1x1" then
 			itemstack:set_name(current_name.."_3x3") -- set to 3x3 pick
 			meta:set_string("exchangeclone_pick_mode", "3x3")
-			minetest.chat_send_player(player:get_player_name(), "3x3 mode")
+			minetest.chat_send_player(player:get_player_name(), S("3x3 mode"))
 		elseif current_mode == "3x3" then
 			itemstack:set_name(string.sub(current_name, 1, -5).."_3x1") -- set to 3x1 pick
 			meta:set_string("exchangeclone_pick_mode", "tall")
-			minetest.chat_send_player(player:get_player_name(), "3x1 tall mode")
+			minetest.chat_send_player(player:get_player_name(), S("3x1 tall mode"))
 		elseif current_mode == "tall" then
 			meta:set_string("exchangeclone_pick_mode", "wide")
-			minetest.chat_send_player(player:get_player_name(), "3x1 wide mode")
+			minetest.chat_send_player(player:get_player_name(), S("3x1 wide mode"))
 		elseif current_mode == "wide" then
 			meta:set_string("exchangeclone_pick_mode", "long")
-			minetest.chat_send_player(player:get_player_name(), "3x1 long mode")
+			minetest.chat_send_player(player:get_player_name(), S("3x1 long mode"))
 		elseif current_mode == "long" then
 			itemstack:set_name(string.sub(current_name, 1, -5)) -- set to 1x1 pick
 			meta:set_string("exchangeclone_pick_mode", "1x1")
-			minetest.chat_send_player(player:get_player_name(), "Single node mode")
+			minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
 		end
 		return itemstack
 	else
-		exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action)
+		exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action, itemstack)
 	end
 end
 
 local morningstar_def = {
-	 description = "Red Morningstar",
+	 description = S("Red Morningstar").."\n"..S("Single node mode"),
 	 wield_image = "exchangeclone_red_morningstar.png",
 	 inventory_image = "exchangeclone_red_morningstar.png",
 	 on_secondary_use = morningstar_on_use,
@@ -259,18 +258,25 @@ for k, v in pairs({cracky = "pickaxey", crumbly = "shovely"}) do
 	morningstar_def.tool_capabilities.groupcaps[k].times = {[1]=0.7,[2]=0.5,[3]=0.25}
 	morningstar_def._mcl_diggroups[v].speed = 70
 end
+morningstar_def.description = S("Red Morningstar").."\n"..S("3x3 mode")
 morningstar_def.groups.not_in_creative_inventory = 1
 morningstar_def.exchangeclone_pick_mode = "3x3"
 
 minetest.register_tool("exchangeclone:red_morningstar_3x3", table.copy(morningstar_def))
 
+exchangeclone.register_energy_alias("exchangeclone:red_morningstar", "exchangeclone:red_morningstar_3x3")
+
 for k, v in pairs({cracky = "pickaxey", crumbly = "shovely"}) do
 	morningstar_def.tool_capabilities.groupcaps[k].times = {[1]=0.6,[2]=0.4,[3]=0.20}
-	morningstar_def._mcl_diggroups[v].speed = 60
+	morningstar_def._mcl_diggroups[v].speed = 80
 end
 morningstar_def.exchangeclone_pick_mode = "tall"
 
+morningstar_def.description = S("Red Morningstar").."\n"..S("3x1 mode")
+
 minetest.register_tool("exchangeclone:red_morningstar_3x1", table.copy(morningstar_def))
+
+exchangeclone.register_energy_alias("exchangeclone:red_morningstar", "exchangeclone:red_morningstar_3x1")
 
 minetest.register_craft({
 	output = "exchangeclone:red_morningstar",

@@ -1,3 +1,5 @@
+local S = minetest.get_translator()
+
 local function get_level(level)
     if exchangeclone.mcl then
         return nil
@@ -7,21 +9,21 @@ local function get_level(level)
 end
 
 minetest.register_craftitem("exchangeclone:alchemical_coal", {
-    description = "Alchemical Coal",
+    description = S("Alchemical Coal"),
     wield_image = "exchangeclone_alchemical_coal.png",
     inventory_image = "exchangeclone_alchemical_coal.png",
 	groups = { craftitem=1},
 })
 
 minetest.register_craftitem("exchangeclone:mobius_fuel", {
-    description = "Mobius Fuel",
+    description = S("Mobius Fuel"),
     wield_image = "exchangeclone_mobius_fuel.png",
     inventory_image = "exchangeclone_mobius_fuel.png",
 	groups = { craftitem=1},
 })
 
 minetest.register_craftitem("exchangeclone:aeternalis_fuel", {
-    description = "Aeternalis Fuel",
+    description = S("Aeternalis Fuel"),
     wield_image = "exchangeclone_aeternalis_fuel.png",
     inventory_image = "exchangeclone_aeternalis_fuel.png",
 	groups = { craftitem=1},
@@ -46,21 +48,21 @@ minetest.register_craft({
 })
 
 minetest.register_craftitem("exchangeclone:dark_matter", {
-    description = "Dark Matter Orb",
+    description = S("Dark Matter Orb"),
     wield_image = "exchangeclone_dark_matter.png",
     inventory_image = "exchangeclone_dark_matter.png",
     groups = {craftitem = 1}
 })
 
 minetest.register_craftitem("exchangeclone:red_matter", {
-    description = "Red Matter Orb",
+    description = S("Red Matter Orb"),
     wield_image = "exchangeclone_red_matter.png",
     inventory_image = "exchangeclone_red_matter.png",
     groups = {craftitem = 1},
 })
 
 minetest.register_node("exchangeclone:dark_matter_block", {
-    description = "Dark Matter Block",
+    description = S("Dark Matter Block"),
     tiles = {"exchangeclone_dark_matter_block.png"},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
@@ -70,7 +72,7 @@ minetest.register_node("exchangeclone:dark_matter_block", {
 })
 
 minetest.register_node("exchangeclone:red_matter_block", {
-    description = "Red Matter Block",
+    description = S("Red Matter Block"),
     tiles = {"exchangeclone_red_matter_block.png"},
 	is_ground_content = false,
 	light_source = 14,

@@ -1,47 +1,25 @@
-local function get_constructor_formspec()
-    if not exchangeclone.mcl then
-        local formspec = {
-            "size[8,9]",
-            "label[2,1;Orb]",
-            "list[context;fuel;2,2;1,1;]",
-            "label[3,1;Source]",
-            "list[context;src;3,2;1,1;]",
-            "label[5,1;Output]",
-            "list[context;dst;5,2;1,1;]",
-            "list[current_player;main;0,5;8,4;]",
-            "listring[current_player;main]",
-            "listring[context;src]",
-            "listring[current_player;main]",
-            "listring[context;fuel]",
-            "listring[current_player;main]",
-            "listring[context;dst]",
-        }
-        return table.concat(formspec, "")
-    else
-        local formspec = {
-            "size[9,10]",
-            "label[2,1;Orb]",
-            "list[context;fuel;2,2;1,1;]",
-            mcl_formspec.get_itemslot_bg(2,2,1,1),
-            "label[3,1;Source]",
-            "list[context;src;3,2;1,1;]",
-            mcl_formspec.get_itemslot_bg(3,2,1,1),
-            "label[5,1;Output]",
-            "list[context;dst;5,2;1,1;]",
-            mcl_formspec.get_itemslot_bg(5,2,1,1),
-            "list[current_player;main;0,5;9,3;9]",
-            mcl_formspec.get_itemslot_bg(0,5,9,3),
-            "list[current_player;main;0,8.5;9,1;]",
-            mcl_formspec.get_itemslot_bg(0,8.5,9,1),
-            "listring[current_player;main]",
-            "listring[context;src]",
-            "listring[current_player;main]",
-            "listring[context;fuel]",
-            "listring[current_player;main]",
-            "listring[context;dst]",
-        }
-        return table.concat(formspec, "")
-    end
+local S = minetest.get_translator()
+
+local formspec =
+    "size["..(exchangeclone.mcl and 9 or 8)..",9]"..
+    "label[2,1;"..S("Orb").."]"..
+    "list[context;fuel;2,2;1,1;]"..
+    "label[3,1;"..S("Source").."]"..
+    "list[context;src;3,2;1,1;]"..
+    "label[5,1;"..S("Output").."]"..
+    "list[context;dst;5,2;1,1;]"..
+    exchangeclone.inventory_formspec(0,5)..
+    "listring[current_player;main]"..
+    "listring[context;src]"..
+    "listring[current_player;main]"..
+    "listring[context;fuel]"..
+    "listring[current_player;main]"..
+    "listring[context;dst]"
+if exchangeclone.mcl then
+    formspec = formspec..
+        mcl_formspec.get_itemslot_bg(2,2,1,1)..
+        mcl_formspec.get_itemslot_bg(3,2,1,1)..
+        mcl_formspec.get_itemslot_bg(5,2,1,1)
 end
 
 minetest.register_alias("exchangeclone:element_constructor", "exchangeclone:constructor")
@@ -53,7 +31,7 @@ minetest.register_lbm({
     run_at_every_load = false,
     action = function(pos, node)
         local meta = minetest.get_meta(pos)
-        meta:set_string("formspec", "size[3,1]label[0,0;Break and replace.\nNothing will be lost.]")
+        meta:set_string("formspec", "size[3,1]label[0,0;"..S("Break and replace.").."\n"..S("Nothing will be lost.").."]")
     end,
 })
 
@@ -80,24 +58,11 @@ local function constructor_action(pos)
     if not inv:is_empty("src") then
         -- make sure the stack at dst is same as the src (including enchantments)
         if not inv:is_empty("dst") then
-            if src_stack:get_name() ~= dst_stack:get_name() then
-                if exchangeclone.mcl then
-                    if not(string.sub(src_stack:get_name(), -10, -1) == "_enchanted"
-                    and string.sub(src_stack:get_name(), 1, -11) == dst_stack:get_name()
-                    and src_stack:get_name() ~= "mcl_core:apple_gold_enchanted") then
-                        return
-                    end
-                else
-                    return
-                end
+            if exchangeclone.handle_alias(src_stack) ~= dst_stack:get_name() then
+                return
             end
         end
-        local result = src_stack:get_name()
-        if exchangeclone.mcl
-        and string.sub(result, -10, -1) == "_enchanted"
-        and result ~= "mcl_core:apple_gold_enchanted" then
-            result = string.sub(src_stack:get_name(), 1, -11)
-        end
+        local result = exchangeclone.handle_alias(src_stack)
         -- make sure orb/player has enough energy
         local current_energy
         if using_orb then
@@ -117,6 +82,15 @@ local function constructor_action(pos)
             end
         end
     end
+
+    local timer = minetest.get_node_timer(pos)
+    if inv:get_stack("src", 1):is_empty() then
+        timer:stop()
+    else
+        if not timer:is_started() then
+            timer:start(1) -- keep trying to construct if there are items in the src stack
+        end
+    end
 end
 
 local function on_construct(pos)
@@ -125,8 +99,8 @@ local function on_construct(pos)
     inv:set_size("fuel", 1)
     inv:set_size("src", 1)
     inv:set_size("dst", 1)
-    meta:set_string("formspec", get_constructor_formspec())
-    meta:set_string("infotext", "Constructor")
+    meta:set_string("formspec", formspec)
+    meta:set_string("infotext", S("Constructor"))
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
@@ -172,7 +146,7 @@ local function on_blast(pos)
 end
 
 minetest.register_node("exchangeclone:constructor", {
-    description = "Constructor",
+    description = S("Constructor"),
     tiles = {
         "exchangeclone_constructor_up.png",
         "exchangeclone_constructor_down.png",
@@ -218,6 +192,7 @@ minetest.register_node("exchangeclone:constructor", {
     allow_metadata_inventory_put = allow_metadata_inventory_put,
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
+    on_timer = constructor_action,
 })
 
 local recipe_ingredient = "default:pick_diamond"

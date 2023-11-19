@@ -1,30 +1,13 @@
-local function get_energy_collector_formspec()
-    local formspec
-    if not exchangeclone.mcl then
-        formspec = {
-            "size[8,9]",
-            "label[3,2;Orb]",
-            "list[context;main;4,2;1,1;]",
-            "list[current_player;main;0,5;8,4;]",
-            "listring[current_player;main]",
-            "listring[context;main]"
-        }
-    else
-        formspec = {
-            "size[9,10]",
-            "label[3,2;Orb]",
-            "list[context;main;4,2;1,1;]",
-            mcl_formspec.get_itemslot_bg(4,2,1,1),
-            "list[current_player;main;0,5;9,3;9]",
-            mcl_formspec.get_itemslot_bg(0,5,9,3),
-            "list[current_player;main;0,8.5;9,1;]",
-            mcl_formspec.get_itemslot_bg(0,8.5,9,1),
-            "listring[current_player;main]",
-            "listring[context;main]"
-        }
-    end
-    return table.concat(formspec, "")
-end
+local S = minetest.get_translator()
+
+local formspec =
+    "size["..(exchangeclone.mcl and 9 or 8)..",9]"..
+    "label[3,2;"..S("Orb").."]"..
+    "list[context;main;4,2;1,1;]"..
+    exchangeclone.inventory_formspec(0,5)..
+    "listring[current_player;main]"..
+    "listring[context;main]"..
+    exchangeclone.mcl and mcl_formspec.get_itemslot_bg(4,2,1,1)
 
 minetest.register_alias("exchangeclone:energy_collector", "exchangeclone:energy_collector_mk1")
 
@@ -35,7 +18,7 @@ minetest.register_lbm({
     run_at_every_load = false,
     action = function(pos, node)
         local meta = minetest.get_meta(pos)
-        meta:set_string("formspec", "size[3,1]label[0,0;Break and replace.\nNothing will be lost.]")
+        meta:set_string("formspec", "size[3,1]label[0,0;"..S("Break and replace.").."\n"..S("Nothing will be lost.").."]")
     end,
 })
 
@@ -114,8 +97,7 @@ local function on_timer(pos, elapsed)
             if placer and placer ~= "" then
                 local player = minetest.get_player_by_name(placer)
                 if player then
-                    local player_energy = exchangeclone.get_player_energy(player)
-                    exchangeclone.set_player_energy(player, player_energy + amount)
+                    exchangeclone.add_player_energy(player, amount)
                 end
             end
         end
@@ -129,7 +111,7 @@ local function on_construct(pos)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
     inv:set_size("main", 1)
-    meta:set_string("formspec", get_energy_collector_formspec())
+    meta:set_string("formspec", formspec)
     minetest.get_node_timer(pos):start(1)
 end
 
@@ -221,7 +203,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
             local meta = minetest.get_meta(pos)
             meta:set_int("collector_amount", amount)
             meta:set_string("exchangeclone_placer", player_name)
-            meta:set_string("infotext", name.."\nOwned by"..player_name)
+            meta:set_string("infotext", name.."\n"..S("Owned by ")..player_name)
         end,
         on_blast = on_blast,
         allow_metadata_inventory_put = allow_metadata_inventory_put,
@@ -273,35 +255,35 @@ if exchangeclone.mcl then
     chest = "mcl_chests:chest"
 end
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk1", "Energy Collector MK1", 4, "", {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk1", S("Energy Collector MK1"), 4, "", {
         {glass, glass, glass},
         {"exchangeclone:exchange_orb", chest, "exchangeclone:exchange_orb"},
         {iron, iron, iron}
     }
 )
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk2", "Energy Collector MK2", 12, "^[multiply:#555555", {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk2", S("Energy Collector MK2"), 12, "^[multiply:#555555", {
         {iron, iron, iron},
         {"exchangeclone:energy_collector_mk1", "exchangeclone:energy_collector_mk1", "exchangeclone:energy_collector_mk1"},
         {iron, iron, iron}
     }
 )
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk3", "Energy Collector MK3", 40, "^[multiply:#770000", {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk3", S("Energy Collector MK3"), 40, "^[multiply:#770000", {
         {iron, iron, iron},
         {"exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2"},
         {iron, iron, iron}
     }
 )
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", "Energy Collector MK4", 160, "^[multiply:#007700", {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", S("Energy Collector MK4"), 160, "^[multiply:#007700", {
         {iron, iron, iron},
         {"exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3"},
         {iron, iron, iron}
     }
 )
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", "Energy Collector MK5", 640, "^[multiply:#000077", {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", S("Energy Collector MK5"), 640, "^[multiply:#000077", {
         {iron, iron, iron},
         {"exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4"},
         {iron, iron, iron}

@@ -1,19 +1,17 @@
 exchangeclone.shovel_action = {
-    start_action = function(player, center, range)
+    start_action = function(player, center, range, itemstack)
         if exchangeclone.check_cooldown(player, "shovel") then return end
         local data = {}
-        data.player_energy = exchangeclone.get_player_energy(player)
-        data.energy_cost = 0
         if exchangeclone.mcl then
             data.path = not player:get_player_control().sneak
         end
         if range > 0 or not data.path then
             exchangeclone.play_ability_sound(player)
         end
+        data.itemstack = itemstack
         return data
     end,
     action = function(player, pos, node, data)
-        if data.energy_cost + 8 > data.player_energy then return end
         if ((minetest.get_item_group(node.name, "crumbly") > 0) or (minetest.get_item_group(node.name, "shovely") > 0)) then
             if minetest.is_protected(pos, player:get_player_name()) then
                 minetest.record_protection_violation(pos, player:get_player_name())
@@ -24,13 +22,11 @@ exchangeclone.shovel_action = {
                     minetest.get_item_group(node.name, "path_creation_possible") == 1 then
                         if minetest.get_node({x=pos.x,y=pos.y+1,z=pos.z}).name == "air" then
                             minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
-                            data.energy_cost = data.energy_cost + 4
                             minetest.swap_node(pos, {name="mcl_core:grass_path"})
                         end
                     end
                 else
-                    data.energy_cost = data.energy_cost + 8
-                    local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_shovel")
+                    local drops = minetest.get_node_drops(node.name, data.itemstack)
                     exchangeclone.drop_items_on_player(pos, drops, player)
                     minetest.set_node(pos, {name = "air"})
                 end
@@ -40,7 +36,6 @@ exchangeclone.shovel_action = {
     end,
     end_action = function(player, center, range, data)
         if range > 0 or not data.path then
-            exchangeclone.set_player_energy(player, data.player_energy - data.energy_cost)
             exchangeclone.start_cooldown(player, "shovel", range/4) -- Longish cooldown
         end
     end
@@ -68,7 +63,7 @@ local function shovel_on_place(itemstack, player, pointed_thing)
         center = pointed_thing.under
     end
 
-   exchangeclone.node_radius_action(player, center, range, exchangeclone.shovel_action)
+   exchangeclone.node_radius_action(player, center, range, exchangeclone.shovel_action, itemstack)
 
     return itemstack
 end

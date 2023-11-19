@@ -1,4 +1,7 @@
+local S = minetest.get_translator()
+
 -- Everything with the exchangeclone_ore group is also included (see pickaxes.lua)
+-- This is pretty much the one thing I can't really figure out how to automate.
 local ores = {
 	["mcl_raw_ores:raw_gold"] = true,
 	["mcl_raw_ores:raw_iron"] = true,
@@ -31,7 +34,7 @@ end
 
 local LIGHT_ACTIVE_FURNACE = 13
 
---90% of the code is copied from MineClone's blast furnaces.
+-- Modified from MineClone's blast furnaces.
 
 --
 -- Formspecs
@@ -43,7 +46,7 @@ local base_formspec =
 --"image_button[8,0;1,1;craftguide_book.png;craftguide;]"..
 --"tooltip[craftguide;"..minetest.formspec_escape("Recipe book").."]"..
 	"size[10,8.75]"..
-	"label[0,4;Inventory]"..
+	"label[0,4;"..S("Inventory").."]"..
 	exchangeclone.inventory_formspec(0,4.5)..
 	"list[context;src;2.9,0.5;1,1]"..
 	"list[context;fuel;2.9,2.5;1,1;]"..
@@ -64,12 +67,12 @@ if exchangeclone.mcl then
 		mcl_formspec.get_itemslot_bg(5.75,1.5,1,1)
 end
 
-local function inactive_formspec(type)
-	local num_columns = (type == "Dark" and 2) or 3
+local function inactive_formspec(matter_type)
+	local num_columns = (matter_type == "Dark" and 2) or 3
 	local result = base_formspec..
 	"list[context;src;0,0.5;"..tostring(num_columns)..",3;1]"..
 	"list[context;dst;7,0.5;"..tostring(num_columns)..",3;1]"..
-	"label[2.9,0;"..type.." Matter Furnace]"..
+	"label[2.9,0;"..S("@1 Matter Furnace", S(matter_type)).."]"..
 	"image[2.9,1.5;1,1;default_furnace_fire_bg.png]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[transformR270]"
 	if exchangeclone.mcl then
@@ -80,16 +83,16 @@ local function inactive_formspec(type)
 	return result
 end
 
-local function active_formspec(fuel_percent, item_percent, type)
-	local num_columns = (type == "Dark" and 2) or 3
+local function active_formspec(fuel_percent, item_percent, matter_type)
+	local num_columns = (matter_type == "Dark" and 2) or 3
 	local result =  base_formspec..
 	"image[2.9,1.5;1,1;default_furnace_fire_bg.png^[lowpart:"..
 		(100-fuel_percent)..":default_furnace_fire_fg.png]"..
 	"list[context;src;0,0.5;"..tostring(num_columns)..",3;1]"..
 	"list[context;dst;7,0.5;"..tostring(num_columns)..",3;1]"..
+	"label[2.9,0;"..S("@1 Matter Furnace", S(matter_type)).."]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[lowpart:"..
-		(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
-	"label[2.9,0;"..type.." Matter Furnace]"
+		(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"
 	if exchangeclone.mcl then
 		result = result..
 			mcl_formspec.get_itemslot_bg(0,0.5,num_columns,3)..
@@ -321,10 +324,10 @@ local function furnace_node_timer(pos, elapsed)
 
 	local using_collector = meta:get_int("using_collector") > 0
 
-	local type = "Dark"
+	local matter_type = "Dark"
 	local speed = 22 -- /10 to get items/second
 	if minetest.get_node(pos).name:find("red_matter") then
-		type = "Red"
+		matter_type = "Red"
 		speed = 66
 	end
 
@@ -400,7 +403,7 @@ local function furnace_node_timer(pos, elapsed)
 			if src_time >= cooked.time then
 				local count = cooked.item:get_count()
 				if is_ore(srclist[1]:get_name()) and (count * 2 <= cooked.item:get_stack_max()) then
-					if type == "Red" or (type == "Dark" and math.random(1,2) == 1) then
+					if matter_type == "Red" or (matter_type == "Dark" and math.random(1,2) == 1) then
 						cooked.item:set_count(count*2)
 					end
 				end
@@ -428,7 +431,7 @@ local function furnace_node_timer(pos, elapsed)
 	--
 	-- Update formspec and node
 	--
-	local formspec = inactive_formspec(type)
+	local formspec = inactive_formspec(matter_type)
 	local item_percent = 0
 	if cookable then
 		item_percent = math.floor(src_time / cooked.time * 100)
@@ -441,12 +444,12 @@ local function furnace_node_timer(pos, elapsed)
 		if fuel_totaltime > 0 then
 			fuel_percent = math.floor(fuel_time / fuel_totaltime * 100)
 		end
-		formspec = active_formspec(fuel_percent, item_percent, type)
-		swap_node(pos, "exchangeclone:"..type:lower().."_matter_furnace_active")
+		formspec = active_formspec(fuel_percent, item_percent, matter_type)
+		swap_node(pos, "exchangeclone:"..matter_type:lower().."_matter_furnace_active")
 		-- make sure timer restarts automatically
 		result = true
 	else
-		swap_node(pos, "exchangeclone:"..type:lower().."_matter_furnace")
+		swap_node(pos, "exchangeclone:"..matter_type:lower().."_matter_furnace")
 		-- stop timer on the inactive furnace
 		minetest.get_node_timer(pos):stop()
 	end
@@ -483,7 +486,7 @@ if minetest.get_modpath("screwdriver") then
 end
 
 local inactive_def = {
-	description = "Dark Matter Furnace",
+	description = S("Dark Matter Furnace"),
 	tiles = {
 		"exchangeclone_dark_matter_block.png",
 		"exchangeclone_dark_matter_block.png",
@@ -570,7 +573,7 @@ local inactive_def = {
 }
 
 local active_def = {
-	description = "Active Dark Matter Furnace",
+	description = S("Active Dark Matter Furnace"),
 	tiles = {
 		"exchangeclone_dark_matter_block.png",
 		"exchangeclone_dark_matter_block.png",
@@ -580,7 +583,7 @@ local active_def = {
 		"exchangeclone_dark_matter_furnace.png",
 	},
 	paramtype2 = "facedir",
-	paramtype = "light",
+	parammatter_type = "light",
 	light_source = LIGHT_ACTIVE_FURNACE,
 	drop = "exchangeclone:dark_matter_furnace",
 	groups = {pickaxey=5, not_in_creative_inventory = 1, container = 4, material_stone=1, cracky = 3, level = get_level(4), exchangeclone_furnace = 1},
@@ -641,7 +644,7 @@ minetest.register_node("exchangeclone:dark_matter_furnace_active", table.copy(ac
 minetest.register_node("exchangeclone:red_matter_furnace_active", table.copy(active_def))
 
 minetest.override_item("exchangeclone:red_matter_furnace", {
-	description = "Red Matter Furnace",
+	description = S("Red Matter Furnace"),
 	tiles = {
 		"exchangeclone_red_matter_block.png",
 		"exchangeclone_red_matter_block.png",
@@ -713,7 +716,7 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 })
 
 minetest.override_item("exchangeclone:red_matter_furnace_active", {
-	description = "Active Red Matter Furnace",
+	description = S("Active Red Matter Furnace"),
 	tiles = {
 		"exchangeclone_red_matter_block.png",
 		"exchangeclone_red_matter_block.png",

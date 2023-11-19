@@ -1,4 +1,4 @@
--- Just in case people want to add stuff to these lists in their mods...
+-- This lets mods add things to these lists if they want.
 exchangeclone.group_values = exchangeclone.group_values or {}
 exchangeclone.energy_values = exchangeclone.energy_values or {}
 
@@ -16,8 +16,6 @@ if exchangeclone.mcl then
     }
 
     exchangeclone.energy_values = {
-        -- TODO
-        ["doc_identifier:identifier_liquid"] = 5,
 
         ["fake_liquids:bucket_fake_lava"] = 832,
         ["fake_liquids:bucket_fake_water"] = 960,
@@ -35,38 +33,14 @@ if exchangeclone.mcl then
         ["mcl_anvils:anvil_damage_2"] = 3328,
 
         ["mcl_armor:boots_chain"] = 768,
-        ["mcl_armor:boots_chain_enchanted"] = 768,
-        ["mcl_armor:boots_diamond_enchanted"] = 32768,
-        ["mcl_armor:boots_gold_enchanted"] = 8192,
-        ["mcl_armor:boots_iron_enchanted"] = 1024,
-        ["mcl_armor:boots_leather_enchanted"] = 256,
         ["mcl_armor:boots_netherite"] = 106496,
-        ["mcl_armor:boots_netherite_enchanted"] = 106496,
         ["mcl_armor:chestplate_chain"] = 1792,
-        ["mcl_armor:chestplate_chain_enchanted"] = 1792,
-        ["mcl_armor:chestplate_diamond_enchanted"] = 65536,
-        ["mcl_armor:chestplate_gold_enchanted"] = 16384,
-        ["mcl_armor:chestplate_iron_enchanted"] = 2048,
-        ["mcl_armor:chestplate_leather_enchanted"] = 512,
         ["mcl_armor:chestplate_netherite"] = 139264,
-        ["mcl_armor:chestplate_netherite_enchanted"] = 139264,
         ["mcl_armor:elytra"] = 297216,
         ["mcl_armor:helmet_chain"] = 1024,
-        ["mcl_armor:helmet_chain_enchanted"] = 1024,
-        ["mcl_armor:helmet_diamond_enchanted"] = 40960,
-        ["mcl_armor:helmet_gold_enchanted"] = 10240,
-        ["mcl_armor:helmet_iron_enchanted"] = 1280,
-        ["mcl_armor:helmet_leather_enchanted"] = 320,
         ["mcl_armor:helmet_netherite"] = 114688,
-        ["mcl_armor:helmet_netherite_enchanted"] = 114688,
         ["mcl_armor:leggings_chain"] = 1536,
-        ["mcl_armor:leggings_chain_enchanted"] = 1536,
-        ["mcl_armor:leggings_diamond_enchanted"] = 57344,
-        ["mcl_armor:leggings_gold_enchanted"] = 14336,
-        ["mcl_armor:leggings_iron_enchanted"] = 1792,
-        ["mcl_armor:leggings_leather_enchanted"] = 448,
         ["mcl_armor:leggings_netherite"] = 131072,
-        ["mcl_armor:leggings_netherite_enchanted"] = 131072,
 
         ["mcl_bamboo:bamboo"] = 2,
         ["mcl_bamboo:bamboo_block_stripped"] = 16,
@@ -87,10 +61,7 @@ if exchangeclone.mcl then
         ["mcl_books:book"] = 150,
         ["mcl_books:written_book"] = 206,
 
-        ["mcl_bows:bow_enchanted"] = 48,
-        ["mcl_bows:crossbow_enchanted"] = 295,
         ["mcl_bows:crossbow_loaded"] = 298,
-        ["mcl_bows:crossbow_loaded_enchanted"] = 298,
 
         ["mcl_buckets:bucket_axolotl"] = 1024,
         ["mcl_buckets:bucket_cod"] = 896,
@@ -105,7 +76,7 @@ if exchangeclone.mcl then
 
         ["mcl_cocoas:cocoa_beans"] = 128,
 
-        ["mcl_copper:raw_copper"] = 85,
+        ["mcl_copper:copper_ingot"] = 85,
 
         ["mcl_core:andesite"] = 1,
         ["mcl_core:apple"] = 128,
@@ -124,10 +95,12 @@ if exchangeclone.mcl then
         ["mcl_core:dirt"] = 1,
         ["mcl_core:emerald"] = 4096,
         ["mcl_core:flint"] = 4,
+        ["mcl_core:gold_ingot"] = 2048,
         ["mcl_core:granite"] = 1,
         ["mcl_core:grass"] = 1,
         ["mcl_core:gravel"] = 1,
         ["mcl_core:ice"] = 1,
+        ["mcl_core:iron_ingot"] = 256,
         ["mcl_core:lapis"] = 864,
         ["mcl_core:mycelium"] = 1,
         ["mcl_core:obsidian"] = 64,
@@ -154,13 +127,7 @@ if exchangeclone.mcl then
         ["mcl_farming:beetroot_item"] = 24,
         ["mcl_farming:beetroot_seeds"] = 16,
         ["mcl_farming:carrot_item"] = 24,
-        ["mcl_farming:hoe_diamond_enchanted"] = 16380,
-        ["mcl_farming:hoe_gold_enchanted"] = 4104,
-        ["mcl_farming:hoe_iron_enchanted"] = 520,
         ["mcl_farming:hoe_netherite"] = 90108,
-        ["mcl_farming:hoe_netherite_enchanted"] = 90108,
-        ["mcl_farming:hoe_stone_enchanted"] = 10,
-        ["mcl_farming:hoe_wood_enchanted"] = 24,
         ["mcl_farming:melon_item"] = 36,
         ["mcl_farming:potato_item"] = 24,
         ["mcl_farming:potato_item_poison"] = 24,
@@ -172,7 +139,6 @@ if exchangeclone.mcl then
 
         ["mcl_fishing:clownfish_raw"] = 64,
         ["mcl_fishing:fish_raw"] = 40,
-        ["mcl_fishing:fishing_rod_enchanted"] = 36,
         ["mcl_fishing:pufferfish_raw"] = 64,
         ["mcl_fishing:salmon_raw"] = 48,
 
@@ -294,9 +260,6 @@ if exchangeclone.mcl then
 
         ["mcl_pottery_sherds:pot"] = 16,
 
-        ["mcl_raw_ores:raw_gold"] = 2048,
-        ["mcl_raw_ores:raw_iron"] = 256,
-
         ["mcl_sponges:sponge"] = 1024,
         ["mcl_sponges:sponge_wet"] = 1024,
         ["mcl_sponges:sponge_wet_river_water"] = 1024,
@@ -306,33 +269,9 @@ if exchangeclone.mcl then
         ["mcl_throwing:snowball"] = 0.25,
 
         ["mcl_tools:axe_netherite"] = 98312,
-        ["mcl_tools:axe_wood_enchanted"] = 32,
-        ["mcl_tools:axe_stone_enchanted"] = 11,
-        ["mcl_tools:axe_iron_enchanted"] = 796,
-        ["mcl_tools:axe_gold_enchanted"] = 6152,
-        ["mcl_tools:axe_diamond_enchanted"] = 24584,
-        ["mcl_tools:axe_netherite_enchanted"] = 98312,
         ["mcl_tools:pick_netherite"] = 98312,
-        ["mcl_tools:pick_wood_enchanted"] = 32,
-        ["mcl_tools:pick_stone_enchanted"] = 11,
-        ["mcl_tools:pick_iron_enchanted"] = 796,
-        ["mcl_tools:pick_gold_enchanted"] = 6152,
-        ["mcl_tools:pick_diamond_enchanted"] = 24584,
-        ["mcl_tools:pick_netherite_enchanted"] = 98312,
         ["mcl_tools:shovel_netherite"] = 81928,
-        ["mcl_tools:shovel_wood_enchanted"] = 16,
-        ["mcl_tools:shovel_stone_enchanted"] = 9,
-        ["mcl_tools:shovel_iron_enchanted"] = 264,
-        ["mcl_tools:shovel_gold_enchanted"] = 2056,
-        ["mcl_tools:shovel_diamond_enchanted"] = 8200,
-        ["mcl_tools:shovel_netherite_enchanted"] = 81928,
         ["mcl_tools:sword_netherite"] = 90120,
-        ["mcl_tools:sword_wood_enchanted"] = 20,
-        ["mcl_tools:sword_stone_enchanted"] = 6,
-        ["mcl_tools:sword_iron_enchanted"] = 516,
-        ["mcl_tools:sword_gold_enchanted"] = 5000,
-        ["mcl_tools:sword_diamond_enchanted"] = 16392,
-        ["mcl_tools:sword_netherite_enchanted"] = 90120,
 
         ["mcl_totems:totem"] = 106496,
         ["meat_blocks:meatball"] = 64,
@@ -381,7 +320,7 @@ else
         ["default:clay_lump"] = 4,
         ["default:coal_lump"] = 128,
         ["default:cobble"] = 1,
-        ["default:copper_lump"] = 320,
+        ["default:copper_ingot"] = 320,
         ["default:coral_brown"] = 8,
         ["default:coral_cyan"] = 8,
         ["default:coral_green"] = 8,
@@ -398,11 +337,11 @@ else
         ["default:dry_dirt_with_grass"] = 1,
         ["default:emergent_jungle_sapling"] = 32,
         ["default:flint"] = 4,
-        ["default:gold_lump"] = 2048,
+        ["default:gold_ingot"] = 2048,
         ["default:grass"] = 1,
         ["default:gravel"] = 1,
         ["default:ice"] = 1,
-        ["default:iron_lump"] = 256,
+        ["default:iron_ingot"] = 256,
         ["default:large_cactus_seedling"] = 32,
         ["default:mese_crystal"] = 4096,
         ["default:mossycobble"] = 32,
@@ -417,7 +356,7 @@ else
         ["default:snow"] = 0.5,
         ["default:snowblock"] = 5,
         ["default:stick"] = 4,
-        ["default:tin_lump"] = 384,
+        ["default:tin_ingot"] = 384,
 
         ["farming:cotton"] = 12,
         ["farming:cotton_wild"] = 12,
@@ -425,16 +364,16 @@ else
         ["farming:seed_wheat"] = 16,
         ["farming:wheat"] = 24,
 
-        ["moreores:mithril_lump"] = 16384,
-        ["moreores:silver_lump"] = 4000,
+        ["moreores:mithril_ingot"] = 16384,
+        ["moreores:silver_ingot"] = 4000,
 
-        ["technic:chromium_lump"] = 4096,
+        ["technic:chromium_ingot"] = 4096,
         ["technic:granite"] = 1,
-        ["technic:lead_lump"] = 256,
+        ["technic:lead_ingot"] = 256,
         ["technic:marble"] = 1,
         ["technic:sulfur_lump"] = 128,
-        ["technic:uranium_lump"] = 8192,
-        ["technic:zinc_lump"] = 512,
+        ["technic:uranium_ingot"] = 8192,
+        ["technic:zinc_ingot"] = 512,
 
         ["useful_green_potatoes:useful_green_potato"] = 256
     }
@@ -446,12 +385,19 @@ else
 
 end
 
-table.insert_all(exchangeclone.energy_values, {
+-- For things that are the same in both games:
+
+for itemstring, energy_value in pairs ({
     ["exchangeclone:alchemical_tome"] = 0,
-})
+}) do
+    exchangeclone.energy_values[itemstring] = energy_value
+end
 
 table.insert_all(exchangeclone.group_values, {
     {"tree", 32},
+    {"leaves", 1},
     {"sapling", 32},
     {"useless", 0},
+    {"exchangeclone_dirt", 1},
+    {"exchangeclone_ore", 0}
 })

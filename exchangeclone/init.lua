@@ -7,6 +7,7 @@ if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default
 else
 	exchangeclone.mcl = minetest.get_modpath("mcl_core")
 end
+
 exchangeclone.mineclonia = minetest.get_game_info().id == "mineclonia" -- if exchangeclone.mineclonia, exchangeclone.mcl is also defined.
 
 
@@ -16,6 +17,8 @@ local modpath = minetest.get_modpath("exchangeclone")
 
 exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000
 exchangeclone.num_passes = minetest.settings:get("exchangeclone.num_passes") or 10
+
+minetest.log("action", "Loading Exchangeclone")
 
 dofile(modpath.."/lib.lua")
 dofile(modpath.."/constructor.lua")
@@ -39,11 +42,13 @@ dofile(modpath.."/pickaxes.lua")
 dofile(modpath.."/hammers.lua")
 dofile(modpath.."/shovels.lua")
 dofile(modpath.."/red_matter_multitools.lua")
+dofile(modpath.."/covalence_dust.lua")
 if minetest.get_modpath("hopper") then
 	dofile(modpath.."/hopper_compat.lua")
 end
 dofile(modpath.."/philosophers_stone.lua")
 dofile(modpath.."/pesa.lua")
 dofile(modpath.."/infinite_food.lua")
+dofile(modpath.."/alchemical_chests.lua")
 dofile(modpath.."/transmutation_table.lua")
 dofile(modpath.."/furnaces.lua")

@@ -74,13 +74,6 @@ function exchangeclone.aoe_attack(info)
 
 		if exchangeclone.check_cooldown(player, "sword") then return end
 
-		local player_energy = exchangeclone.get_player_energy(player)
-		if player_energy >= 384 then
-			exchangeclone.set_player_energy(player, player_energy - 384)
-		else
-			return
-		end
-
 		exchangeclone.play_ability_sound(player)
 
 		local pos = player:get_pos()
@@ -94,9 +87,9 @@ function exchangeclone.aoe_attack(info)
 
 			-- Ignore items to lower lag
 			if (obj:is_player()
-				or (ent and not aoe_exclude[ent.name]
-				and not (damage_all == 0 and not hostile_mobs[ent.name]))) --ignore hostile mobs if necessary
-				and obj:get_hp() > 0 and obj ~= player then
+			or (ent and not aoe_exclude[ent.name]
+			and not (damage_all == 0 and not hostile_mobs[ent.name]))) --ignore hostile mobs if necessary
+			and obj:get_hp() > 0 and obj ~= player then
 
 				local opos = obj:get_pos()
 				local distance = math.max(1, vector.distance(pos, opos))
@@ -126,7 +119,7 @@ function exchangeclone.aoe_attack(info)
 								return
 							end
 							if exchangeclone.mcl then
-								mcl_util.deal_damage(obj, damage, { type = "generic", direct = player})
+								mcl_util.deal_damage(obj, damage, { type = "hit", direct = player})
 							else
 								obj:set_hp(obj:get_hp() - damage)
 							end
@@ -134,7 +127,7 @@ function exchangeclone.aoe_attack(info)
 						end)
 				else
 					if exchangeclone.mcl then
-						mcl_util.deal_damage(obj, damage, { type = "generic", direct = player})
+						mcl_util.deal_damage(obj, damage, { type = "hit", direct = player})
 					else
 						obj:set_hp(obj:get_hp() - damage)
 					end

@@ -1,3 +1,5 @@
+local S = minetest.get_translator()
+
 local storage = minetest.get_mod_storage()
 exchangeclone.bauble_data = minetest.deserialize(storage:get_string("bauble_data"))
 
@@ -73,13 +75,13 @@ function exchangeclone.show_baubles(player)
 end
 
 minetest.register_tool("exchangeclone:bauble_accessor", {
-    description = "Bauble Accessor",
+    description = S("Bauble Accessor"),
     groups = {disable_repair = 1},
 })
 
 minetest.register_tool("exchangeclone:repair_talisman", {
-    description = "Repair Talisman",
-    groups = {disable_repair = 1, bauble = 1}, -- kind of ironic :D
+    description = S("Repair Talisman"),
+    groups = {disable_repair = 1, bauble = 1},
     bauble_info = {
         action = "repair",
         hotbar = true
@@ -87,8 +89,8 @@ minetest.register_tool("exchangeclone:repair_talisman", {
 })
 
 minetest.register_tool("exchangeclone:gem_of_eternal_density", {
-    description = "Gem of Eternal Density",
-    groups = {disable_repair = 1, bauble = 1}, -- kind of ironic :D
+    description = S("Gem of Eternal Density"),
+    groups = {disable_repair = 1, bauble = 1},
     bauble_info = {
         action = "density",
         hotbar = true

@@ -1,3 +1,5 @@
+local S = minetest.get_translator()
+
 local function create_soil(itemstack, player, pointed_thing)
 	if not pointed_thing.under then return end
 	if not pointed_thing.under.x then return end
@@ -30,7 +32,11 @@ local hoe_function
 if exchangeclone.mcl then
 	hoe_function = create_soil
 else
-	hoe_function = farming.hoe_on_use -- assuming farming exists
+	if farming then
+		hoe_function = farming.hoe_on_use
+	else
+		hoe_function = function(...) end
+	end
 end
 
 exchangeclone.hoe_action = {
@@ -40,27 +46,22 @@ exchangeclone.hoe_action = {
 		if range > 0 then
 			exchangeclone.play_ability_sound(player)
 		end
-		data.player_energy = exchangeclone.get_player_energy(player)
-		data.energy_cost = 0
 		data.itemstack = itemstack
 		return data
 	end,
 	action = function(player, pos, node, data)
 		local new_pointed_thing = {type = "node", under = pos, above = {x=pos.x,y=pos.y+1,z=pos.z}}
-		data.energy_cost = data.energy_cost + 4
 		hoe_function(data.itemstack, player, new_pointed_thing)
 		return data
 	end,
 	end_action = function(player, center, range, data)
 		if range > 0 then
-			exchangeclone.set_player_energy(player, data.player_energy - data.energy_cost)
 			exchangeclone.start_cooldown(player, "hoe", range/4)
 		end
 	end
 }
 
 local hoe_on_place = function(itemstack, player, pointed_thing)
-	
 	local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
 	if click_test ~= false then
 		return click_test
@@ -78,10 +79,10 @@ local hoe_on_place = function(itemstack, player, pointed_thing)
 		local current_name = itemstack:get_name()
 		if string.sub(current_name, -4, -1) == "_3x3" then
 			itemstack:set_name(string.sub(current_name, 1, -5))
-			minetest.chat_send_player(player:get_player_name(), "Single node mode")
+			minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
 		else
 			itemstack:set_name(current_name.."_3x3")
-			minetest.chat_send_player(player:get_player_name(), "3x3 mode")
+			minetest.chat_send_player(player:get_player_name(), S("3x3 mode"))
 		end
 		return itemstack
 	end
@@ -109,7 +110,7 @@ for name, def in pairs(minetest.registered_nodes) do
 end
 
 local hoe_def = {
-	description = "Dark Matter Hoe",
+	description = S("Dark Matter Hammer").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_dark_matter_hoe.png",
 	inventory_image = "exchangeclone_dark_matter_hoe.png",
 	wield_scale = exchangeclone.wield_scale,
@@ -133,13 +134,16 @@ local hoe_def = {
 minetest.register_tool("exchangeclone:dark_matter_hoe", table.copy(hoe_def))
 
 local hoe_3x3_def = table.copy(hoe_def)
+hoe_3x3_def.description = S("Dark Matter Hammer").."\n"..S("3x3 mode")
 hoe_3x3_def.groups.not_in_creative_inventory = 1
 hoe_3x3_def.tool_capabilities.groupcaps.exchangeclone_dirt.times = {[1]=0.4, [2]=0.4, [3]=0.4}
 hoe_3x3_def._mcl_diggroups.exchangeclone_dirt = { speed = 8, level = 7, uses = 0 }
 
 minetest.register_tool("exchangeclone:dark_matter_hoe_3x3", table.copy(hoe_3x3_def))
 
-hoe_def.description = "Red Matter Hoe"
+exchangeclone.register_energy_alias("exchangeclone:dark_matter_hoe", "exchangeclone:dark_matter_hoe_3x3")
+
+hoe_def.description = S("Red Matter Hammer").."\n"..S("Single node mode")
 hoe_def.wield_image = "exchangeclone_red_matter_hoe.png"
 hoe_def.inventory_image = "exchangeclone_red_matter_hoe.png"
 hoe_def.groups = { tool=1, hoe=1, enchantability=0, red_matter_hoe = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1}
@@ -158,11 +162,14 @@ hoe_def._mcl_diggroups = {
 minetest.register_tool("exchangeclone:red_matter_hoe", table.copy(hoe_def))
 
 hoe_3x3_def = table.copy(hoe_def)
+hoe_3x3_def.description = S("Red Matter Hammer").."\n"..S("3x3 mode")
 hoe_3x3_def.groups.not_in_creative_inventory = 1
 hoe_3x3_def.tool_capabilities.groupcaps.exchangeclone_dirt.times = {[1]=0.25, [2]=0.25, [3]=0.25}
 hoe_3x3_def._mcl_diggroups.exchangeclone_dirt = { speed = 9, level = 8, uses = 0 }
 
 minetest.register_tool("exchangeclone:red_matter_hoe_3x3", table.copy(hoe_3x3_def))
+
+exchangeclone.register_energy_alias("exchangeclone:red_matter_hoe", "exchangeclone:red_matter_hoe_3x3")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hoe",

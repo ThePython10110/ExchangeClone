@@ -1,19 +1,19 @@
+local S = minetest.get_translator()
+
 exchangeclone.axe_action = {
-    start_action = function(player, center, range)
+    start_action = function(player, center, range, itemstack)
         if exchangeclone.check_cooldown(player, "axe") then return end
         local data = {}
-        data.player_energy = exchangeclone.get_player_energy(player)
-        data.energy_cost = 0
         if exchangeclone.mcl then
             data.strip = not player:get_player_control().sneak
         end
         if range > 0 or not data.strip then
             exchangeclone.play_ability_sound(player)
         end
+        data.itemstack = itemstack
         return data
     end,
     action = function(player, pos, node, data)
-        if data.energy_cost + 8 > data.player_energy then return end
         local node_def = minetest.registered_items[node.name]
         if (node_def.groups.tree or node_def.groups.leaves) then
             if minetest.is_protected(pos, player:get_player_name()) then
@@ -21,12 +21,10 @@ exchangeclone.axe_action = {
             else
                 if data.strip then
                     if node_def._mcl_stripped_variant ~= nil then
-                        data.energy_cost = data.energy_cost + 4
                         minetest.swap_node(pos, {name=node_def._mcl_stripped_variant, param2=node.param2})
                     end
                 else
-                    data.energy_cost = data.energy_cost + 8
-                    local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_axe")
+                    local drops = minetest.get_node_drops(node.name, data.itemstack)
                     exchangeclone.drop_items_on_player(pos, drops, player)
                     minetest.set_node(pos, {name = "air"})
                 end
@@ -36,7 +34,6 @@ exchangeclone.axe_action = {
     end,
     end_action = function(player, center, range, data)
         if range > 0 or not data.strip then
-            exchangeclone.set_player_energy(player, data.player_energy - data.energy_cost)
             exchangeclone.start_cooldown(player, "axe", range/6)
         end
     end
@@ -60,12 +57,12 @@ local function axe_on_place(itemstack, player, pointed_thing)
 
     local center = player:get_pos()
     if pointed_thing.type == "node" then center = pointed_thing.under end
-    exchangeclone.node_radius_action(player, center, range, exchangeclone.axe_action)
+    exchangeclone.node_radius_action(player, center, range, exchangeclone.axe_action, itemstack)
     return itemstack
 end
 
 minetest.register_tool("exchangeclone:dark_matter_axe", {
-	description = "Dark Matter Axe",
+	description = S("Dark Matter Axe"),
 	wield_image = "exchangeclone_dark_matter_axe.png",
 	inventory_image = "exchangeclone_dark_matter_axe.png",
 	groups = { tool=1, axe=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
@@ -90,7 +87,7 @@ minetest.register_tool("exchangeclone:dark_matter_axe", {
 })
 
 minetest.register_tool("exchangeclone:red_matter_axe", {
-	description = "Red Matter Axe",
+	description = S("Red Matter Axe"),
 	wield_image = "exchangeclone_red_matter_axe.png",
 	inventory_image = "exchangeclone_red_matter_axe.png",
 	groups = { tool=1, axe=1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
