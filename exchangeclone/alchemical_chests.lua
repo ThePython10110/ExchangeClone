@@ -55,6 +55,8 @@ end
 minetest.register_node("exchangeclone:alchemical_chest", {
     description = S("Alchemical Chest"),
     groups = {container = 2, alchemical_chest = 1, cracky = 2, pickaxey = 2},
+    _mcl_hardness = 3,
+	_mcl_blast_resistance = 6,
     on_construct = function(pos)
         local meta = minetest.get_meta(pos)
         local inv = meta:get_inventory()
@@ -136,6 +138,8 @@ for dye_color, color in pairs(colors) do
 
     minetest.register_node(advanced_itemstring, {
         description = S("@1 Advanced Alchemical Chest", color).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
+        _mcl_hardness = 3,
+        _mcl_blast_resistance = 6,
         groups = {container = 2, advanced_alchemical_chest = 1},
         on_construct = alchemical_on_construct(color)
     })

@@ -7,7 +7,7 @@ local formspec =
     exchangeclone.inventory_formspec(0,5)..
     "listring[current_player;main]"..
     "listring[context;main]"..
-    exchangeclone.mcl and mcl_formspec.get_itemslot_bg(4,2,1,1)
+    (exchangeclone.mcl and mcl_formspec.get_itemslot_bg(4,2,1,1) or "")
 
 minetest.register_alias("exchangeclone:energy_collector", "exchangeclone:energy_collector_mk1")
 
@@ -164,6 +164,9 @@ local function on_dig_node(pos, oldnode, oldmetadata, player)
         end
         meta:from_table(meta2)
     end
+    if exchangeclone.pipeworks then
+        pipeworks.after_dig(pos)
+    end
 end
 
 function exchangeclone.register_energy_collector(itemstring, name, amount, modifier, recipe)
@@ -177,7 +180,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
             "exchangeclone_energy_collector_right.png"..modifier,
             "exchangeclone_energy_collector_right.png"..modifier
         },
-        groups = {cracky = 2, container = 2, pickaxey = 2, energy_collector = amount},
+        groups = {cracky = 2, container = 2, pickaxey = 2, energy_collector = amount, tubedevice = 1, tubedevice_receiver = 1},
         _mcl_hardness = 3,
         _mcl_blast_resistance = 6,
         sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
@@ -204,8 +207,12 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
             meta:set_int("collector_amount", amount)
             meta:set_string("exchangeclone_placer", player_name)
             meta:set_string("infotext", name.."\n"..S("Owned by ")..player_name)
+            if exchangeclone.pipeworks then
+                pipeworks.after_place(pos, player, itemstack, pointed_thing)
+            end
         end,
         on_blast = on_blast,
+        on_rotate = exchangeclone.pipeworks and pipeworks.on_rotate,
         allow_metadata_inventory_put = allow_metadata_inventory_put,
         allow_metadata_inventory_move = allow_metadata_inventory_move,
         allow_metadata_inventory_take = allow_metadata_inventory_take,
@@ -214,36 +221,30 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
         output = itemstring,
         recipe = recipe
     })
-end
 
---[[if minetest.get_modpath("pipeworks") then
-    minetest.override_item("exchangeclone:energy_collector", {
-        tube = {
-            input_inventory = "main",
-            connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
-            insert_object = function(pos, node, stack, direction)
-                local meta = minetest.get_meta(pos)
-                local inv = meta:get_inventory()
-                return inv:add_item("main", stack)
-            end,
-            can_insert = function(pos, node, stack, direction)
-                local meta = minetest.get_meta(pos)
-                local inv = meta:get_inventory()
-                if stack:get_name() == "exchangeclone:exchange_orb" then
-                    minetest.log(inv:room_for_item("main", stack))
-                    return inv:room_for_item("main", stack)
-                else
-                    minetest.log("failed")
-                end
-            end,
-        },
-        after_place_node = function(pos, player)
-            pipeworks.after_place(pos)
-        end,
-        after_dig_node = pipeworks.after_dig,
-        on_rotate = pipeworks.on_rotate,
-    })
-end]]
+    if exchangeclone.pipeworks then
+        minetest.override_item(itemstring, {
+            tube = {
+                input_inventory = "main",
+                connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
+                insert_object = function(pos, node, stack, direction)
+                    minetest.log(dump(direction))
+                    local meta = minetest.get_meta(pos)
+                    local inv = meta:get_inventory()
+                    return inv:add_item("main", stack)
+                end,
+                can_insert = function(pos, node, stack, direction)
+                    local meta = minetest.get_meta(pos)
+                    local inv = meta:get_inventory()
+                    if stack:get_name() == "exchangeclone:exchange_orb" then
+                        return inv:room_for_item("main", stack)
+                    end
+                end,
+            },
+            on_rotate = pipeworks.on_rotate,
+        })
+    end
+end
 
 local iron = "default:steelblock"
 local glass = "default:glass"

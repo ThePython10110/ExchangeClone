@@ -155,7 +155,7 @@ minetest.register_node("exchangeclone:constructor", {
         "exchangeclone_constructor_right.png",
         "exchangeclone_constructor_right.png"
     },
-    groups = {cracky = 2, container = 4, pickaxey = 2},
+    groups = {cracky = 2, container = 4, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
     sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
@@ -180,6 +180,9 @@ minetest.register_node("exchangeclone:constructor", {
     after_place_node = function(pos, player, itemstack, pointed_thing)
         local meta = minetest.get_meta(pos)
         meta:set_string("exchangeclone_placer", player:get_player_name())
+        if exchangeclone.pipeworks then
+            pipeworks.after_place(pos, player, itemstack, pointed_thing)
+        end
     end,
     on_construct = on_construct,
     on_metadata_inventory_move = constructor_action,
@@ -194,6 +197,36 @@ minetest.register_node("exchangeclone:constructor", {
     allow_metadata_inventory_take = allow_metadata_inventory_take,
     on_timer = constructor_action,
 })
+
+if exchangeclone.pipeworks then
+    local function get_list(direction)
+        return (direction.y == 0 and "src") or "fuel"
+    end
+    minetest.override_item("exchangeclone:constructor", {
+        tube = {
+            input_inventory = "dst",
+            connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
+            insert_object = function(pos, node, stack, direction)
+                local meta = minetest.get_meta(pos)
+                local inv = meta:get_inventory()
+                minetest.get_node_timer(pos):start(1)
+                return inv:add_item(get_list(direction), stack)
+            end,
+            can_insert = function(pos, node, stack, direction)
+                local meta = minetest.get_meta(pos)
+                local inv = meta:get_inventory()
+                if get_list(direction) == "fuel" then
+                    if stack:get_name() == "exchangeclone:exchange_orb" then
+                        return inv:room_for_item("fuel", stack)
+                    end
+                else
+                    return inv:room_for_item("src", stack)
+                end
+            end,
+        },
+        on_rotate = pipeworks.on_rotate,
+    })
+end
 
 local recipe_ingredient = "default:pick_diamond"
 

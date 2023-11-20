@@ -170,8 +170,10 @@ end
 
 -- Set a player's personal energy
 function exchangeclone.set_player_energy(player, amount)
+    amount = tonumber(amount)
     if not (player and amount) then return end
     if amount < 0 or amount > exchangeclone.limit then return end
+    amount = math.floor(amount*4)/4 -- Floor to nearest .25
     player:get_meta():set_string("exchangeclone_stored_energy", tonumber(amount))
     exchangeclone.update_hud(player)
 end
@@ -179,7 +181,7 @@ end
 -- Add to a player's personal energy (amount can be negative)
 function exchangeclone.add_player_energy(player, amount)
     if not (player and amount) then return end
-    exchangeclone.set_player_energy(exchangeclone.get_player_energy(player) + amount)
+    exchangeclone.set_player_energy(player, (exchangeclone.get_player_energy(player) or 0) + amount)
 end
 
 -- Through trial and error, I have found that this number (1 trillion) works the best.
@@ -611,3 +613,53 @@ function exchangeclone.check_cooldown(player, name)
         return exchangeclone.cooldowns[player_name][name]
     end
 end
+
+-- Chat commands:
+minetest.register_chatcommand("add_energy", {
+    params = "[player] <value>",
+    description = "Add to a player's personal energy (player is self if not included, value can be negative)",
+    privs = {privs = true},
+    func = function(name, param)
+        local split_param = exchangeclone.split(param, " ")
+        local player
+        local value
+        if #split_param == 1 then
+            player = minetest.get_player_by_name(name)
+            value = split_param[1]
+        end
+        if #split_param == 2 then
+            player = minetest.get_player_by_name(split_param[1])
+            value = split_param[2]
+        end
+        if not (player and value) then
+            minetest.chat_send_player(name, "Bad command. Use /add_energy [player] [value] or /add_energy [value]")
+            return
+        end
+        exchangeclone.add_player_energy(player, tonumber(value))
+    end
+})
+
+minetest.register_chatcommand("set_energy", {
+    params = "[player] <value>",
+    description = "Set a player's personal energy (player is self if not included; use 'limit' as value to set it to maximum)",
+    privs = {privs = true},
+    func = function(name, param)
+        local split_param = exchangeclone.split(param, " ")
+        local player
+        local value
+        if #split_param == 1 then
+            player = minetest.get_player_by_name(name)
+            value = split_param[1]
+        end
+        if #split_param == 2 then
+            player = minetest.get_player_by_name(split_param[1])
+            value = split_param[2]
+        end
+        if not (player and value) then
+            minetest.chat_send_player(name, "Bad command. Use '/set_energy player value' or '/set_energy value'")
+            return
+        end
+        if value == "limit" then value = exchangeclone.limit end
+        exchangeclone.set_player_energy(player, tonumber(value))
+    end
+})

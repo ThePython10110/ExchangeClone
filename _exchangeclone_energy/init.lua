@@ -141,6 +141,7 @@ minetest.register_on_mods_loaded(function()
     if exchangeclone.mcl then
         for i = 0, 31 do
             exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i)
+            exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i.."_lodestone")
         end
         for i = 0, 63 do
             exchangeclone.register_energy_alias("mcl_clock:clock", "mcl_clock:clock_"..i)
@@ -184,7 +185,7 @@ minetest.register_on_mods_loaded(function()
     end
 
     for i = 1, exchangeclone.num_passes do
-        minetest.log("action", "ExchangeClone: \tPASS #"..i..":")
+        minetest.log("action", "ExchangeClone: \tPASS #"..i)
         if auto == {} then break end
         for itemstring, _ in pairs(auto) do
             local cheapest = get_cheapest_recipe(exchangeclone.recipes[itemstring])

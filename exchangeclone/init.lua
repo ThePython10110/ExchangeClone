@@ -10,6 +10,7 @@ end
 
 exchangeclone.mineclonia = minetest.get_game_info().id == "mineclonia" -- if exchangeclone.mineclonia, exchangeclone.mcl is also defined.
 
+exchangeclone.pipeworks = minetest.get_modpath("pipeworks")
 
 exchangeclone.orb_max = 51200000 -- Max capacity of Klein Star Omega in ProjectE
 
@@ -18,7 +19,7 @@ local modpath = minetest.get_modpath("exchangeclone")
 exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000
 exchangeclone.num_passes = minetest.settings:get("exchangeclone.num_passes") or 10
 
-minetest.log("action", "Loading Exchangeclone")
+minetest.log("action", "ExchangeClone: Registering own stuff")
 
 dofile(modpath.."/lib.lua")
 dofile(modpath.."/constructor.lua")
@@ -52,3 +53,5 @@ dofile(modpath.."/infinite_food.lua")
 dofile(modpath.."/alchemical_chests.lua")
 dofile(modpath.."/transmutation_table.lua")
 dofile(modpath.."/furnaces.lua")
+
+minetest.log("action", "ExchangeClone: Done.")

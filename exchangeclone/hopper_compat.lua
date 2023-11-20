@@ -7,16 +7,20 @@ hopper:add_container({
 	{"side", "group:container=2", "main"},
 })
 
--- Intentionally skipping 3, because I don't know if it would still block shulkers
-
--- If this doesn't start the node timer for the furnace, it won't work.
 hopper:add_container({
-	{"top", "group:container=4", "src"},
-	{"side", "group:container=4", "fuel"},
-	{"bottom", "group:container=4", "dst"},
+	{"top", "group:container=3", "main"},
+	{"bottom", "group:container=3", "main"},
+	{"side", "group:container=3", "main"},
 })
 
--- Hoppers will only be able to insert into one side of a double chest (unless you have 1 hopper per side)
+-- I assumed "top" meant when it's on top of a node, not when there's a node on top of it. Whoops.
+hopper:add_container({
+	{"top", "group:container=4", "dst"},
+	{"side", "group:container=4", "fuel"},
+	{"bottom", "group:container=4", "src"},
+})
+
+-- Hoppers will only be able to insert into one side of a double chest, I think (unless you have 1 hopper per side)
 hopper:add_container({
 	{"top", "group:container=5", "main"},
 	{"bottom", "group:container=5", "main"},

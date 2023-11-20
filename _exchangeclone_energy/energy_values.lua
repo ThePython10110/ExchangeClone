@@ -1,21 +1,17 @@
--- This lets mods add things to these lists if they want.
-exchangeclone.group_values = exchangeclone.group_values or {}
-exchangeclone.energy_values = exchangeclone.energy_values or {}
-
 if exchangeclone.mcl then
     --[[ Groups are organized so that order matters. Groups that are lower on the
     list will have their energies applied later, making them  higher priority. It's
     unnecessary for single items because order doesn't matter for them. The NO_GROUP
     value is for values that are not in any other group, but adding this means that
     NO items will have their energy calculated by recipes. ]]
-    exchangeclone.group_values = {
+    table.insert_all(exchangeclone.group_values, {
         {"flower", 8},
         {"mushroom", 32},
         {"smithing_template", 8192*7+1792*2},
         {"decorated_pot_recipe", 4}, -- has to be 4 because of brick.
-    }
+    })
 
-    exchangeclone.energy_values = {
+    for itemstring, energy_value in pairs({
 
         ["fake_liquids:bucket_fake_lava"] = 832,
         ["fake_liquids:bucket_fake_water"] = 960,
@@ -277,8 +273,12 @@ if exchangeclone.mcl then
         ["meat_blocks:meatball"] = 64,
         ["mesecons:redstone"] = 64,
         ["useful_green_potatoes:useful_green_potato"] = 256,
-    }
-    exchangeclone.mcl_potion_data = { -- automatically assumes base cost is awkward potion if not specified
+    }) do
+        exchangeclone.energy_values[itemstring] = exchangeclone.energy_values[itemstring] or energy_value
+    end
+
+    exchangeclone.mcl_potion_data = exchangeclone.mcl_potion_data or {}
+    table.insert_all(exchangeclone.mcl_potion_data, { -- automatically assumes base cost is awkward potion if not specified
         {name = "water", ingredient_cost = 0, custom_base_cost = 0, no_arrow = true},
         {name = "awkward", ingredient_cost = 0, no_arrow = true},
         {name = "fire_resistance", ingredient_cost = 768, plus = true},
@@ -295,9 +295,9 @@ if exchangeclone.mcl then
         {name = "water_breathing", ingredient_cost = 64, plus = true},
         {name = "invisibility", ingredient_cost = 192, custom_base_cost = 623, plus = true},
         {name = "withering", ingredient_cost = 128, plus = true, two = true}
-    }
+    })
 else
-    exchangeclone.energy_values = {
+    for itemstring, energy_value in pairs({
         ["bones:bones"] = 4,
 
         ["bucket:bucket_lava"] = 896,
@@ -376,7 +376,9 @@ else
         ["technic:zinc_ingot"] = 512,
 
         ["useful_green_potatoes:useful_green_potato"] = 256
-    }
+    }) do
+        exchangeclone.energy_values[itemstring] = exchangeclone.energy_values[itemstring] or energy_value
+    end
 
     exchangeclone.group_values = {
         {"flower", 32},

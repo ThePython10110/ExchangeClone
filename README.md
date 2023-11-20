@@ -56,18 +56,17 @@ Dependencies: Minetest Game or MineClone.
 
 <details><summary><h1>Changelog:</h1></summary>
 
-### 6.0 (interestingness depends on several things)
+### 6.0)
 * New Features:
     * Automatically generated energy values! Based on crafting and cooking recipes.
         * For reasons beyond my control, things kind of vary a bit between loads because of which items are added to the `minetest.registered_items` first (which is kind of random). For instance, the Lookup Tool in MineClone2 might sometimes have an energy value of 5 (1 stick + 1 glass) or 16 (4 sticks) depending on whether the energy value for glass is added first or not. At least, I assume that's the reason.
         * Depending on the number of items you have, this could increase loading time.
-        * Technic recipe types (grinding, alloying, etc.) now also work, as long as their `output_size` is 1.
+        * Technic recipe types (grinding, alloying, etc.) will also work, as long as their `output_size` is 1.
     * Added energy values for Basic Materials and Technic!
     * Infinite food (costs 64 energy to use, equal to steak)
     * Alchemical Chests, Alchemical Bags, and Advanced Alchemical Chests
-    * Support for pipeworks and (non-MCL) hoppers!
-    * Repair Talisman
-    * Covalence Dust (Aux1+right-click with Philosopher's Stone to open repairer, only tools with an energy value can be repaired)
+    * Support for Pipeworks and non-MCL hoppers (MineClone hoppers already worked)!
+    * Covalence Dust (Aux1+right-click with Philosopher's Stone to open repairing menu; only tools with an energy value can be repaired)
     * Mind, Life, Body, and Soul Stones (although MTG only has the soul stone).
     * Mercurial Eye (maybe)
     * Chat commands to set/add/remove energy from a player (requires `privs` privilege):
@@ -86,6 +85,7 @@ Dependencies: Minetest Game or MineClone.
         * It is now impossible to transmute between bedrock and barriers (MCL). I thought it was funny originally, but now I'm realizing that I don't want this to be annoying to people who run servers (are there any servers with this mod?)
     * It now costs 4 dark/red matter to make a block, which is great news if you already have some (because they're now worth more), but not so great if you don't.
     * Tool abilities now cost nothing (to match ProjectE).
+    * Tool abilities now take upgrades into account (silk touch, fortune, etc.) except for the sword AOE ability (which is annoying).
 * Bugfixes:
     * Fixed potion energy values
     * Fixed Red Matter Shield recipe

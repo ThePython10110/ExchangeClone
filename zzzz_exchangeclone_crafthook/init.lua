@@ -1,4 +1,4 @@
-exchangeclone = {recipes = {}}
+exchangeclone = {recipes = {}, energy_values = {}, group_values = {}}
 
 local old_func = minetest.register_craft
 function minetest.register_craft(arg, ...)
