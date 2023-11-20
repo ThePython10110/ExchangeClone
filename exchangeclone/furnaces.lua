@@ -126,10 +126,12 @@ end]]
 --
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-	local name = player:get_player_name()
-	if minetest.is_protected(pos, name) then
-		minetest.record_protection_violation(pos, name)
-		return 0
+	if player and player.get_player_name then
+		local name = player:get_player_name()
+		if minetest.is_protected(pos, name) then
+			minetest.record_protection_violation(pos, name)
+			return 0
+		end
 	end
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
@@ -482,6 +484,9 @@ if minetest.get_modpath("screwdriver") then
 			return
 		end
 		spawn_flames(pos, node.param2)
+		if exchangeclone.pipeworks then
+			pipeworks.on_rotate(pos)
+		end
 	end
 end
 
@@ -496,7 +501,7 @@ local inactive_def = {
 		"exchangeclone_dark_matter_furnace.png",
 	},
 	paramtype2 = "facedir",
-	groups = {pickaxey=5, cracky = 3, container=4, material_stone=1, level = get_level(4), exchangeclone_furnace = 1},
+	groups = {pickaxey=5, cracky = 3, container=4, material_stone=1, level = get_level(4), exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 
@@ -524,6 +529,9 @@ local inactive_def = {
 			end
 		end
 		meta:from_table(meta2)
+		if exchangeclone.pipeworks then
+			pipeworks.after_dig(pos)
+		end
 	end,
 
 	on_construct = function(pos)
@@ -570,6 +578,7 @@ local inactive_def = {
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 75,
 	on_rotate = on_rotate,
+	after_place_node = exchangeclone.pipeworks and pipeworks.after_place
 }
 
 local active_def = {
@@ -586,7 +595,7 @@ local active_def = {
 	parammatter_type = "light",
 	light_source = LIGHT_ACTIVE_FURNACE,
 	drop = "exchangeclone:dark_matter_furnace",
-	groups = {pickaxey=5, not_in_creative_inventory = 1, container = 4, material_stone=1, cracky = 3, level = get_level(4), exchangeclone_furnace = 1},
+	groups = {pickaxey=5, not_in_creative_inventory = 1, container = 4, material_stone=1, cracky = 3, level = get_level(4), exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	on_timer = furnace_node_timer,
@@ -614,6 +623,9 @@ local active_def = {
 			end
 		end
 		meta:from_table(meta2)
+		if exchangeclone.pipeworks then
+			pipeworks.after_dig(pos)
+		end
 	end,
 
 	on_construct = function(pos)
@@ -636,7 +648,37 @@ local active_def = {
 	_mcl_hardness = 75,
 	on_rotate = on_rotate,
 	after_rotate = after_rotate_active,
+	after_place_node = exchangeclone.pipeworks and pipeworks.after_place
 }
+
+if exchangeclone.pipeworks then
+	local function get_list(direction)
+		return (direction.y == 0 and "src") or "fuel"
+	end
+	for _, table in pairs({inactive_def, active_def}) do
+		table.tube = {
+			input_inventory = "dst",
+			connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
+			insert_object = function(pos, node, stack, direction)
+				local meta = minetest.get_meta(pos)
+				local inv = meta:get_inventory()
+				local result = inv:add_item(get_list(direction), stack)
+				if result then
+					local func = minetest.registered_items[node.name].on_metadata_inventory_put
+					if func then func(pos) end
+				end
+				return result
+			end,
+			can_insert = function(pos, node, stack, direction)
+				local meta = minetest.get_meta(pos)
+				local inv = meta:get_inventory()
+				if allow_metadata_inventory_put(pos, get_list(direction), 1, stack) > 0 then
+					return true
+				end
+			end
+		}
+	end
+end
 
 minetest.register_node("exchangeclone:dark_matter_furnace", table.copy(inactive_def))
 minetest.register_node("exchangeclone:red_matter_furnace", table.copy(inactive_def))
@@ -653,7 +695,7 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		"exchangeclone_red_matter_block.png",
 		"exchangeclone_red_matter_furnace.png",
 	},
-	groups = {pickaxey=5, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2},
+	groups = {pickaxey=5, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
 	_mcl_hardness = 100,
 
 	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
@@ -711,6 +753,9 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 			end
 		end
 		meta:from_table(meta2)
+		if exchangeclone.pipeworks then
+			pipeworks.after_dig(pos)
+		end
 	end,
 
 })
@@ -726,7 +771,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		"exchangeclone_red_matter_furnace.png",
 	},
 	drop = "exchangeclone:red_matter_furnace",
-	groups = {pickaxey=5, not_in_creative_inventory = 1, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2},
+	groups = {pickaxey=5, not_in_creative_inventory = 1, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
 	_mcl_hardness = 100,
 
 	on_construct = function(pos)
@@ -761,8 +806,10 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 			end
 		end
 		meta:from_table(meta2)
+		if exchangeclone.pipeworks then
+			pipeworks.after_dig(pos)
+		end
 	end,
-
 })
 
 minetest.register_craft({

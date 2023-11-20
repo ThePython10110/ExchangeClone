@@ -7,7 +7,7 @@ local function read_orb_charge(itemstack, player, pointed_thing)
     end
 
     local stored = exchangeclone.get_orb_itemstack_energy(itemstack)
-    minetest.chat_send_player(player:get_player_name(), S("Current Charge: @1", stored))
+    minetest.chat_send_player(player:get_player_name(), S("Current Charge: @1", exchangeclone.format_number(stored)))
     return itemstack
 end
 

@@ -104,7 +104,7 @@ local function on_construct(pos)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-    if minetest.is_protected(pos, player:get_player_name()) then
+    if player and player.get_player_name and minetest.is_protected(pos, player:get_player_name()) then
         return 0
     end
     if listname == "fuel" then
@@ -188,7 +188,6 @@ minetest.register_node("exchangeclone:constructor", {
     on_metadata_inventory_move = constructor_action,
     on_metadata_inventory_put = constructor_action,
     on_metadata_inventory_take = function(pos, listname, index, stack, player)
-        if listname == "fuel" then return end
         constructor_action(pos)
     end,
     on_blast = on_blast,
@@ -209,8 +208,11 @@ if exchangeclone.pipeworks then
             insert_object = function(pos, node, stack, direction)
                 local meta = minetest.get_meta(pos)
                 local inv = meta:get_inventory()
-                minetest.get_node_timer(pos):start(1)
-                return inv:add_item(get_list(direction), stack)
+                local result = inv:add_item(get_list(direction), stack)
+                if result then
+                    constructor_action(pos)
+                end
+                return result
             end,
             can_insert = function(pos, node, stack, direction)
                 local meta = minetest.get_meta(pos)

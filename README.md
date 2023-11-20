@@ -61,11 +61,11 @@ Dependencies: Minetest Game or MineClone.
     * Automatically generated energy values! Based on crafting and cooking recipes.
         * For reasons beyond my control, things kind of vary a bit between loads because of which items are added to the `minetest.registered_items` first (which is kind of random). For instance, the Lookup Tool in MineClone2 might sometimes have an energy value of 5 (1 stick + 1 glass) or 16 (4 sticks) depending on whether the energy value for glass is added first or not. At least, I assume that's the reason.
         * Depending on the number of items you have, this could increase loading time.
-        * Technic recipe types (grinding, alloying, etc.) will also work, as long as their `output_size` is 1.
+        * Technic recipe types (grinding, alloying, etc.) will also work, as long as their `output_size` is 1 and my PR gets merged.
     * Added energy values for Basic Materials and Technic!
     * Infinite food (costs 64 energy to use, equal to steak)
     * Alchemical Chests, Alchemical Bags, and Advanced Alchemical Chests
-    * Support for Pipeworks and non-MCL hoppers (MineClone hoppers already worked)!
+    * Support for Pipeworks and Hopper mods! (MCL hoppers already worked)
     * Covalence Dust (Aux1+right-click with Philosopher's Stone to open repairing menu; only tools with an energy value can be repaired)
     * Mind, Life, Body, and Soul Stones (although MTG only has the soul stone).
     * Mercurial Eye (maybe)
@@ -76,7 +76,7 @@ Dependencies: Minetest Game or MineClone.
     * Energy values are now in `_exchangeclone_energy/energy_values.lua`, and are laid out differently, and aliases now work.
     * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s). *Every single mod* in the modpack is required, regardless of what it says the dependencies are. Disable and then enable it for everything to work correctly.
     * The default energy value is no longer 1 but none.
-    * The 2-billion-ish personal energy limit is has been increased to 1,000,000,000,000 (1 trillion). Any higher and there are precision-based exploits like being able to create infinite glass panes when you have enough energy.
+    * The 2-billion-ish personal energy limit is has been increased to 1,000,000,000,000 (1 trillion). Any higher and there are precision-based exploits like being able to create infinite glass panes (or really anything with an energy value less than 1) when you have enough energy. It's still a 50,000% increase.
     * Added comma separators when energy is shown (to make it easier to identify large numbers)
     * Tools that break multiple nodes at once (hammers, hoes, katar, and morningstar) use a better method that may (?) slightly decrease lag.
     * Ender pearls can now be crafted with 4 iron and the Philosopher's Stone.

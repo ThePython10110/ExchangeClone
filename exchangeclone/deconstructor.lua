@@ -106,8 +106,7 @@ local function on_construct(pos)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-
-    if minetest.is_protected(pos, player:get_player_name()) then
+    if player and player.get_player_name and minetest.is_protected(pos, player:get_player_name()) then
         return 0
     end
     if listname == "fuel" then
@@ -156,7 +155,7 @@ minetest.register_node("exchangeclone:deconstructor", {
         "exchangeclone_deconstructor_right.png",
         "exchangeclone_deconstructor_right.png"
     },
-    groups = {cracky = 2, container = 4, pickaxey = 2},
+    groups = {cracky = 2, container = 4, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
     sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
@@ -177,17 +176,22 @@ minetest.register_node("exchangeclone:deconstructor", {
             end
             meta:from_table(meta2)
         end
+        if exchangeclone.pipeworks then
+            pipeworks.after_dig(pos)
+        end
 	end,
     after_place_node = function(pos, player, itemstack, pointed_thing)
         local meta = minetest.get_meta(pos)
         meta:set_string("exchangeclone_placer", player:get_player_name())
+        if exchangeclone.pipeworks then
+            pipeworks.after_place(pos, player, itemstack, pointed_thing)
+        end
     end,
     on_timer = deconstructor_action,
     on_construct = on_construct,
     on_metadata_inventory_move = deconstructor_action,
     on_metadata_inventory_put = deconstructor_action,
     on_metadata_inventory_take = function(pos, listname, index, stack, player)
-        if listname == "fuel" then return end
         deconstructor_action(pos)
     end,
     on_blast = on_blast,
@@ -195,6 +199,39 @@ minetest.register_node("exchangeclone:deconstructor", {
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
 })
+
+if exchangeclone.pipeworks then
+    local function get_list(direction)
+        return (direction.y == 0 and "src") or "fuel"
+    end
+    minetest.override_item("exchangeclone:deconstructor", {
+        tube = {
+            input_inventory = "fuel",
+            connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
+            insert_object = function(pos, node, stack, direction)
+                local meta = minetest.get_meta(pos)
+                local inv = meta:get_inventory()
+                local result = inv:add_item(get_list(direction), stack)
+                if result then
+                    deconstructor_action(pos)
+                end
+                return result
+            end,
+            can_insert = function(pos, node, stack, direction)
+                local meta = minetest.get_meta(pos)
+                local inv = meta:get_inventory()
+                if get_list(direction) == "fuel" then
+                    if stack:get_name() == "exchangeclone:exchange_orb" then
+                        return inv:room_for_item("fuel", stack)
+                    end
+                else
+                    return inv:room_for_item("src", stack)
+                end
+            end,
+        },
+        on_rotate = pipeworks.on_rotate,
+    })
+end
 
 local recipe_ingredient = "default:furnace"
 

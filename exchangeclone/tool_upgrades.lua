@@ -94,7 +94,7 @@ end
 
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-    if minetest.is_protected(pos, player:get_player_name()) then
+    if player and player.get_player_name and minetest.is_protected(pos, player:get_player_name()) then
         return 0
     end
     if listname == "fuel" then
@@ -185,7 +185,7 @@ minetest.register_node("exchangeclone:upgrader", {
         meta:set_string("infotext", "Upgrader")
         meta:set_string("formspec", upgrader_formspec)
     end,
-	groups = {pickaxey=5, material_stone=1, cracky = 3, container = 4, level = get_level(4)}, --ridiculous workaround
+	groups = {pickaxey=5, material_stone=1, cracky = 3, container = 4, level = get_level(4), tubedevice = 1, tubedevice_receiver = 1},
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
     allow_metadata_inventory_put = allow_metadata_inventory_put,
@@ -198,6 +198,33 @@ minetest.register_node("exchangeclone:upgrader", {
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 75,
 })
+
+if exchangeclone.pipeworks then
+	local function get_list(direction)
+		return (direction.y == 0 and "src") or "fuel"
+	end
+    minetest.override_item("exchangeclone:upgrader", {tube = {
+        input_inventory = "dst",
+        connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
+        insert_object = function(pos, node, stack, direction)
+            local meta = minetest.get_meta(pos)
+            local inv = meta:get_inventory()
+            local result = inv:add_item(get_list(direction), stack)
+            if result then
+                local func = minetest.registered_items[node.name].on_metadata_inventory_put
+                if func then func(pos) end
+            end
+            return result
+        end,
+        can_insert = function(pos, node, stack, direction)
+            local meta = minetest.get_meta(pos)
+            local inv = meta:get_inventory()
+            if allow_metadata_inventory_put(pos, get_list(direction), 1, stack) > 0 then
+                return true
+            end
+        end
+    }})
+end
 
 minetest.register_craft({
     output = "exchangeclone:upgrader",
