@@ -1,22 +1,22 @@
 local S = minetest.get_translator()
 
 local colors = {
-    red = "Red",
-    orange = "Orange",
-    yellow = "Yellow",
-    green = "Lime",
-    dark_green = "Green",
-    cyan = "Cyan",
-    light_blue = "Light Blue",
-    blue = "Blue",
-    purple = "Purple",
-    magenta = "Magenta",
-    pink = "Pink",
-    black = "Black",
-    white = "White",
-    silver = exchangeclone.mcl and "Light Gray",
-    grey = "Gray",
-    brown = "Brown",
+    red = {"Red", "^[multiply:#990000"},
+    orange = {"Orange", "^[multiply:#99ff00"},
+    yellow = {"Yellow", "^[multiply:#ffff00"},
+    green = {"Lime", "^[multiply:#00ff00"},
+    dark_green = {"Green", "^[multiply:#007700"},
+    cyan = {"Cyan", "^[multiply:#00ffff"},
+    light_blue = {"Light Blue", "^[multiply:#8888ff"},
+    blue = {"Blue", "^[multiply:#0000ff"},
+    purple = {"Purple", "^[multiply:#9900ff"},
+    magenta = {"Magenta", "^[multiply:#ff00ff"},
+    pink = {"Pink", "^[multiply:#ff5599"},
+    black = {"Black", "^[invert:rgb"},
+    white = {"White", ""},
+    silver = exchangeclone.mcl and {"Light Gray", "^[multiply:#aaaaaa"},
+    grey = {"Gray", "^[multiply:#777777"},
+    brown = {"Brown", "^[multiply:#995500"},
 }
 
 -- color is nil for regular alchemical chests (not advanced/bags)
@@ -57,6 +57,15 @@ minetest.register_node("exchangeclone:alchemical_chest", {
     groups = {container = 2, alchemical_chest = 1, cracky = 2, pickaxey = 2},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
+    paramtype2 = "4dir",
+	tiles = {
+		"exchangeclone_alchemical_chest_top.png",
+		"exchangeclone_alchemical_chest_bottom.png",
+		"exchangeclone_alchemical_chest_side.png",
+		"exchangeclone_alchemical_chest_side.png",
+		"exchangeclone_alchemical_chest_side.png",
+		"exchangeclone_alchemical_chest_front.png",
+	},
     on_construct = function(pos)
         local meta = minetest.get_meta(pos)
         local inv = meta:get_inventory()
@@ -81,15 +90,15 @@ minetest.register_craft({
 
 minetest.register_on_joinplayer(function(player, last_login)
     local inv = player:get_inventory()
-    for _, color in pairs(colors) do
-        local codified_color = string.lower(color):gsub(" ", "_")
+    for _, color_data in pairs(colors) do
+        local codified_color = string.lower(color_data[1]):gsub(" ", "_")
         inv:set_size(codified_color.."_alchemical_inventory", 104)
         inv:set_width(codified_color.."_alchemical_inventory", 13)
     end
 end)
 
-for dye_color, color in pairs(colors) do
-    local codified_color = string.lower(color):gsub(" ", "_")
+for dye_color, color_data in pairs(colors) do
+    local codified_color = string.lower(color_data[1]):gsub(" ", "_")
     local bag_itemstring = "exchangeclone:"..codified_color.."_alchemical_bag"
     local advanced_itemstring = "exchangeclone:"..codified_color.."_advanced_alchemical_chest"
     local wool_itemstring = (exchangeclone.mcl and "mcl_wool:" or "wool:")..dye_color
@@ -104,16 +113,18 @@ for dye_color, color in pairs(colors) do
         and minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "advanced_alchemical_chest") > 0 then
             --minetest.log(advanced_itemstring)
             minetest.set_node(pointed_thing.under, {name=advanced_itemstring})
-            local on_construct = alchemical_on_construct(color)
+            local on_construct = alchemical_on_construct(color_data[1])
             on_construct(pointed_thing.under)
             return
         else
-            minetest.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color))
+            minetest.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color_data[1]))
         end
     end
 
     minetest.register_tool(bag_itemstring, {
-        description = S("@1 Alchemical Bag", S(color)),
+        description = S("@1 Alchemical Bag", S(color_data[1])),
+        inventory_image = "exchangeclone_alchemical_bag.png"..color_data[2],
+        wield_image = "exchangeclone_alchemical_bag.png"..color_data[2],
         groups = {disable_repair = 1, alchemical_bag = 1},
         on_secondary_use = alchemical_bag_action,
         on_place = alchemical_bag_action
@@ -137,11 +148,11 @@ for dye_color, color in pairs(colors) do
     })
 
     minetest.register_node(advanced_itemstring, {
-        description = S("@1 Advanced Alchemical Chest", color).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
+        description = S("@1 Advanced Alchemical Chest", S(color_data[1])).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
         _mcl_hardness = 3,
         _mcl_blast_resistance = 6,
         groups = {container = 2, advanced_alchemical_chest = 1},
-        on_construct = alchemical_on_construct(color)
+        on_construct = alchemical_on_construct(color_data[1])
     })
 
     minetest.register_craft({

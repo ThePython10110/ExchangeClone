@@ -336,6 +336,7 @@ exchangeclone.energy_aliases = {}
 -- <itemstring> will be treated as <alias> in Deconstructors, Constructors, Transmutation Table(t)s, etc.
 -- When you put <itemstring> into a TT, you will learn <alias> instead.
 function exchangeclone.register_energy_alias_force(alias, itemstring)
+    if alias == itemstring then return end
     exchangeclone.energy_aliases[itemstring] = alias
 end
 
@@ -345,12 +346,12 @@ function exchangeclone.register_energy_alias(alias, itemstring)
     end
 end
 
--- Returns the correct itemstring, handling aliases.
+-- Returns the correct itemstring, handling both Minetest and Exchangeclone aliases.
 function exchangeclone.handle_alias(item)
     item = ItemStack(item)
     if not item:is_empty() then
-        local de_aliased = exchangeclone.energy_aliases[item:get_name()] or item:get_name()
-        return ItemStack(de_aliased):get_name() -- Not at all sure if this is necessary to resolve MT aliases
+        local de_aliased = exchangeclone.energy_aliases[item:get_name()] or item:get_name() -- Resolve ExchangeClone aliases
+        return ItemStack(de_aliased):get_name() -- Resolve MT aliases
     end
 end
 

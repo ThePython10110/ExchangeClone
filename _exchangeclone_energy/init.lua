@@ -224,7 +224,6 @@ minetest.register_on_mods_loaded(function()
         -- Recovery compasses use a random compass frame for the crafting recipe... Incredibly irritating.
         for i = 0, 31 do
             if exchangeclone.get_item_energy("mcl_compass:"..i.."_recovery") then
-                minetest.log(i)
                 for j = 0, 31 do
                     exchangeclone.register_energy_alias("mcl_compass:"..i.."_recovery", "mcl_compass:"..j.."_recovery")
                 end
