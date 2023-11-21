@@ -217,7 +217,6 @@ if exchangeclone.pipeworks then
             return result
         end,
         can_insert = function(pos, node, stack, direction)
-            local meta = minetest.get_meta(pos)
             if allow_metadata_inventory_put(pos, get_list(direction), 1, stack) > 0 then
                 return true
             end
