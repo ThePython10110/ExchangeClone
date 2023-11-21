@@ -56,6 +56,9 @@ Dependencies: Minetest Game or MineClone.
 
 <details><summary><h1>Changelog:</h1></summary>
 
+### 5.4
+* Fixed a minor bug with the Energy Collector (thanks @programmerjake!)
+
 ### 5.3
 * Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
 
