@@ -95,7 +95,9 @@ local function on_timer(pos, elapsed)
         using_orb = false
     end
 
-    if minetest.get_natural_light(above) >= 14 then
+    local light = minetest.get_natural_light(above)
+
+    if light and light >= 14 then
         if check_for_furnaces(pos, 1, true) then
             -- do nothing, energy is being used for the furnace.
             return true
