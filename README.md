@@ -91,6 +91,9 @@ Dependencies: Minetest Game or MineClone.
     * Fixed Red Matter Shield recipe
     * Fixed other modes of DM/RM tools not having energy values
 
+### 5.4
+* Fixed a minor bug with the Energy Collector (thanks @programmerjake!)
+
 ### 5.3
 * Bugfixes
     * Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
