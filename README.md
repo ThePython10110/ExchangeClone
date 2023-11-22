@@ -56,7 +56,7 @@ Dependencies: Minetest Game or MineClone.
 
 <details><summary><h1>Changelog:</h1></summary>
 
-### 6.0)
+### v6.0
 * New Features:
     * Automatically generated energy values! Based on crafting and cooking recipes.
         * For reasons beyond my control, things kind of vary a bit between loads because of which items are added to the `minetest.registered_items` first (which is kind of random). For instance, the Lookup Tool in MineClone2 might sometimes have an energy value of 5 (1 stick + 1 glass) or 16 (4 sticks) depending on whether the energy value for glass is added first or not. At least, I assume that's the reason.
@@ -72,11 +72,17 @@ Dependencies: Minetest Game or MineClone.
     * Chat commands to set/add/remove energy from a player (requires `privs` privilege):
         * `/add_energy [player] value` (player defaults to self, value can be negative)
         * `/set_energy [player] value` (player defaults to self)
+    * Added `exchangeclone.register_energy_alias(alias, itemstring)` function, which allow items to be treated as other items.
 * Changes:
     * Energy values are now in `_exchangeclone_energy/energy_values.lua`, and are laid out differently, and aliases now work.
     * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s). *Every single mod* in the modpack is required, regardless of what it says the dependencies are. Disable and then enable it for everything to work correctly.
     * The default energy value is no longer 1 but none.
     * The 2-billion-ish personal energy limit is has been increased to 1,000,000,000,000 (1 trillion). Any higher and there are precision-based exploits like being able to create infinite glass panes (or really anything with an energy value less than 1) when you have enough energy. It's still a 50,000% increase.
+    * ExchangeClone's energy values now (mostly) match ProjectE's, with a few minor differences.
+        * Emeralds are still worth less than diamonds, mostly due to villager trades.
+        * Dyes are worth different amounts based on their crafting recipes, so different colors of things are worth different amounts.
+        * Since fractional energy values are allowed, some energy values may be slightly different.
+    * Energy values are now multiples of 0.05 instead of 0.25, for no real reason.
     * Added comma separators when energy is shown (to make it easier to identify large numbers)
     * Tools that break multiple nodes at once (hammers, hoes, katar, and morningstar) use a better method that may (?) slightly decrease lag.
     * Ender pearls can now be crafted with 4 iron and the Philosopher's Stone.
@@ -91,7 +97,7 @@ Dependencies: Minetest Game or MineClone.
     * Fixed Red Matter Shield recipe
     * Fixed other modes of DM/RM tools not having energy values
 
-### 5.4
+### v5.4
 * Fixed a minor bug with the Energy Collector (thanks @programmerjake!)
 
 ### 5.3

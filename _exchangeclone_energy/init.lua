@@ -48,7 +48,7 @@ local function get_cheapest_recipe(recipes)
             end
         end
         if not skip then
-            ingredient_cost = math.floor(ingredient_cost*4/output_count)/4 -- allow .25
+            ingredient_cost = math.floor(ingredient_cost*20/output_count)/20 -- allow .05
             if (not cheapest) or (cheapest[1] > ingredient_cost) then
                 cheapest = {ingredient_cost, recipe}
             end
@@ -59,7 +59,7 @@ end
 
 local function set_item_energy(itemstring, energy_value)
     if not (energy_value and itemstring) then return end
-    energy_value = math.floor(energy_value*4)/4 -- floor to nearest .25
+    energy_value = math.floor(energy_value*20)/20 -- floor to nearest .05
     if energy_value < 0 then return end
     local def = minetest.registered_items[itemstring]
     if not def then return end
@@ -199,6 +199,25 @@ minetest.register_on_mods_loaded(function()
     --minetest.log(dump(auto))
 
     if exchangeclone.mcl then
+        exchangeclone.mcl_potion_data = exchangeclone.mcl_potion_data or {}
+        table.insert_all(exchangeclone.mcl_potion_data, { -- automatically assumes base cost is awkward potion if not specified
+            {name = "water", ingredient_cost = 0, custom_base_cost = 0, no_arrow = true},
+            {name = "awkward", ingredient_cost = 0, no_arrow = true},
+            {name = "fire_resistance", ingredient_cost = 768, plus = true},
+            {name = "poison", ingredient_cost = 128, plus = true, two = true},
+            {name = "harming", ingredient_cost = 192, custom_base_cost = 52, two = true},
+            {name = "healing", ingredient_cost = 1852, two = true},
+            {name = "leaping", ingredient_cost = 64, plus = true, two = true},
+            {name = "mundane", ingredient_cost = 32, no_arrow = true, custom_base_cost = 0},
+            {name = "night_vision", ingredient_cost = 1840, plus = true},
+            {name = "regeneration", ingredient_cost = 4096, plus = true, two = true},
+            {name = "slowness", ingredient_cost = 192, custom_base_cost = 20, plus = true, two = true},
+            {name = "swiftness", ingredient_cost = 32, plus = true, two = true},
+            {name = "thick", ingredient_cost = 384, no_arrow = true, custom_base_cost = 0},
+            {name = "water_breathing", ingredient_cost = 64, plus = true},
+            {name = "invisibility", ingredient_cost = 192, custom_base_cost = 623, plus = true},
+            {name = "withering", ingredient_cost = 128, plus = true, two = true}
+        })
         for _, info in ipairs(exchangeclone.mcl_potion_data) do
             add_potion_energy(info)
         end

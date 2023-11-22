@@ -3,13 +3,23 @@ local S = minetest.get_translator()
 -- Everything with the exchangeclone_ore group is also included (see pickaxes.lua)
 -- This is pretty much the one thing I can't really figure out how to automate.
 local ores = {
-	["mcl_raw_ores:raw_gold"] = true,
-	["mcl_raw_ores:raw_iron"] = true,
-	["mcl_copper:raw_copper"] = true,
 	["default:copper_lump"] = true,
 	["default:gold_lump"] = true,
 	["default:iron_lump"] = true,
 	["default:tin_lump"] = true,
+
+	["mcl_copper:raw_copper"] = true,
+	["mcl_raw_ores:raw_gold"] = true,
+	["mcl_raw_ores:raw_iron"] = true,
+
+	["moreores:mithril_lump"] = true,
+	["moreores:silver_lump"] = true,
+	["moreores:tin_lump"] = true, -- tin is built into MTG but it's in the moreores code
+
+	["technic:chromium_lump"] = true,
+	["technic:lead_lump"] = true,
+	["technic:uranium_lump"] = true,
+	["technic:zinc_lump"] = true,
 }
 
 local furnace_itemstring = "default:furnace"

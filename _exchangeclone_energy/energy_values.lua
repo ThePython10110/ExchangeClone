@@ -75,7 +75,7 @@ if exchangeclone.mcl then
         ["mcl_core:gold_ingot"] = 2048,
         ["mcl_core:granite"] = 16,
         ["mcl_core:grass"] = 1,
-        ["mcl_core:gravel"] = 1,
+        ["mcl_core:gravel"] = 4,
         ["mcl_core:ice"] = 1,
         ["mcl_core:iron_ingot"] = 256,
         ["mcl_core:lapis"] = 864,
@@ -202,26 +202,6 @@ if exchangeclone.mcl then
     }) do
         exchangeclone.energy_values[itemstring] = exchangeclone.energy_values[itemstring] or energy_value
     end
-
-    exchangeclone.mcl_potion_data = exchangeclone.mcl_potion_data or {}
-    table.insert_all(exchangeclone.mcl_potion_data, { -- automatically assumes base cost is awkward potion if not specified
-        {name = "water", ingredient_cost = 0, custom_base_cost = 0, no_arrow = true},
-        {name = "awkward", ingredient_cost = 0, no_arrow = true},
-        {name = "fire_resistance", ingredient_cost = 768, plus = true},
-        {name = "poison", ingredient_cost = 128, plus = true, two = true},
-        {name = "harming", ingredient_cost = 192, custom_base_cost = 52, two = true},
-        {name = "healing", ingredient_cost = 1852, two = true},
-        {name = "leaping", ingredient_cost = 64, plus = true, two = true},
-        {name = "mundane", ingredient_cost = 32, no_arrow = true, custom_base_cost = 0},
-        {name = "night_vision", ingredient_cost = 1840, plus = true},
-        {name = "regeneration", ingredient_cost = 4096, plus = true, two = true},
-        {name = "slowness", ingredient_cost = 192, custom_base_cost = 20, plus = true, two = true},
-        {name = "swiftness", ingredient_cost = 32, plus = true, two = true},
-        {name = "thick", ingredient_cost = 384, no_arrow = true, custom_base_cost = 0},
-        {name = "water_breathing", ingredient_cost = 64, plus = true},
-        {name = "invisibility", ingredient_cost = 192, custom_base_cost = 623, plus = true},
-        {name = "withering", ingredient_cost = 128, plus = true, two = true}
-    })
 else
     for itemstring, energy_value in pairs({
         ["bones:bones"] = 4,
@@ -265,7 +245,7 @@ else
         ["default:flint"] = 4,
         ["default:gold_ingot"] = 2048,
         ["default:grass"] = 1,
-        ["default:gravel"] = 1,
+        ["default:gravel"] = 4,
         ["default:ice"] = 1,
         ["default:iron_ingot"] = 256,
         ["default:large_cactus_seedling"] = 32,
