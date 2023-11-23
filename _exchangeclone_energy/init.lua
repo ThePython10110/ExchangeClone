@@ -180,12 +180,9 @@ minetest.register_on_mods_loaded(function()
                 and mod_name
                 and def.description
                 and def.description ~= ""
-                -- I hate recovery compasses.
+                -- Recovery compasses are annoying.
                 and ((minetest.get_item_group(itemstring, "not_in_creative_inventory") < 1) or (mod_name == "mcl_compass"))
                 and (not exchangeclone.get_item_energy(itemstring))
-                and (itemstring:sub(1,12) ~= "mcl_potions:")
-                -- This does mean that other items in mcl_potions will be ignored unless explicitly specified,
-                -- and items that are in groups mentioned above.
             ) then
                 auto[itemstring] = true
             end

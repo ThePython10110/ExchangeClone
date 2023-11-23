@@ -28,7 +28,7 @@ if exchangeclone.mcl then
         ["mcl_armor:leggings_chain"] = 1799,
         ["mcl_armor:boots_chain"] = 1029,
 
-        ["mcl_bamboo:bamboo"] = 32,
+        ["mcl_bamboo:bamboo"] = 2,
 
         ["mcl_banners:pattern_globe"] = 49152,
         ["mcl_banners:pattern_snout"] = 512,
@@ -179,11 +179,6 @@ if exchangeclone.mcl then
         ["mcl_ocean:prismarine_shard"] = 256,
         ["mcl_ocean:sea_pickle_1_dead_brain_coral_block"] = 16,
         ["mcl_ocean:seagrass"] = 1,
-
-        ["mcl_potions:dragon_breath"] = 8.5,
-        ["mcl_potions:fermented_spider_eye"] = 175,
-        ["mcl_potions:glass_bottle"] = 1,
-        ["mcl_potions:speckled_melon"] = 1832,
 
         ["mcl_pottery_sherds:pot"] = 16,
 
