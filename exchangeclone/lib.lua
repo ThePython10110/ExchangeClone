@@ -27,6 +27,8 @@ function exchangeclone.get_inventory_drops(pos, inventory, drops)
     end
 end
 
+-- Gets the energy value of an itemstring or ItemStack
+-- Handles "group:foo" syntax (although it goes through every item)
 function exchangeclone.get_item_energy(item)
     if (item == "") or not item then return end
     -- handle groups
@@ -186,7 +188,7 @@ end
 
 -- Through trial and error, I have found that this number (1 trillion) works the best.
 -- When a player has any more energy (as in ANY more), precision-based exploits such as creating infinite glass panes are possible.
--- I temporarily considered finding some Lua library that allowed for arbitrary precision (and therefore infinite masimum energy)
+-- I temporarily considered finding some Lua library that allowed for arbitrary precision (and therefore infinite maximum energy)
 -- but I decided not to.
 exchangeclone.limit = 1000000000000
 
@@ -197,6 +199,7 @@ function exchangeclone.format_number(number)
     if not tonumber(tostring(number)) then return tostring(number) end
 
     local _, _, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+    if not int then return tostring(number) end
     -- reverse the int-string and append a comma to all blocks of 3 digits
     int = int:reverse():gsub("(%d%d%d)", "%1,")
     -- reverse the int-string back remove an optional comma and put the

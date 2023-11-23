@@ -111,11 +111,14 @@ for dye_color, color_data in pairs(colors) do
         end
         if pointed_thing.type == "node"
         and minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "advanced_alchemical_chest") > 0 then
-            --minetest.log(advanced_itemstring)
-            minetest.set_node(pointed_thing.under, {name=advanced_itemstring})
-            local on_construct = alchemical_on_construct(color_data[1])
-            on_construct(pointed_thing.under)
-            return
+            if minetest.is_protected(player) then
+                minetest.record_protection_violation(player)
+            else
+                minetest.set_node(pointed_thing.under, {name=advanced_itemstring})
+                local on_construct = alchemical_on_construct(color_data[1])
+                on_construct(pointed_thing.under)
+                return
+            end
         else
             minetest.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color_data[1]))
         end

@@ -7,7 +7,6 @@ if exchangeclone.mcl then
     table.insert_all(exchangeclone.group_values, {
         {"flower", 8},
         {"mushroom", 32},
-        {"smithing_template", 8192*7+1792*2},
         {"decorated_pot_recipe", 4}, -- has to be 4 because of brick.
     })
 

@@ -1,3 +1,6 @@
+-- Registers all energy values
+
+-- Gets lists of energy values
 dofile(minetest.get_modpath("_exchangeclone_energy").."/energy_values.lua")
 
 local function get_cheapest_recipe(recipes)
@@ -6,35 +9,45 @@ local function get_cheapest_recipe(recipes)
     for _, recipe in ipairs(recipes) do
         local ingredient_cost = 0
         local output_count = ItemStack(recipe.output):get_count()
+        local output_name = ItemStack(recipe.output):get_name()
         local skip = false
         if not recipe.type or recipe.type == "shaped" then
             for _, row in ipairs(recipe.recipe) do
                 for _, item in ipairs(row) do
                     if item ~= "" then
-                        local cost = exchangeclone.get_item_energy(item)
-                        if (not cost) or cost == 0 then
-                            skip = item
+                        if item == output_name then
+                            output_count = output_count - 1
                         else
-                            ingredient_cost = ingredient_cost + cost
+                            local cost = exchangeclone.get_item_energy(item)
+                            if (not cost) or cost == 0 then
+                                skip = item
+                            else
+                                ingredient_cost = ingredient_cost + cost
+                            end
                         end
                     end
                 end
             end
         elseif (recipe.type == "shapeless") or (recipe.type == "technic") then
             for _, item in ipairs(recipe.recipe) do
-                local cost = exchangeclone.get_item_energy(item)
-                if (not cost) or cost == 0 then
-                    skip = item
+                if item == output_name then
+                    output_count = output_count - 1
                 else
-                    ingredient_cost = ingredient_cost + cost
+                    local cost = exchangeclone.get_item_energy(item)
+                    if (not cost) or cost == 0 then
+                        skip = item
+                    else
+                        ingredient_cost = ingredient_cost + cost
+                    end
                 end
             end
-        elseif recipe.type == "cooking" then
+        elseif recipe.type == "cooking" or recipe.type == "stonecutting" then
             local cost = exchangeclone.get_item_energy(recipe.recipe)
+            if recipe.type == "stonecutting" then minetest.log(dump({recipe.recipe, recipe.output, cost})) end
             if (not cost) or cost == 0 then
                 skip = recipe.recipe
             else
-                ingredient_cost = ingredient_cost + cost
+                ingredient_cost = cost
             end
         end
         if recipe.replacements and not skip then
@@ -48,7 +61,7 @@ local function get_cheapest_recipe(recipes)
             end
         end
         if not skip then
-            ingredient_cost = math.floor(ingredient_cost*20/output_count)/20 -- allow .05
+            ingredient_cost = math.floor(ingredient_cost*20/output_count)/20 -- allow .05, won't work with huge numbers
             if (not cheapest) or (cheapest[1] > ingredient_cost) then
                 cheapest = {ingredient_cost, recipe}
             end
@@ -127,6 +140,7 @@ minetest.register_on_mods_loaded(function()
     minetest.log("action", "ExchangeClone: Registering energy values")
     local auto = {}
 
+    -- Register group energy values
     local groupnames = {}
     for index, group in ipairs(exchangeclone.group_values) do
         groupnames[#groupnames + 1] = group[1] --Get list of group names
@@ -138,6 +152,7 @@ minetest.register_on_mods_loaded(function()
         end
     end
 
+    -- Register energy aliases
     if exchangeclone.mcl then
         for i = 0, 31 do
             exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i)
@@ -153,6 +168,7 @@ minetest.register_on_mods_loaded(function()
         set_item_energy(itemstring, energy_value)
     end
 
+    -- Should energy values be automatically registered?
     for itemstring, def in pairs(minetest.registered_items) do
         if def.exchangeclone_custom_energy then
             set_item_energy(itemstring, def.exchangeclone_custom_energy)
@@ -172,6 +188,26 @@ minetest.register_on_mods_loaded(function()
                 -- and items that are in groups mentioned above.
             ) then
                 auto[itemstring] = true
+            end
+        end
+    end
+
+    -- Handle stonecutter recipes
+    if exchangeclone.mineclonia then
+        -- TODO: Check this for every Mineclonia update
+        local recipe_yield = { --maps itemgroup to the respective recipe yield, default is 1
+            ["slab"] = 2,
+        }
+        for name, def in pairs(minetest.registered_items) do
+            if def._mcl_stonecutter_recipes then
+                local yield = 1
+                for k,v in pairs(recipe_yield) do if minetest.get_item_group(name,k) > 0 then yield = v end end
+                for _, result in pairs(def._mcl_stonecutter_recipes) do
+                    if minetest.get_item_group(name,"not_in_creative_inventory") == 0 then
+                        if not exchangeclone.recipes[result] then exchangeclone.recipes[result] = {} end
+                        table.insert(exchangeclone.recipes[result],{output = name.." "..yield, type = "stonecutting", recipe = result})
+                    end
+                end
             end
         end
     end

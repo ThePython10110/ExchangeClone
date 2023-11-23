@@ -1,19 +1,13 @@
 exchangeclone.multidig = {}
 
-local stone_group = "cracky"
-if exchangeclone.mcl then
-	stone_group = "pickaxey"
-end
+local stone_group = exchangeclone.mcl and "pickaxey" or "cracky"
 
-local dirt_group = "crumbly"
-if exchangeclone.mcl then
-	dirt_group = "shovely"
-end
+local dirt_group = exchangeclone.mcl and "shovely" or "crumbly"
 
 local function dig_if_group(pos, player, groups)
 	local node = minetest.get_node(pos)
 	for _, group in ipairs(groups) do
-		if minetest.get_item_group(node.name, group) ~= 0 then
+		if minetest.get_item_group(node.name, group) > 0 then
 			minetest.node_dig(pos, minetest.get_node(pos), player)
 		end
 	end
@@ -37,7 +31,7 @@ minetest.register_on_dignode(
 	local itemname = player:get_wielded_item():get_name()
 	local dig_data = special_dig[itemname]
 	if not dig_data then return end
-    
+
     local playername = player:get_player_name()
     if(playername == ""  or exchangeclone.multidig[playername]) then
       return
