@@ -152,7 +152,7 @@ minetest.register_on_mods_loaded(function()
         end
     end
 
-    -- Register energy aliases
+    -- Register energy aliases and certain energy values
     if exchangeclone.mcl then
         for i = 0, 31 do
             exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i)
@@ -162,6 +162,14 @@ minetest.register_on_mods_loaded(function()
             exchangeclone.register_energy_alias("mcl_clock:clock", "mcl_clock:clock_"..i)
         end
         exchangeclone.register_energy_alias("doc_identifier:identifier_solid", "doc_identifier:identifier_liquid")
+
+        for _, coral_type in ipairs({"brain", "bubble", "fire", "horn", "tube"}) do
+            for thing, value in pairs({[coral_type.."_coral"] = 16, [coral_type.."_coral_block"] = 64, [coral_type.."_coral_fan"] = 16}) do
+                minetest.log(thing)
+                set_item_energy("mcl_ocean:"..thing, value)
+                set_item_energy("mcl_ocean:dead_"..thing, value/16)
+            end
+        end
     end
 
     for itemstring, energy_value in pairs(exchangeclone.energy_values) do
@@ -257,6 +265,7 @@ minetest.register_on_mods_loaded(function()
         for _, info in ipairs(exchangeclone.mcl_potion_data) do
             add_potion_energy(info)
         end
+
         for _, state in ipairs({"exposed", "weathered", "oxidized"}) do
             set_item_energy("mcl_copper:block_"..state, exchangeclone.get_item_energy("mcl_copper:block"))
         end
