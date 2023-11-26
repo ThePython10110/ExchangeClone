@@ -299,5 +299,4 @@ table.insert_all(exchangeclone.group_values, {
     {"sapling", 32},
     {"useless", 0},
     {"exchangeclone_dirt", 1},
-    {"exchangeclone_ore", 0}
 })

@@ -354,7 +354,7 @@ function exchangeclone.handle_alias(item)
     item = ItemStack(item)
     if not item:is_empty() then
         local de_aliased = exchangeclone.energy_aliases[item:get_name()] or item:get_name() -- Resolve ExchangeClone aliases
-        return ItemStack(de_aliased):get_name() -- Resolve MT aliases
+        return ItemStack(de_aliased):get_name() or item:get_name() -- Resolve MT aliases
     end
 end
 
