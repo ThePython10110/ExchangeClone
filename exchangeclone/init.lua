@@ -3,7 +3,7 @@ if not (exchangeclone and minetest.get_modpath("_exchangeclone_energy")) then
 end
 
 if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
-    error("ExchangeClone requires 'default' or 'mcl_core,' but Minetest doesn't let me mark one or the other as a dependency.")
+    error("ExchangeClone requires Minetest Game, MineClone2, or MineClonia (and possibly other spinoffs).\nPlease use one of those games.")
 else
 	exchangeclone.mcl = minetest.get_modpath("mcl_core")
 end
@@ -17,7 +17,6 @@ exchangeclone.orb_max = 51200000 -- Max capacity of Klein Star Omega in ProjectE
 local modpath = minetest.get_modpath("exchangeclone")
 
 exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000
-exchangeclone.num_passes = minetest.settings:get("exchangeclone.num_passes") or 10
 
 minetest.log("action", "ExchangeClone: Registering own stuff")
 

@@ -1,5 +1,2 @@
 # Exchange Orb maximum energy (default 51200000)
 exchangeclone.orb_max (Exchange Orb maximum energy) int 51200000
-
-# The number of times ExchangeClone goes through the list of items. More means slightly longer load times, but also means that more items are likely to have energy values.
-exchangeclone.num_passes (Energy value number of passes) int 10

@@ -157,8 +157,11 @@ local function handle_inventory(player, inventory, to_list)
 end
 
 local function check_for_table(player, inv)
-    if minetest.is_creative_enabled(player:get_player_name()) then return true end
+    -- Keeps player from accessing someone else's transmutation inventory
     if inv and inv:get_location().name ~= "exchangeclone_transmutation_"..player:get_player_name() then return false end
+    -- Allow creative players to do whatever
+    if minetest.is_creative_enabled(player:get_player_name()) then return true end
+    -- Check for nearby/wielded table(t)
     local def = player:get_wielded_item():get_definition()
     local range = def and def.range
     if not range then range = player:get_inventory():get_stack("hand", 1):get_definition().range end
@@ -297,7 +300,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
             elseif field == "search_button" or (field == "key_enter_field" and value == "search_box") then
                 local search = fields.search_box or ""
                 player:get_meta():set_string("exchangeclone_transmutation_search", search)
-                exchangeclone.show_transmutation_table_formspec(player)
+                exchangeclone.show_transmutation_table_formspec(player, {page = 1})
             elseif field == "plus1" then
                 add_to_output(player, 1, true)
             elseif field == "plus5" then

@@ -11,6 +11,7 @@ read_globals = {
     "mcl_burning",
     "mcl_util",
     "mcl_formspec",
+    "mcl_copper",
     "mcl_item_id",
     "mcl_enchanting",
     "mcl_hunger",

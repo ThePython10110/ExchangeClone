@@ -3,7 +3,9 @@
 -- Gets lists of energy values
 dofile(minetest.get_modpath("_exchangeclone_energy").."/energy_values.lua")
 
-local function get_cheapest_recipe(recipes, log)
+local function get_cheapest_recipe(itemstring, log)
+    itemstring = ItemStack(itemstring):get_name()
+    local recipes = exchangeclone.recipes[itemstring]
     if not recipes then return end
     local cheapest
     for _, recipe in ipairs(recipes) do
@@ -16,7 +18,7 @@ local function get_cheapest_recipe(recipes, log)
                 for _, item in ipairs(row) do
                     if item ~= "" then
                         if item == output_name then
-                            output_count = output_count - 1
+                            output_count = math.max(0, output_count - 1)
                         else
                             local cost = exchangeclone.get_item_energy(item)
                             if (not cost) or cost == 0 then
@@ -28,10 +30,10 @@ local function get_cheapest_recipe(recipes, log)
                     end
                 end
             end
-        elseif (recipe.type == "shapeless") or (recipe.type == "technic") then
+        elseif (recipe.type == "shapeless") or (recipe.type == "technic") or recipe.type == "preserving" then
             for _, item in ipairs(recipe.recipe) do
                 if item == output_name then
-                    output_count = output_count - 1
+                    output_count = math.max(0, output_count - 1)
                 else
                     local cost = exchangeclone.get_item_energy(item)
                     if (not cost) or cost == 0 then
@@ -41,10 +43,11 @@ local function get_cheapest_recipe(recipes, log)
                     end
                 end
             end
-        elseif recipe.type == "cooking" or recipe.type == "stonecutting" then
+        elseif recipe.type == "cooking" or recipe.type == "stonecutting" or recipe.type == "decaychain" then
             local cost = exchangeclone.get_item_energy(recipe.recipe)
             if (not cost) or cost == 0 then
                 skip = recipe.recipe
+                if recipe.recipe == "mcl_core:cobble" then minetest.log(dump({recipe, cost})) end
             else
                 ingredient_cost = cost
             end
@@ -59,10 +62,11 @@ local function get_cheapest_recipe(recipes, log)
                 end
             end
         end
+        if output_count < 1 then skip = true end
         if not skip then
-            ingredient_cost = math.floor(ingredient_cost*20/output_count)/20 -- allow .05, won't work with huge numbers
-            if (not cheapest) or (cheapest[1] > ingredient_cost) then
-                cheapest = {ingredient_cost, recipe}
+            local total_cost = math.floor(ingredient_cost*20/math.max(1, output_count))/20 -- allow .05, won't work with huge numbers
+            if (not cheapest) or (cheapest[1] > total_cost) then
+                cheapest = {total_cost, recipe}
             end
         end
         if log then minetest.log(dump({
@@ -137,13 +141,18 @@ local function add_potion_energy(info)
     end
 end
 
--- Wait until all mods are loaded (to make sure all nodes have been registered)
--- This is much easier than making it depend on every single mod.
--- Actually, I'm kind of surprised that override_item still works...
+-- Wait until all mods are loaded (to make sure all items have been registered)
 minetest.register_on_mods_loaded(function()
     minetest.log("action", "ExchangeClone: Registering energy values")
-<<<<<<< HEAD
     local auto = {}
+
+    -- handle aliases in exchangeclone.recipes
+    for itemstring, recipes in pairs(exchangeclone.recipes) do
+        local new_name = ItemStack(itemstring):get_name()
+        if new_name and new_name ~= "" and new_name ~= itemstring then
+            exchangeclone.recipes[new_name] = recipes
+        end
+    end
 
     -- Register group energy values
     local groupnames = {}
@@ -157,82 +166,49 @@ minetest.register_on_mods_loaded(function()
         end
     end
 
-    -- Register energy aliases
-    if exchangeclone.mcl then
-        for i = 0, 31 do
-            exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i)
-            exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i.."_lodestone")
-        end
-        for i = 0, 63 do
-            exchangeclone.register_energy_alias("mcl_clock:clock", "mcl_clock:clock_"..i)
-        end
-        exchangeclone.register_energy_alias("doc_identifier:identifier_solid", "doc_identifier:identifier_liquid")
-    end
-
     for itemstring, energy_value in pairs(exchangeclone.energy_values) do
         set_item_energy(itemstring, energy_value)
     end
 
-    -- Should energy values be automatically registered?
-    for itemstring, def in pairs(minetest.registered_items) do
-        if def.exchangeclone_custom_energy then
-            set_item_energy(itemstring, def.exchangeclone_custom_energy)
-        else
-            local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
-            if (
-                def
-                and item_name
-                and mod_name
-                and def.description
-                and def.description ~= ""
-                -- Recovery compasses are annoying.
-                and ((minetest.get_item_group(itemstring, "not_in_creative_inventory") < 1) or (mod_name == "mcl_compass"))
-                and (not exchangeclone.get_item_energy(itemstring))
-                and exchangeclone.recipes[itemstring]
-            ) then
-                auto[itemstring] = true
-            end
-        end
-    end
-=======
->>>>>>> origin/MoreManualStuff
-
-    -- Handle stonecutter recipes
     if exchangeclone.mineclonia then
-        -- TODO: Check this for every Mineclonia update
+        -- Handle stonecutter recipes
+        -- TODO: Check recipe_yield for every Mineclonia update
         local recipe_yield = { --maps itemgroup to the respective recipe yield, default is 1
             ["slab"] = 2,
         }
-        for name, def in pairs(minetest.registered_items) do
-            if def._mcl_stonecutter_recipes then
-                local yield = 1
-                for k,v in pairs(recipe_yield) do if minetest.get_item_group(name,k) > 0 then yield = v end end
-                for _, result in pairs(def._mcl_stonecutter_recipes) do
-                    if minetest.get_item_group(name,"not_in_creative_inventory") == 0 then
+        for result, def in pairs(minetest.registered_items) do
+            if minetest.get_item_group(result,"not_in_creative_inventory") == 0 then
+                if def._mcl_stonecutter_recipes then
+                    for _, source in pairs(def._mcl_stonecutter_recipes) do
+                        local yield = 1
+                        for k,v in pairs(recipe_yield) do if minetest.get_item_group(result,k) > 0 then yield = v end end
                         if not exchangeclone.recipes[result] then exchangeclone.recipes[result] = {} end
-                        table.insert(exchangeclone.recipes[result],{output = name.." "..yield, type = "stonecutting", recipe = result})
+                        table.insert(exchangeclone.recipes[result],{output = result.." "..yield, type = "stonecutting", recipe = source})
+                        minetest.log(dump({output = result.." "..yield, type = "stonecutting", recipe = source}))
+                    end
+                end
+            end
+        end
+        -- Handle decaychains
+        if mcl_copper then
+            local decaychains = mcl_copper.registered_decaychains
+            for name, data in pairs(decaychains) do
+                for i, itemstring in ipairs(data.nodes) do
+                    if minetest.get_item_group(name,"not_in_creative_inventory") == 0 then
+                        local preserved_itemstring = itemstring.."_preserved"
+                        if not exchangeclone.recipes[preserved_itemstring] then exchangeclone.recipes[preserved_itemstring] = {} end
+                        table.insert(exchangeclone.recipes[preserved_itemstring], {output = preserved_itemstring, type = "preserving", recipe = {itemstring, "group:"..data.preserve_group}})
+                        if i > 1 then
+                            if not exchangeclone.recipes[itemstring] then exchangeclone.recipes[itemstring] = {} end
+                            table.insert(exchangeclone.recipes[itemstring],{output = itemstring, type = "decaychain", recipe = data.nodes[i-1]})
+                        end
                     end
                 end
             end
         end
     end
 
-    local auto = {}
-
-    -- Register group energy values
-    local groupnames = {}
-    for _, group in ipairs(exchangeclone.group_values) do
-        groupnames[#groupnames + 1] = group[1] --Get list of group names
-    end
-    local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
-    for _, group in ipairs(exchangeclone.group_values) do
-        for _, item in pairs(grouped_items[group[1]]) do
-            item = exchangeclone.handle_alias(item)
-            set_item_energy(item, group[2])
-        end
-    end
-
-    -- Register energy aliases and certain energy values
+    -- Register energy aliases and certain energy values that would be annoying to include in exchangeclone.energy_values
     if exchangeclone.mcl then
         for i = 0, 31 do
             exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i)
@@ -252,37 +228,29 @@ minetest.register_on_mods_loaded(function()
         end
     end
 
+    -- Register base energy values
     for itemstring, energy_value in pairs(exchangeclone.energy_values) do
         set_item_energy(itemstring, energy_value)
     end
 
+    -- Register copper block energy values (has to be done before automatic stuff but after base stuff)
     if exchangeclone.mcl then
-        local cheapest = get_cheapest_recipe(exchangeclone.recipes["mcl_copper:block"])
+        local cheapest = get_cheapest_recipe("mcl_copper:block")
         if cheapest then
             set_item_energy("mcl_copper:block", cheapest)
-            minetest.log(cheapest)
-            minetest.log(dump(exchangeclone.get_item_energy("mcl_copper:block")))
         end
         for _, state in ipairs({"exposed", "weathered", "oxidized"}) do
             set_item_energy("mcl_copper:block_"..state, exchangeclone.get_item_energy("mcl_copper:block"))
         end
-        
     end
 
-    -- handle aliases in exchangeclone.recipes
-    for itemstring, recipes in pairs(exchangeclone.recipes) do
-        local new_name = exchangeclone.handle_alias(itemstring)
-        if new_name ~= itemstring then
-            exchangeclone.recipes[new_name] = recipes
-        end
-    end
-
-    -- Should energy values be automatically registered?
+    -- Register `exchangeclone_custom_energy` values and decide whether to automatically register energy values
     for itemstring, def in pairs(minetest.registered_items) do
-        itemstring = exchangeclone.handle_alias(itemstring) or itemstring
         if def.exchangeclone_custom_energy then
             set_item_energy(itemstring, def.exchangeclone_custom_energy)
         else
+            itemstring = exchangeclone.handle_alias(itemstring) or itemstring
+            def = minetest.registered_items[itemstring] -- in case itemstring changed
             local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
             if (
                 def
@@ -294,24 +262,41 @@ minetest.register_on_mods_loaded(function()
                 and ((minetest.get_item_group(itemstring, "not_in_creative_inventory") < 1) or (mod_name == "mcl_compass"))
                 and (not exchangeclone.get_item_energy(itemstring))
                 and exchangeclone.recipes[itemstring]
-                -- This does mean that other items in mcl_potions will be ignored unless explicitly specified,
-                -- and items that are in groups mentioned above.
             ) then
                 auto[itemstring] = true
             end
         end
     end
 
-    for i = 1, exchangeclone.num_passes do
+    local old_auto
+    local same = false
+    local i = 1
+    -- Automatically register energy values
+    while not same do
         minetest.log("action", "ExchangeClone: \tPASS #"..i)
         if auto == {} then break end
+        if old_auto then
+            same = true
+            for itemstring, _ in pairs(old_auto) do
+                if itemstring ~= "" and not auto[itemstring] then
+                    same = false
+                    break
+                end
+            end
+        end
+        if same then
+            minetest.log("action", "ExchangeClone:\tNo change, stopping.")
+            break
+        end
+        old_auto = table.copy(auto)
         for itemstring, _ in pairs(auto) do
-            local cheapest = get_cheapest_recipe(exchangeclone.recipes[itemstring])
+            local cheapest = get_cheapest_recipe(itemstring)
             if cheapest then
                 set_item_energy(itemstring, cheapest)
                 auto[itemstring] = nil
             end
         end
+        i = i + 1
     end
 
     --minetest.log(dump(auto))
@@ -342,11 +327,11 @@ minetest.register_on_mods_loaded(function()
         -- Concrete and banners/shields (don't remember why the shields don't work)
         for _, color in ipairs({"red", "orange", "yellow", "lime", "dark_green", "cyan", "light_blue", "blue", "purple", "magenta", "pink", "black", "white", "silver", "grey", "brown"}) do
             set_item_energy("mcl_colorblocks:concrete_"..color, exchangeclone.get_item_energy("mcl_colorblocks:concrete_powder_"..color) or 2)
-            set_item_energy("mcl_stairs:stair_concrete_"..color, get_cheapest_recipe(exchangeclone.recipes["mcl_stairs:stair_concrete_"..color]))
-            set_item_energy("mcl_stairs:slab_concrete_"..color, get_cheapest_recipe(exchangeclone.recipes["mcl_stairs:slab_concrete_"..color]))
+            set_item_energy("mcl_stairs:stair_concrete_"..color, get_cheapest_recipe("mcl_stairs:stair_concrete_"..color))
+            set_item_energy("mcl_stairs:slab_concrete_"..color, get_cheapest_recipe("mcl_stairs:slab_concrete_"..color))
             set_item_energy("mcl_shields:shield_"..color, (exchangeclone.get_item_energy("mcl_banners:banner_item_"..color) or 340) + (exchangeclone.get_item_energy("mcl_shields:shield") or 304))
         end
-        -- Enchanted/netherite tools 
+        -- Enchanted/netherite tools
         for name, def in pairs(minetest.registered_items) do
             if def._mcl_enchanting_enchanted_tool then
                 exchangeclone.register_energy_alias(name, def._mcl_enchanting_enchanted_tool)
