@@ -8,6 +8,7 @@ if exchangeclone.mcl then
         {"flower", 8},
         {"mushroom", 32},
         {"decorated_pot_recipe", 4}, -- has to be 4 because of brick.
+        {"music_record", 2048},
     })
 
     for itemstring, energy_value in pairs({
@@ -50,9 +51,9 @@ if exchangeclone.mcl then
         ["mcl_buckets:bucket_tropical_fish"] = 832,
         ["mcl_buckets:bucket_water"] = 768,
 
-        ["mcl_cocoas:cocoa_beans"] = 64,
+        ["mcl_cherry_blossom:pink_petals"] = 4,
 
-        ["mcl_copper:copper_ingot"] = 128,
+        ["mcl_cocoas:cocoa_beans"] = 64,
 
         ["mcl_core:andesite"] = 16,
         ["mcl_core:apple"] = 128,
@@ -60,24 +61,20 @@ if exchangeclone.mcl then
         ["mcl_core:cactus"] = 8,
         ["mcl_core:charcoal_lump"] = 32,
         ["mcl_core:clay_lump"] = 16,
-        ["mcl_core:coal_lump"] = 128,
         ["mcl_core:cobble"] = 1,
         ["mcl_core:cobweb"] = 12,
         ["mcl_core:crying_obsidian"] = 768,
-        ["mcl_core:dead_bush"] = 1, -- don't know which one of these is right
+        ["mcl_core:dead_bush"] = 1, -- don't know which one of these is right; maybe both?
         ["mcl_core:deadbush"] = 1,
         ["mcl_core:diamond"] = 8192,
         ["mcl_core:diorite"] = 16,
         ["mcl_core:dirt"] = 1,
         ["mcl_core:emerald"] = 4096,
         ["mcl_core:flint"] = 4,
-        ["mcl_core:gold_ingot"] = 2048,
         ["mcl_core:granite"] = 16,
         ["mcl_core:grass"] = 1,
         ["mcl_core:gravel"] = 4,
         ["mcl_core:ice"] = 1,
-        ["mcl_core:iron_ingot"] = 256,
-        ["mcl_core:lapis"] = 864,
         ["mcl_core:mycelium"] = 2,
         ["mcl_core:obsidian"] = 64,
         ["mcl_core:redsand"] = 1,
@@ -85,9 +82,12 @@ if exchangeclone.mcl then
         ["mcl_core:sand"] = 1,
         ["mcl_core:vine"] = 8,
 
+        ["mcl_crimson:crimson_roots"] = 1,
+        ["mcl_crimson:nether_sprouts"] = 1,
         ["mcl_crimson:shroomlight"] = 416,
         ["mcl_crimson:twisting_vines"] = 8,
         ["mcl_crimson:warped_wart_block"] = 216,
+        ["mcl_crimson:warped_roots"] = 1,
         ["mcl_crimson:weeping_vines"] = 8,
 
         ["mcl_deepslate:deepslate_cobbled"] = 2,
@@ -115,6 +115,8 @@ if exchangeclone.mcl then
         ["mcl_fishing:pufferfish_raw"] = 64,
         ["mcl_fishing:salmon_raw"] = 64,
 
+        ["mcl_flowers:fern"] = 1,
+        ["mcl_flowers:tallgrass"] = 1,
         ["mcl_flowers:waterlily"] = 16,
         ["mcl_flowers:wither_rose"] = 128,
 
@@ -128,6 +130,8 @@ if exchangeclone.mcl then
 
         ["mcl_lush_caves:cave_vines"] = 16,
         ["mcl_lush_caves:glow_berry"] = 16,
+        ["mcl_lush_caves:moss_carpet"] = 8,
+        ["mcl_lush_caves:rooted_dirt"] = 5,
         ["mcl_lush_caves:spore_blossom"] = 64,
 
         ["mcl_mangrove:mangrove_roots"] = 4,
@@ -168,19 +172,22 @@ if exchangeclone.mcl then
         ["mcl_mud:mud"] = 1,
 
         ["mcl_nether:ancient_debris"] = 12288,
-        ["mcl_nether:glowstone_dust"] = 384,
         ["mcl_nether:nether_wart_item"] = 24,
         ["mcl_nether:netherrack"] = 1,
         ["mcl_nether:quartz"] = 256,
         ["mcl_nether:soul_sand"] = 49,
 
-        ["mcl_ocean:kelp"] = 1,
+        ["mcl_ocean:kelp"] = 16,
         ["mcl_ocean:prismarine_crystals"] = 512,
         ["mcl_ocean:prismarine_shard"] = 256,
         ["mcl_ocean:sea_pickle_1_dead_brain_coral_block"] = 16,
         ["mcl_ocean:seagrass"] = 1,
 
         ["mcl_pottery_sherds:pot"] = 16,
+
+        ["mcl_sculk:vein"] = 4,
+        ["mcl_sculk:sculk"] = 16,
+        ["mcl_sculk:catalyst"] = 8040,
 
         ["mcl_sponges:sponge"] = 128,
 
@@ -194,9 +201,34 @@ if exchangeclone.mcl then
 
         ["useful_green_potatoes:useful_green_potato"] = 256,
     }) do
-        exchangeclone.energy_values[itemstring] = exchangeclone.energy_values[itemstring] or energy_value
+        exchangeclone.base_energy_values[itemstring] = exchangeclone.base_energy_values[itemstring] or energy_value
     end
+    -- TODO: Check after every update
+    exchangeclone.mcl_potion_data = exchangeclone.mcl_potion_data or {}
+    table.insert_all(exchangeclone.mcl_potion_data, { -- automatically assumes base is awkward potion if not specified
+        {name = "water", bases = {"mcl_potions:glass_bottle"}, no_arrow = true},
+        {name = "awkward", bases = {"mcl_potions:water"}, ingredient = "mcl_nether:nether_wart_item", no_arrow = true},
+        {name = "mundane", ingredient_cost = 32, no_arrow = true, custom_base_cost = 0},
+        {name = "thick", ingredient_cost = 384, no_arrow = true, custom_base_cost = 0},
+        {name = "fire_resistance", ingredient = "mcl_mobitems:magma_cream", plus = true},
+        {name = "harming", bases = {"mcl_potions:poison", "mcl_potions:healing"}, ingredient = "mcl_potions:fermented_spider_eye", two = true},
+        {name = "healing", ingredient = "mcl_potions:speckled_melon", two = true},
+        {name = "leaping", ingredient = "mcl_mobitems:rabbit_foot", plus = true, two = true},
+        {name = "night_vision", ingredient = "mcl_farming:carrot_item_gold", plus = true},
+        {name = "poison", ingredient = "mcl_mobitems:spider_eye", plus = true, two = true},
+        {name = "regeneration", ingredient = "mcl_mobitems:ghast_tear", plus = true, two = true},
+        {name = "slowness", bases = {"mcl_potions:swiftness", "mcl_potions:leaping"}, ingredient = "mcl_potions:fermented_spider_eye", plus = true, two = true},
+        {name = "swiftness", ingredient = "mcl_core:sugar", plus = true, two = true},
+        {name = "water_breathing", ingredient = "mcl_fishing:pufferfish_raw", plus = true},
+        {name = "invisibility", bases = {"mcl_potions:night_vision"}, ingredient = "mcl_potions:fermented_spider_eye", custom_base_cost = 623, plus = true},
+        {name = "withering", ingredient = "mcl_flowers:wither_rose", plus = true, two = true}
+    })
 else
+    exchangeclone.group_values = {
+        {"flower", 32},
+        --{"dye", 8},
+    }
+
     for itemstring, energy_value in pairs({
         ["bones:bones"] = 4,
 
@@ -212,7 +244,6 @@ else
         ["default:blueberry_bush_leaves"] = 1,
         ["default:blueberry_bush_leaves_with_berries"] = 9,
         ["default:blueberry_bush_sapling"] = 32,
-        ["default:book_written"] = 96,
         ["default:bush_leaves"] = 1,
         ["default:bush_sapling"] = 32,
         ["default:bush_stem"] = 8,
@@ -220,7 +251,6 @@ else
         ["default:clay_lump"] = 4,
         ["default:coal_lump"] = 128,
         ["default:cobble"] = 1,
-        ["default:copper_ingot"] = 320,
         ["default:coral_brown"] = 8,
         ["default:coral_cyan"] = 8,
         ["default:coral_green"] = 8,
@@ -229,7 +259,6 @@ else
         ["default:coral_skeleton"] = 8,
         ["default:desert_cobble"] = 1,
         ["default:desert_sand"] = 1,
-        ["default:diamond"] = 8192,
         ["default:dirt"] = 1,
         ["default:dirt_with_grass"] = 1,
         ["default:dry_dirt"] = 1,
@@ -237,13 +266,10 @@ else
         ["default:dry_dirt_with_grass"] = 1,
         ["default:emergent_jungle_sapling"] = 32,
         ["default:flint"] = 4,
-        ["default:gold_ingot"] = 2048,
         ["default:grass"] = 1,
         ["default:gravel"] = 4,
         ["default:ice"] = 1,
-        ["default:iron_ingot"] = 256,
         ["default:large_cactus_seedling"] = 32,
-        ["default:mese_crystal"] = 4096,
         ["default:mossycobble"] = 32,
         ["default:obsidian"] = 64,
         ["default:papyrus"] = 32,
@@ -254,7 +280,6 @@ else
         ["default:sand_with_kelp"] = 1,
         ["default:silver_sand"] = 1,
         ["default:snow"] = 1,
-        ["default:tin_ingot"] = 384,
 
         ["farming:cotton"] = 12,
         ["farming:cotton_wild"] = 12,
@@ -275,13 +300,8 @@ else
 
         ["useful_green_potatoes:useful_green_potato"] = 256
     }) do
-        exchangeclone.energy_values[itemstring] = exchangeclone.energy_values[itemstring] or energy_value
+        exchangeclone.base_energy_values[itemstring] = exchangeclone.base_energy_values[itemstring] or energy_value
     end
-
-    exchangeclone.group_values = {
-        {"flower", 32},
-        --{"dye", 8},
-    }
 
 end
 
@@ -290,7 +310,7 @@ end
 for itemstring, energy_value in pairs ({
     ["exchangeclone:alchemical_tome"] = 0,
 }) do
-    exchangeclone.energy_values[itemstring] = energy_value
+    exchangeclone.base_energy_values[itemstring] = energy_value
 end
 
 table.insert_all(exchangeclone.group_values, {

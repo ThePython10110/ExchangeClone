@@ -1,17 +1,35 @@
-local function get_transmutation_buttons(player, page, x, y)
-    local pages = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation")) or {}
-    if page > #pages then page = #pages end
-    if page < 1 then page = 1 end
-    if not pages[page] and page == 1 then
-        pages[page] = {}
+local suffixes = {"", "K", "M", "B", "T"}
+
+local function get_amount_label(itemstring, player_energy)
+    if not minetest.registered_items[itemstring] then return "" end
+    if player_energy <= 0 then return "0" end
+    local item_energy = exchangeclone.get_item_energy(itemstring)
+    local amount = math.floor(player_energy/item_energy)
+    if player_energy <= 0 then return "0" end
+    for _, suffix in ipairs(suffixes) do
+        if amount < 1000 then
+            return amount..suffix
+        else
+            amount = math.floor(amount/1000)
+        end
     end
+end
+
+local function get_transmutation_buttons(player, page, x, y)
+    local player_energy = exchangeclone.get_player_energy(player)
+    local pages = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation")) or {}
+    if page < 1 then page = 1 end
+    if not pages[1] then
+        pages[1] = {}
+    end
+    if page > #pages then page = #pages end
     local buttons = ""
     for i = 0, 15 do
         local itemstring = pages[page][i+1]
         local column = (i%4)
         local row = math.floor(i/4)
         if itemstring then
-            buttons = buttons.."item_image_button["..tostring(x+column)..","..tostring(y+row)..";1,1;"..itemstring..";"..itemstring..";]"
+            buttons = buttons.."item_image_button["..tostring(x+column)..","..tostring(y+row)..";1,1;"..itemstring..";"..itemstring..";"..get_amount_label(itemstring, player_energy).."]"
         else
             buttons = buttons.."image_button["..tostring(x+column)..","..tostring(y+row)..";1,1;blank.png;empty_button"..tostring(i)..";]"
         end

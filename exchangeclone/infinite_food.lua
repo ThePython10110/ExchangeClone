@@ -16,9 +16,12 @@ end
 
 minetest.register_tool("exchangeclone:infinite_food", {
     description = S("Infinite Food").."\n"..S("Consumes 64 energy when eaten"),
+    wield_image = "farming_bread.png^[screen:#555500",
+    inventory_image = "farming_bread.png^[screen:#555500",
     groups = { food = 2, eatable = 8, disable_repair = 1, fire_immune = 1},
-    on_place = infinite_food_function,
-    on_secondary_use = infinite_food_function,
+    on_place = exchangeclone.mcl and infinite_food_function,
+    on_secondary_use = exchangeclone.mcl and infinite_food_function,
+    on_use = (not exchangeclone.mcl) and infinite_food_function,
     _mcl_saturation = 12.8,
 })
 
@@ -28,3 +31,14 @@ minetest.register_on_item_eat(function(hp_change, replace_with_item, itemstack, 
         exchangeclone.set_player_energy(player, player_energy - 64)
     end
 end)
+
+local bread_itemstring = exchangeclone.mcl and "mcl_farming:bread" or "farming:bread"
+
+minetest.register_craft({
+    output = "exchangeclone:infinite_food",
+    recipe = {
+        {bread_itemstring, bread_itemstring, bread_itemstring,},
+        {bread_itemstring, "exchangeclone:transmutation_tablet", bread_itemstring,},
+        {bread_itemstring, bread_itemstring, bread_itemstring,},
+    }
+})

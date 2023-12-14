@@ -11,6 +11,7 @@ exchangeclone.axe_action = {
             exchangeclone.play_ability_sound(player)
         end
         data.itemstack = itemstack
+        data.remove_positions = {}
         return data
     end,
     action = function(player, pos, node, data)
@@ -26,13 +27,14 @@ exchangeclone.axe_action = {
                 else
                     local drops = minetest.get_node_drops(node.name, data.itemstack)
                     exchangeclone.drop_items_on_player(pos, drops, player)
-                    minetest.set_node(pos, {name = "air"})
+                    table.insert(data.remove_positions, pos)
                 end
             end
         end
         return data
     end,
     end_action = function(player, center, range, data)
+        exchangeclone.remove_nodes(data.remove_positions)
         if range > 0 or not data.strip then
             exchangeclone.start_cooldown(player, "axe", range/6)
         end

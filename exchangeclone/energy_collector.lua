@@ -22,18 +22,9 @@ minetest.register_lbm({
     end,
 })
 
-local check_positions = {
-	{x=0,y=0,z=1},
-	{x=0,y=0,z=-1},
-	{x=0,y=1,z=0},
-	{x=0,y=-1,z=0},
-	{x=1,y=0, z=0},
-	{x=-1,y=0,z=0},
-}
-
 local function check_for_furnaces(pos, set_furnace, start)
 	local found = false
-	for _, check_pos in ipairs(check_positions) do
+	for _, check_pos in ipairs(exchangeclone.neighbors) do
 		local new_pos = vector.add(pos, check_pos)
 		local node = minetest.get_node(new_pos)
         local furnace = minetest.get_item_group(node.name, "exchangeclone_furnace")

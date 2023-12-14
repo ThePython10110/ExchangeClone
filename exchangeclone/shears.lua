@@ -1,9 +1,14 @@
+-- TODO: Before releasing, check the shears. Just do it.
+-- I know you don't want to... but test EVERY SINGLE FUNCTION.
+-- MineClonia probably broke them.
+
 exchangeclone.shear_action = {
     start_action = function(player, center, range, itemstack)
         if exchangeclone.check_cooldown(player, "shears") then return end
         local data = {}
         exchangeclone.play_ability_sound(player)
         data.itemstack = itemstack
+        data.remove_positions = {}
         return data
     end,
     action = function(player, pos, node, data)
@@ -18,15 +23,15 @@ exchangeclone.shear_action = {
                 if node.name:sub(1,18) == "mcl_ocean:seagrass" then
                     minetest.set_node(pos, {name="sand"})
                 else
-                    minetest.set_node(pos, {name="air"})
+                    table.insert(data.remove_positions, pos)
                 end
             end
         end
         return data
     end,
     end_action = function(player, center, range, data)
+        exchangeclone.remove_nodes(data.remove_positions)
         exchangeclone.start_cooldown(player, "shears", (range+1)/7)
-        return data
     end
 }
 

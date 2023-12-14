@@ -11,9 +11,6 @@ function exchangeclone.round(num)
     end
 end
 
--- Decides what mod to use for sounds
-if exchangeclone.mcl then exchangeclone.sound_mod = mcl_sounds else exchangeclone.sound_mod = default end
-
 -- Don't think this even works correctly.
 function exchangeclone.get_inventory_drops(pos, inventory, drops)
     local inv = minetest.get_meta(pos):get_inventory()
@@ -175,7 +172,6 @@ function exchangeclone.set_player_energy(player, amount)
     amount = tonumber(amount)
     if not (player and amount) then return end
     if amount < 0 or amount > exchangeclone.limit then return end
-    amount = math.floor(amount*4)/4 -- Floor to nearest .25
     player:get_meta():set_string("exchangeclone_stored_energy", tonumber(amount))
     exchangeclone.update_hud(player)
 end
@@ -315,23 +311,19 @@ function exchangeclone.range_update(itemstack, player, max)
 end
 
 -- Make ExchangeClone tools slightly larger...
-exchangeclone.wield_scale = {x=1,y=1,z=1}
-if exchangeclone.mcl then
-    exchangeclone.wield_scale = mcl_vars.tool_wield_scale
-end
-
-exchangeclone.wield_scale = vector.multiply(exchangeclone.wield_scale, 1.3)
+exchangeclone.wield_scale = {x=1.3,y=1.3,z=1.3}
 
 -- Itemstrings for various items used in crafting recipes.
 exchangeclone.itemstrings = {
-    cobble = exchangeclone.mcl and "mcl_core:cobble" or "default:cobble",
-    redstoneworth = exchangeclone.mcl and "mesecons:redstone" or "default:obsidian",
-    glowstoneworth = exchangeclone.mcl and "mcl_nether:glowstone_dust" or "default:tin_ingot",
-    coal = exchangeclone.mcl and "mcl_core:coal_lump" or "default:coal_lump",
-    iron = exchangeclone.mcl and "mcl_core:iron_ingot" or "default:steel_ingot",
-    gold = exchangeclone.mcl and "mcl_core:gold_ingot" or "default:gold_ingot",
-    emeraldworth = exchangeclone.mcl and "mcl_core:emerald" or "default:mese_crystal",
-    diamond = exchangeclone.mcl and "mcl_core:diamond" or "default:diamond",
+    cobble =            exchangeclone.mcl and "mcl_core:cobble"             or "default:cobble",
+    redstoneworth =     exchangeclone.mcl and "mesecons:redstone"           or "default:obsidian",
+    glowstoneworth =    exchangeclone.mcl and "mcl_nether:glowstone_dust"   or "default:tin_ingot",
+    coal =              exchangeclone.mcl and "mcl_core:coal_lump"          or "default:coal_lump",
+    iron =              exchangeclone.mcl and "mcl_core:iron_ingot"         or "default:steel_ingot",
+    copper =            exchangeclone.mcl and "mcl_copper:copper_ingot"     or "default:copper_ingot",
+    gold =              exchangeclone.mcl and "mcl_core:gold_ingot"         or "default:gold_ingot",
+    emeraldworth =      exchangeclone.mcl and "mcl_core:emerald"            or "default:mese_crystal",
+    diamond =           exchangeclone.mcl and "mcl_core:diamond"            or "default:diamond",
 }
 
 exchangeclone.energy_aliases = {}
@@ -619,7 +611,7 @@ function exchangeclone.check_cooldown(player, name)
 end
 
 -- Chat commands:
-minetest.register_chatcommand("add_energy", {
+minetest.register_chatcommand("add_player_energy", {
     params = "[player] <value>",
     description = "Add to a player's personal energy (player is self if not included, value can be negative)",
     privs = {privs = true},
@@ -640,10 +632,11 @@ minetest.register_chatcommand("add_energy", {
             return
         end
         exchangeclone.add_player_energy(player, tonumber(value))
+        minetest.chat_send_player(name, "Added "..value.." to "..name.."'s personal energy.")
     end
 })
 
-minetest.register_chatcommand("set_energy", {
+minetest.register_chatcommand("set_player_energy", {
     params = "[player] <value>",
     description = "Set a player's personal energy (player is self if not included; use 'limit' as value to set it to maximum)",
     privs = {privs = true},
@@ -665,5 +658,80 @@ minetest.register_chatcommand("set_energy", {
         end
         if value == "limit" then value = exchangeclone.limit end
         exchangeclone.set_player_energy(player, tonumber(value))
+        minetest.chat_send_player(name, "Personal energy of "..name.." set to "..value)
     end
 })
+
+exchangeclone.neighbors = {
+    {x=-1, y=0, z=0},
+    {x=1, y=0, z=0},
+    {x=0, y=-1, z=0},
+    {x=0, y=1, z=0},
+    {x=0, y=0, z=-1},
+    {x=0, y=0, z=1},
+}
+
+function exchangeclone.check_nearby_falling(pos)
+	for i=1, #exchangeclone.neighbors do
+        local new_pos = vector.add(pos, exchangeclone.neighbors[i])
+        if exchangeclone.mcl then
+            local node = minetest.get_node(new_pos)
+            if node.name == "mcl_core:vine" then
+                mcl_core.check_vines_supported(new_pos, node)
+            end
+        end
+		minetest.check_single_for_falling(new_pos)
+	end
+end
+
+function exchangeclone.remove_nodes(positions)
+    for _, pos in ipairs(positions) do
+        exchangeclone.check_nearby_falling(pos)
+    end
+    minetest.bulk_set_node(positions, {name = "air"})
+end
+
+--[[
+Recipes are registered with the same format that they are in minetest.register_craft:
+{
+    type = <type>
+    recipe = <recipe>
+    output = <itemstring>
+    replacements = {{<itemstring>, <replace_itemstring>}, {<itemstring>, <replace_itemstring>}}
+}
+
+You do NOT have to call exchangeclone.register_craft if you use minetest.register_craft.
+]]
+
+--[[
+name (string): The name of the crafting type.
+recipe_type (string): One of the following:
+    shaped (default): Recipe is given in an array of arrays of ingredients.
+    shapeless: Recipe is given as a array of ingredients
+    cooking: Recipe is a single item
+reverse (bool): Only applies for "cooking" recipe_type. If set to true, all recipes of this
+                type will be registered twice: once normally, and once with the recipe and output swapped.
+]]
+
+exchangeclone.craft_types = {}
+
+function exchangeclone.register_craft_type(name, recipe_type, reverse)
+    exchangeclone.craft_types[name] = {type = recipe_type, reverse = true}
+end
+
+function exchangeclone.register_craft(data)
+    if not data.output then return end
+    local itemstring = ItemStack(data.output):get_name()
+    exchangeclone.recipes[itemstring] = exchangeclone.recipes[itemstring] or {}
+    table.insert(exchangeclone.recipes[itemstring], table.copy(data))
+    if data.type then
+        local type_data = exchangeclone.craft_types[data.type]
+        if type_data.type == "cooking" and type_data.reverse then
+            local flipped_data = table.copy(data)
+            flipped_data.output, flipped_data.recipe = flipped_data.recipe, flipped_data.output
+            local itemstring = ItemStack(flipped_data.output):get_name()
+            exchangeclone.recipes[itemstring] = exchangeclone.recipes[itemstring] or {}
+            table.insert(exchangeclone.recipes[itemstring], table.copy(flipped_data))
+        end
+    end
+end

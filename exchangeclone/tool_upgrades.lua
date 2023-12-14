@@ -709,6 +709,8 @@ exchangeclone.register_upgrade(
     }
 )
 
+-- Intentionally NOT making a Curse of Binding upgrade (because if Keep Inventory is enabled, they will never break)
+
 exchangeclone.register_upgrade(
     "exchangeclone:curse_of_vanishing_upgrade",
     "Curse of Vanishing \"Upgrade\"",

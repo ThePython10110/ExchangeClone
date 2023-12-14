@@ -1,5 +1,7 @@
 local S = minetest.get_translator()
 
+local phil = "exchangeclone:philosophers_stone"
+
 local function show_enchanting(player)
     local player_meta = player:get_meta()
     player_meta:set_int("mcl_enchanting:num_bookshelves", 8) -- 15 for max enchantments
@@ -304,14 +306,8 @@ minetest.register_tool("exchangeclone:philosophers_stone", {
 })
 
 local diamond = exchangeclone.itemstrings.diamond
-local corner = "default:tin_ingot"
-local side = "default:obsidian"
-
-if exchangeclone.mcl then
-    diamond = "mcl_core:diamond"
-    corner = "mcl_nether:glowstone_dust"
-    side = "mesecons:redstone"
-end
+local corner = exchangeclone.itemstrings.glowstoneworth
+local side = exchangeclone.itemstrings.redstoneworth
 
 minetest.register_craft({
     output = "exchangeclone:philosophers_stone",
@@ -326,166 +322,123 @@ minetest.register_craft({
     output = "mcl_core:coal_lump",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_core:charcoal_lump",
         "mcl_core:charcoal_lump",
         "mcl_core:charcoal_lump",
         "mcl_core:charcoal_lump"
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_core:charcoal_lump 4",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_core:coal_lump"
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.iron,
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.coal,
         exchangeclone.itemstrings.coal,
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.coal.." 2",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.iron
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
-    output = "mcl_copper:copper_ingot 6",
+    output = exchangeclone.itemstrings.copper.." 2",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_core:iron_ingot",
-        "mcl_core:iron_ingot",
+        phil,
+        exchangeclone.itemstrings.iron,
+        exchangeclone.itemstrings.iron,
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
-    output = "default:copper_ingot 4",
+    output = exchangeclone.itemstrings.iron.." 2",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
-        "default:steel_ingot",
+        phil,
+        exchangeclone.itemstrings.copper,
+        exchangeclone.itemstrings.copper,
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:iron_ingot",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_copper:copper_ingot",
-        "mcl_copper:copper_ingot",
-        "mcl_copper:copper_ingot",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_throwing:ender_pearl",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_core:iron_ingot",
         "mcl_core:iron_ingot",
         "mcl_core:iron_ingot",
         "mcl_core:iron_ingot",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-
-
-minetest.register_craft({
-    output = "mcl_core:iron_ingot 2",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "mcl_copper:copper_ingot",
-        "mcl_copper:copper_ingot",
-        "mcl_copper:copper_ingot",
-        "mcl_copper:copper_ingot",
-        "mcl_copper:copper_ingot",
-        "mcl_copper:copper_ingot",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
-minetest.register_craft({
-    output = "default:steel_ingot 5",
-    type = "shapeless",
-    recipe = {
-        "exchangeclone:philosophers_stone",
-        "default:copper_ingot",
-        "default:copper_ingot",
-        "default:copper_ingot",
-        "default:copper_ingot",
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "default:tin_ingot 4",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "default:copper_ingot",
         "default:copper_ingot",
         "default:copper_ingot",
         "default:copper_ingot",
         "default:copper_ingot",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "default:copper_ingot 5",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "default:tin_ingot",
         "default:tin_ingot",
         "default:tin_ingot",
         "default:tin_ingot",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.iron.." 8",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.gold
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.gold,
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.iron,
         exchangeclone.itemstrings.iron,
         exchangeclone.itemstrings.iron,
@@ -495,107 +448,107 @@ minetest.register_craft({
         exchangeclone.itemstrings.iron,
         exchangeclone.itemstrings.iron,
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.emeraldworth,
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.gold,
         exchangeclone.itemstrings.gold,
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.gold.." 2",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.emeraldworth,
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.diamond,
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.emeraldworth,
         exchangeclone.itemstrings.emeraldworth,
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.emeraldworth.." 2",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.diamond
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_nether:ancient_debris",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_core:diamond",
         "mcl_core:diamond",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_core:diamond 2",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_nether:ancient_debris"
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_core:diamond 2",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_nether:netherite_scrap"
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_core:diamond 9",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_nether:netherite_ingot"
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_nether:netherite_ingot",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_core:diamondblock"
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_nether:glowstone_dust",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mesecons:redstone",
         "mesecons:redstone",
         "mesecons:redstone",
@@ -603,105 +556,105 @@ minetest.register_craft({
         "mesecons:redstone",
         "mesecons:redstone",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mesecons:redstone 6",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_nether:glowstone_dust",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_core:lapis",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_nether:glowstone_dust",
         "mcl_nether:glowstone_dust"
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "mcl_nether:glowstone_dust 2",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "mcl_core:lapis",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "exchangeclone:alchemical_coal",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         exchangeclone.itemstrings.coal,
         exchangeclone.itemstrings.coal,
         exchangeclone.itemstrings.coal,
         exchangeclone.itemstrings.coal,
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.coal.." 4",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "exchangeclone:alchemical_coal",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "exchangeclone:mobius_fuel",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "exchangeclone:alchemical_coal",
         "exchangeclone:alchemical_coal",
         "exchangeclone:alchemical_coal",
         "exchangeclone:alchemical_coal",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "exchangeclone:alchemical_coal 4",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "exchangeclone:mobius_fuel",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "exchangeclone:aeternalis_fuel",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "exchangeclone:mobius_fuel",
         "exchangeclone:mobius_fuel",
         "exchangeclone:mobius_fuel",
         "exchangeclone:mobius_fuel",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
 
 minetest.register_craft({
     output = "exchangeclone:mobius_fuel 4",
     type = "shapeless",
     recipe = {
-        "exchangeclone:philosophers_stone",
+        phil,
         "exchangeclone:aeternalis_fuel",
     },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    replacements = {{phil, phil}}
 })
