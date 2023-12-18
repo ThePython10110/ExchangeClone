@@ -129,7 +129,7 @@ pick_def_3x1._mcl_diggroups.pickaxey.speed = 35
 
 minetest.register_tool("exchangeclone:dark_matter_pickaxe_3x1", table.copy(pick_def_3x1))
 
-exchangeclone.register_energy_alias("exchangeclone:dark_matter_pickaxe", "exchangeclone:dark_matter_pickaxe_3x1")
+exchangeclone.register_alias("exchangeclone:dark_matter_pickaxe", "exchangeclone:dark_matter_pickaxe_3x1")
 
 pick_def.description = S("Red Matter Pickaxe").."\n"..S("Single node mode")
 pick_def.wield_image = "exchangeclone_red_matter_pickaxe.png"
@@ -159,7 +159,7 @@ pick_def_3x1._mcl_diggroups.pickaxey.speed = 52
 
 minetest.register_tool("exchangeclone:red_matter_pickaxe_3x1", table.copy(pick_def_3x1))
 
-exchangeclone.register_energy_alias("exchangeclone:red_matter_pickaxe", "exchangeclone:red_matter_pickaxe_3x1")
+exchangeclone.register_alias("exchangeclone:red_matter_pickaxe", "exchangeclone:red_matter_pickaxe_3x1")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_pickaxe",

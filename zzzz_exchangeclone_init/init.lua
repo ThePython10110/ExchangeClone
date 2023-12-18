@@ -1,37 +1,48 @@
 exchangeclone = {recipes = {}, base_energy_values = {}, group_values = {}}
 
--- Override crafting
-local old_func = minetest.register_craft
-function minetest.register_craft(data, ...)
-    if data and data.output then
-        local itemstring = ItemStack(data.output):get_name()
-        exchangeclone.recipes[itemstring] = exchangeclone.recipes[itemstring] or {}
-        table.insert(exchangeclone.recipes[itemstring], table.copy(data))
-        --[[ -- reverse cooking recipes too
-        if arg.type == "cooking" then
-            itemstring = ItemStack(arg.recipe):get_name()
-            local reverse_arg = table.copy(arg)
-            reverse_arg.recipe, reverse_arg.output = reverse_arg.output, reverse_arg.recipe
-            exchangeclone.recipes[itemstring] = exchangeclone.recipes[itemstring] or {}
-            table.insert(exchangeclone.recipes[itemstring], table.copy(reverse_arg))
-        end --]]
-    end
-    old_func(data, ...)
-end
-
 if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
-    error("ExchangeClone requires Minetest Game, MineClone2, or MineClonia (and possibly other spinoffs).\nPlease use one of those games.")
+    error("ExchangeClone requires Minetest Game, MineClone2, or MineClonia (and possibly variant subgames).\nPlease use one of those games.")
 else
 	exchangeclone.mcl = minetest.get_modpath("mcl_core")
 end
 
 exchangeclone.mineclonia = minetest.get_game_info().id == "mineclonia" -- if exchangeclone.mineclonia, exchangeclone.mcl is also defined.
 exchangeclone.pipeworks = minetest.get_modpath("pipeworks")
-exchangeclone.orb_max = 51200000 -- Max capacity of Klein Star Omega in ProjectE
-exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000
+exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000 -- Max capacity of Klein Star Omega in ProjectE
+exchangeclone.keep_data = minetest.settings:get_bool("exchangeclone.keep_data", false)
 
 local modpath = minetest.get_modpath("zzzz_exchangeclone_init")
 dofile(modpath.."/lib.lua")
+
+-- Override crafting
+local old_func = minetest.register_craft
+function minetest.register_craft(data, ...)
+    local itemstring = ItemStack(data.output):get_name()
+    local allowed = true
+    -- Skip thousands of banner recipes in MCL2
+    -- This does mean that if other banner recipes exist that don't use wool (or carpet),
+    -- they will be ignored in MCL2... but I can't think of a better way to do this.
+    if exchangeclone.mcl and not exchangeclone.mineclonia then
+        if itemstring:sub(1, #"mcl_banners:") == "mcl_banners:" then
+            allowed = false
+            if data.type and data.type == "shaped" then
+                for _, row in ipairs(data.recipe) do
+                    for _, item in ipairs(row) do
+                        if item:sub(1, #"mcl_wool:") == "mcl_wool:" then
+                            allowed = true
+                            break
+                        end
+                    end
+                    if allowed then break end
+                end
+            end
+        end
+    end
+    if allowed then
+        exchangeclone.register_craft(data)
+    end
+    old_func(data, ...)
+end
 
 exchangeclone.register_craft_type("shaped", "shaped")
 exchangeclone.register_craft_type("shapeless", "shapeless")

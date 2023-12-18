@@ -141,7 +141,7 @@ hoe_3x3_def._mcl_diggroups.exchangeclone_dirt = { speed = 8, level = 7, uses = 0
 
 minetest.register_tool("exchangeclone:dark_matter_hoe_3x3", table.copy(hoe_3x3_def))
 
-exchangeclone.register_energy_alias("exchangeclone:dark_matter_hoe", "exchangeclone:dark_matter_hoe_3x3")
+exchangeclone.register_alias("exchangeclone:dark_matter_hoe", "exchangeclone:dark_matter_hoe_3x3")
 
 hoe_def.description = S("Red Matter Hammer").."\n"..S("Single node mode")
 hoe_def.wield_image = "exchangeclone_red_matter_hoe.png"
@@ -169,7 +169,7 @@ hoe_3x3_def._mcl_diggroups.exchangeclone_dirt = { speed = 9, level = 8, uses = 0
 
 minetest.register_tool("exchangeclone:red_matter_hoe_3x3", table.copy(hoe_3x3_def))
 
-exchangeclone.register_energy_alias("exchangeclone:red_matter_hoe", "exchangeclone:red_matter_hoe_3x3")
+exchangeclone.register_alias("exchangeclone:red_matter_hoe", "exchangeclone:red_matter_hoe_3x3")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hoe",

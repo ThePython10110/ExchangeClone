@@ -1,2 +1,5 @@
 # Exchange Orb maximum energy (default 51200000)
 exchangeclone.orb_max (Exchange Orb maximum energy) int 51200000
+
+# Keep unnecessary temporary data (such as the list of recipes) after load time for debugging purposes.
+exchangeclone.keep_data (Keep temporary data after loading) bool false

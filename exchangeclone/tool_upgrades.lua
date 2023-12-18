@@ -554,7 +554,7 @@ exchangeclone.register_upgrade(
 exchangeclone.register_upgrade(
     "exchangeclone:soul_speed_2_upgrade",
     "Soul Speed II Upgrade",
-    "^[brighten^[invert^[brighten:rgb^[multiply:#2c2000",
+    "^[brighten^[invert:rgb^[brighten^[multiply:#2c2000",
     {
         {"exchangeclone:dark_matter", "mcl_blackstone:soul_soil", "exchangeclone:dark_matter"},
         {"mcl_blackstone:soul_soil", "exchangeclone:soul_speed_1_upgrade", "mcl_blackstone:soul_soil"},
@@ -571,7 +571,7 @@ exchangeclone.register_upgrade(
 exchangeclone.register_upgrade(
     "exchangeclone:soul_speed_3_upgrade",
     "Soul Speed III Upgrade",
-    "^[brighten^[invert^[brighten^[multiply:#352700",
+    "^[brighten^[invert:rgb^[brighten^[multiply:#352700",
     {
         {"exchangeclone:dark_matter", "mcl_blackstone:soul_soil", "exchangeclone:dark_matter"},
         {"mcl_blackstone:soul_soil", "exchangeclone:soul_speed_2_upgrade", "mcl_blackstone:soul_soil"},

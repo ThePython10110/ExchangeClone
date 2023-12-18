@@ -9,6 +9,100 @@ exchangeclone.sound_mod = exchangeclone.mcl and mcl_sounds or default
 
 local modpath = minetest.get_modpath("exchangeclone")
 
+exchangeclone.colors = {}
+
+if exchangeclone.mcl then
+    -- I finally found a good place to get color data in both games.
+    for unicolor, data in pairs(mcl_banners.colors) do
+        if not exchangeclone.colors[data[1]] then
+            exchangeclone.colors[data[1]] = {
+                name = data[6],
+                hex = data[4],
+                dye = data[5],
+            }
+        end
+    end
+else
+	-- color hex values taken from MCLA
+	exchangeclone.colors = {
+		white = {
+			name = "White",
+			hex = "#d0d6d7",
+			dye = "dye:white",
+		},
+		grey = {
+			name = "Grey",
+			hex = "#818177",
+			dye = "dye:grey",
+		},
+		dark_grey = {
+			name = "Dark Grey",
+			hex = "#383c40",
+			dye = "dye:dark_grey",
+		},
+		black = {
+			name = "Black",
+			hex = "#080a10",
+			dye = "dye:black",
+		},
+		violet = {
+			name = "Violet",
+			hex = "#6821a0",
+			dye = "dye:violet",
+		},
+		blue = {
+			name = "Blue",
+			hex = "#2e3094",
+			dye = "dye:blue",
+		},
+		cyan = {
+			name = "Cyan",
+			hex = "#167b8c",
+			dye = "dye:cyan",
+		},
+		dark_green = {
+			name = "Dark Green",
+			hex = "#4b5e25",
+			dye = "dye:dark_green",
+		},
+		green = {
+			name = "Green",
+			hex = "#60ac19",
+			dye = "dye:green",
+		},
+		yellow = {
+			name = "Yellow",
+			hex = "#f1b216",
+			dye = "dye:yellow",
+		},
+		brown = {
+			name = "Brown",
+			hex = "#633d20",
+			dye = "dye:brown",
+		},
+		orange = {
+			name = "Orange",
+			hex = "#e26501",
+			dye = "dye:orange",
+		},
+		red = {
+			name = "Red",
+			hex = "#912222",
+			dye = "dye:red",
+		},
+		magenta = {
+			name = "Magenta",
+			hex = "#ab31a2",
+			dye = "dye:magenta",
+		},
+		pink = {
+			name = "Pink",
+			hex = "#d56791",
+			dye = "dye:pink",
+		},
+	}
+end
+
 dofile(modpath.."/constructor.lua")
 dofile(modpath.."/deconstructor.lua")
 dofile(modpath.."/energy_collector.lua")
@@ -48,5 +142,5 @@ minetest.register_on_mods_loaded(function()
 	minetest.log("action", "ExchangeClone: Registering energy values")
 	dofile(modpath.."/register_energy.lua")
 	local total_time = minetest.get_us_time() - start_time
-	minetest.log("action", "ExchangeClone: Done registering energy values ("..total_time.." microseconds)")
+	minetest.log("action", "ExchangeClone: Done registering energy values ("..(total_time/1000000).." seconds)")
 end)

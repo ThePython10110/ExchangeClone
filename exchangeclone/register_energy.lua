@@ -1,3 +1,6 @@
+-- Calculates the cheapest recipe given an itemstring.
+-- Would probably benefit from another function, since there's quite a bit
+-- of duplicate code.
 local function get_cheapest_recipe(itemstring, log)
     itemstring = ItemStack(itemstring):get_name()
     local recipes = exchangeclone.recipes[itemstring]
@@ -6,14 +9,46 @@ local function get_cheapest_recipe(itemstring, log)
     for _, recipe in ipairs(recipes) do
         local ingredient_cost = 0
         local output_count = ItemStack(recipe.output):get_count()
-        local output_name = ItemStack(recipe.output):get_name()
         local skip = false
+        local identical_replacements = {}
+        if recipe.replacements then
+            for _, replacement in ipairs(recipe.replacements) do
+                if replacement[1] == replacement[2] then
+                    identical_replacements[replacement[1]] = (identical_replacements[replacement[1]] or 0) + 1
+                end
+            end
+        end
         if not recipe.type or exchangeclone.craft_types[recipe.type].type == "shaped" then
             for _, row in ipairs(recipe.recipe) do
                 for _, item in ipairs(row) do
                     if item ~= "" then
-                        if item == output_name then
+                        if item == itemstring then
                             output_count = math.max(0, output_count - 1)
+                        else
+                            local replaced = identical_replacements[item]
+                            if replaced and replaced > 0 then
+                                identical_replacements[item] = replaced - 1
+                            else
+                                local cost = exchangeclone.get_item_energy(item)
+                                if (not cost) or cost == 0 then
+                                    skip = item
+                                else
+                                    ingredient_cost = ingredient_cost + cost
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        elseif exchangeclone.craft_types[recipe.type].type == "shapeless" then
+            for _, item in ipairs(recipe.recipe) do
+                if item ~= "" then
+                    if item == itemstring then
+                        output_count = math.max(0, output_count - 1)
+                    else
+                        local replaced = identical_replacements[item]
+                        if replaced and replaced > 0 then
+                            identical_replacements[item] = replaced - 1
                         else
                             local cost = exchangeclone.get_item_energy(item)
                             if (not cost) or cost == 0 then
@@ -25,34 +60,37 @@ local function get_cheapest_recipe(itemstring, log)
                     end
                 end
             end
-        elseif exchangeclone.craft_types[recipe.type].type == "shapeless" then
-            for _, item in ipairs(recipe.recipe) do
-                if item == output_name then
+        elseif exchangeclone.craft_types[recipe.type].type == "cooking" then
+            local item = recipe.recipe
+            if item ~= "" then
+                if item == itemstring then
                     output_count = math.max(0, output_count - 1)
                 else
-                    local cost = exchangeclone.get_item_energy(item)
-                    if (not cost) or cost == 0 then
-                        skip = item
+                    local replaced = identical_replacements[item]
+                    if replaced and replaced > 0 then
+                        identical_replacements[item] = replaced - 1
                     else
-                        ingredient_cost = ingredient_cost + cost
+                        local cost = exchangeclone.get_item_energy(item)
+                        if (not cost) or cost == 0 then
+                            skip = item
+                        else
+                            ingredient_cost = ingredient_cost + cost
+                        end
                     end
                 end
             end
-        elseif exchangeclone.craft_types[recipe.type].type == "cooking" then
-            local cost = exchangeclone.get_item_energy(recipe.recipe)
-            if (not cost) or cost == 0 then
-                skip = recipe.recipe
-            else
-                ingredient_cost = cost
-            end
+        elseif exchangeclone.craft_types[recipe.type].type == "energy" then
+            ingredient_cost = recipe.recipe
         end
         if recipe.replacements and not skip then
             for _, item in ipairs(recipe.replacements) do
-                local cost = exchangeclone.get_item_energy(item[2])
-                if (not cost) or cost == 0 then
-                    skip = item
-                else
-                    ingredient_cost = ingredient_cost - cost
+                if item[1] ~= item[2] then
+                    local cost = exchangeclone.get_item_energy(item[2])
+                    if (not cost) or cost == 0 then
+                        skip = item[2]
+                    else
+                        ingredient_cost = ingredient_cost - cost
+                    end
                 end
             end
         end
@@ -71,6 +109,8 @@ local function get_cheapest_recipe(itemstring, log)
     end
     return cheapest and cheapest[1]
 end
+
+exchangeclone.energy_values = {}
 
 -- Sets the energy value of an item, must be called during load time.
 local function set_item_energy(itemstring, energy_value)
@@ -95,6 +135,11 @@ local function set_item_energy(itemstring, energy_value)
         description = description,
         energy_value = energy_value,
     })
+    if energy_value > 0 then
+        exchangeclone.energy_values[itemstring] = energy_value
+    else
+        exchangeclone.energy_values[itemstring] = nil
+    end
 end
 
 local auto = {}
@@ -152,14 +197,14 @@ end
 -- Register clock/compass aliases, handle enchanted/netherite stuff, potions, and concrete, and register coral energy values
 if exchangeclone.mcl then
     for i = 0, 31 do
-        exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i)
-        exchangeclone.register_energy_alias("mcl_compass:18", "mcl_compass:"..i.."_lodestone")
+        exchangeclone.register_alias("mcl_compass:18", "mcl_compass:"..i)
+        exchangeclone.register_alias("mcl_compass:18", "mcl_compass:"..i.."_lodestone")
     end
     for i = 0, 63 do
-        exchangeclone.register_energy_alias("mcl_clock:clock", "mcl_clock:clock_"..i)
+        exchangeclone.register_alias("mcl_clock:clock", "mcl_clock:clock_"..i)
     end
-    exchangeclone.register_energy_alias("doc_identifier:identifier_solid", "doc_identifier:identifier_liquid")
-    exchangeclone.register_energy_alias("mcl_books:writable_book", "mcl_books:written_book")
+    exchangeclone.register_alias("doc_identifier:identifier_solid", "doc_identifier:identifier_liquid")
+    exchangeclone.register_alias("mcl_books:writable_book", "mcl_books:written_book")
 
     for _, coral_type in ipairs({"brain", "bubble", "fire", "horn", "tube"}) do
         for thing, value in pairs({[coral_type.."_coral"] = 16, [coral_type.."_coral_block"] = 64, [coral_type.."_coral_fan"] = 16}) do
@@ -168,7 +213,7 @@ if exchangeclone.mcl then
         end
     end
 
-
+    -- Potions
     exchangeclone.register_craft_type("brewing", "shapeless")
     local function add_potion_recipe(info)
         if not info.bases then info.bases = {"mcl_potions:awkward"} end
@@ -196,11 +241,11 @@ if exchangeclone.mcl then
         add_potion_recipe(info)
     end
 
-    exchangeclone.register_craft_type("upgrading", "shapeless")
     -- Enchanted/netherite tools
+    exchangeclone.register_craft_type("upgrading", "shapeless")
     for name, def in pairs(minetest.registered_items) do
         if def._mcl_enchanting_enchanted_tool then
-            exchangeclone.register_energy_alias(name, def._mcl_enchanting_enchanted_tool)
+            exchangeclone.register_alias(name, def._mcl_enchanting_enchanted_tool)
         end
         if def._mcl_upgrade_item then
             if not name:find("enchanted") then
@@ -215,6 +260,23 @@ if exchangeclone.mcl then
         exchangeclone.register_craft({output = "mcl_colorblocks:concrete_"..color, type = "hardening", recipe = "mcl_colorblocks:concrete_powder_"..color})
         exchangeclone.register_craft({output = "mcl_shields:shield_"..color, type = "shapeless", recipe = {"mcl_banners:banner_item_"..color, "mcl_shields:shield"}})
     end
+
+    -- Maps
+    exchangeclone.register_alias("mcl_maps:empty_map", "mcl_maps:filled_map")
+    local mcl_skins_enabled = minetest.global_exists("mcl_skins")
+    if mcl_skins_enabled then
+        -- Generate a node for every skin
+        local list = mcl_skins.get_skin_list()
+        for _, skin in pairs(list) do
+            exchangeclone.register_alias("mcl_maps:empty_map", "mcl_maps:filled_map_" .. skin.id)
+        end
+    else
+        exchangeclone.register_alias("mcl_maps:empty_map", "mcl_maps:filled_map_hand")
+    end
+
+    -- Sponges
+    exchangeclone.register_alias("mcl_sponges:sponge", "mcl_sponges:sponge_wet")
+    exchangeclone.register_alias("mcl_sponges:sponge", "mcl_sponges:sponge_wet_river_water")
 end
 
 -- Register copper block/stonecutting energy recipes in MineClone2
@@ -234,6 +296,14 @@ if exchangeclone.mcl and not exchangeclone.mineclonia then
             exchangeclone.register_craft({output = output.." "..amount, type = "stonecutting", recipe = input})
         end
     end
+end
+
+if not exchangeclone.mcl then
+    exchangeclone.register_alias("default:book", "default:book_written")
+end
+
+if minetest.get_modpath("lava_sponge") then
+    exchangeclone.register_alias("lava_sponge:lava_sponge", "lava_sponge:lava_sponge_wet")
 end
 
 -- Register base energy values
@@ -312,7 +382,7 @@ if exchangeclone.mcl then
     for i = 0, 31 do
         if exchangeclone.get_item_energy("mcl_compass:"..i.."_recovery") then
             for j = 0, 31 do
-                exchangeclone.register_energy_alias("mcl_compass:"..i.."_recovery", "mcl_compass:"..j.."_recovery")
+                exchangeclone.register_alias("mcl_compass:"..i.."_recovery", "mcl_compass:"..j.."_recovery")
             end
             break
         end
@@ -321,9 +391,11 @@ end
 
 -- Adds energy values to aliased items, even though they're not used (just so it's displayed)
 for alias, itemstring in pairs(exchangeclone.energy_aliases) do
-    set_item_energy(alias, exchangeclone.get_item_energy(itemstring))
+    set_item_energy(itemstring, exchangeclone.get_item_energy(alias))
 end
 
--- Free up memory (I assume this will do that?)
-exchangeclone.recipes = nil
-exchangeclone.base_energy_values = nil
+-- Delete unnecessary data (waste of memory)
+if not exchangeclone.keep_data then
+    exchangeclone.recipes = nil
+    exchangeclone.base_energy_values = nil
+end

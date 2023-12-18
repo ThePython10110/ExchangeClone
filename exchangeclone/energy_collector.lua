@@ -164,7 +164,7 @@ end
 
 function exchangeclone.register_energy_collector(itemstring, name, amount, modifier, recipe)
     minetest.register_node(itemstring, {
-        description = name,
+        description = name.."\nGenerates "..exchangeclone.format_number(amount).." energy/second",
         tiles = {
             "exchangeclone_energy_collector_up.png"..modifier,
             "exchangeclone_energy_collector_down.png"..modifier,
@@ -239,12 +239,12 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
     end
 end
 
-local iron = "default:steelblock"
+local iron_block = "default:steelblock"
 local glass = "default:glass"
 local chest = "default:chest"
 
 if exchangeclone.mcl then
-    iron = "mcl_core:ironblock"
+    iron_block = "mcl_core:ironblock"
     glass = "mcl_core:glass"
     chest = "mcl_chests:chest"
 end
@@ -252,34 +252,69 @@ end
 exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk1", S("Energy Collector MK1"), 4, "", {
         {glass, glass, glass},
         {"exchangeclone:exchange_orb", chest, "exchangeclone:exchange_orb"},
-        {iron, iron, iron}
+        {iron_block, iron_block, iron_block}
     }
 )
 
 exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk2", S("Energy Collector MK2"), 12, "^[multiply:#555555", {
-        {iron, iron, iron},
+        {iron_block, iron_block, iron_block},
         {"exchangeclone:energy_collector_mk1", "exchangeclone:energy_collector_mk1", "exchangeclone:energy_collector_mk1"},
-        {iron, iron, iron}
+        {iron_block, iron_block, iron_block}
     }
 )
 
 exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk3", S("Energy Collector MK3"), 40, "^[multiply:#770000", {
-        {iron, iron, iron},
+        {iron_block, iron_block, iron_block},
         {"exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2"},
-        {iron, iron, iron}
+        {iron_block, iron_block, iron_block}
     }
 )
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", S("Energy Collector MK4"), 160, "^[multiply:#007700", {
-        {iron, iron, iron},
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", S("Energy Collector MK4"), 160, "^[multiply:#777700", {
+        {iron_block, iron_block, iron_block},
         {"exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3"},
-        {iron, iron, iron}
+        {iron_block, iron_block, iron_block}
     }
 )
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", S("Energy Collector MK5"), 640, "^[multiply:#000077", {
-        {iron, iron, iron},
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", S("Energy Collector MK5"), 640, "^[multiply:#007700", {
+        {iron_block, iron_block, iron_block},
         {"exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4"},
-        {iron, iron, iron}
+        {iron_block, iron_block, iron_block}
+    }
+)
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk6", S("Energy Collector MK6"), 2560, "^[multiply:#007777", {
+        {iron_block, iron_block, iron_block},
+        {"exchangeclone:energy_collector_mk5", "exchangeclone:energy_collector_mk5", "exchangeclone:energy_collector_mk5"},
+        {iron_block, iron_block, iron_block}
+    }
+)
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk7", S("Energy Collector MK7"), 10240, "^[multiply:#000077", {
+        {iron_block, iron_block, iron_block},
+        {"exchangeclone:energy_collector_mk6", "exchangeclone:energy_collector_mk6", "exchangeclone:energy_collector_mk6"},
+        {iron_block, iron_block, iron_block}
+    }
+)
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk8", S("Energy Collector MK8"), 40960, "^[multiply:#770077", {
+        {iron_block, iron_block, iron_block},
+        {"exchangeclone:energy_collector_mk7", "exchangeclone:energy_collector_mk7", "exchangeclone:energy_collector_mk7"},
+        {iron_block, iron_block, iron_block}
+    }
+)
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk9", S("Energy Collector MK9"), 163840, "^[brighten", {
+        {iron_block, iron_block, iron_block},
+        {"exchangeclone:energy_collector_mk8", "exchangeclone:energy_collector_mk8", "exchangeclone:energy_collector_mk8"},
+        {iron_block, iron_block, iron_block}
+    }
+)
+
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk10", S("Energy Collector MK10"), 655360, "^[invert:rgb", {
+        {iron_block, iron_block, iron_block},
+        {"exchangeclone:energy_collector_mk9", "exchangeclone:energy_collector_mk9", "exchangeclone:energy_collector_mk9"},
+        {iron_block, iron_block, iron_block}
     }
 )

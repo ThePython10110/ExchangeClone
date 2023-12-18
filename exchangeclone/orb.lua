@@ -20,22 +20,14 @@ minetest.register_tool("exchangeclone:exchange_orb", {
     groups = {exchange_orb = 1, disable_repair = 1, fire_immune = 1}
 })
 
-local recipe_item_1 = "default:steel_ingot"
-local recipe_item_2 = "default:diamond"
-
-if exchangeclone.mcl then
-    recipe_item_1 = "mcl_core:iron_ingot"
-    recipe_item_2 = "mcl_core:diamond"
-end
-
 minetest.register_craft({
     type = "shaped",
     output = "exchangeclone:exchange_orb",
     groups = {},
     recipe = {
-        {recipe_item_2, recipe_item_1, recipe_item_2},
-        {recipe_item_1, "exchangeclone:philosophers_stone", recipe_item_1},
-        {recipe_item_2, recipe_item_1,  recipe_item_2}
+        {exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.iron, exchangeclone.itemstrings.diamond},
+        {exchangeclone.itemstrings.iron, "exchangeclone:philosophers_stone", exchangeclone.itemstrings.iron},
+        {exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.iron,  exchangeclone.itemstrings.diamond}
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })

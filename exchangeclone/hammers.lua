@@ -118,7 +118,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer_3x3", {
     on_secondary_use = hammer_on_place,
 })
 
-exchangeclone.register_energy_alias("exchangeclone:dark_matter_hammer", "exchangeclone:dark_matter_hammer_3x3")
+exchangeclone.register_alias("exchangeclone:dark_matter_hammer", "exchangeclone:dark_matter_hammer_3x3")
 
 minetest.register_tool("exchangeclone:red_matter_hammer", {
 	description = S("Red Matter Hammer").."\n"..S("Single node mode"),
@@ -170,7 +170,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer_3x3", {
     on_secondary_use = hammer_on_place,
 })
 
-exchangeclone.register_energy_alias("exchangeclone:red_matter_hammer", "exchangeclone:red_matter_hammer_3x3")
+exchangeclone.register_alias("exchangeclone:red_matter_hammer", "exchangeclone:red_matter_hammer_3x3")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hammer",

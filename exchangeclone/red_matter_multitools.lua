@@ -105,7 +105,7 @@ katar_def.tool_capabilities.groupcaps.exchangeclone_dirt = {times={[1]=0.25,[2]=
 
 minetest.register_tool("exchangeclone:red_katar_3x3", table.copy(katar_def))
 
-exchangeclone.register_energy_alias("exchangeclone:red_katar", "exchangeclone:red_katar_3x3")
+exchangeclone.register_alias("exchangeclone:red_katar", "exchangeclone:red_katar_3x3")
 
 minetest.register_craft({
 	output = "exchangeclone:red_katar",
@@ -266,7 +266,7 @@ morningstar_def.exchangeclone_pick_mode = "3x3"
 
 minetest.register_tool("exchangeclone:red_morningstar_3x3", table.copy(morningstar_def))
 
-exchangeclone.register_energy_alias("exchangeclone:red_morningstar", "exchangeclone:red_morningstar_3x3")
+exchangeclone.register_alias("exchangeclone:red_morningstar", "exchangeclone:red_morningstar_3x3")
 
 for k, v in pairs({cracky = "pickaxey", crumbly = "shovely"}) do
 	morningstar_def.tool_capabilities.groupcaps[k].times = {[1]=0.6,[2]=0.4,[3]=0.20}
@@ -278,7 +278,7 @@ morningstar_def.description = S("Red Morningstar").."\n"..S("3x1 mode")
 
 minetest.register_tool("exchangeclone:red_morningstar_3x1", table.copy(morningstar_def))
 
-exchangeclone.register_energy_alias("exchangeclone:red_morningstar", "exchangeclone:red_morningstar_3x1")
+exchangeclone.register_alias("exchangeclone:red_morningstar", "exchangeclone:red_morningstar_3x1")
 
 minetest.register_craft({
 	output = "exchangeclone:red_morningstar",

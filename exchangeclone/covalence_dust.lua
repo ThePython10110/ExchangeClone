@@ -3,15 +3,20 @@ local S = minetest.get_translator()
 local charcoal_itemstring = exchangeclone.mcl and "mcl_core:charcoal_lump" or "group:tree"
 
 minetest.register_craftitem("exchangeclone:low_covalence_dust", {
-    description = S("Low Covalence Dust")
+    description = S("Low Covalence Dust"),
+    inventory_image = "exchangeclone_dust.png^[colorize:#00ff00:128",
+    wield_image = "exchangeclone_dust.png^[colorize:#00ff00:128",
 })
-
 minetest.register_craftitem("exchangeclone:medium_covalence_dust", {
-    description = S("Medium Covalence Dust")
+    description = S("Medium Covalence Dust"),
+    inventory_image = "exchangeclone_dust.png^[colorize:#00ffff:128",
+    wield_image = "exchangeclone_dust.png^[colorize:#00ffff:128",
 })
 
 minetest.register_craftitem("exchangeclone:high_covalence_dust", {
-    description = S("High Covalence Dust")
+    description = S("High Covalence Dust"),
+    inventory_image = "exchangeclone_dust.png^[colorize:#0000ff:128",
+    wield_image = "exchangeclone_dust.png^[colorize:#0000ff:128",
 })
 
 minetest.register_craft({

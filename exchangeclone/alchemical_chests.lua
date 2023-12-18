@@ -1,24 +1,5 @@
 local S = minetest.get_translator()
 
-local colors = {
-    red = {"Red", "^[multiply:#990000"},
-    orange = {"Orange", "^[multiply:#99ff00"},
-    yellow = {"Yellow", "^[multiply:#ffff00"},
-    green = {"Lime", "^[multiply:#00ff00"},
-    dark_green = {"Green", "^[multiply:#007700"},
-    cyan = {"Cyan", "^[multiply:#00ffff"},
-    light_blue = {"Light Blue", "^[multiply:#8888ff"},
-    blue = {"Blue", "^[multiply:#0000ff"},
-    purple = {"Purple", "^[multiply:#9900ff"},
-    magenta = {"Magenta", "^[multiply:#ff00ff"},
-    pink = {"Pink", "^[multiply:#ff5599"},
-    black = {"Black", "^[invert:rgb"},
-    white = {"White", ""},
-    silver = exchangeclone.mcl and {"Light Gray", "^[multiply:#aaaaaa"},
-    grey = {"Gray", "^[multiply:#777777"},
-    brown = {"Brown", "^[multiply:#995500"},
-}
-
 -- color is nil for regular alchemical chests (not advanced/bags)
 local function alchemical_formspec(color)
     local listname, label
@@ -90,19 +71,24 @@ minetest.register_craft({
 
 minetest.register_on_joinplayer(function(player, last_login)
     local inv = player:get_inventory()
-    for _, color_data in pairs(colors) do
-        local codified_color = string.lower(color_data[1]):gsub(" ", "_")
-        inv:set_size(codified_color.."_alchemical_inventory", 104)
-        inv:set_width(codified_color.."_alchemical_inventory", 13)
+    for color, color_data in pairs(exchangeclone.colors) do
+        inv:set_size(color.."_alchemical_inventory", 104)
+        inv:set_width(color.."_alchemical_inventory", 13)
     end
 end)
 
-for dye_color, color_data in pairs(colors) do
-    local codified_color = string.lower(color_data[1]):gsub(" ", "_")
-    local bag_itemstring = "exchangeclone:"..codified_color.."_alchemical_bag"
-    local advanced_itemstring = "exchangeclone:"..codified_color.."_advanced_alchemical_chest"
-    local wool_itemstring = (exchangeclone.mcl and "mcl_wool:" or "wool:")..dye_color
-    local dye_itemstring = (exchangeclone.mcl and "mcl_dye:" or "dye:")..dye_color
+for color, color_data in pairs(exchangeclone.colors) do
+    local bag_itemstring = "exchangeclone:"..color.."_alchemical_bag"
+    local advanced_itemstring = "exchangeclone:"..color.."_advanced_alchemical_chest"
+    local wool_itemstring = (exchangeclone.mcl and "mcl_wool:" or "wool:")..color
+    local dye_itemstring = (exchangeclone.mcl and "mcl_dye:" or "dye:")..color
+
+    local bag_modifier = "^[multiply:"..color_data.hex
+    if color == "white" then bag_modifier = "" end
+    if color == "black" then bag_modifier = "^[invert:rgb" end
+    local chest_modifier = bag_modifier
+    if color == "black" then chest_modifier = "^[invert:rgb^[colorize:#000000:220" end
+
 
     local function alchemical_bag_action(itemstack, player, pointed_thing)
         local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -115,19 +101,19 @@ for dye_color, color_data in pairs(colors) do
                 minetest.record_protection_violation(player)
             else
                 minetest.set_node(pointed_thing.under, {name=advanced_itemstring})
-                local on_construct = alchemical_on_construct(color_data[1])
+                local on_construct = alchemical_on_construct(color_data.name)
                 on_construct(pointed_thing.under)
                 return
             end
         else
-            minetest.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color_data[1]))
+            minetest.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color_data.name))
         end
     end
 
     minetest.register_tool(bag_itemstring, {
-        description = S("@1 Alchemical Bag", S(color_data[1])),
-        inventory_image = "exchangeclone_alchemical_bag.png"..color_data[2],
-        wield_image = "exchangeclone_alchemical_bag.png"..color_data[2],
+        description = S("@1 Alchemical Bag", S(color_data.name)),
+        inventory_image = "exchangeclone_alchemical_bag.png"..bag_modifier,
+        wield_image = "exchangeclone_alchemical_bag.png"..bag_modifier,
         groups = {disable_repair = 1, alchemical_bag = 1},
         on_secondary_use = alchemical_bag_action,
         on_place = alchemical_bag_action
@@ -151,18 +137,27 @@ for dye_color, color_data in pairs(colors) do
     })
 
     minetest.register_node(advanced_itemstring, {
-        description = S("@1 Advanced Alchemical Chest", S(color_data[1])).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
+        description = S("@1 Advanced Alchemical Chest", S(color_data.name)).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
         _mcl_hardness = 3,
         _mcl_blast_resistance = 6,
-        groups = {container = 2, advanced_alchemical_chest = 1},
-        on_construct = alchemical_on_construct(color_data[1])
+        groups = {container = 1, advanced_alchemical_chest = 1},
+        paramtype2 = "4dir",
+        tiles = {
+            "exchangeclone_advanced_alchemical_chest_top.png"..chest_modifier,
+            "exchangeclone_advanced_alchemical_chest_bottom.png"..chest_modifier,
+            "exchangeclone_advanced_alchemical_chest_side.png"..chest_modifier,
+            "exchangeclone_advanced_alchemical_chest_side.png"..chest_modifier,
+            "exchangeclone_advanced_alchemical_chest_side.png"..chest_modifier,
+            "exchangeclone_advanced_alchemical_chest_front.png"..chest_modifier,
+        },
+        on_construct = alchemical_on_construct(color_data.name)
     })
 
     minetest.register_craft({
         output = advanced_itemstring,
         recipe = {
             {"exchangeclone:dark_matter", "exchangeclone:low_covalence_dust", "exchangeclone:dark_matter"},
-            {"exchangeclone:medium_covalence_dust", "exchangeclone:"..codified_color.."_alchemical_bag", "exchangeclone:medium_covalence_dust"},
+            {"exchangeclone:medium_covalence_dust", "exchangeclone:"..color.."_alchemical_bag", "exchangeclone:medium_covalence_dust"},
             {"exchangeclone:high_covalence_dust", "exchangeclone:low_covalence_dust", "exchangeclone:high_covalence_dust"},
         }
     })

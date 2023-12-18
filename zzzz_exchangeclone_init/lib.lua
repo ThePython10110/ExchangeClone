@@ -310,34 +310,31 @@ function exchangeclone.range_update(itemstack, player, max)
     return itemstack
 end
 
--- Make ExchangeClone tools slightly larger...
-exchangeclone.wield_scale = {x=1.3,y=1.3,z=1.3}
-
 -- Itemstrings for various items used in crafting recipes.
 exchangeclone.itemstrings = {
-    cobble =            exchangeclone.mcl and "mcl_core:cobble"             or "default:cobble",
-    redstoneworth =     exchangeclone.mcl and "mesecons:redstone"           or "default:obsidian",
-    glowstoneworth =    exchangeclone.mcl and "mcl_nether:glowstone_dust"   or "default:tin_ingot",
-    coal =              exchangeclone.mcl and "mcl_core:coal_lump"          or "default:coal_lump",
-    iron =              exchangeclone.mcl and "mcl_core:iron_ingot"         or "default:steel_ingot",
-    copper =            exchangeclone.mcl and "mcl_copper:copper_ingot"     or "default:copper_ingot",
-    gold =              exchangeclone.mcl and "mcl_core:gold_ingot"         or "default:gold_ingot",
-    emeraldworth =      exchangeclone.mcl and "mcl_core:emerald"            or "default:mese_crystal",
-    diamond =           exchangeclone.mcl and "mcl_core:diamond"            or "default:diamond",
+    cobble =            (exchangeclone.mcl and "mcl_core:cobble")             or "default:cobble",
+    redstoneworth =     (exchangeclone.mcl and "mesecons:redstone")           or "default:obsidian",
+    glowstoneworth =    (exchangeclone.mcl and "mcl_nether:glowstone_dust")   or "default:tin_ingot",
+    coal =              (exchangeclone.mcl and "mcl_core:coal_lump")          or "default:coal_lump",
+    iron =              (exchangeclone.mcl and "mcl_core:iron_ingot")         or "default:steel_ingot",
+    copper =            (exchangeclone.mcl and "mcl_copper:copper_ingot")     or "default:copper_ingot",
+    gold =              (exchangeclone.mcl and "mcl_core:gold_ingot")         or "default:gold_ingot",
+    emeraldworth =      (exchangeclone.mcl and "mcl_core:emerald")            or "default:mese_crystal",
+    diamond =           (exchangeclone.mcl and "mcl_core:diamond")            or "default:diamond",
 }
 
 exchangeclone.energy_aliases = {}
 
 -- <itemstring> will be treated as <alias> in Deconstructors, Constructors, Transmutation Table(t)s, etc.
 -- When you put <itemstring> into a TT, you will learn <alias> instead.
-function exchangeclone.register_energy_alias_force(alias, itemstring)
+function exchangeclone.register_alias_force(alias, itemstring)
     if alias == itemstring then return end
     exchangeclone.energy_aliases[itemstring] = alias
 end
 
-function exchangeclone.register_energy_alias(alias, itemstring)
+function exchangeclone.register_alias(alias, itemstring)
     if not exchangeclone.energy_aliases[alias] then
-        exchangeclone.register_energy_alias_force(alias, itemstring)
+        exchangeclone.register_alias_force(alias, itemstring)
     end
 end
 
@@ -716,7 +713,7 @@ reverse (bool): Only applies for "cooking" recipe_type. If set to true, all reci
 exchangeclone.craft_types = {}
 
 function exchangeclone.register_craft_type(name, recipe_type, reverse)
-    exchangeclone.craft_types[name] = {type = recipe_type, reverse = true}
+    exchangeclone.craft_types[name] = {type = recipe_type, reverse = reverse}
 end
 
 function exchangeclone.register_craft(data)

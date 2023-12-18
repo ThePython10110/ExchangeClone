@@ -9,12 +9,15 @@ local ores = {
 	["default:tin_lump"] = true,
 
 	["mcl_copper:raw_copper"] = true,
-	["mcl_raw_ores:raw_gold"] = true,
+	["mcl_copper:block_raw"] = true,
 	["mcl_raw_ores:raw_iron"] = true,
+	["mcl_raw_ores:raw_iron_block"] = true,
+	["mcl_raw_ores:raw_gold"] = true,
+	["mcl_raw_ores:raw_gold_block"] = true,
 
 	["moreores:mithril_lump"] = true,
 	["moreores:silver_lump"] = true,
-	["moreores:tin_lump"] = true, -- tin is built into MTG but it's in the moreores code
+	["moreores:tin_lump"] = true, -- tin is built into MTG but it's also in the moreores code
 
 	["technic:chromium_lump"] = true,
 	["technic:lead_lump"] = true,
