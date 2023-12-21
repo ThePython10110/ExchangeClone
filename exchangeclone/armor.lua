@@ -49,7 +49,7 @@ if exchangeclone.mcl then
     mcl_armor.register_set({
         name = "dark_matter",
         description = "Dark Matter",
-        descriptions = exchangeclone.mineclonia and {
+        descriptions = exchangeclone.mcla and {
             head = S("Dark Matter Helmet"),
             torso = S("Dark Matter Chestplate"),
             legs = S("Dark Matter Leggings"),
@@ -77,7 +77,7 @@ if exchangeclone.mcl then
     mcl_armor.register_set({
         name = "red_matter",
         description = "Red Matter",
-        descriptions = exchangeclone.mineclonia and {
+        descriptions = exchangeclone.mcla and {
             head = S("Red Matter Helmet"),
             torso = S("Red Matter Chestplate"),
             legs = S("Red Matter Leggings"),
@@ -103,8 +103,8 @@ if exchangeclone.mcl then
         cook_material = "exchangeclone:dark_matter",
     })
 
-    for _, matter in ipairs({"dark", "red"}) do
-        for _, type in ipairs({"helmet", "chestplate", "leggings", "boots"}) do
+    for _, matter in pairs({"dark", "red"}) do
+        for _, type in pairs({"helmet", "chestplate", "leggings", "boots"}) do
             minetest.override_item("exchangeclone:"..type.."_"..matter.."_matter", {
                 inventory_image = get_armor_texture("inv_"..type, matter),
                 wield_image = get_armor_texture("inv_"..type, matter),

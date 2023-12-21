@@ -5,7 +5,7 @@ local upgrader_formspec =
     "label[0.5,0.5;Upgrader]"..
     "label["..tostring(width/3-0.5)..",0.5;Upgrade]"..
     "list[context;fuel;"..tostring(width/3-0.5)..",1;1,1]"..
-    "label["..tostring(width/2-0.5)..",0.5;Tool/Armor]"..
+    "label["..tostring(width/2-0.5)..",0.5;Gear]"..
     "list[context;src;"..tostring(width/2-0.5)..",1;1,1]"..
     "label["..tostring(2*width/3-0.5)..",0.5;Output]"..
     "list[context;dst;"..tostring(2*width/3-0.5)..",1;1,1]"..
@@ -134,7 +134,7 @@ local after_dig_node = function(pos, oldnode, oldmetadata, player)
         local meta2 = meta:to_table()
         meta:from_table(oldmetadata)
         local inv = meta:get_inventory()
-        for _, listname in ipairs({"fuel", "dst", "src"}) do
+        for _, listname in pairs({"fuel", "dst", "src"}) do
             local stack = inv:get_stack(listname, 1)
             if not stack:is_empty() then
                 local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
@@ -185,7 +185,7 @@ minetest.register_node("exchangeclone:upgrader", {
         meta:set_string("infotext", "Upgrader")
         meta:set_string("formspec", upgrader_formspec)
     end,
-	groups = {pickaxey=5, material_stone=1, cracky = 3, container = 4, level = get_level(4), tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=5, material_stone=1, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, level = get_level(4), tubedevice = 1, tubedevice_receiver = 1},
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
     allow_metadata_inventory_put = allow_metadata_inventory_put,

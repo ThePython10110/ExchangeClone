@@ -155,7 +155,7 @@ minetest.register_node("exchangeclone:constructor", {
         "exchangeclone_constructor_right.png",
         "exchangeclone_constructor_right.png"
     },
-    groups = {cracky = 2, container = 4, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
+    groups = {cracky = 2, container = exchangeclone.mcl2 and 2 or 4, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
     sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
@@ -167,7 +167,7 @@ minetest.register_node("exchangeclone:constructor", {
             local meta2 = meta:to_table()
             meta:from_table(oldmetadata)
             local inv = meta:get_inventory()
-            for _, listname in ipairs({"src", "dst", "fuel"}) do
+            for _, listname in pairs({"src", "dst", "fuel"}) do
                 local stack = inv:get_stack(listname, 1)
                 if not stack:is_empty() then
                     local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
@@ -195,6 +195,11 @@ minetest.register_node("exchangeclone:constructor", {
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
     on_timer = constructor_action,
+	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
+	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
+	_mcl_hoppers_on_after_push = function(pos)
+		minetest.get_node_timer(pos):start(1.0)
+	end,
 })
 
 if exchangeclone.pipeworks then

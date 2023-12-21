@@ -40,6 +40,7 @@ Dependencies: Minetest Game or MineClone.
 ## Known issues:
 * It is impossible to die from most things when wearing DM/RM armor in MineClon(e/ia)... There's some rounding thing that happens when the player has 1 health or something. I can't figur it out.
 * When machines are exploded, they (and the items inside) do not drop. I can't figure out why.
+* For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is new enough that most people are using it.
 * Dark/Red matter shears will sometimes (randomly) be treated as normal shears when used by MCL dispensers. This will not be fixed.
 
 **If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
@@ -64,23 +65,20 @@ Dependencies: Minetest Game or MineClone.
 
 ### TODO:
 * Figure out what's going to happen with Technic (the PR probably won't be merged)
-* Fix tools updating surrounding nodes
-* Code for covalence dust
-* Improve multidig
-* Add more Energy Collectors
-* Fix MCL2 hoppers
-
-\* Not actually added yet
+* Test everything in MTG, MCL2, and MCLA (and 5.7)
+* Finish changelog
+* Finish wiki
 
 ### v6.0 (The Compatibility Update)
 
 **The biggest changes:**
-* I'm naming updates now for some reason.
-* Automatic energy values! This means I don't have to manually add energy values for every single item. If it's craftable (and even if it's not in many cases), ExchangeClone will automatically figure out an energy value for it.
-* The minimum Minetest version has been changed to 5.7.0, because I'm never going to test on any older versions. Of course, it will probably still work (at least mostly) on other versions, but I can't promise anything.
-* Players can now have up to 1 trillion personal energy!
-* Energy values now better match ProjectE's.
-* **The PESA will be removed in version 7.0.**
+*   I'm naming updates now for some reason.
+*   Automatic energy values! This means I don't have to manually add energy values for every single item. If it's craftable (and even if it's not in many cases), ExchangeClone will automatically figure out an energy value for it.
+*   The minimum Minetest version has been changed to 5.7.0, because I'm never going to test on any older versions. Of course, it will probably still work (at least mostly) on other versions, but I can't promise anything.
+*   Players can now have up to 1 trillion personal energy!
+*   Energy values now better match ProjectE's.
+*   Changed A LOT of things internally. Any mods depending on ExchangeClone (probably not very many, which is good) will probably need to update stuff.
+*   **The PESA will be removed in version 7.0.**
 
 **Full Changelog**
 * New Features:
@@ -95,24 +93,22 @@ Dependencies: Minetest Game or MineClone.
     * Labels on items in the Transmutation GUI showing how many items can be created.
     * Added comma separators when energy is shown (to make it easier to identify large numbers)
     * Support for Pipeworks and Hopper mods! (MCL hoppers already worked)
-    * Covalence Dust (left-click with Philosopher's Stone to open repairing menu; only tools with an energy value can be repaired)\*
-    * Mind, Life, Body, and Soul Stones (although MTG only has the soul stone).\*
+    * Covalence Dust
+        * Left-click (or aux1-left-click in MCL) with Philosopher's Stone to open repairing menu; only tools with an energy value can be repaired)
     * 5 more Energy Collectors (to go with the increased energy limit)
     * Chat commands to set/add/remove energy from a player (requires `privs` privilege):
         * `/add_player_energy [player] value` (player defaults to self, value can be negative)
-        * `/set_player_energy [player] value` (player defaults to self)
+        * `/set_player_energy [player] value` (player defaults to self, value can be "limit" to set to the limit)
 * Changes:
-    * Energy values are now in `zzzz_exchangeclone_init/base_energy_values.lua`, and are laid out differently, and aliases now work.
     * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s).
+        * Energy values are now in `zzzz_exchangeclone_init/base_energy_values.lua`, and are laid out differently, and aliases now work.
     * The default energy value is no longer 1 but none.
     * The 2.14-billion-ish personal energy limit is has been increased to 1,000,000,000,000 (1 trillion). Any higher (literally ANY higher) and there are precision-based exploits like being able to create an unlimited amount of anything with an energy value less than 1. I considered finding some library for arbitrary precision in Lua, but decided it was too much work (and nobody really needs more than a trillion energy anyway).
-    * MineClon(e2/ia) energy values now (mostly) match ProjectE's, with a few minor differences.
+    * Energy values are now multiples of 0.05 instead of 0.25, for no real reason.
+    * MineClon(e2/ia) energy values now (mostly) match ProjectE's, with a few minor differences, including these:
         * Emeralds are still worth less than diamonds because of villager trades (in my opinion, this should be changed in ProjectE as well)
-        * Bamboo is worth less so things make more sense.
         * Dyes are worth different amounts based on their crafting recipes, so different colors of things are worth different amounts.
         * Since fractional energy values are allowed, some energy values may be slightly different.
-    * Energy values are now multiples of 0.05 instead of 0.25, for no real reason.
-    * Tools that break multiple nodes at once (hammers, hoes, katar, and morningstar) use a better method that may (?) slightly decrease lag.\*
     * A couple changes involving the Philosopher's Stone:
         * Ender pearls can now be crafted with 4 iron and the Philosopher's Stone (MCL).
         * Copper's energy value has been changed (128 instead of 85), and the recipe has been changed accordingly.
@@ -120,14 +116,14 @@ Dependencies: Minetest Game or MineClone.
         * It is now impossible to transmute between bedrock and barriers (MCL). I thought it was funny originally, but now I'm realizing that I don't want this to be annoying to people who run servers (are there any servers with this mod?)
     * It now costs 4 dark/red matter to make a block, which is great news if you already have some (because they're now worth more), but not so great if you don't. Sorry and you're welcome.
     * Tool abilities now have no energy cost (to match ProjectE).
-    * Tool abilities now take upgrades into account (silk touch, fortune, etc.) except for the sword AOE ability (which would require more irritating hacky workarounds).
-    * Several neutral mobs (endermen, spiders, piglins) are now affected by the dark/red matter sword in "slay all" mode, to match ProjectE.
+    * Tool abilities now take upgrades into account (silk touch, fortune, etc.) except for the sword AOE ability (which would require irritating hacky workarounds).
+    * Several neutral mobs (endermen, spiders, piglins) are now affected by the dark/red matter sword in "slay hostile" mode, to match ProjectE.
 * Bugfixes:
     * Fixed potion energy values
     * Fixed Red Matter Shield recipe
     * Fixed other modes of DM/RM tools not having energy values
     * Deconstructors and Constructors now use node timers again (but better than before), meaning they won't ever stop. (Previously, they would stop if there was too much energy to deconstruct or too little energy to construct.)
-    * Tool abilities now update nodes that require support (torches, sand, etc.)\*.
+    * Tool abilities now update nodes that require support (torches, sand, etc.).
     * MCL raw copper, iron, and gold blocks now correctly double in DM/RM furnaces.
 
 ### v5.4

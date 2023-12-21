@@ -1,17 +1,16 @@
 local S = minetest.get_translator()
 
 function exchangeclone.mine_vein(player, start_pos, node_name, pos, depth)
-    -- Not very efficient, but it works.
+    -- Not the most efficient, but it works.
     if not player then return end
     if not start_pos then return end
-    if not pos then pos = start_pos end
+    pos = pos or start_pos
     depth = depth or 0
-    --minetest.log(dump(pos))
     local node = minetest.get_node(pos)
     if not node_name then node_name = node.name end
-    local distance = vector.distance(pos, start_pos)
     if node_name == node.name then
         exchangeclone.drop_items_on_player(pos, minetest.get_node_drops(node.name, "exchangeclone:red_matter_pickaxe"), player)
+        exchangeclone.check_nearby_falling(pos)
         minetest.set_node(pos, {name = "air"})
         for x = pos.x-1,pos.x+1 do for y = pos.y-1,pos.y+1 do for z = pos.z-1,pos.z+1 do
             if depth <= 10 then
@@ -72,23 +71,6 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
             -- If the torch could not be placed, it still costs energy... not sure how to fix that
         end
         exchangeclone.start_cooldown(player, "pickaxe", 0.3)
-    end
-end
-
-for name, def in pairs(minetest.registered_nodes) do
-    if name:find("_ore")
-    or name:find("stone_with")
-    or name:find("deepslate_with")
-    or name:find("diorite_with")
-    or name:find("andesite_with")
-    or name:find("granite_with")
-    or name:find("tuff_with")
-    or name:find("mineral_")
-    or (name == "mcl_blackstone:nether_gold")
-    or (name == "mcl_nether:ancient_debris") then
-        local groups = table.copy(def.groups)
-        groups.exchangeclone_ore = 1
-        minetest.override_item(name, {groups = groups})
     end
 end
 
@@ -178,3 +160,22 @@ minetest.register_craft({
         {"", "exchangeclone:dark_matter", ""}
     }
 })
+
+minetest.register_on_mods_loaded(function()
+    for name, def in pairs(minetest.registered_nodes) do
+        if name:find("_ore")
+        or name:find("stone_with")
+        or name:find("deepslate_with")
+        or name:find("diorite_with")
+        or name:find("andesite_with")
+        or name:find("granite_with")
+        or name:find("tuff_with")
+        or name:find("mineral_")
+        or (name == "mcl_blackstone:nether_gold")
+        or (name == "mcl_nether:ancient_debris") then
+            local groups = table.copy(def.groups)
+            groups.exchangeclone_ore = 1
+            minetest.override_item(name, {groups = groups})
+        end
+    end
+end)

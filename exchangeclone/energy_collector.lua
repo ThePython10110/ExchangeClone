@@ -24,7 +24,7 @@ minetest.register_lbm({
 
 local function check_for_furnaces(pos, set_furnace, start)
 	local found = false
-	for _, check_pos in ipairs(exchangeclone.neighbors) do
+	for _, check_pos in pairs(exchangeclone.neighbors) do
 		local new_pos = vector.add(pos, check_pos)
 		local node = minetest.get_node(new_pos)
         local furnace = minetest.get_item_group(node.name, "exchangeclone_furnace")
@@ -221,7 +221,6 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
                 input_inventory = "main",
                 connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
                 insert_object = function(pos, node, stack, direction)
-                    minetest.log(dump(direction))
                     local meta = minetest.get_meta(pos)
                     local inv = meta:get_inventory()
                     return inv:add_item("main", stack)
@@ -270,7 +269,7 @@ exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk3", S(
     }
 )
 
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", S("Energy Collector MK4"), 160, "^[multiply:#777700", {
+exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", S("Energy Collector MK4"), 160, "^[multiply:#aa7700", {
         {iron_block, iron_block, iron_block},
         {"exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3"},
         {iron_block, iron_block, iron_block}

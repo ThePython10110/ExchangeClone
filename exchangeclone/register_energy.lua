@@ -6,21 +6,21 @@ local function get_cheapest_recipe(itemstring, log)
     local recipes = exchangeclone.recipes[itemstring]
     if not recipes then return end
     local cheapest
-    for _, recipe in ipairs(recipes) do
+    for _, recipe in pairs(recipes) do
         local ingredient_cost = 0
         local output_count = ItemStack(recipe.output):get_count()
         local skip = false
         local identical_replacements = {}
         if recipe.replacements then
-            for _, replacement in ipairs(recipe.replacements) do
+            for _, replacement in pairs(recipe.replacements) do
                 if replacement[1] == replacement[2] then
                     identical_replacements[replacement[1]] = (identical_replacements[replacement[1]] or 0) + 1
                 end
             end
         end
         if not recipe.type or exchangeclone.craft_types[recipe.type].type == "shaped" then
-            for _, row in ipairs(recipe.recipe) do
-                for _, item in ipairs(row) do
+            for _, row in pairs(recipe.recipe) do
+                for _, item in pairs(row) do
                     if item ~= "" then
                         if item == itemstring then
                             output_count = math.max(0, output_count - 1)
@@ -41,7 +41,7 @@ local function get_cheapest_recipe(itemstring, log)
                 end
             end
         elseif exchangeclone.craft_types[recipe.type].type == "shapeless" then
-            for _, item in ipairs(recipe.recipe) do
+            for _, item in pairs(recipe.recipe) do
                 if item ~= "" then
                     if item == itemstring then
                         output_count = math.max(0, output_count - 1)
@@ -83,7 +83,7 @@ local function get_cheapest_recipe(itemstring, log)
             ingredient_cost = recipe.recipe
         end
         if recipe.replacements and not skip then
-            for _, item in ipairs(recipe.replacements) do
+            for _, item in pairs(recipe.replacements) do
                 if item[1] ~= item[2] then
                     local cost = exchangeclone.get_item_energy(item[2])
                     if (not cost) or cost == 0 then
@@ -157,7 +157,7 @@ for index, group in ipairs(exchangeclone.group_values) do
 end
 
 -- Handle stonecutter recipes and decaychains in Mineclonia
-if exchangeclone.mineclonia then
+if exchangeclone.mcla then
     exchangeclone.register_craft_type("stonecutting", "cooking")
     -- TODO: Check recipe_yield for every Mineclonia update
     local recipe_yield = { --maps itemgroup to the respective recipe yield, default is 1
@@ -206,7 +206,7 @@ if exchangeclone.mcl then
     exchangeclone.register_alias("doc_identifier:identifier_solid", "doc_identifier:identifier_liquid")
     exchangeclone.register_alias("mcl_books:writable_book", "mcl_books:written_book")
 
-    for _, coral_type in ipairs({"brain", "bubble", "fire", "horn", "tube"}) do
+    for _, coral_type in pairs({"brain", "bubble", "fire", "horn", "tube"}) do
         for thing, value in pairs({[coral_type.."_coral"] = 16, [coral_type.."_coral_block"] = 64, [coral_type.."_coral_fan"] = 16}) do
             set_item_energy("mcl_ocean:"..thing, value)
             set_item_energy("mcl_ocean:dead_"..thing, value/16)
@@ -217,7 +217,7 @@ if exchangeclone.mcl then
     exchangeclone.register_craft_type("brewing", "shapeless")
     local function add_potion_recipe(info)
         if not info.bases then info.bases = {"mcl_potions:awkward"} end
-        for _, base in ipairs(info.bases) do
+        for _, base in pairs(info.bases) do
             local ingredient = info.ingredient
             local normal = "mcl_potions:"..info.name
             local splash = normal.."_splash"
@@ -237,7 +237,7 @@ if exchangeclone.mcl then
             end
         end
     end
-    for _, info in ipairs(exchangeclone.mcl_potion_data) do
+    for _, info in pairs(exchangeclone.mcl_potion_data) do
         add_potion_recipe(info)
     end
 
@@ -256,7 +256,7 @@ if exchangeclone.mcl then
 
     exchangeclone.register_craft_type("hardening", "cooking")
     -- Concrete and banners/shields (don't remember why the shields don't work)
-    for _, color in ipairs({"red", "orange", "yellow", "lime", "dark_green", "cyan", "light_blue", "blue", "purple", "magenta", "pink", "black", "white", "silver", "grey", "brown"}) do
+    for color, color_data in pairs(exchangeclone.colors) do
         exchangeclone.register_craft({output = "mcl_colorblocks:concrete_"..color, type = "hardening", recipe = "mcl_colorblocks:concrete_powder_"..color})
         exchangeclone.register_craft({output = "mcl_shields:shield_"..color, type = "shapeless", recipe = {"mcl_banners:banner_item_"..color, "mcl_shields:shield"}})
     end
@@ -280,7 +280,7 @@ if exchangeclone.mcl then
 end
 
 -- Register copper block/stonecutting energy recipes in MineClone2
-if exchangeclone.mcl and not exchangeclone.mineclonia then
+if exchangeclone.mcl2 then
     exchangeclone.register_craft_type("oxidation", "cooking")
     local cheapest = get_cheapest_recipe("mcl_copper:block")
     if cheapest then
@@ -347,7 +347,7 @@ local same = false
 local i = 1
 -- Automatically register energy values
 while not same do
-    minetest.log("action", "ExchangeClone: \tIteration #"..i)
+    minetest.log("action", "[ExchangeClone] \tIteration #"..i)
     if auto == {} then break end
     if old_auto then
         same = true
@@ -359,7 +359,7 @@ while not same do
         end
     end
     if same then
-        minetest.log("action", "ExchangeClone:\tNo change, stopping.")
+        minetest.log("action", "[ExchangeClone]\tNo change, stopping.")
         break
     end
     old_auto = table.copy(auto)
@@ -372,8 +372,6 @@ while not same do
     end
     i = i + 1
 end
-
---minetest.log(dump(auto))
 
 if exchangeclone.mcl then
     set_item_energy("mcl_campfires:campfire", exchangeclone.get_item_energy("mcl_campfires:campfire_lit"))

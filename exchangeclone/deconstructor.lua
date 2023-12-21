@@ -57,8 +57,8 @@ local function deconstructor_action(pos, elapsed)
     local individual_energy_value = exchangeclone.get_item_energy(stack:get_name())
     if not (individual_energy_value and individual_energy_value > 0) then return end
     local wear = stack:get_wear()
-    if wear and wear > 1 then
-        individual_energy_value = math.floor(individual_energy_value * (65536 / wear))
+    if wear and wear > 0 then
+        individual_energy_value = math.max(math.floor(individual_energy_value * (65536 / wear)), 1)
     end
     if stack:get_name() == "exchangeclone:exchange_orb" then
         individual_energy_value = individual_energy_value + exchangeclone.get_orb_itemstack_energy(stack)
@@ -167,7 +167,7 @@ minetest.register_node("exchangeclone:deconstructor", {
             local meta2 = meta:to_table()
             meta:from_table(oldmetadata)
             local inv = meta:get_inventory()
-            for _, listname in ipairs({"src", "fuel"}) do
+            for _, listname in pairs({"src", "fuel"}) do
                 local stack = inv:get_stack(listname, 1)
                 if not stack:is_empty() then
                     local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
@@ -198,6 +198,11 @@ minetest.register_node("exchangeclone:deconstructor", {
     allow_metadata_inventory_put = allow_metadata_inventory_put,
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
+	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
+	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
+	_mcl_hoppers_on_after_push = function(pos)
+		minetest.get_node_timer(pos):start(1.0)
+	end,
 })
 
 if exchangeclone.pipeworks then

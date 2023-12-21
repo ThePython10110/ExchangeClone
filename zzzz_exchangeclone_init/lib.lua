@@ -2,7 +2,7 @@
 
 local S = minetest.get_translator()
 
--- Rounds to the nearest integer
+--- Rounds to the nearest integer
 function exchangeclone.round(num)
     if num % 1 < 0.5 then
         return math.floor(num)
@@ -11,12 +11,12 @@ function exchangeclone.round(num)
     end
 end
 
--- Don't think this even works correctly.
-function exchangeclone.get_inventory_drops(pos, inventory, drops)
+--- Adds all items in a certain list to a table.
+function exchangeclone.get_inventory_drops(pos, listname, drops)
     local inv = minetest.get_meta(pos):get_inventory()
     local n = #drops
-    for i = 1, inv:get_size(inventory) do
-        local stack = inv:get_stack(inventory, i)
+    for i = 1, inv:get_size(listname) do
+        local stack = inv:get_stack(listname, i)
         if stack:get_count() > 0 then
             drops[n+1] = stack:to_table()
             n = n + 1
@@ -24,19 +24,19 @@ function exchangeclone.get_inventory_drops(pos, inventory, drops)
     end
 end
 
--- Gets the energy value of an itemstring or ItemStack
--- Handles "group:foo" syntax (although it goes through every item)
-function exchangeclone.get_item_energy(item)
+--- Gets the energy value of an itemstring or ItemStack
+--- Handles "group:group_name" syntax (although it goes through every item), returns cheapest item in group
+function exchangeclone.get_item_energy(item, ignore_wear)
     if (item == "") or not item then return end
     -- handle groups
     if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then
         local item_group = item:sub(7,-1)
-        for _, group in ipairs(exchangeclone.group_values) do
+        for _, group in pairs(exchangeclone.group_values) do
             if item_group == group[1] then return group[2] end
         end
         local group_items = exchangeclone.get_group_items(item_group)
         local cheapest
-        for _, group_item in ipairs(group_items[item_group]) do
+        for _, group_item in pairs(group_items[item_group]) do
             if group_item then
                 local energy_value = exchangeclone.get_item_energy(group_item)
                 if energy_value then
@@ -245,7 +245,7 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
             local grp = groups[i]
             local subgroups = exchangeclone.split(grp, ",")
             local success = true
-            for _, subgroup in ipairs(subgroups) do
+            for _, subgroup in pairs(subgroups) do
                 if not def.groups[subgroup] then
                     success = false
                     break
@@ -415,7 +415,7 @@ function exchangeclone.drop_items_on_player(pos, drops, player) -- modified from
     if player and player:is_player() and minetest.is_creative_enabled(player:get_player_name()) then
         local inv = player:get_inventory()
         if inv then
-            for _, item in ipairs(drops) do
+            for _, item in pairs(drops) do
                 if not inv:contains_item("main", item, true) then
                     inv:add_item("main", item)
                 end
@@ -495,7 +495,7 @@ local enchantments = tool and mcl_enchanting.get_enchantments(tool)
         end
     end
 
-    for _, item in ipairs(drops) do
+    for _, item in pairs(drops) do
         local count
         if type(item) == "string" then
             count = ItemStack(item):get_count()
@@ -669,7 +669,7 @@ exchangeclone.neighbors = {
 }
 
 function exchangeclone.check_nearby_falling(pos)
-	for i=1, #exchangeclone.neighbors do
+	for i = 1, 6 do
         local new_pos = vector.add(pos, exchangeclone.neighbors[i])
         if exchangeclone.mcl then
             local node = minetest.get_node(new_pos)
@@ -677,15 +677,15 @@ function exchangeclone.check_nearby_falling(pos)
                 mcl_core.check_vines_supported(new_pos, node)
             end
         end
-		minetest.check_single_for_falling(new_pos)
 	end
+    minetest.check_for_falling(pos)
 end
 
 function exchangeclone.remove_nodes(positions)
-    for _, pos in ipairs(positions) do
+    minetest.bulk_set_node(positions, {name = "air"})
+    for _, pos in pairs(positions) do
         exchangeclone.check_nearby_falling(pos)
     end
-    minetest.bulk_set_node(positions, {name = "air"})
 end
 
 --[[
@@ -731,4 +731,55 @@ function exchangeclone.register_craft(data)
             table.insert(exchangeclone.recipes[itemstring], table.copy(flipped_data))
         end
     end
+end
+
+-- Returns true if item (itemstring or ItemStack) can be used as a furnace fuel.
+-- Returns false otherwise
+function exchangeclone.is_fuel(item)
+	return minetest.get_craft_result({method = "fuel", width = 1, items = {item}}).time ~= 0
+end
+
+-- Returns true if item (itemstring or ItemStack) can't be used as a furnace fuel.
+-- Returns false otherwise
+function exchangeclone.isnt_fuel(item)
+	return not (minetest.get_craft_result({method = "fuel", width = 1, items = {item}}).time ~= 0)
+end
+
+--- Selects item stack to transfer from
+--- @param src_inventory InvRef Source innentory to pull from
+--- @param src_list string Name of source inventory list to pull from
+--- @param dst_inventory InvRef Destination inventory to push to
+--- @param dst_list string Name of destination inventory list to push to
+--- @param condition? fun(stack: ItemStack) Condition which items are allowed to be transfered.
+--- @return integer Item stack number to be transfered
+function exchangeclone.select_stack(src_inventory, src_list, dst_inventory, dst_list, condition)
+	local src_size = src_inventory:get_size(src_list)
+	local stack
+	for i = 1, src_size do
+		stack = src_inventory:get_stack(src_list, i)
+		if not stack:is_empty() and dst_inventory:room_for_item(dst_list, stack) and ((condition == nil or condition(stack))) then
+			return i
+		end
+	end
+	return nil
+end
+
+function exchangeclone.hoppers_on_try_pull(pos, hop_pos, hop_inv, hop_list)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+    if exchangeclone.select_stack(inv, "dst", hop_inv, hop_list) then
+        return inv, "dst", exchangeclone.select_stack(inv, "dst", hop_inv, hop_list)
+    else
+		return inv, "fuel", exchangeclone.select_stack(inv, "fuel", hop_inv, hop_list, exchangeclone.isnt_fuel)
+	end
+end
+
+function exchangeclone.hoppers_on_try_push(pos, hop_pos, hop_inv, hop_list)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	if math.abs(pos.y - hop_pos.y) > math.abs(pos.x - hop_pos.x) and math.abs(pos.y - hop_pos.y) > math.abs(pos.z - hop_pos.z) then
+		return inv, "src", exchangeclone.select_stack(hop_inv, hop_list, inv, "src")
+	else
+		return inv, "fuel", exchangeclone.select_stack(hop_inv, hop_list, inv, "fuel", exchangeclone.is_fuel)
+	end
 end

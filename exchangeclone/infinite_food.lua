@@ -1,5 +1,8 @@
 local S = minetest.get_translator()
 
+local stamina_exists = minetest.get_modpath("stamina")
+local stamina_max = minetest.settings:get("stamina.visual_max") or 20
+
 local function infinite_food_function(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
     local original = ItemStack(itemstack)
@@ -8,7 +11,13 @@ local function infinite_food_function(itemstack, player, pointed_thing)
     end
     local player_energy = exchangeclone.get_player_energy(player)
     if player_energy >= 64 then
-        local hunger_restore = minetest.item_eat(8, original)
+        if stamina_exists and stamina.get_saturation(player) >= stamina_max then
+            return nil
+        elseif not exchangeclone.mcl and player:get_hp() >= player:get_properties().hp_max then
+            return nil
+        end
+        -- no idea why this is different between games but it works
+        local hunger_restore = minetest.item_eat(8, exchangeclone.mcl and ItemStack("") or original)
         hunger_restore(itemstack, player, pointed_thing)
     end
     return nil

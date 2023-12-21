@@ -514,7 +514,7 @@ local inactive_def = {
 		"exchangeclone_dark_matter_furnace.png",
 	},
 	paramtype2 = "4dir",
-	groups = {pickaxey=5, cracky = 3, container=4, material_stone=1, level = get_level(4), exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=5, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, material_stone=1, level = get_level(4), exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 
@@ -524,7 +524,7 @@ local inactive_def = {
 		local meta2 = meta:to_table()
 		meta:from_table(oldmetadata)
 		local inv = meta:get_inventory()
-		for _, listname in ipairs({"src", "dst", "fuel"}) do
+		for _, listname in pairs({"src", "dst", "fuel"}) do
 			if listname == "src" or listname == "dst" then
 				for i = 1,7 do
 					local stack = inv:get_stack(listname, i)
@@ -591,7 +591,12 @@ local inactive_def = {
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 75,
 	on_rotate = on_rotate,
-	after_place_node = exchangeclone.pipeworks and pipeworks.after_place
+	after_place_node = exchangeclone.pipeworks and pipeworks.after_place,
+	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
+	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
+	_mcl_hoppers_on_after_push = function(pos)
+		minetest.get_node_timer(pos):start(0.45)
+	end,
 }
 
 local active_def = {
@@ -608,7 +613,7 @@ local active_def = {
 	parammatter_type = "light",
 	light_source = LIGHT_ACTIVE_FURNACE,
 	drop = "exchangeclone:dark_matter_furnace",
-	groups = {pickaxey=5, not_in_creative_inventory = 1, container = 4, material_stone=1, cracky = 3, level = get_level(4), exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=5, not_in_creative_inventory = 1, container = exchangeclone.mcl2 and 2 or 4, material_stone=1, cracky = 3, level = get_level(4), exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	on_timer = furnace_node_timer,
@@ -618,7 +623,7 @@ local active_def = {
 		local meta2 = meta:to_table()
 		meta:from_table(oldmetadata)
 		local inv = meta:get_inventory()
-		for _, listname in ipairs({"src", "dst", "fuel"}) do
+		for _, listname in pairs({"src", "dst", "fuel"}) do
 			if listname == "src" or listname == "dst" then
 				for i = 1,7 do
 					local stack = inv:get_stack(listname, i)
@@ -661,7 +666,9 @@ local active_def = {
 	_mcl_hardness = 75,
 	on_rotate = on_rotate,
 	after_rotate = after_rotate_active,
-	after_place_node = exchangeclone.pipeworks and pipeworks.after_place
+	after_place_node = exchangeclone.pipeworks and pipeworks.after_place,
+	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
+	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
 }
 
 if exchangeclone.pipeworks then
@@ -706,7 +713,7 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		"exchangeclone_red_matter_block.png",
 		"exchangeclone_red_matter_furnace.png",
 	},
-	groups = {pickaxey=5, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=5, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
 	_mcl_hardness = 100,
 
 	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
@@ -746,7 +753,7 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		local meta2 = meta:to_table()
 		meta:from_table(oldmetadata)
 		local inv = meta:get_inventory()
-		for _, listname in ipairs({"src", "dst", "fuel"}) do
+		for _, listname in pairs({"src", "dst", "fuel"}) do
 			if listname == "src" or listname == "dst" then
 				for i = 1,10 do
 					local stack = inv:get_stack(listname, i)
@@ -768,6 +775,11 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 			pipeworks.after_dig(pos)
 		end
 	end,
+	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
+	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
+	_mcl_hoppers_on_after_push = function(pos)
+		minetest.get_node_timer(pos):start(0.16)
+	end,
 
 })
 
@@ -782,7 +794,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		"exchangeclone_red_matter_furnace.png",
 	},
 	drop = "exchangeclone:red_matter_furnace",
-	groups = {pickaxey=5, not_in_creative_inventory = 1, cracky = 3, container=4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=5, not_in_creative_inventory = 1, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
 	_mcl_hardness = 100,
 
 	on_construct = function(pos)
@@ -799,7 +811,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		local meta2 = meta:to_table()
 		meta:from_table(oldmetadata)
 		local inv = meta:get_inventory()
-		for _, listname in ipairs({"src", "dst", "fuel"}) do
+		for _, listname in pairs({"src", "dst", "fuel"}) do
 			if listname == "src" or listname == "dst" then
 				for i = 1,10 do
 					local stack = inv:get_stack(listname, i)

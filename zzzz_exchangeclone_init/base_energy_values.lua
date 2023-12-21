@@ -62,8 +62,7 @@ if exchangeclone.mcl then
         ["mcl_core:cobble"] = 1,
         ["mcl_core:cobweb"] = 12,
         ["mcl_core:crying_obsidian"] = 768,
-        ["mcl_core:dead_bush"] = 1, -- don't know which one of these is right; maybe both?
-        ["mcl_core:deadbush"] = 1, --MCLA
+        ["mcl_core:deadbush"] = 8,
         ["mcl_core:diamond"] = 8192,
         ["mcl_core:diorite"] = 16,
         ["mcl_core:dirt"] = 1,

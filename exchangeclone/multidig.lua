@@ -6,7 +6,7 @@ local dirt_group = exchangeclone.mcl and "shovely" or "crumbly"
 
 local function dig_if_group(pos, player, groups)
 	local node = minetest.get_node(pos)
-	for _, group in ipairs(groups) do
+	for _, group in pairs(groups) do
 		if minetest.get_item_group(node.name, group) > 0 then
 			minetest.node_dig(pos, minetest.get_node(pos), player)
 		end

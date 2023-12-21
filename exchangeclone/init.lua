@@ -2,7 +2,8 @@ if not exchangeclone then
 	error("Disable and re-enable the ExchangeClone modpack.")
 end
 
-minetest.log("action", "ExchangeClone: Registering own stuff")
+local start_time = minetest.get_us_time()
+minetest.log("action", "[ExchangeClone] Registering own stuff")
 
 -- Decides what mod to use for sounds
 exchangeclone.sound_mod = exchangeclone.mcl and mcl_sounds or default
@@ -135,12 +136,11 @@ dofile(modpath.."/alchemical_chests.lua")
 dofile(modpath.."/transmutation_table.lua")
 dofile(modpath.."/furnaces.lua")
 
-minetest.log("action", "ExchangeClone: Done.")
-
 minetest.register_on_mods_loaded(function()
-	local start_time = minetest.get_us_time()
-	minetest.log("action", "ExchangeClone: Registering energy values")
+	local energy_start_time = minetest.get_us_time()
+	minetest.log("action", "[ExchangeClone] Registering energy values")
 	dofile(modpath.."/register_energy.lua")
-	local total_time = minetest.get_us_time() - start_time
-	minetest.log("action", "ExchangeClone: Done registering energy values ("..(total_time/1000000).." seconds)")
+	minetest.log("action", "[ExchangeClone] Done registering energy values ("..((minetest.get_us_time() - energy_start_time)/1000000).." seconds)")
 end)
+
+minetest.log("action", "[ExchangeClone] Done ("..((minetest.get_us_time() - start_time)/1000).." milliseconds)")

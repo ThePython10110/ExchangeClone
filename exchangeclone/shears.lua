@@ -238,7 +238,7 @@ minetest.registered_entities["mobs_mc:mooshroom"].on_rightclick = function(self,
 end
 
 local old_honey_harvest = minetest.registered_items["mcl_beehives:bee_nest_5"].on_rightclick
-for _, itemstring in ipairs({"mcl_beehives:bee_nest_5", "mcl_beehives:beehive_5"}) do
+for _, itemstring in pairs({"mcl_beehives:bee_nest_5", "mcl_beehives:beehive_5"}) do
     minetest.registered_items[itemstring].on_rightclick = function(pos, node, player, itemstack, pointed_thing)
         local held_name = player:get_wielded_item():get_name()
         local shears = special_shears[held_name]
@@ -384,7 +384,7 @@ local new_dispenser_function = function(pos, node)
     old_dispenser_function(pos, node)
 end
 
-for _, itemstring in ipairs({"mcl_dispensers:dispenser", "mcl_dispensers:dispenser_up", "mcl_dispensers:dispenser_down"}) do
+for _, itemstring in pairs({"mcl_dispensers:dispenser", "mcl_dispensers:dispenser_up", "mcl_dispensers:dispenser_down"}) do
     minetest.registered_items[itemstring].mesecons.effector.action_on = new_dispenser_function
 end
 

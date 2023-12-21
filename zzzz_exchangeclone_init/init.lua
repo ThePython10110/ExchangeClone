@@ -6,7 +6,8 @@ else
 	exchangeclone.mcl = minetest.get_modpath("mcl_core")
 end
 
-exchangeclone.mineclonia = minetest.get_game_info().id == "mineclonia" -- if exchangeclone.mineclonia, exchangeclone.mcl is also defined.
+exchangeclone.mcla = minetest.get_game_info().id == "mineclonia" -- if exchangeclone.mcla, exchangeclone.mcl is also defined.
+exchangeclone.mcl2 = minetest.get_game_info().id == "mineclone2"
 exchangeclone.pipeworks = minetest.get_modpath("pipeworks")
 exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000 -- Max capacity of Klein Star Omega in ProjectE
 exchangeclone.keep_data = minetest.settings:get_bool("exchangeclone.keep_data", false)
@@ -22,12 +23,12 @@ function minetest.register_craft(data, ...)
     -- Skip thousands of banner recipes in MCL2
     -- This does mean that if other banner recipes exist that don't use wool (or carpet),
     -- they will be ignored in MCL2... but I can't think of a better way to do this.
-    if exchangeclone.mcl and not exchangeclone.mineclonia then
+    if exchangeclone.mcl then
         if itemstring:sub(1, #"mcl_banners:") == "mcl_banners:" then
             allowed = false
             if data.type and data.type == "shaped" then
-                for _, row in ipairs(data.recipe) do
-                    for _, item in ipairs(row) do
+                for _, row in pairs(data.recipe) do
+                    for _, item in pairs(row) do
                         if item:sub(1, #"mcl_wool:") == "mcl_wool:" then
                             allowed = true
                             break

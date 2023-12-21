@@ -29,7 +29,7 @@ local function alchemical_on_construct(color)
     return function(pos)
         local meta = minetest.get_meta(pos)
         meta:set_string("formspec", alchemical_formspec(color))
-        meta:set_string("infotext", color.." Alchemical Chest")
+        meta:set_string("infotext", color.." Advanced Alchemical Chest")
     end
 end
 

@@ -9,6 +9,33 @@ local function show_enchanting(player)
     mcl_enchanting.show_enchanting_formspec(player)
 end
 
+local width = (exchangeclone.mcl and 9) or 8
+
+local repairing_formspec =
+    "size["..tostring(width)..", 7]"..
+    "label[0.5,0.5;Repairing]"..
+    "label["..tostring(width/3-0.5)..",0.5;Covalence Dust]"..
+    "list[current_player;exchangeclone_covalence_dust;"..tostring(width/3-0.5)..",1;1,1]"..
+    "label["..tostring(width/2-0.5)..",0.5;Gear]"..
+    "list[current_player;exchangeclone_covalence_gear;"..tostring(width/2-0.5)..",1;1,1]"..
+    "label["..tostring(2*width/3-0.5)..",0.5;Output]"..
+    "list[current_player;exchangeclone_covalence_output;"..tostring(2*width/3-0.5)..",1;1,1]"..
+    exchangeclone.inventory_formspec(0,2.75)..
+    "listring[current_player;main]"..
+    "listring[context;src]"..
+    "listring[current_player;main]"..
+    "listring[context;fuel]"..
+    "listring[current_player;main]"..
+    "listring[context;dst]"..
+    "listring[current_player;main]"
+
+if exchangeclone.mcl then
+    repairing_formspec = repairing_formspec..
+        mcl_formspec.get_itemslot_bg(width/3-0.5,1,1,1)..
+        mcl_formspec.get_itemslot_bg(width/2-0.5,1,1,1)..
+        mcl_formspec.get_itemslot_bg(2*width/3-0.5,1,1,1)
+end
+
 exchangeclone.node_transmutations = {
     { --use
         ["mcl_core:stone"] = "mcl_core:cobble",
@@ -18,10 +45,8 @@ exchangeclone.node_transmutations = {
         ["mcl_core:sand"] = "mcl_core:dirt_with_grass",
         ["mcl_core:podzol"] = "mcl_core:redsand",
         ["mcl_core:redsand"] = "mcl_core:podzol",
-        ["mcl_flowers:tallgrass"] = "mcl_core:deadbush",
-        ["mcl_nether:netherrack"] = "mcl_core:cobble",
-        ["mcl_core:gravel"] = "mcl_core:sandstone",
-        ["mcl_core:sandstone"] = "mcl_core:gravel",
+        ["mcl_flowers:tallgrass"] = "mcl_flowers:fern",
+        ["mcl_flowers:fern"] = "mcl_flowers:tallgrass",
         ["mcl_core:redsandstone"] = "mcl_core:gravel",
         ["mcl_farming:pumpkin"] = "mcl_farming:melon",
         ["mcl_farming:melon"] = "mcl_farming:pumpkin",
@@ -61,7 +86,7 @@ exchangeclone.node_transmutations = {
         ["mcl_core:glass"] = "mcl_core:sand",
         ["mcl_blackstone:blackstone"] = "mcl_blackstone:basalt",
         ["mcl_blackstone:basalt"] = "mcl_blackstone:blackstone",
-        ["mcl_flowers:double_grass"] = "mcl_core:deadbush",
+        ["mcl_flowers:double_grass"] = "mcl_flowers:fern",
         --["mcl_flowers:double_grass_top"] = "air",
         ["mcl_core:andesite"] = "mcl_core:diorite",
         ["mcl_core:diorite"] = "mcl_core:granite",
@@ -238,12 +263,16 @@ if exchangeclone.mcl then
         if player:get_player_control().sneak then
             show_enchanting(player)
         else
-            --[[if player:get_player_control().aux1 then
-                minetest.show_formspec(player:get_player_name(), "exchangeclone_smelting", smelting_formspec)
-            else --]]
+            if player:get_player_control().aux1 then
+                minetest.show_formspec(player:get_player_name(), "exchangeclone_repairing", repairing_formspec)
+            else
                 mcl_crafting_table.show_crafting_form(player)
-            --end
+            end
         end
+    end
+else
+    on_left_click = function(itemstack, player, pointed_thing)
+        minetest.show_formspec(player:get_player_name(), "exchangeclone_repairing", repairing_formspec)
     end
 end
 
