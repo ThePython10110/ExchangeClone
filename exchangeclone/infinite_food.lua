@@ -11,8 +11,10 @@ local function infinite_food_function(itemstack, player, pointed_thing)
     end
     local player_energy = exchangeclone.get_player_energy(player)
     if player_energy >= 64 then
-        if stamina_exists and stamina.get_saturation(player) >= stamina_max then
-            return nil
+        if stamina_exists then
+            if stamina.get_saturation(player) >= stamina_max then
+                return nil
+            end
         elseif not exchangeclone.mcl and player:get_hp() >= player:get_properties().hp_max then
             return nil
         end

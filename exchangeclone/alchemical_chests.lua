@@ -140,7 +140,7 @@ for color, color_data in pairs(exchangeclone.colors) do
         description = S("@1 Advanced Alchemical Chest", S(color_data.name)).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
         _mcl_hardness = 3,
         _mcl_blast_resistance = 6,
-        groups = {container = 1, advanced_alchemical_chest = 1},
+        groups = {container = 1, advanced_alchemical_chest = 1, cracky = 2, pickaxey = 2},
         paramtype2 = "4dir",
         tiles = {
             "exchangeclone_advanced_alchemical_chest_top.png"..chest_modifier,

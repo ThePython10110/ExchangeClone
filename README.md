@@ -69,6 +69,7 @@ Dependencies: Minetest Game or MineClone.
 * Test everything in MTG, MCL2, and MCLA (and 5.7)
 * Finish changelog
 * Finish wiki
+* Improve covalence formspec
 
 ### v6.0 (The Compatibility Update)
 
@@ -85,7 +86,7 @@ Dependencies: Minetest Game or MineClone.
 * New Features:
     * Automatically generated energy values! Based on crafting and cooking recipes.
         * Depending on the number of crafting recipes you have, this could increase load times. This is definitely a bit of an issue in MineClone2, probably due to the number of banner/dye recipes. Eventually (hopefully), loom functionality will be added and this will improve quite a bit.
-        * Technic recipe types (grinding, alloying, etc.) will also work, as long as their `output_size` is 1 (meaning they only output one item at a time, so not the centrifuge or separator).
+        * Technic support coming as soon as possible (Technic needs to change some things first). Technic recipe types (grinding, alloying, etc.) WILL eventually work, as long as their `output_size` is 1 (meaning they only output one item at a time, so not the centrifuge or separator).
         * Also supports Mineclonia's stonecutter recipes, Netherite upgrades, and more.
         * Added various ways of adding custom energy values or energy recipes (`exchangeclone.register_alias`, `exchangeclone.register_craft_type`, and `exchangeclone.register_craft`)
     * Support for Pipeworks and Hopper mods! (MCL hoppers already worked)

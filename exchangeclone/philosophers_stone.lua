@@ -14,7 +14,7 @@ local width = (exchangeclone.mcl and 9) or 8
 local repairing_formspec =
     "size["..tostring(width)..", 7]"..
     "label[0.5,0.5;Repairing]"..
-    "label["..tostring(width/3-0.5)..",0.5;Covalence Dust]"..
+    "label["..tostring(width/3-0.5)..",0.5;Dust]"..
     "list[current_player;exchangeclone_covalence_dust;"..tostring(width/3-0.5)..",1;1,1]"..
     "label["..tostring(width/2-0.5)..",0.5;Gear]"..
     "list[current_player;exchangeclone_covalence_gear;"..tostring(width/2-0.5)..",1;1,1]"..
@@ -22,11 +22,11 @@ local repairing_formspec =
     "list[current_player;exchangeclone_covalence_output;"..tostring(2*width/3-0.5)..",1;1,1]"..
     exchangeclone.inventory_formspec(0,2.75)..
     "listring[current_player;main]"..
-    "listring[context;src]"..
+    "listring[current_player;exchangeclone_covalence_gear]"..
     "listring[current_player;main]"..
-    "listring[context;fuel]"..
+    "listring[current_player;exchangeclone_covalence_dust]"..
     "listring[current_player;main]"..
-    "listring[context;dst]"..
+    "listring[current_player;exchangeclone_covalence_output]"..
     "listring[current_player;main]"
 
 if exchangeclone.mcl then
