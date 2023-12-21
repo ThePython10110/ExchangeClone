@@ -38,7 +38,8 @@ Dependencies: Minetest Game or MineClone.
 
 
 ## Known issues:
-* It is impossible to die from most things when wearing DM/RM armor in MineClon(e/ia)... There's some rounding thing that happens when the player has 1 health or something. I can't figur it out.
+* Dark/Red Matter armor don't work they way they should, especially in MTG. I would greatly appreciate a PR that makes them work more like ProjectE.
+* The sword/katar AOE ability does not take upgrades into account. This will probably not be fixed (MCL)
 * When machines are exploded, they (and the items inside) do not drop. I can't figure out why.
 * For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is new enough that most people are using it.
 * Dark/Red matter shears will sometimes (randomly) be treated as normal shears when used by MCL dispensers. This will not be fixed.
@@ -87,12 +88,12 @@ Dependencies: Minetest Game or MineClone.
         * Technic recipe types (grinding, alloying, etc.) will also work, as long as their `output_size` is 1 (meaning they only output one item at a time, so not the centrifuge or separator).
         * Also supports Mineclonia's stonecutter recipes, Netherite upgrades, and more.
         * Added various ways of adding custom energy values or energy recipes (`exchangeclone.register_alias`, `exchangeclone.register_craft_type`, and `exchangeclone.register_craft`)
+    * Support for Pipeworks and Hopper mods! (MCL hoppers already worked)
     * Added energy values for More Ores and Technic.
     * Infinite food (costs 64 energy to use, but isn't consumed, equal to MCL steak)
     * Alchemical Chests, Alchemical Bags, and Advanced Alchemical Chests
     * Labels on items in the Transmutation GUI showing how many items can be created.
     * Added comma separators when energy is shown (to make it easier to identify large numbers)
-    * Support for Pipeworks and Hopper mods! (MCL hoppers already worked)
     * Covalence Dust
         * Left-click (or aux1-left-click in MCL) with Philosopher's Stone to open repairing menu; only tools with an energy value can be repaired)
     * 5 more Energy Collectors (to go with the increased energy limit)
@@ -114,15 +115,15 @@ Dependencies: Minetest Game or MineClone.
         * Copper's energy value has been changed (128 instead of 85), and the recipe has been changed accordingly.
         * Ice and obsidian can now be transmuted into water and lava, respectively.
         * It is now impossible to transmute between bedrock and barriers (MCL). I thought it was funny originally, but now I'm realizing that I don't want this to be annoying to people who run servers (are there any servers with this mod?)
-    * It now costs 4 dark/red matter to make a block, which is great news if you already have some (because they're now worth more), but not so great if you don't. Sorry and you're welcome.
+    * It now costs 4 dark/red matter to make a block, which is great news if you already have some (because they're now worth more), but not so great if you don't. Sorry or you're welcome.
     * Tool abilities now have no energy cost (to match ProjectE).
     * Tool abilities now take upgrades into account (silk touch, fortune, etc.) except for the sword AOE ability (which would require irritating hacky workarounds).
     * Several neutral mobs (endermen, spiders, piglins) are now affected by the dark/red matter sword in "slay hostile" mode, to match ProjectE.
 * Bugfixes:
-    * Fixed potion energy values
-    * Fixed Red Matter Shield recipe
+    * Fixed potion energy values (MCL)
+    * Fixed Red Matter Shield recipe (MTG)
     * Fixed other modes of DM/RM tools not having energy values
-    * Deconstructors and Constructors now use node timers again (but better than before), meaning they won't ever stop. (Previously, they would stop if there was too much energy to deconstruct or too little energy to construct.)
+    * Deconstructors and Constructors will now continue trying to work instead of just stopping when there is too much or too little energy.
     * Tool abilities now update nodes that require support (torches, sand, etc.).
     * MCL raw copper, iron, and gold blocks now correctly double in DM/RM furnaces.
 

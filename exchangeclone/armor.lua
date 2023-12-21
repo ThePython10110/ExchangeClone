@@ -2,13 +2,14 @@ local S = minetest.get_translator()
 
 -- true = blocks all damage
 -- {base_block, block_per_rm}: Amount blocked by full dark matter, extra amount per red matter armor piece
+-- only applies in MCL
 local blocked_damage_types = {
     drown = true,
     lava = true,
     in_fire = true,
     on_fire = true,
     hot_floor = true,
-    fall = {0.9, 0.0125},
+    fall = {0.8, exchangeclone.mcl and 0.025 or 0.02},
 }
 
 local function get_armor_texture(type, matter, preview)
