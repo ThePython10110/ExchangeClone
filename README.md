@@ -72,7 +72,7 @@ Dependencies: Minetest Game or MineClone.
 * Test everything in MTG, MCL2, and MCLA (and 5.7)
     * Everything breaks properly in MTG
 * Fix Tmcl_banners thing
-* Fix Technic Beta
+* Check for MCL coral groups
 
 ### v6.0 (The Compatibility Update)
 

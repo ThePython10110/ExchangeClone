@@ -1,6 +1,7 @@
 -- Calculates the cheapest recipe given an itemstring.
 -- Would probably benefit from another function, since there's quite a bit
 -- of duplicate code.
+
 local function get_cheapest_recipe(itemstring, log)
     itemstring = ItemStack(itemstring):get_name()
     local recipes = exchangeclone.recipes[itemstring]
@@ -101,7 +102,7 @@ local function get_cheapest_recipe(itemstring, log)
                 cheapest = {total_cost, recipe}
             end
         end
-        if log then minetest.log(dump({
+        if log then minetest.log("action", dump({
             recipe = recipe,
             ingredient_cost = ingredient_cost,
             output_count = output_count
@@ -143,18 +144,6 @@ local function set_item_energy(itemstring, energy_value)
 end
 
 local auto = {}
-
--- Register group energy values
-local groupnames = {}
-for index, group in ipairs(exchangeclone.group_values) do
-    groupnames[#groupnames + 1] = group[1] --Get list of group names
-end
-local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
-for index, group in ipairs(exchangeclone.group_values) do
-    for i, item in pairs(grouped_items[group[1]]) do
-        set_item_energy(item, group[2])
-    end
-end
 
 -- Handle stonecutter recipes and decaychains in Mineclonia
 if exchangeclone.mcla then
@@ -338,7 +327,33 @@ end
 for itemstring, recipes in pairs(exchangeclone.recipes) do
     local new_name = ItemStack(itemstring):get_name()
     if new_name and new_name ~= "" and new_name ~= itemstring then
-        exchangeclone.recipes[new_name] = recipes
+        exchangeclone.recipes[new_name] = exchangeclone.recipes[new_name] or {}
+        for _, recipe in pairs(recipes) do
+            table.insert(exchangeclone.recipes[new_name], recipe)
+        end
+    end
+end
+
+
+
+
+
+-- Up to this point, no energy values have been registered.
+-- Now, they will be.
+
+
+
+
+
+-- Register group energy values
+local groupnames = {}
+for index, group in ipairs(exchangeclone.group_values) do
+    groupnames[#groupnames + 1] = group[1] --Get list of group names
+end
+local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
+for index, group in ipairs(exchangeclone.group_values) do
+    for i, item in pairs(grouped_items[group[1]]) do
+        set_item_energy(item, group[2])
     end
 end
 

@@ -775,14 +775,15 @@ function exchangeclone.register_craft(data)
     local itemstring = ItemStack(data.output):get_name()
     exchangeclone.recipes[itemstring] = exchangeclone.recipes[itemstring] or {}
     table.insert(exchangeclone.recipes[itemstring], table.copy(data))
+    -- Should reversed recipe be registered too?
     if data.type then
         local type_data = exchangeclone.craft_types[data.type]
         if type_data.type == "cooking" and type_data.reverse then
             local flipped_data = table.copy(data)
             flipped_data.output, flipped_data.recipe = flipped_data.recipe, flipped_data.output
-            local itemstring = ItemStack(flipped_data.output):get_name()
-            exchangeclone.recipes[itemstring] = exchangeclone.recipes[itemstring] or {}
-            table.insert(exchangeclone.recipes[itemstring], table.copy(flipped_data))
+            local flipped_output = ItemStack(flipped_data.output):get_name()
+            exchangeclone.recipes[flipped_output] = exchangeclone.recipes[flipped_output] or {}
+            table.insert(exchangeclone.recipes[flipped_output], table.copy(flipped_data))
         end
     end
 end
