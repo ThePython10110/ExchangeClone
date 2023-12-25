@@ -18,7 +18,7 @@ exchangeclone.shovel_action = {
                 minetest.record_protection_violation(pos, player:get_player_name())
             else
                 if data.path then
-                    -- TODO: Fix potential "shovel_on_place" functions that aren't paths in Mineclonia
+                    -- TODO: Fix potential "shovel_on_place" functions that aren't paths in Mineclonia (same with axes)
                     if minetest.registered_items[node.name]._on_shovel_place or
                     minetest.get_item_group(node.name, "path_creation_possible") == 1 then
                         if minetest.get_node({x=pos.x,y=pos.y+1,z=pos.z}).name == "air" then

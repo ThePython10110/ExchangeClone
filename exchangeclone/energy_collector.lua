@@ -49,13 +49,6 @@ local function check_for_furnaces(pos, set_furnace, start)
 	return found
 end
 
-local function can_dig(pos, player)
-    if exchangeclone.mcl then return true end
-    local meta = minetest.get_meta(pos);
-    local inv = meta:get_inventory()
-    return inv:is_empty("main")
-end
-
 local function on_timer(pos, elapsed)
     local meta = minetest.get_meta(pos)
 
@@ -135,34 +128,8 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
     return stack:get_count()
 end
 
-local function on_blast(pos)
-    local drops = {}
-    exchangeclone.get_inventory_drops(pos, "main", drops)
-    drops[#drops+1] = "exchangeclone:energy_collector"
-    minetest.remove_node(pos)
-
-    return drops
-end
-
-local function on_dig_node(pos, oldnode, oldmetadata, player)
-    if exchangeclone.mcl then
-        local meta = minetest.get_meta(pos)
-        local meta2 = meta:to_table()
-        meta:from_table(oldmetadata)
-        local inv = meta:get_inventory()
-        local stack = inv:get_stack("main", 1)
-        if not stack:is_empty() then
-            local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-            minetest.add_item(p, stack)
-        end
-        meta:from_table(meta2)
-    end
-    if exchangeclone.pipeworks then
-        pipeworks.after_dig(pos)
-    end
-end
-
 function exchangeclone.register_energy_collector(itemstring, name, amount, modifier, recipe)
+    if exchangeclone.pipeworks then modifier = modifier.."^pipeworks_tube_connection_stony.png" end
     minetest.register_node(itemstring, {
         description = name.."\nGenerates "..exchangeclone.format_number(amount).." energy/second",
         tiles = {
@@ -178,10 +145,10 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
         _mcl_blast_resistance = 6,
         sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
         is_ground_content = false,
-        can_dig = can_dig,
+        can_dig = exchangeclone.can_dig,
         on_timer = on_timer,
         on_construct = on_construct,
-        after_dig_node = on_dig_node,
+        after_dig_node = exchangeclone.drop_after_dig({"main"}),
         on_metadata_inventory_move = function(pos)
             minetest.get_node_timer(pos):start(1)
         end,
@@ -204,8 +171,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
                 pipeworks.after_place(pos, player, itemstack, pointed_thing)
             end
         end,
-        on_blast = on_blast,
-        on_rotate = exchangeclone.pipeworks and pipeworks.on_rotate,
+        on_blast = exchangeclone.on_blast({"main"}),
         allow_metadata_inventory_put = allow_metadata_inventory_put,
         allow_metadata_inventory_move = allow_metadata_inventory_move,
         allow_metadata_inventory_take = allow_metadata_inventory_take,

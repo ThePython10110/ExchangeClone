@@ -128,39 +128,6 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
     return stack:get_count()
 end
 
-local after_dig_node = function(pos, oldnode, oldmetadata, player)
-    if exchangeclone.mcl then
-        local meta = minetest.get_meta(pos)
-        local meta2 = meta:to_table()
-        meta:from_table(oldmetadata)
-        local inv = meta:get_inventory()
-        for _, listname in pairs({"fuel", "dst", "src"}) do
-            local stack = inv:get_stack(listname, 1)
-            if not stack:is_empty() then
-                local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-                minetest.add_item(p, stack)
-            end
-        end
-        meta:from_table(meta2)
-    end
-end
-
-local function on_blast(pos)
-    local drops = {}
-    exchangeclone.get_inventory_drops(pos, "src", drops)
-    exchangeclone.get_inventory_drops(pos, "fuel", drops)
-    exchangeclone.get_inventory_drops(pos, "dst", drops)
-    minetest.remove_node(pos)
-    return drops
-end
-
-local function can_dig(pos, player)
-    if exchangeclone.mcl then return true end
-    local meta = minetest.get_meta(pos);
-    local inv = meta:get_inventory()
-    return inv:is_empty("src") and inv:is_empty("fuel") and inv:is_empty("dst")
-end
-
 local function get_level(level)
     if exchangeclone.mcl then
         return nil
@@ -169,12 +136,14 @@ local function get_level(level)
     end
 end
 
+local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connection_stony.png" or ""
+
 minetest.register_node("exchangeclone:upgrader", {
     description = "Upgrader",
     tiles = {
-        "exchangeclone_upgrader_top.png",
-        "exchangeclone_upgrader_bottom.png",
-        "exchangeclone_upgrader_side.png",
+        "exchangeclone_upgrader_top.png"..pipeworks_connect,
+        "exchangeclone_upgrader_bottom.png"..pipeworks_connect,
+        "exchangeclone_upgrader_side.png"..pipeworks_connect,
     },
     on_construct = function(pos)
         local meta = minetest.get_meta(pos)
@@ -192,11 +161,25 @@ minetest.register_node("exchangeclone:upgrader", {
     on_metadata_inventory_move = upgrader_action,
     on_metadata_inventory_take = upgrader_action,
     on_metadata_inventory_put = upgrader_action,
-    on_blast = on_blast,
-    after_dig_node = after_dig_node,
-    can_dig = can_dig,
+    on_blast = exchangeclone.on_blast({"src", "fuel", "dst"}),
+    after_dig_node = exchangeclone.drop_after_dig({"src", "fuel", "dst"}),
+    can_dig = exchangeclone.can_dig,
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 75,
+	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
+	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(
+        function(stack) return minetest.get_item_group(stack:get_name(), "exchangeclone_upgradable") > 0 end,
+        function(stack) return minetest.get_item_group(stack:get_name(), "exchangeclone_upgrade") > 0 end,
+        upgrader_action
+    ),
+	_mcl_hoppers_on_after_push = upgrader_action,
+    _mcl_hoppers_on_after_pull = upgrader_action,
+    after_place_node = exchangeclone.pipeworks and pipeworks.after_place,
+	_on_hopper_in = exchangeclone.mcla_on_hopper_in(
+        function(stack) return minetest.get_item_group(stack:get_name(), "exchangeclone_upgradable") > 0 end,
+        function(stack) return minetest.get_item_group(stack:get_name(), "exchangeclone_upgrade") > 0 end,
+        upgrader_action
+    ),
 })
 
 if exchangeclone.pipeworks then
@@ -221,7 +204,8 @@ if exchangeclone.pipeworks then
                 return true
             end
         end
-    }})
+    },
+    on_rotate = pipeworks.on_rotate,})
 end
 
 minetest.register_craft({

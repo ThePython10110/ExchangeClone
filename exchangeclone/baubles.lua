@@ -1,3 +1,5 @@
+-- Currently none of this stuff actually runs (didn't get to it in v6.0)
+
 local S = minetest.get_translator()
 
 local storage = minetest.get_mod_storage()

@@ -502,15 +502,16 @@ if minetest.get_modpath("screwdriver") then
 		end
 	end
 end
+local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connection_stony.png" or ""
 
 local inactive_def = {
 	description = S("Dark Matter Furnace"),
 	tiles = {
-		"exchangeclone_dark_matter_block.png",
-		"exchangeclone_dark_matter_block.png",
-		"exchangeclone_dark_matter_block.png",
-		"exchangeclone_dark_matter_block.png",
-		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
 		"exchangeclone_dark_matter_furnace.png",
 	},
 	paramtype2 = "4dir",
@@ -519,34 +520,7 @@ local inactive_def = {
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 
 	on_timer = furnace_node_timer,
-	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		local meta = minetest.get_meta(pos)
-		local meta2 = meta:to_table()
-		meta:from_table(oldmetadata)
-		local inv = meta:get_inventory()
-		for _, listname in pairs({"src", "dst", "fuel"}) do
-			if listname == "src" or listname == "dst" then
-				for i = 1,7 do
-					local stack = inv:get_stack(listname, i)
-					if not stack:is_empty() then
-						local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-						minetest.add_item(p, stack)
-					end
-				end
-			else
-				local stack = inv:get_stack(listname, 1)
-				if not stack:is_empty() then
-					local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-					minetest.add_item(p, stack)
-				end
-			end
-		end
-		meta:from_table(meta2)
-		if exchangeclone.pipeworks then
-			pipeworks.after_dig(pos)
-		end
-	end,
-
+    after_dig_node = exchangeclone.drop_after_dig({"src", "fuel", "dst"}),
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", inactive_formspec("Dark"))
@@ -591,22 +565,25 @@ local inactive_def = {
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 75,
 	on_rotate = on_rotate,
+    can_dig = exchangeclone.can_dig,
 	after_place_node = exchangeclone.pipeworks and pipeworks.after_place,
-	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
-	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
+	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
+	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(),
 	_mcl_hoppers_on_after_push = function(pos)
 		minetest.get_node_timer(pos):start(0.45)
 	end,
+	_on_hopper_in = exchangeclone.mcla_on_hopper_in(),
+	_on_hopper_out = exchangeclone.mcla_on_hopper_out(),
 }
 
 local active_def = {
 	description = S("Active Dark Matter Furnace"),
 	tiles = {
-		"exchangeclone_dark_matter_block.png",
-		"exchangeclone_dark_matter_block.png",
-		"exchangeclone_dark_matter_block.png",
-		"exchangeclone_dark_matter_block.png",
-		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
 		"exchangeclone_dark_matter_furnace.png",
 	},
 	paramtype2 = "4dir",
@@ -617,35 +594,7 @@ local active_def = {
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	on_timer = furnace_node_timer,
-
-	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		local meta = minetest.get_meta(pos)
-		local meta2 = meta:to_table()
-		meta:from_table(oldmetadata)
-		local inv = meta:get_inventory()
-		for _, listname in pairs({"src", "dst", "fuel"}) do
-			if listname == "src" or listname == "dst" then
-				for i = 1,7 do
-					local stack = inv:get_stack(listname, i)
-					if not stack:is_empty() then
-						local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-						minetest.add_item(p, stack)
-					end
-				end
-			else
-				local stack = inv:get_stack(listname, 1)
-				if not stack:is_empty() then
-					local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-					minetest.add_item(p, stack)
-				end
-			end
-		end
-		meta:from_table(meta2)
-		if exchangeclone.pipeworks then
-			pipeworks.after_dig(pos)
-		end
-	end,
-
+    after_dig_node = exchangeclone.drop_after_dig({"src", "fuel", "dst"}),
 	on_construct = function(pos)
 		local node = minetest.get_node(pos)
 		spawn_flames(pos, node.param2)
@@ -665,10 +614,13 @@ local active_def = {
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 75,
 	on_rotate = on_rotate,
+    can_dig = exchangeclone.can_dig,
 	after_rotate = after_rotate_active,
 	after_place_node = exchangeclone.pipeworks and pipeworks.after_place,
-	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
-	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
+	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
+	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(),
+	_on_hopper_in = exchangeclone.mcla_on_hopper_in(),
+	_on_hopper_out = exchangeclone.mcla_on_hopper_out(),
 }
 
 if exchangeclone.pipeworks then
@@ -706,11 +658,11 @@ minetest.register_node("exchangeclone:red_matter_furnace_active", table.copy(act
 minetest.override_item("exchangeclone:red_matter_furnace", {
 	description = S("Red Matter Furnace"),
 	tiles = {
-		"exchangeclone_red_matter_block.png",
-		"exchangeclone_red_matter_block.png",
-		"exchangeclone_red_matter_block.png",
-		"exchangeclone_red_matter_block.png",
-		"exchangeclone_red_matter_block.png",
+		"exchangeclone_red_matter_block.png"..pipeworks_connect,
+		"exchangeclone_red_matter_block.png"..pipeworks_connect,
+		"exchangeclone_red_matter_block.png"..pipeworks_connect,
+		"exchangeclone_red_matter_block.png"..pipeworks_connect,
+		"exchangeclone_red_matter_block.png"..pipeworks_connect,
 		"exchangeclone_red_matter_furnace.png",
 	},
 	groups = {pickaxey=5, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
@@ -747,39 +699,13 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		inv:set_size("fuel", 1)
 		inv:set_size("dst", 10)
 	end,
-
-	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		local meta = minetest.get_meta(pos)
-		local meta2 = meta:to_table()
-		meta:from_table(oldmetadata)
-		local inv = meta:get_inventory()
-		for _, listname in pairs({"src", "dst", "fuel"}) do
-			if listname == "src" or listname == "dst" then
-				for i = 1,10 do
-					local stack = inv:get_stack(listname, i)
-					if not stack:is_empty() then
-						local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-						minetest.add_item(p, stack)
-					end
-				end
-			else
-				local stack = inv:get_stack(listname, 1)
-				if not stack:is_empty() then
-					local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-					minetest.add_item(p, stack)
-				end
-			end
-		end
-		meta:from_table(meta2)
-		if exchangeclone.pipeworks then
-			pipeworks.after_dig(pos)
-		end
-	end,
-	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
-	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
+	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
+	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(),
 	_mcl_hoppers_on_after_push = function(pos)
 		minetest.get_node_timer(pos):start(0.16)
 	end,
+	_on_hopper_in = exchangeclone.mcla_on_hopper_in(),
+	_on_hopper_out = exchangeclone.mcla_on_hopper_out(),
 
 })
 
@@ -804,34 +730,6 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		inv:set_size("src", 10)
 		inv:set_size("fuel", 1)
 		inv:set_size("dst", 10)
-	end,
-
-	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		local meta = minetest.get_meta(pos)
-		local meta2 = meta:to_table()
-		meta:from_table(oldmetadata)
-		local inv = meta:get_inventory()
-		for _, listname in pairs({"src", "dst", "fuel"}) do
-			if listname == "src" or listname == "dst" then
-				for i = 1,10 do
-					local stack = inv:get_stack(listname, i)
-					if not stack:is_empty() then
-						local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-						minetest.add_item(p, stack)
-					end
-				end
-			else
-				local stack = inv:get_stack(listname, 1)
-				if not stack:is_empty() then
-					local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-					minetest.add_item(p, stack)
-				end
-			end
-		end
-		meta:from_table(meta2)
-		if exchangeclone.pipeworks then
-			pipeworks.after_dig(pos)
-		end
 	end,
 })
 

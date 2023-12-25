@@ -24,6 +24,24 @@ function exchangeclone.get_inventory_drops(pos, listname, drops)
     end
 end
 
+function exchangeclone.on_blast(lists)
+    return function(pos)
+        local drops = {}
+        for _, list in pairs(lists) do
+            exchangeclone.get_inventory_drops(pos, list, drops)
+        end
+        table.insert(drops, minetest.get_node(pos).name)
+        minetest.remove_node(pos)
+        if exchangeclone.mcl then
+            for _, drop in pairs(drops) do
+                local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
+                minetest.add_item(p, drop)
+            end
+        end
+        return drops
+    end
+end
+
 --- Gets the energy value of an itemstring or ItemStack
 --- Handles "group:group_name" syntax (although it goes through every item), returns cheapest item in group
 function exchangeclone.get_item_energy(item, ignore_wear)
@@ -610,26 +628,55 @@ end
 -- Chat commands:
 minetest.register_chatcommand("add_player_energy", {
     params = "[player] <value>",
-    description = "Add to a player's personal energy (player is self if not included, value can be negative)",
+    description = "Add to a player's personal energy (player is self if not included, value can be negative to subtract)",
     privs = {privs = true},
     func = function(name, param)
         local split_param = exchangeclone.split(param, " ")
-        local player
+        local target_player
+        local target_name
         local value
         if #split_param == 1 then
-            player = minetest.get_player_by_name(name)
+            target_name = name
             value = split_param[1]
-        end
-        if #split_param == 2 then
-            player = minetest.get_player_by_name(split_param[1])
+        elseif #split_param == 2 then
+            target_name = split_param[1]
             value = split_param[2]
         end
-        if not (player and value) then
-            minetest.chat_send_player(name, "Bad command. Use /add_energy [player] [value] or /add_energy [value]")
+        target_player = minetest.get_player_by_name(target_name)
+        if (not (target_player and value)) or not tonumber(value) then
+            minetest.chat_send_player(name, "Bad command. Use /add_player_energy [player] [value] or /add_player_energy [value]")
             return
         end
-        exchangeclone.add_player_energy(player, tonumber(value))
-        minetest.chat_send_player(name, "Added "..value.." to "..name.."'s personal energy.")
+        local energy = exchangeclone.get_player_energy(target_player)
+        if (energy + value > exchangeclone.limit) or (energy + value < 0) then
+            minetest.chat_send_player(name, "Out of bounds; personal energy must be between 0 and 1 trillion.")
+            return
+        end
+        exchangeclone.add_player_energy(target_player, tonumber(value))
+        minetest.chat_send_player(name, "Added "..exchangeclone.format_number(value).." to "..target_name.."'s personal energy.")
+    end
+})
+
+-- Chat commands:
+minetest.register_chatcommand("get_player_energy", {
+    params = "[player]",
+    description = "Gets a player's personal energy (player is self if not included).",
+    privs = {privs = true},
+    func = function(name, param)
+        local target_player
+        local target_name
+        if param and param ~= "" then
+            target_name = param
+        else
+            target_name = name
+        end
+        target_player = minetest.get_player_by_name(target_name)
+        if not (target_player) then
+            minetest.chat_send_player(name, "Bad command. Use /get_player_energy [player] or /get_player_energy")
+            return
+        end
+        local energy = exchangeclone.get_player_energy(target_player)
+        minetest.chat_send_player(name, target_name.."'s personal energy: "..exchangeclone.format_number(energy))
     end
 })
 
@@ -639,23 +686,30 @@ minetest.register_chatcommand("set_player_energy", {
     privs = {privs = true},
     func = function(name, param)
         local split_param = exchangeclone.split(param, " ")
-        local player
+        local target_player
+        local target_name
         local value
         if #split_param == 1 then
-            player = minetest.get_player_by_name(name)
+            target_name = name
             value = split_param[1]
         end
         if #split_param == 2 then
-            player = minetest.get_player_by_name(split_param[1])
+            target_name = split_param[1]
             value = split_param[2]
         end
-        if not (player and value) then
-            minetest.chat_send_player(name, "Bad command. Use '/set_energy player value' or '/set_energy value'")
+        target_player = minetest.get_player_by_name(name)
+        if (not (target_player and value)) or (not (value == "limit" or tonumber(value))) then
+            minetest.chat_send_player(name, "Bad command. Use /set_player_energy [player] [value] or /set_player_energy [value]")
             return
         end
-        if value == "limit" then value = exchangeclone.limit end
-        exchangeclone.set_player_energy(player, tonumber(value))
-        minetest.chat_send_player(name, "Personal energy of "..name.." set to "..value)
+        if value:lower() == "limit" then
+            value = exchangeclone.limit
+        elseif (tonumber(value) > exchangeclone.limit) or (tonumber(value) < 0) then
+            minetest.chat_send_player(name, "Failed to set energy; must be between 0 and 1 trillion.")
+            return
+        end
+        exchangeclone.set_player_energy(target_player, tonumber(value))
+        minetest.chat_send_player(name, "Set "..target_name.."'s personal energy to "..exchangeclone.format_number(value))
     end
 })
 
@@ -742,9 +796,10 @@ end
 -- Returns true if item (itemstring or ItemStack) can't be used as a furnace fuel.
 -- Returns false otherwise
 function exchangeclone.isnt_fuel(item)
-	return not (minetest.get_craft_result({method = "fuel", width = 1, items = {item}}).time ~= 0)
+	return not exchangeclone.is_fuel(item)
 end
 
+-- Copied from MCL2
 --- Selects item stack to transfer from
 --- @param src_inventory InvRef Source innentory to pull from
 --- @param src_list string Name of source inventory list to pull from
@@ -764,22 +819,115 @@ function exchangeclone.select_stack(src_inventory, src_list, dst_inventory, dst_
 	return nil
 end
 
-function exchangeclone.hoppers_on_try_pull(pos, hop_pos, hop_inv, hop_list)
-	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-    if exchangeclone.select_stack(inv, "dst", hop_inv, hop_list) then
-        return inv, "dst", exchangeclone.select_stack(inv, "dst", hop_inv, hop_list)
-    else
-		return inv, "fuel", exchangeclone.select_stack(inv, "fuel", hop_inv, hop_list, exchangeclone.isnt_fuel)
+function exchangeclone.mcl2_hoppers_on_try_pull(dst_condition, fuel_condition)
+    if not exchangeclone.mcl2 then return end
+    return function(pos, hop_pos, hop_inv, hop_list)
+        local meta = minetest.get_meta(pos)
+        local inv = meta:get_inventory()
+        if exchangeclone.select_stack(inv, "dst", hop_inv, hop_list) then
+            return inv, "dst", exchangeclone.select_stack(inv, "dst", hop_inv, hop_list, dst_condition)
+        else
+            return inv, "fuel", exchangeclone.select_stack(inv, "fuel", hop_inv, hop_list, fuel_condition or exchangeclone.isnt_fuel)
+        end
+    end
+end
+
+function exchangeclone.mcl2_hoppers_on_try_push(src_condition, fuel_condition)
+    if not exchangeclone.mcl2 then return end
+    return function(pos, hop_pos, hop_inv, hop_list)
+        local meta = minetest.get_meta(pos)
+        local inv = meta:get_inventory()
+        if math.abs(pos.y - hop_pos.y) > math.abs(pos.x - hop_pos.x) and math.abs(pos.y - hop_pos.y) > math.abs(pos.z - hop_pos.z) then
+            return inv, "src", exchangeclone.select_stack(hop_inv, hop_list, inv, "src", src_condition)
+        else
+            return inv, "fuel", exchangeclone.select_stack(hop_inv, hop_list, inv, "fuel", fuel_condition or exchangeclone.is_fuel)
+        end
+    end
+end
+
+function exchangeclone.mcla_on_hopper_in(src_condition, fuel_condition, action)
+    if not exchangeclone.mcla then return end
+    return function(pos, to_pos)
+        local sinv = minetest.get_inventory({type="node", pos = pos})
+        local dinv = minetest.get_inventory({type="node", pos = to_pos})
+        local handled
+        local moved = true
+        if pos.y == to_pos.y then
+            -- Put fuel into fuel slot
+            local slot_id,_ = mcl_util.get_eligible_transfer_item_slot(sinv, "main", dinv, "fuel", fuel_condition or mcl_furnaces.is_transferrable_fuel)
+            if slot_id then
+                mcl_util.move_item_container(pos, to_pos, nil, slot_id, "fuel")
+            else
+                moved = false
+            end
+            handled = true
+        elseif src_condition then
+            -- Check src
+            local slot_id,_ = mcl_util.get_eligible_transfer_item_slot(sinv, "main", dinv, "src", src_condition)
+            if slot_id then
+                mcl_util.move_item_container(pos, to_pos, nil, slot_id, "src")
+            else
+                moved = false
+            end
+            handled = true
+        end
+        if moved and action then action(to_pos) end
+        return handled
+    end
+end
+
+function exchangeclone.mcla_on_hopper_out(fuel_condition, action)
+	fuel_condition = fuel_condition or function(stack)
+		return not exchangeclone.is_fuel(stack)
+	end
+	return function(uppos, pos)
+		local sucked = mcl_util.move_item_container(uppos, pos)
+
+		-- Also suck in non-fuel items from furnace fuel slot
+		if not sucked then
+			local finv = minetest.get_inventory({type="node", pos=uppos})
+			if finv and fuel_condition(finv:get_stack("fuel", 1)) then
+				sucked = mcl_util.move_item_container(uppos, pos, "fuel")
+			end
+		end
+        if sucked and action then action(pos) end
+		return sucked
 	end
 end
 
-function exchangeclone.hoppers_on_try_push(pos, hop_pos, hop_inv, hop_list)
-	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-	if math.abs(pos.y - hop_pos.y) > math.abs(pos.x - hop_pos.x) and math.abs(pos.y - hop_pos.y) > math.abs(pos.z - hop_pos.z) then
-		return inv, "src", exchangeclone.select_stack(hop_inv, hop_list, inv, "src")
-	else
-		return inv, "fuel", exchangeclone.select_stack(hop_inv, hop_list, inv, "fuel", exchangeclone.is_fuel)
-	end
+function exchangeclone.drop_after_dig(lists)
+    return function(pos, oldnode, oldmetadata, player)
+        if exchangeclone.mcl then
+            local meta = minetest.get_meta(pos)
+            local meta2 = meta:to_table()
+            meta:from_table(oldmetadata)
+            local inv = meta:get_inventory()
+            for _, listname in pairs(lists) do
+                for i = 1, inv:get_size(listname) do
+                    local stack = inv:get_stack(listname, i)
+                    if not stack:is_empty() then
+                        local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
+                        minetest.add_item(p, stack)
+                    end
+                end
+            end
+            meta:from_table(meta2)
+        end
+        if exchangeclone.pipeworks then
+            pipeworks.after_dig(pos)
+        end
+    end
+end
+
+function exchangeclone.can_dig(pos)
+    -- Always allow digging in MCL
+    if exchangeclone.mcl then return true end
+    -- Only allow digging of empty containers in MTG
+    local inv = minetest.get_inventory({type="node", pos=pos})
+    for listname, _ in pairs(inv:get_lists()) do
+        if not inv:is_empty(listname) then
+            return false
+        end
+    end
+    return true
 end

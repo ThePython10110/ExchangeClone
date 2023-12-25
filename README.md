@@ -40,9 +40,10 @@ Dependencies: Minetest Game or MineClone.
 ## Known issues:
 * Dark/Red Matter armor don't work they way they should, especially in MTG. I would greatly appreciate a PR that makes them work more like ProjectE.
 * The sword/katar AOE ability does not take upgrades into account. This will probably not be fixed (MCL)
-* When machines are exploded, they (and the items inside) do not drop. I can't figure out why.
 * For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is new enough that most people are using it.
-* Dark/Red matter shears will sometimes (randomly) be treated as normal shears when used by MCL dispensers. This will not be fixed.
+* Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by MCL dispensers. This will not be fixed.
+* In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
+* In Mineclonia, hoppers can put invalid items into Energy Collectors.
 
 **If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -66,10 +67,12 @@ Dependencies: Minetest Game or MineClone.
 
 ### TODO:
 * Figure out what's going to happen with Technic (the PR probably won't be merged)
-* Test everything in MTG, MCL2, and MCLA (and 5.7)
 * Finish changelog
 * Finish wiki
-* Improve covalence formspec
+* Test everything in MTG, MCL2, and MCLA (and 5.7)
+    * Everything breaks properly in MTG
+* Fix Tmcl_banners thing
+* Fix Technic Beta
 
 ### v6.0 (The Compatibility Update)
 
@@ -82,7 +85,9 @@ Dependencies: Minetest Game or MineClone.
 *   Changed A LOT of things internally. Any mods depending on ExchangeClone (probably not very many, which is good) will probably need to update stuff.
 *   **The PESA will be removed in version 7.0.**
 
-**Full Changelog**
+I didn't get to everything I wanted to, mostly because the automatic energy values required quite a lot of work.
+
+#### Full Changelog**
 * New Features:
     * Automatically generated energy values! Based on crafting and cooking recipes.
         * Depending on the number of crafting recipes you have, this could increase load times. This is definitely a bit of an issue in MineClone2, probably due to the number of banner/dye recipes. Eventually (hopefully), loom functionality will be added and this will improve quite a bit.
@@ -120,6 +125,7 @@ Dependencies: Minetest Game or MineClone.
     * Tool abilities now have no energy cost (to match ProjectE).
     * Tool abilities now take upgrades into account (silk touch, fortune, etc.) except for the sword AOE ability (which would require irritating hacky workarounds).
     * Several neutral mobs (endermen, spiders, piglins) are now affected by the dark/red matter sword in "slay hostile" mode, to match ProjectE.
+    * No more mod whitelist.
 * Bugfixes:
     * Fixed potion energy values (MCL)
     * Fixed Red Matter Shield recipe (MTG)
@@ -127,17 +133,17 @@ Dependencies: Minetest Game or MineClone.
     * Deconstructors and Constructors will now continue trying to work instead of just stopping when there is too much or too little energy.
     * Tool abilities now update nodes that require support (torches, sand, etc.).
     * MCL raw copper, iron, and gold blocks now correctly double in DM/RM furnaces.
+    * Finally fixed that bug where things don't drop when exploded.
 
 ### v5.4
 * Fixed a minor bug with the Energy Collector (thanks @programmerjake!)
+* Now adding v's to version numbers... because it looks nice, I guess.
 
 ### 5.3
-* Bugfixes
-    * Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
+* Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
 
 ### 5.2
-* Bugfixes
-    * Removed unnecessary logging every time players take damage (I was testing stuff out with the armor, thanks @Ranko-Saotome for reporting)
+* Removed unnecessary logging every time players take damage (I was testing stuff out with the armor, thanks @Ranko-Saotome for reporting)
 
 ### 5.1
 * New Features:
@@ -193,8 +199,7 @@ Dependencies: Minetest Game or MineClone.
     * Fixed an error message about the `invert` texture modifier
 
 ### 4.4
-* New Features
-    * Mineclonia Support
+* Added Mineclonia Support (or at least, I thought I did)
 * The version numbers kind of disagree around here and I'm too lazy to fix it.
 
 ### 4.3
@@ -209,13 +214,11 @@ Dependencies: Minetest Game or MineClone.
     * Exchange Orbs will now correctly display their energy value (I typed `orb` instead of `exchange_orb` in the energy value list)
 
 ### 4.2
-* Bugfixes:
-    * Fixed a dependency error (thanks, @opfromthestart!)
+* Fixed a dependency error (thanks, @opfromthestart!)
 
 ### 4.1
-* Bugfixes:
-    * Added energy values for new armor/tools
-    * Removed unnecessary chestplate image (not only is it unused, but I put it in the wrong folder for some reason)
+* Added energy values for new armor/tools
+* Removed unnecessary chestplate image (not only is it unused, but I put it in the wrong folder for some reason)
 
 ### 4.0
 * New features:
@@ -234,15 +237,12 @@ Dependencies: Minetest Game or MineClone.
     * Fixed an issue where MineClone dispensers could ONLY be used with Dark/Red Matter Shears (whoops).
 
 ### 3.2
-* Changes:
-    * Set MineClone mod namespace to `exchangeclone`
+* Set MineClone mod namespace to `exchangeclone`
 
 ### 3.1
-* Changes:
-    * Added new energy values from Why (and Why's new Minetest Game energy values)
-* Bugfixes:
-    * Fixed crash based on PESA inventory movement
-    * Added `mcl_blackstone` to the mod whitelist
+* Added new energy values from Why (and Why's new Minetest Game energy values)
+* Fixed crash based on PESA inventory movement
+* Added `mcl_blackstone` to the mod whitelist
 
 ### 3.0 (the formerly most interesting release)
 * New features:
@@ -334,6 +334,7 @@ Dependencies: Minetest Game or MineClone.
 </details>
 
 ### Features that I plan on adding eventually:
+* Achievements
 * ~~As soon as Minetest 5.8 comes out, better textures for armor...~~ Don't want to limit it to 5.8
 * Divining Rods
 * Rings (I'll probably add a new PESA-like item for holding rings)
@@ -347,4 +348,6 @@ Dependencies: Minetest Game or MineClone.
 * Catalytic Lens
 * Mind, Life, Body, and Soul Stones
 * Mercurial Eye
+* Talisman of Repair
+* Gem of Eternal Density
 * Probably other things

@@ -33,19 +33,21 @@ local function alchemical_on_construct(color)
     end
 end
 
+local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connection_stony.png" or ""
+
 minetest.register_node("exchangeclone:alchemical_chest", {
     description = S("Alchemical Chest"),
-    groups = {container = 2, alchemical_chest = 1, cracky = 2, pickaxey = 2},
+    groups = {container = 2, alchemical_chest = 1, cracky = 2, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
     paramtype2 = "4dir",
 	tiles = {
-		"exchangeclone_alchemical_chest_top.png",
-		"exchangeclone_alchemical_chest_bottom.png",
-		"exchangeclone_alchemical_chest_side.png",
-		"exchangeclone_alchemical_chest_side.png",
-		"exchangeclone_alchemical_chest_side.png",
-		"exchangeclone_alchemical_chest_front.png",
+		"exchangeclone_alchemical_chest_top.png"..pipeworks_connect,
+		"exchangeclone_alchemical_chest_bottom.png"..pipeworks_connect,
+		"exchangeclone_alchemical_chest_side.png"..pipeworks_connect,
+		"exchangeclone_alchemical_chest_side.png"..pipeworks_connect,
+		"exchangeclone_alchemical_chest_side.png"..pipeworks_connect,
+		"exchangeclone_alchemical_chest_front.png"..pipeworks_connect,
 	},
     on_construct = function(pos)
         local meta = minetest.get_meta(pos)
@@ -55,6 +57,25 @@ minetest.register_node("exchangeclone:alchemical_chest", {
         inv:set_size("main", 104)
         inv:set_width("main", 13)
     end,
+    tube = exchangeclone.pipeworks and {
+        input_inventory = "main",
+        connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
+        insert_object = function(pos, node, stack, direction)
+            local meta = minetest.get_meta(pos)
+            local inv = meta:get_inventory()
+            local result = inv:add_item("main", stack)
+            if result then
+                local func = minetest.registered_items[node.name].on_metadata_inventory_put
+                if func then func(pos) end
+            end
+            return result
+        end
+    },
+    on_blast = exchangeclone.on_blast({"main"}),
+    on_rotate = exchangeclone.pipeworks and pipeworks.on_rotate,
+    after_place_node = exchangeclone.pipeworks and pipeworks.after_place,
+    after_dig_node = exchangeclone.drop_after_dig({"main"}),
+    can_dig = exchangeclone.can_dig,
 })
 
 local stone_itemstring = exchangeclone.mcl and "mcl_core:stone" or "default:stone"
@@ -78,8 +99,8 @@ minetest.register_on_joinplayer(function(player, last_login)
 end)
 
 for color, color_data in pairs(exchangeclone.colors) do
-    local bag_itemstring = "exchangeclone:"..color.."_alchemical_bag"
-    local advanced_itemstring = "exchangeclone:"..color.."_advanced_alchemical_chest"
+    local bag_itemstring = "exchangeclone:alchemical_bag_"..color
+    local advanced_itemstring = "exchangeclone:advanced_alchemical_chest_"..color
     local wool_itemstring = (exchangeclone.mcl and "mcl_wool:" or "wool:")..color
     local dye_itemstring = (exchangeclone.mcl and "mcl_dye:" or "dye:")..color
 

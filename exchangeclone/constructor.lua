@@ -35,13 +35,6 @@ minetest.register_lbm({
     end,
 })
 
-local function can_dig(pos, player)
-    if exchangeclone.mcl then return true end
-    local meta = minetest.get_meta(pos);
-    local inv = meta:get_inventory()
-    return inv:is_empty("fuel") and inv:is_empty("src") and inv:is_empty("dst")
-end
-
 local function constructor_action(pos)
     local using_orb = true
     local player
@@ -135,48 +128,25 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
     return stack:get_count()
 end
 
-local function on_blast(pos)
-    local drops = {}
-    exchangeclone.get_inventory_drops(pos, "fuel", drops)
-    exchangeclone.get_inventory_drops(pos, "src", drops)
-    exchangeclone.get_inventory_drops(pos, "dst", drops)
-    drops[#drops+1] = "exchangeclone:constructor"
-    minetest.remove_node(pos)
-    return drops
-end
+local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connection_metallic.png" or ""
 
 minetest.register_node("exchangeclone:constructor", {
     description = S("Constructor"),
     tiles = {
-        "exchangeclone_constructor_up.png",
-        "exchangeclone_constructor_down.png",
-        "exchangeclone_constructor_right.png",
-        "exchangeclone_constructor_right.png",
-        "exchangeclone_constructor_right.png",
-        "exchangeclone_constructor_right.png"
+        "exchangeclone_constructor_up.png"..pipeworks_connect,
+        "exchangeclone_constructor_down.png"..pipeworks_connect,
+        "exchangeclone_constructor_right.png"..pipeworks_connect,
+        "exchangeclone_constructor_right.png"..pipeworks_connect,
+        "exchangeclone_constructor_right.png"..pipeworks_connect,
+        "exchangeclone_constructor_right.png"..pipeworks_connect,
     },
     groups = {cracky = 2, container = exchangeclone.mcl2 and 2 or 4, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
     _mcl_hardness = 3,
 	_mcl_blast_resistance = 6,
     sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),
     is_ground_content = false,
-    can_dig = can_dig,
-    after_dig_node = function(pos, oldnode, oldmetadata, player)
-        if exchangeclone.mcl then
-            local meta = minetest.get_meta(pos)
-            local meta2 = meta:to_table()
-            meta:from_table(oldmetadata)
-            local inv = meta:get_inventory()
-            for _, listname in pairs({"src", "dst", "fuel"}) do
-                local stack = inv:get_stack(listname, 1)
-                if not stack:is_empty() then
-                    local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-                    minetest.add_item(p, stack)
-                end
-            end
-            meta:from_table(meta2)
-        end
-	end,
+    can_dig = exchangeclone.can_dig,
+    after_dig_node = exchangeclone.drop_after_dig({"src", "fuel", "dst"}),
     after_place_node = function(pos, player, itemstack, pointed_thing)
         local meta = minetest.get_meta(pos)
         meta:set_string("exchangeclone_placer", player:get_player_name())
@@ -190,16 +160,20 @@ minetest.register_node("exchangeclone:constructor", {
     on_metadata_inventory_take = function(pos, listname, index, stack, player)
         constructor_action(pos)
     end,
-    on_blast = on_blast,
+    on_blast = exchangeclone.on_blast({"src", "fuel", "dst"}),
     allow_metadata_inventory_put = allow_metadata_inventory_put,
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
     on_timer = constructor_action,
-	_mcl_hoppers_on_try_pull = exchangeclone.hoppers_on_try_pull,
-	_mcl_hoppers_on_try_push = exchangeclone.hoppers_on_try_push,
+	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
+	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(nil, function(stack) return stack:get_name() == "exchangeclone:exchange_orb" end),
 	_mcl_hoppers_on_after_push = function(pos)
 		minetest.get_node_timer(pos):start(1.0)
 	end,
+	_on_hopper_in = exchangeclone.mcla_on_hopper_in(
+        nil,
+        function(stack) return stack:get_name() == "exchangeclone:exchange_orb" end
+    ),
 })
 
 if exchangeclone.pipeworks then
