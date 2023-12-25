@@ -85,7 +85,7 @@ local function inactive_formspec(matter_type)
 	local result = base_formspec..
 	"list[context;src;0,0.5;"..tostring(num_columns)..",3;1]"..
 	"list[context;dst;7,0.5;"..tostring(num_columns)..",3;1]"..
-	"label[2.9,0;"..S("@1 Matter Furnace", S(matter_type)).."]"..
+	"label[2.9,0;"..S("@1 Matter Furnace", matter_type).."]"..
 	"image[2.9,1.5;1,1;default_furnace_fire_bg.png]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[transformR270]"
 	if exchangeclone.mcl then
@@ -103,7 +103,7 @@ local function active_formspec(fuel_percent, item_percent, matter_type)
 		(100-fuel_percent)..":default_furnace_fire_fg.png]"..
 	"list[context;src;0,0.5;"..tostring(num_columns)..",3;1]"..
 	"list[context;dst;7,0.5;"..tostring(num_columns)..",3;1]"..
-	"label[2.9,0;"..S("@1 Matter Furnace", S(matter_type)).."]"..
+	"label[2.9,0;"..S("@1 Matter Furnace", matter_type).."]"..
 	"image[4.1,1.5;1.5,1;gui_furnace_arrow_bg.png^[lowpart:"..
 		(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"
 	if exchangeclone.mcl then
@@ -665,7 +665,7 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		"exchangeclone_red_matter_block.png"..pipeworks_connect,
 		"exchangeclone_red_matter_furnace.png",
 	},
-	groups = {pickaxey=5, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=6, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
 	_mcl_hardness = 100,
 
 	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
@@ -720,7 +720,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		"exchangeclone_red_matter_furnace.png",
 	},
 	drop = "exchangeclone:red_matter_furnace",
-	groups = {pickaxey=5, not_in_creative_inventory = 1, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=6, not_in_creative_inventory = 1, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
 	_mcl_hardness = 100,
 
 	on_construct = function(pos)

@@ -168,7 +168,7 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	description = "Dark Matter Sword",
 	wield_image = "exchangeclone_dark_matter_sword.png",
 	inventory_image = "exchangeclone_dark_matter_sword.png",
-	groups = { tool=1, sword=1, dig_speed_class=6, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, sword=1, dig_speed_class=5, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -185,7 +185,7 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		swordy = { speed = 16, level = 7, uses = 0 }
+		swordy = { speed = 16, level = 5, uses = 0 }
 	},
 })
 
@@ -193,7 +193,7 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	description = "Red Matter Sword",
 	wield_image = "exchangeclone_red_matter_sword.png",
 	inventory_image = "exchangeclone_red_matter_sword.png",
-	groups = { tool=1, sword=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, sword=1, dig_speed_class=6, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -210,7 +210,7 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		swordy = { speed = 20, level = 7, uses = 0 }
+		swordy = { speed = 20, level = 6, uses = 0 }
 	},
 })
 

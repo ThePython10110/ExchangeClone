@@ -67,7 +67,7 @@ minetest.register_tool("exchangeclone:dark_matter_axe", {
 	description = S("Dark Matter Axe"),
 	wield_image = "exchangeclone_dark_matter_axe.png",
 	inventory_image = "exchangeclone_dark_matter_axe.png",
-	groups = { tool=1, axe=1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, axe=1, dig_speed_class=5, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -84,7 +84,7 @@ minetest.register_tool("exchangeclone:dark_matter_axe", {
 	on_secondary_use = axe_on_place,
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		axey = { speed = 16, level = 7, uses = 0 }
+		axey = { speed = 16, level = 5, uses = 0 }
 	},
 })
 
@@ -92,7 +92,7 @@ minetest.register_tool("exchangeclone:red_matter_axe", {
 	description = S("Red Matter Axe"),
 	wield_image = "exchangeclone_red_matter_axe.png",
 	inventory_image = "exchangeclone_red_matter_axe.png",
-	groups = { tool=1, axe=1, dig_speed_class=8, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, axe=1, dig_speed_class=6, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -109,7 +109,7 @@ minetest.register_tool("exchangeclone:red_matter_axe", {
 	on_secondary_use = axe_on_place,
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		axey = { speed = 20, level = 8, uses = 0 }
+		axey = { speed = 20, level = 6, uses = 0 }
 	},
 })
 

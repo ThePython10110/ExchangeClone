@@ -77,7 +77,7 @@ minetest.register_node("exchangeclone:red_matter_block", {
 	is_ground_content = false,
 	light_source = 14,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
-	groups = {pickaxey=5, material_stone=1, cracky = 3, level = get_level(5)},
+	groups = {pickaxey=6, material_stone=1, cracky = 3, level = get_level(5)},
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 100,
 })

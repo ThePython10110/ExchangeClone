@@ -72,7 +72,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 	description = S("Dark Matter Hammer").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_dark_matter_hammer.png",
 	inventory_image = "exchangeclone_dark_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, dark_matter_hammer = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, hammer=1, dig_speed_class=5, enchantability=0, dark_matter_hammer = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -87,7 +87,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 16, level = 7, uses = 0 }
+		pickaxey = { speed = 16, level = 5, uses = 0 }
 	},
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place,
@@ -97,7 +97,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer_3x3", {
 	description = S("Dark Matter Hammer").."\n"..S("3x3 mode"),
 	wield_image = "exchangeclone_dark_matter_hammer.png",
 	inventory_image = "exchangeclone_dark_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, dark_matter_hammer = 1, not_in_creative_inventory = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, hammer=1, dig_speed_class=5, enchantability=0, dark_matter_hammer = 1, not_in_creative_inventory = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -112,7 +112,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer_3x3", {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 12, level = 7, uses = 0 }
+		pickaxey = { speed = 12, level = 5, uses = 0 }
 	},
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place,
@@ -124,7 +124,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
 	description = S("Red Matter Hammer").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_red_matter_hammer.png",
 	inventory_image = "exchangeclone_red_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, red_matter_hammer = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, hammer=1, dig_speed_class=6, enchantability=0, red_matter_hammer = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -139,7 +139,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 19, level = 8, uses = 0 }
+		pickaxey = { speed = 19, level = 6, uses = 0 }
 	},
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place,
@@ -149,7 +149,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer_3x3", {
 	description = S("Red Matter Hammer\n3x3 mode"),
 	wield_image = "exchangeclone_red_matter_hammer.png",
 	inventory_image = "exchangeclone_red_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=7, enchantability=0, red_matter_hammer = 1, not_in_creative_inventory = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, hammer=1, dig_speed_class=6, enchantability=0, red_matter_hammer = 1, not_in_creative_inventory = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -164,7 +164,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer_3x3", {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 14, level = 8, uses = 0 }
+		pickaxey = { speed = 14, level = 6, uses = 0 }
 	},
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place,

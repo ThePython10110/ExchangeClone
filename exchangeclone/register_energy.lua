@@ -195,13 +195,6 @@ if exchangeclone.mcl then
     exchangeclone.register_alias("doc_identifier:identifier_solid", "doc_identifier:identifier_liquid")
     exchangeclone.register_alias("mcl_books:writable_book", "mcl_books:written_book")
 
-    for _, coral_type in pairs({"brain", "bubble", "fire", "horn", "tube"}) do
-        for thing, value in pairs({[coral_type.."_coral"] = 16, [coral_type.."_coral_block"] = 64, [coral_type.."_coral_fan"] = 16}) do
-            set_item_energy("mcl_ocean:"..thing, value)
-            set_item_energy("mcl_ocean:dead_"..thing, value/16)
-        end
-    end
-
     -- Potions
     exchangeclone.register_craft_type("brewing", "shapeless")
     local function add_potion_recipe(info)
@@ -271,10 +264,6 @@ end
 -- Register copper block/stonecutting energy recipes in MineClone2
 if exchangeclone.mcl2 then
     exchangeclone.register_craft_type("oxidation", "cooking")
-    local cheapest = get_cheapest_recipe("mcl_copper:block")
-    if cheapest then
-        set_item_energy("mcl_copper:block", cheapest)
-    end
     local states = {"", "_exposed", "_weathered", "_oxidized"}
     for i = 2, #states do
         exchangeclone.register_craft({output = "mcl_copper:block"..states[i], type = "oxidation", recipe = "mcl_copper:block"..states[i-1]})
@@ -293,6 +282,26 @@ end
 
 if minetest.get_modpath("lava_sponge") then
     exchangeclone.register_alias("lava_sponge:lava_sponge", "lava_sponge:lava_sponge_wet")
+end
+
+
+
+
+-- Up to this point, no energy values have actually been set.
+
+
+
+
+-- Register group energy values
+local groupnames = {}
+for index, group in ipairs(exchangeclone.group_values) do
+    groupnames[#groupnames + 1] = group[1] --Get list of group names
+end
+local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
+for index, group in ipairs(exchangeclone.group_values) do
+    for i, item in pairs(grouped_items[group[1]]) do
+        set_item_energy(item, group[2])
+    end
 end
 
 -- Register base energy values
@@ -331,29 +340,6 @@ for itemstring, recipes in pairs(exchangeclone.recipes) do
         for _, recipe in pairs(recipes) do
             table.insert(exchangeclone.recipes[new_name], recipe)
         end
-    end
-end
-
-
-
-
-
--- Up to this point, no energy values have been registered.
--- Now, they will be.
-
-
-
-
-
--- Register group energy values
-local groupnames = {}
-for index, group in ipairs(exchangeclone.group_values) do
-    groupnames[#groupnames + 1] = group[1] --Get list of group names
-end
-local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
-for index, group in ipairs(exchangeclone.group_values) do
-    for i, item in pairs(grouped_items[group[1]]) do
-        set_item_energy(item, group[2])
     end
 end
 

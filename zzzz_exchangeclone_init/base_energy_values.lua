@@ -9,6 +9,12 @@ if exchangeclone.mcl then
         {"mushroom", 32},
         {"decorated_pot_recipe", 4}, -- has to be 4 because of brick.
         {"music_record", 2048},
+        {"coral_block=1", 64},
+        {"coral_block=2", 16},
+        {"coral_plant=1", 16},
+        {"coral_plant=2", 1},
+        {"coral_fan=1", 16},
+        {"coral_fan=2", 1},
     })
 
     for itemstring, energy_value in pairs({
@@ -221,10 +227,10 @@ if exchangeclone.mcl then
         {name = "withering", ingredient = "mcl_flowers:wither_rose", plus = true, two = true}
     })
 else
-    exchangeclone.group_values = {
+    table.insert_all(exchangeclone.group_values, {
         {"flower", 32},
         --{"dye", 8},
-    }
+    })
 
     for itemstring, energy_value in pairs({
         ["bones:bones"] = 4,

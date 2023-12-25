@@ -79,7 +79,7 @@ local pick_def = {
 	wield_image = "exchangeclone_dark_matter_pickaxe.png",
 	inventory_image = "exchangeclone_dark_matter_pickaxe.png",
     exchangeclone_pick_mode = "1x1",
-	groups = { tool=1, pickaxe=1, dig_speed_class=7, enchantability=0, dark_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	groups = { tool=1, pickaxe=1, dig_speed_class=5, enchantability=0, dark_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
@@ -94,7 +94,7 @@ local pick_def = {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 40, level = 7, uses = 0 }
+		pickaxey = { speed = 40, level = 5, uses = 0 }
 	},
     on_secondary_use = pickaxe_on_use,
     on_place = pickaxe_on_use,
@@ -118,7 +118,7 @@ pick_def.wield_image = "exchangeclone_red_matter_pickaxe.png"
 pick_def.inventory_image = "exchangeclone_red_matter_pickaxe.png"
 pick_def.groups.dark_matter_pickaxe = nil
 pick_def.groups.red_matter_pickaxe = 1
-pick_def.groups.dig_speed_class = 8
+pick_def.groups.dig_speed_class = 6
 pick_def.tool_capabilities = {
     full_punch_interval = 0.5,
     max_drop_level=7,
@@ -128,7 +128,7 @@ pick_def.tool_capabilities = {
         cracky = {times={[1]=0.27, [2]=0.13, [3]=0.07}, uses=0, maxlevel=5},
     },
 }
-pick_def._mcl_diggroups.pickaxey = { speed = 60, level = 8, uses = 0 }
+pick_def._mcl_diggroups.pickaxey = { speed = 60, level = 6, uses = 0 }
 
 minetest.register_tool("exchangeclone:red_matter_pickaxe", table.copy(pick_def))
 

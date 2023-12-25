@@ -7,7 +7,7 @@ local function alchemical_formspec(color)
     if color then
         local codified_color = string.lower(color):gsub(" ", "_")
         listname = "current_player;"..codified_color.."_alchemical_inventory"
-        label = S("@1 Alchemical Inventory", S(color))
+        label = S("@1 Alchemical Inventory", color)
     else
         listname = "context;main"
         label = S("Alchemical Chest")
@@ -132,7 +132,7 @@ for color, color_data in pairs(exchangeclone.colors) do
     end
 
     minetest.register_tool(bag_itemstring, {
-        description = S("@1 Alchemical Bag", S(color_data.name)),
+        description = S("@1 Alchemical Bag", color_data.name),
         inventory_image = "exchangeclone_alchemical_bag.png"..bag_modifier,
         wield_image = "exchangeclone_alchemical_bag.png"..bag_modifier,
         groups = {disable_repair = 1, alchemical_bag = 1},
@@ -158,7 +158,7 @@ for color, color_data in pairs(exchangeclone.colors) do
     })
 
     minetest.register_node(advanced_itemstring, {
-        description = S("@1 Advanced Alchemical Chest", S(color_data.name)).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
+        description = S("@1 Advanced Alchemical Chest", color_data.name).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
         _mcl_hardness = 3,
         _mcl_blast_resistance = 6,
         groups = {container = 1, advanced_alchemical_chest = 1, cracky = 2, pickaxey = 2},
@@ -178,7 +178,7 @@ for color, color_data in pairs(exchangeclone.colors) do
         output = advanced_itemstring,
         recipe = {
             {"exchangeclone:dark_matter", "exchangeclone:low_covalence_dust", "exchangeclone:dark_matter"},
-            {"exchangeclone:medium_covalence_dust", "exchangeclone:"..color.."_alchemical_bag", "exchangeclone:medium_covalence_dust"},
+            {"exchangeclone:medium_covalence_dust", "exchangeclone:alchemical_bag_"..color, "exchangeclone:medium_covalence_dust"},
             {"exchangeclone:high_covalence_dust", "exchangeclone:low_covalence_dust", "exchangeclone:high_covalence_dust"},
         }
     })

@@ -41,9 +41,11 @@ Dependencies: Minetest Game or MineClone.
 * Dark/Red Matter armor don't work they way they should, especially in MTG. I would greatly appreciate a PR that makes them work more like ProjectE.
 * The sword/katar AOE ability does not take upgrades into account. This will probably not be fixed (MCL)
 * For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is new enough that most people are using it.
-* Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by MCL dispensers. This will not be fixed.
+* Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by dispensers. This will not be fixed.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
 * In Mineclonia, hoppers can put invalid items into Energy Collectors.
+* DM/RM tools and armor aren't great... the DM tools are TOO fast and the armor is (depending on which game you're playing), too good or not good enough. I would love it if someone with more patience would submit a PR to improve them. I would like them to be as close to ProjectE as possible, and as similar as possible between MTG and MCL... but I just hate doing that kind of thing.
+* DM tools mine RM nodes too quickly for something that doesn't drop (MCL).
 
 **If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -69,12 +71,15 @@ Dependencies: Minetest Game or MineClone.
 * Figure out what's going to happen with Technic (the PR probably won't be merged)
 * Finish changelog
 * Finish wiki
+* Fix banner energy values
+* Fix Advanced Alchemical Chest values to be the same
 * Test everything in MTG, MCL2, and MCLA (and 5.7)
-    * Everything breaks properly in MTG
-* Fix Tmcl_banners thing
-* Check for MCL coral groups
+    * Everything breaks properly
+    * Item transfer mods work correctly
+    * Shears seem to work find (MCL)
 
 ### v6.0 (The Compatibility Update)
+This update took a while... there was just so much that had to be done.
 
 **The biggest changes:**
 *   I'm naming updates now for some reason.

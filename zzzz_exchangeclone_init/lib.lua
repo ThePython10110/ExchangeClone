@@ -256,7 +256,7 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
         result["NO_GROUP"] = {}
     end
     local in_group
-
+    -- copied from... somewhere
     for name, def in pairs(minetest.registered_items) do
         in_group = false
         for i = 1, num_groups do
@@ -264,7 +264,18 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
             local subgroups = exchangeclone.split(grp, ",")
             local success = true
             for _, subgroup in pairs(subgroups) do
-                if not def.groups[subgroup] then
+                local group_info = exchangeclone.split(subgroup, "=")
+                if #group_info == 1 then
+                    if minetest.get_item_group(name, subgroup) <= 0 then
+                        success = false
+                        break
+                    end
+                elseif #group_info == 2 then
+                    if minetest.get_item_group(name, group_info[1]) ~= tonumber(group_info[2]) then
+                        success = false
+                        break
+                    end
+                else
                     success = false
                     break
                 end
