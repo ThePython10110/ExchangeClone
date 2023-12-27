@@ -110,7 +110,6 @@ for color, color_data in pairs(exchangeclone.colors) do
     local chest_modifier = bag_modifier
     if color == "black" then chest_modifier = "^[invert:rgb^[colorize:#000000:220" end
 
-
     local function alchemical_bag_action(itemstack, player, pointed_thing)
         local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
         if click_test ~= false then

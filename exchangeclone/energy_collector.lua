@@ -11,17 +11,6 @@ local formspec =
 
 minetest.register_alias("exchangeclone:energy_collector", "exchangeclone:energy_collector_mk1")
 
--- Register LBM to update deconstructors
-minetest.register_lbm({
-    name = "exchangeclone:collector_alert",
-    nodenames = {"exchangeclone:energy_collector_mk1"},
-    run_at_every_load = false,
-    action = function(pos, node)
-        local meta = minetest.get_meta(pos)
-        meta:set_string("formspec", "size[3,1]label[0,0;"..S("Break and replace.").."\n"..S("Nothing will be lost.").."]")
-    end,
-})
-
 local function check_for_furnaces(pos, set_furnace, start)
 	local found = false
 	for _, check_pos in pairs(exchangeclone.neighbors) do

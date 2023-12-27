@@ -24,17 +24,6 @@ end
 
 minetest.register_alias("exchangeclone:element_constructor", "exchangeclone:constructor")
 
--- Register LBM to update constructors
-minetest.register_lbm({
-    name = "exchangeclone:constructor_alert",
-    nodenames = {"exchangeclone:constructor"},
-    run_at_every_load = false,
-    action = function(pos, node)
-        local meta = minetest.get_meta(pos)
-        meta:set_string("formspec", "size[3,1]label[0,0;"..S("Break and replace.").."\n"..S("Nothing will be lost.").."]")
-    end,
-})
-
 local function constructor_action(pos)
     local using_orb = true
     local player

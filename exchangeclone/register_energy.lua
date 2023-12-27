@@ -240,7 +240,7 @@ if exchangeclone.mcl then
     -- Concrete and banners/shields (don't remember why the shields don't work)
     for color, color_data in pairs(exchangeclone.colors) do
         exchangeclone.register_craft({output = "mcl_colorblocks:concrete_"..color, type = "hardening", recipe = "mcl_colorblocks:concrete_powder_"..color})
-        exchangeclone.register_craft({output = "mcl_shields:shield_"..color, type = "shapeless", recipe = {"mcl_banners:banner_item_"..color, "mcl_shields:shield"}})
+        --exchangeclone.register_craft({output = "mcl_shields:shield_"..color, type = "shapeless", recipe = {"mcl_banners:banner_item_"..color, "mcl_shields:shield"}})
     end
 
     -- Maps
@@ -278,10 +278,6 @@ end
 
 if not exchangeclone.mcl then
     exchangeclone.register_alias("default:book", "default:book_written")
-end
-
-if minetest.get_modpath("lava_sponge") then
-    exchangeclone.register_alias("lava_sponge:lava_sponge", "lava_sponge:lava_sponge_wet")
 end
 
 
@@ -386,6 +382,28 @@ if exchangeclone.mcl then
             break
         end
     end
+end
+
+local cheapest_color = {""}
+
+for color, color_data in pairs(exchangeclone.colors) do
+    local dye_itemstring = (exchangeclone.mcl and "mcl_dye:" or "dye:")..color
+    local dye_energy = exchangeclone.get_item_energy(dye_itemstring)
+    if dye_energy then
+        if (not cheapest_color[2]) or (dye_energy < cheapest_color[2])  then
+            cheapest_color[1] = color
+            cheapest_color[2] = dye_energy
+        end
+    end
+end
+
+cheapest_color = cheapest_color[1] -- No idea why I'm doing it this way.
+
+local cheapest_advanced_itemstring = "exchangeclone:advanced_alchemical_chest_"..cheapest_color
+
+for color, color_data in pairs(exchangeclone.colors) do
+    local advanced_itemstring = "exchangeclone:advanced_alchemical_chest_"..color
+    set_item_energy(advanced_itemstring, exchangeclone.get_item_energy(cheapest_advanced_itemstring))
 end
 
 -- Adds energy values to aliased items, even though they're not used (just so it's displayed)

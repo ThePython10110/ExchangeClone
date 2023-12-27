@@ -12,7 +12,8 @@ exchangeclone.shear_action = {
         return data
     end,
     action = function(player, pos, node, data)
-        local node_def = minetest.registered_items[node.name]
+        local node_def = minetest.registered_items[ItemStack(node.name):get_name()]
+        if not node_def then return data end
         if (node_def.groups.shearsy or node_def.groups.shearsy_cobweb) and node.name ~= "mcl_flowers:double_grass_top" then
             if minetest.is_protected(pos, player:get_player_name()) then
                 minetest.record_protection_violation(pos, player:get_player_name())

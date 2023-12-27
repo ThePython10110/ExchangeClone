@@ -68,22 +68,20 @@ Dependencies: Minetest Game or MineClone.
 <details><summary>Look at this fancy expanding changelog</summary>
 
 ### TODO:
-* Figure out what's going to happen with Technic (the PR probably won't be merged)
 * Finish changelog
 * Finish wiki
-* Fix banner energy values
-* Fix Advanced Alchemical Chest values to be the same
 * Test everything in MTG, MCL2, and MCLA (and 5.7)
     * Everything breaks properly
     * Item transfer mods work correctly
-    * Shears seem to work find (MCL)
+    * Shears seem to work fine (MCL)
+    * Other tools work
 
 ### v6.0 (The Compatibility Update)
 This update took a while... there was just so much that had to be done.
 
 **The biggest changes:**
 *   I'm naming updates now for some reason.
-*   Automatic energy values! This means I don't have to manually add energy values for every single item. If it's craftable (and even if it's not in many cases), ExchangeClone will automatically figure out an energy value for it.
+*   Automatic energy values! This means I don't have to manually add energy values for every single item. If it's craftable or cookable, ExchangeClone will automatically figure out an energy value for it. There's also an API (with very little documentation because I'm lazy) for adding custom energy recipes and recipe types.
 *   The minimum Minetest version has been changed to 5.7.0, because I'm never going to test on any older versions. Of course, it will probably still work (at least mostly) on other versions, but I can't promise anything.
 *   Players can now have up to 1 trillion personal energy!
 *   Energy values now better match ProjectE's.
@@ -96,7 +94,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 * New Features:
     * Automatically generated energy values! Based on crafting and cooking recipes.
         * Depending on the number of crafting recipes you have, this could increase load times. This is definitely a bit of an issue in MineClone2, probably due to the number of banner/dye recipes. Eventually (hopefully), loom functionality will be added and this will improve quite a bit.
-        * Technic support coming as soon as possible (Technic needs to change some things first). Technic recipe types (grinding, alloying, etc.) WILL eventually work, as long as their `output_size` is 1 (meaning they only output one item at a time, so not the centrifuge or separator).
+        * Technic recipe types (grinding, alloying, etc.) work, as long as their `output_size` is 1 (meaning they only output one item at a time, so not the centrifuge or separator).
         * Also supports Mineclonia's stonecutter recipes, Netherite upgrades, and more.
         * Added various ways of adding custom energy values or energy recipes (`exchangeclone.register_alias`, `exchangeclone.register_craft_type`, and `exchangeclone.register_craft`)
     * Support for Pipeworks and Hopper mods! (MCL hoppers already worked)
@@ -112,6 +110,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
         * `/add_player_energy [player] value` (player defaults to self, value can be negative)
         * `/set_player_energy [player] value` (player defaults to self, value can be "limit" to set to the limit)
 * Changes:
+    * **Removed the compatibility thing for Constructors, Deconstructors, and Energy Collectors** (there seems to have been a bug that was making it happen too much) meaning that **old worlds REALLY SHOULD NOT be updated to this version.** And they probably shouldn't have been updated to 5.0 either. So... sorry if I ruined things for you. In the future, I will try to make everything a lot more backwards-compatible.
     * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s).
         * Energy values are now in `zzzz_exchangeclone_init/base_energy_values.lua`, and are laid out differently, and aliases now work.
     * The default energy value is no longer 1 but none.
@@ -163,7 +162,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
     * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups, thanks @Ranko-Saotome for reporting this).
 
 ### 5.0 (bigger release than any before it)
-**You MUST break and replace any existing Constructors, Deconstructors, and Energy Collectors when updating from any previous version. Nothing will be lost (hopefully). In Minetest Game, this is a bit of a problem (try blowing it up maybe? I don't know, sorry).**
+**I would recommend not updating to or past this version (any Constructors, Deconstructors, and Energy Collectors may become unusable...)**
 * New features:
     * Added a [wiki](https://github.com/ThePython10110/ExchangeClone/wiki)! This is where you can find more complete information on pretty much everything.
         * Because the wiki exists, I won't be including anywhere near as many details about how features work in the changelog.

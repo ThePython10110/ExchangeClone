@@ -21,17 +21,6 @@ end
 
 minetest.register_alias("exchangeclone:element_deconstructor", "exchangeclone:deconstructor")
 
--- Register LBM to update deconstructors
-minetest.register_lbm({
-    name = "exchangeclone:deconstructor_alert",
-    nodenames = {"exchangeclone:deconstructor"},
-    run_at_every_load = false,
-    action = function(pos, node)
-        local meta = minetest.get_meta(pos)
-        meta:set_string("formspec", "size[3,1]label[0,0;"..S("Break and replace.").."\n"..S("Nothing will be lost.").."]")
-    end,
-})
-
 local function deconstructor_action(pos, elapsed)
     local limit = exchangeclone.orb_max
     local using_orb = true

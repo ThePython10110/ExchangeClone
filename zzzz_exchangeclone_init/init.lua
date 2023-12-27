@@ -26,9 +26,10 @@ function minetest.register_craft(data, ...)
     if exchangeclone.mcl then
         if itemstring:sub(1, #"mcl_banners:") == "mcl_banners:" then
             allowed = false
-            if data.type and data.type == "shaped" then
-                for _, row in pairs(data.recipe) do
-                    for _, item in pairs(row) do
+            --if data.output == "mcl_banners:banner_item_green" then minetest.log(dump(data.recipe)) end
+            if (not data.type) or data.type == "shaped" then
+                for _, row in ipairs(data.recipe) do
+                    for _, item in ipairs(row) do
                         if item:sub(1, #"mcl_wool:") == "mcl_wool:" then
                             allowed = true
                             break
