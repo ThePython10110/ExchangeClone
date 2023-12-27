@@ -66,15 +66,6 @@ Dependencies: Minetest Game or MineClone.
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
-### TODO:
-* Finish changelog
-* Finish wiki
-* Test everything in MTG, MCL2, and MCLA (and 5.7)
-    * Everything breaks properly
-    * Item transfer mods work correctly
-    * Shears seem to work fine (MCL)
-    * Other tools work
-
 ### v6.0 (The Compatibility Update)
 This update took a while... there was just so much that had to be done.
 
