@@ -1,4 +1,6 @@
 # ExchangeClone
+[![ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone/shields/downloads/)](https://content.minetest.net/packages/ThePython/exchangeclone/)
+
 Allows players to turn items into energy, and energy into items. Supports all items in Minetest Game and MineClone 2, and anything that can be made from them! Also adds a whole bunch of other stuff.
 
 If you would like to see the latest changes, check out (pun) the dev branch! Beware of bugs.
