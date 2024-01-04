@@ -66,6 +66,9 @@ Dependencies: Minetest Game or MineClone.
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
+### v6.1
+* Damaged tools now give the correct amount of energy (thanks @programmerjake!).
+
 ### v6.0 (The Compatibility Update)
 This update took a while... there was just so much that had to be done.
 

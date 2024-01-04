@@ -44,7 +44,7 @@ end
 
 --- Gets the energy value of an itemstring or ItemStack
 --- Handles "group:group_name" syntax (although it goes through every item), returns cheapest item in group
-function exchangeclone.get_item_energy(item, ignore_wear)
+function exchangeclone.get_item_energy(item)
     if (item == "") or not item then return end
     -- handle groups
     if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then

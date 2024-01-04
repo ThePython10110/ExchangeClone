@@ -40,7 +40,7 @@ local function deconstructor_action(pos, elapsed)
     if not (individual_energy_value and individual_energy_value > 0) then return end
     local wear = stack:get_wear()
     if wear and wear > 0 then
-        individual_energy_value = math.max(math.floor(individual_energy_value * (65536 / wear)), 1)
+        individual_energy_value = math.max(math.floor(individual_energy_value * ((65536 - wear)/65536)), 1)
     end
     if stack:get_name() == "exchangeclone:exchange_orb" then
         individual_energy_value = individual_energy_value + exchangeclone.get_orb_itemstack_energy(stack)
