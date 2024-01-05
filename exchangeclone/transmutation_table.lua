@@ -375,7 +375,7 @@ minetest.register_node("exchangeclone:transmutation_table", {
 })
 
 minetest.register_tool("exchangeclone:alchemical_tome", {
-    description = "Alchemical Tome",
+    description = "Alchemical Tome\nOrbs in crafting recipe must be full",
     inventory_image = "exchangeclone_alchemical_tome.png",
     wield_image = "exchangeclone_alchemical_tome.png",
     groups = {disable_repair = 1, fire_immune = 1}
@@ -409,15 +409,17 @@ minetest.register_craft({
     },
 })
 
-minetest.register_craft({
-    output = "exchangeclone:alchemical_tome",
-    recipe = {
-        {"", book, ""},
-        {"exchangeclone:exchange_orb", "exchangeclone:philosophers_stone", "exchangeclone:exchange_orb"},
-        {"", "exchangeclone:red_matter", ""}
-    },
-    replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
-})
+if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", true) then
+    minetest.register_craft({
+        output = "exchangeclone:alchemical_tome",
+        recipe = {
+            {"", book, ""},
+            {"exchangeclone:exchange_orb", "exchangeclone:philosophers_stone", "exchangeclone:exchange_orb"},
+            {"", "exchangeclone:red_matter", ""}
+        },
+        replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
+    })
+end
 
 minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
     if itemstack == ItemStack("exchangeclone:alchemical_tome") then

@@ -3,7 +3,7 @@
 
 Allows players to turn items into energy, and energy into items. Supports all items in Minetest Game and MineClone 2, and anything that can be made from them! Also adds a whole bunch of other stuff.
 
-If you would like to see the latest changes, check out (pun) the dev branch! Beware of bugs.
+Welcome to the dev branch.
 
 ExchangeClone is tested with the latest release of Minetest, Minetest Game, MineClone2, and Mineclonia.
 
@@ -36,7 +36,6 @@ See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more in
 [Direct download](https://github.com/ThePython10110/ExchangeClone/archive/refs/heads/main.zip)
 
 Dependencies: Minetest Game or MineClone.
-
 
 ## Known issues:
 * Dark/Red Matter armor don't work they way they should, especially in MTG. I would greatly appreciate a PR that makes them work more like ProjectE.
