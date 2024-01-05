@@ -1,9 +1,9 @@
 # ExchangeClone
 [![ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone/shields/downloads/)](https://content.minetest.net/packages/ThePython/exchangeclone/)
 
-Allows players to turn items into energy, and energy into items. Supports all items in Minetest Game and MineClone 2, and anything that can be made from them! Also adds a whole bunch of other stuff.
+Allows players to turn items into energy, and energy into items. Supports all items in Minetest Game, Technic, More Ores, and MineClone2/Mineclonia, as well as anything that can be made from them! Also adds a whole bunch of other stuff.
 
-Welcome to the dev branch.
+If you would like to see the latest changes, check out (pun) the dev branch! Beware of bugs.
 
 ExchangeClone is tested with the latest release of Minetest, Minetest Game, MineClone2, and Mineclonia.
 
@@ -67,8 +67,11 @@ Dependencies: Minetest Game or MineClone.
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
+### v6.2
+* Added a setting to disable the Alchemical Tome crafting recipe (suggested by @programmerjake)
+
 ### v6.1
-* Damaged tools now give the correct amount of energy (thanks @programmerjake!).
+* Damaged tools now give the correct amount of energy (reported by @programmerjake)
 
 ### v6.0 (The Compatibility Update)
 This update took a while... there was just so much that had to be done.
@@ -138,10 +141,10 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 * Now adding v's to version numbers... because it looks nice, I guess.
 
 ### 5.3
-* Fixed shearing beehives in MCL (thanks @Ranko-Saotome!)
+* Fixed shearing beehives in MCL (reported by @Ranko-Saotome)
 
 ### 5.2
-* Removed unnecessary logging every time players take damage (I was testing stuff out with the armor, thanks @Ranko-Saotome for reporting)
+* Removed unnecessary logging every time players take damage (I was testing stuff out with the armor; reported by @Ranko-Saotome)
 
 ### 5.1
 * New Features:
@@ -153,7 +156,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
     * Red Matter Armor no longer increases player health (the wiki lied to me).
     * A couple of changes to DM/RM armor in MineClone, which may or may not be noticeable. I really don't know.
 * Bugfixes:
-    * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups, thanks @Ranko-Saotome for reporting this).
+    * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups; reported by @Ranko-Saotome).
 
 ### 5.0 (bigger release than any before it)
 **I would recommend not updating to or past this version (any Constructors, Deconstructors, and Energy Collectors may become unusable...)**
