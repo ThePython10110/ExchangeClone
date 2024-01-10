@@ -77,6 +77,7 @@ if exchangeclone.mcl then
         ["mcl_core:grass"] = 1,
         ["mcl_core:gravel"] = 4,
         ["mcl_core:ice"] = 1,
+        ["mcl_core:iron_ingot"] = 256,
         ["mcl_core:mycelium"] = 2,
         ["mcl_core:obsidian"] = 64,
         ["mcl_core:redsand"] = 1,
@@ -200,8 +201,6 @@ if exchangeclone.mcl then
         ["meat_blocks:meatball"] = 64,
 
         ["mesecons:redstone"] = 64,
-
-        ["useful_green_potatoes:useful_green_potato"] = 256,
     }) do
         exchangeclone.base_energy_values[itemstring] = exchangeclone.base_energy_values[itemstring] or energy_value
     end
@@ -276,16 +275,6 @@ else
 
         ["moreores:mithril_ingot"] = 16384,
         ["moreores:silver_ingot"] = 4000,
-
-        ["technic:chromium_ingot"] = 4096,
-        ["technic:granite"] = 1,
-        ["technic:lead_ingot"] = 256,
-        ["technic:marble"] = 1,
-        ["technic:sulfur_lump"] = 128,
-        ["technic:uranium_ingot"] = 8192,
-        ["technic:zinc_ingot"] = 512,
-
-        ["useful_green_potatoes:useful_green_potato"] = 256
     }) do
         exchangeclone.base_energy_values[itemstring] = exchangeclone.base_energy_values[itemstring] or energy_value
     end
@@ -296,6 +285,16 @@ end
 
 for itemstring, energy_value in pairs ({
     ["exchangeclone:alchemical_tome"] = 0,
+
+    ["technic:chromium_ingot"] = 4096,
+    ["technic:granite"] = 1,
+    ["technic:lead_ingot"] = 256,
+    ["technic:marble"] = 1,
+    ["technic:sulfur_lump"] = 128,
+    ["technic:uranium_ingot"] = 8192,
+    ["technic:zinc_ingot"] = 512,
+
+    ["useful_green_potatoes:useful_green_potato"] = 256
 }) do
     exchangeclone.base_energy_values[itemstring] = energy_value
 end

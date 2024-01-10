@@ -67,6 +67,10 @@ Dependencies: Minetest Game or MineClone.
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
+### v6.3
+* Added Technic items to MCL base energy values (reported by @programmerjake)
+* Fixed a bug where iron nuggets were worth the same amount as a random piece of chain armor (reported by @programmerjake)
+
 ### v6.2
 * Added a setting to disable the Alchemical Tome crafting recipe (suggested by @programmerjake)
 
