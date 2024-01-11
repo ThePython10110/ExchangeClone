@@ -112,7 +112,7 @@ dofile(modpath.."/craftitems.lua")
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then
 	dofile(modpath.."/armor.lua")
 end
-if exchangeclone.mcl then
+if exchangeclone.mcl2 then
 	mcl_item_id.set_mod_namespace("exchangeclone")
 	dofile(modpath.."/shears.lua")
 	dofile(modpath.."/tool_upgrades.lua")
