@@ -73,6 +73,7 @@ if exchangeclone.mcl then
         ["mcl_core:diorite"] = 16,
         ["mcl_core:emerald"] = 4096,
         ["mcl_core:flint"] = 4,
+        ["mcl_core:gold_ingot"] = 2048,
         ["mcl_core:granite"] = 16,
         ["mcl_core:grass"] = 1,
         ["mcl_core:gravel"] = 4,

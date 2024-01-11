@@ -67,13 +67,17 @@ Dependencies: Minetest Game or MineClone.
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
-## v6.4
+### v6.5
+* Fixed MCL gold nuggets sometimes having the energy value of gold horse armor (reported by @programmerjake)
+* Fixed the fact that the previous changelog entry was `##` instead of `###`
+
+### v6.4
 * Yes, I know, v6.3 only came out about 9 hours ago.
 * Mineclonia apparently changed something minor, and it was causing a crash. I fixed it.
 
 ### v6.3
 * Added Technic items to MCL base energy values (reported by @programmerjake)
-* Fixed a bug where iron nuggets were worth the same amount as a random piece of chain armor (reported by @programmerjake)
+* Fixed a bug where MCL iron nuggets were worth the same amount as a random piece of chain armor (reported by @programmerjake)
 
 ### v6.2
 * Added a setting to disable the Alchemical Tome crafting recipe (suggested by @programmerjake)
