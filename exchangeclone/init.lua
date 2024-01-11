@@ -104,6 +104,10 @@ else
 	}
 end
 
+if exchangeclone.mcl2 then
+	mcl_item_id.set_mod_namespace("exchangeclone")
+end
+
 dofile(modpath.."/constructor.lua")
 dofile(modpath.."/deconstructor.lua")
 dofile(modpath.."/energy_collector.lua")
@@ -112,8 +116,7 @@ dofile(modpath.."/craftitems.lua")
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then
 	dofile(modpath.."/armor.lua")
 end
-if exchangeclone.mcl2 then
-	mcl_item_id.set_mod_namespace("exchangeclone")
+if exchangeclone.mcl then
 	dofile(modpath.."/shears.lua")
 	dofile(modpath.."/tool_upgrades.lua")
 end
