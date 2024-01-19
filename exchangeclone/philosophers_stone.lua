@@ -257,7 +257,7 @@ exchangeclone.stone_action = {
     end
 }
 
-local on_left_click = nil
+local on_left_click
 if exchangeclone.mcl then
     on_left_click = function(itemstack, player, pointed_thing)
         if player:get_player_control().sneak then
@@ -492,57 +492,6 @@ minetest.register_craft({
     recipe = {
         phil,
         exchangeclone.itemstrings.diamond
-    },
-    replacements = {{phil, phil}}
-})
-
-minetest.register_craft({
-    output = "mcl_nether:ancient_debris",
-    type = "shapeless",
-    recipe = {
-        phil,
-        "mcl_core:diamond",
-        "mcl_core:diamond",
-    },
-    replacements = {{phil, phil}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:diamond 2",
-    type = "shapeless",
-    recipe = {
-        phil,
-        "mcl_nether:ancient_debris"
-    },
-    replacements = {{phil, phil}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:diamond 2",
-    type = "shapeless",
-    recipe = {
-        phil,
-        "mcl_nether:netherite_scrap"
-    },
-    replacements = {{phil, phil}}
-})
-
-minetest.register_craft({
-    output = "mcl_core:diamond 9",
-    type = "shapeless",
-    recipe = {
-        phil,
-        "mcl_nether:netherite_ingot"
-    },
-    replacements = {{phil, phil}}
-})
-
-minetest.register_craft({
-    output = "mcl_nether:netherite_ingot",
-    type = "shapeless",
-    recipe = {
-        phil,
-        "mcl_core:diamondblock"
     },
     replacements = {{phil, phil}}
 })

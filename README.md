@@ -64,8 +64,34 @@ Dependencies: Minetest Game or MineClone.
 
 -----
 
+
+### PLANS/TODO FOR v7.0 (see dev branch for current progress)
+* Achievements/advancements/awards
+* Improvements to tools
+    * Wear bar for charge level
+    * Charge level affects speed
+    * Correct/accurate speeds compared to ProjectE (hopefully)
+    * Wear bar on Exchange Orbs for energy
+    * Slightly more efficient 3x3/3x1 digging (before, it would check every time any node was broken, now it will check when it's dug specifically with 3x3/3x1-capable tools)
+    * Only one item per tool (not a separate 3x3 tool)
+    * *MAYBE* changes to armor (but it's so hard to get it right)
+    * Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
+* Divining rods
+* Swiftwolf's Rending Gale (maybe rename?)
+* Mind, Life, Body and Soul Stones (Mind = MCL only)
+* Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
+* Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
+* Remove deprecated PESA item (add alias to some existing item with 64 energy)
+
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
+
+### v7.0
+* Nothing yet. See the to-do list above for my plans.
+
+### v6.6
+* Removed energy value for Ancient Debris (since it could be smelted in a DM/RM Furnace to get 2 Netherite Scrap)
+* Removed Philosopher's Stone recipes involving Ancient Debris, Netherite Scrap, and Netherite Ingots (since that's not a thing in ProjectE)
 
 ### v6.5
 * Fixed MCL gold nuggets sometimes having the energy value of gold horse armor (reported by @programmerjake)
@@ -171,7 +197,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
     * Fixed Mineclonia energy values (I foolishly assumed that all items would have the same itemstrings and groups; reported by @Ranko-Saotome).
 
 ### 5.0 (bigger release than any before it)
-**I would recommend not updating to or past this version (any Constructors, Deconstructors, and Energy Collectors may become unusable...)**
+**I would recommend not updating existing 1.x-4.x worlds to this version (any Constructors, Deconstructors, and Energy Collectors may become unusable...)**
 * New features:
     * Added a [wiki](https://github.com/ThePython10110/ExchangeClone/wiki)! This is where you can find more complete information on pretty much everything.
         * Because the wiki exists, I won't be including anywhere near as many details about how features work in the changelog.
@@ -351,7 +377,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 * ~~As soon as Minetest 5.8 comes out, better textures for armor...~~ Don't want to limit it to 5.8
 * Divining Rods
 * Rings (I'll probably add a new PESA-like item for holding rings)
-    * Archangel's Smite (arrows will not track targets, MineClone only)
+    * Archangel's Smite (MCL only, arrows will not track targets)
     * Ring of Ignition
     * Zero Ring
     * Swiftwolf's Rending Gale (but without the force field; basically Why's Flying Sausage with a different texture and maybe lightning in MCL)

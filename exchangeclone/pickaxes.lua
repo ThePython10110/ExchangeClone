@@ -161,6 +161,8 @@ minetest.register_craft({
     }
 })
 
+
+-- Can't find a good way to automate this...
 minetest.register_on_mods_loaded(function()
     for name, def in pairs(minetest.registered_nodes) do
         if name:find("_ore")

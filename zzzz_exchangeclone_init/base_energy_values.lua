@@ -175,7 +175,7 @@ if exchangeclone.mcl then
 
         ["mcl_mud:mud"] = 1,
 
-        ["mcl_nether:ancient_debris"] = 12288,
+        ["mcl_nether:netherite_scrap"] = 12288,
         ["mcl_nether:nether_wart_item"] = 24,
         ["mcl_nether:netherrack"] = 1,
         ["mcl_nether:quartz"] = 256,
