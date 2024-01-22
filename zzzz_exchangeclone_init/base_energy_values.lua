@@ -273,9 +273,6 @@ else
         ["farming:seed_cotton"] = 10,
         ["farming:seed_wheat"] = 16,
         ["farming:wheat"] = 24,
-
-        ["moreores:mithril_ingot"] = 16384,
-        ["moreores:silver_ingot"] = 4000,
     }) do
         exchangeclone.base_energy_values[itemstring] = exchangeclone.base_energy_values[itemstring] or energy_value
     end
@@ -286,6 +283,10 @@ end
 
 for itemstring, energy_value in pairs ({
     ["exchangeclone:alchemical_tome"] = 0,
+
+    ["moreores:mithril_ingot"] = 16384,
+    ["moreores:silver_ingot"] = 4000,
+    ["moreores:tin_ingot"] = 320,
 
     ["technic:chromium_ingot"] = 4096,
     ["technic:granite"] = 1,
