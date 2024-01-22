@@ -286,7 +286,7 @@ for itemstring, energy_value in pairs ({
 
     ["moreores:mithril_ingot"] = 16384,
     ["moreores:silver_ingot"] = 4000,
-    ["moreores:tin_ingot"] = 256,
+    ["moreores:tin_ingot"] = 320,
 
     ["technic:chromium_ingot"] = 4096,
     ["technic:granite"] = 1,
