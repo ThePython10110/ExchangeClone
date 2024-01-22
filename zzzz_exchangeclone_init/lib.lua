@@ -735,11 +735,11 @@ exchangeclone.neighbors = {
 
 function exchangeclone.check_nearby_falling(pos)
 	for i = 1, 6 do
-        local new_pos = vector.add(pos, exchangeclone.neighbors[i])
+        local pos = vector.add(pos, exchangeclone.neighbors[i])
         if exchangeclone.mcl then
-            local node = minetest.get_node(new_pos)
+            local node = minetest.get_node(pos)
             if node.name == "mcl_core:vine" then
-                mcl_core.check_vines_supported(new_pos, node)
+                mcl_core.check_vines_supported(pos, node)
             end
         end
 	end
@@ -942,4 +942,161 @@ function exchangeclone.can_dig(pos)
         end
     end
     return true
+end
+
+exchangeclone.stone_group = exchangeclone.mcl and "pickaxey" or "cracky"
+
+exchangeclone.dirt_group = exchangeclone.mcl and "shovely" or "crumbly"
+
+local function dig_if_group(pos, player, groups)
+	local node = minetest.get_node(pos)
+	for _, group in pairs(groups) do
+		if minetest.get_item_group(node.name, group) > 0 then
+			minetest.node_dig(pos, minetest.get_node(pos), player)
+            return
+		end
+	end
+end
+
+function exchangeclone.multidig(pos, node, player, mode, groups)
+    minetest.log(dump({node, mode, groups}))
+    if not player then return end
+
+    -- Dig center node no matter what
+    minetest.node_dig(pos, minetest.get_node(pos), player)
+
+    local player_rotation = exchangeclone.get_face_direction(player)
+
+    if mode == "1x1" then
+        return
+    elseif mode == "3x3" then
+        local dir1
+        local dir2
+
+        if player_rotation.y ~= 0 then
+            dir1 = "x"
+            dir2 = "z"
+        elseif player_rotation.x ~= 0 then
+            dir1 = "y"
+            dir2 = "z"
+        elseif player_rotation.z ~= 0 then
+            dir1 = "x"
+            dir2 = "y"
+        end
+
+        --[[
+            123
+            4 5
+            678
+        ]]
+
+        pos[dir1] = pos[dir1] - 1 --7
+        dig_if_group(pos, player, groups)
+        pos[dir2] = pos[dir2] - 1 --6
+        dig_if_group(pos, player, groups)
+        pos[dir1] = pos[dir1] + 1 --4
+        dig_if_group(pos, player, groups)
+        pos[dir1] = pos[dir1] + 1 --1
+        dig_if_group(pos, player, groups)
+        pos[dir2] = pos[dir2] + 1 --2
+        dig_if_group(pos, player, groups)
+        pos[dir2] = pos[dir2] + 1 --3
+        dig_if_group(pos, player, groups)
+        pos[dir1] = pos[dir1] - 1 --5
+        dig_if_group(pos, player, groups)
+        pos[dir1] = pos[dir1] - 1 --8
+        dig_if_group(pos, player, groups)
+    elseif mode == "3x1_long" then
+        if player_rotation.y ~= 0 then
+            pos.y = pos.y + player_rotation.y
+            dig_if_group(pos, player, groups)
+            pos.y = pos.y + player_rotation.y
+            dig_if_group(pos, player, groups)
+        elseif player_rotation.z ~= 0 then
+            pos.z = pos.z + player_rotation.z
+            dig_if_group(pos, player, groups)
+            pos.z = pos.z + player_rotation.z
+            dig_if_group(pos, player, groups)
+        else
+            pos.x = pos.x + player_rotation.x
+            dig_if_group(pos, player, groups)
+            pos.x = pos.x + player_rotation.x
+            dig_if_group(pos, player, groups)
+        end
+    elseif mode == "3x1_tall" then
+        if player_rotation.y ~= 0 then
+            if player_rotation.x ~= 0 then
+                pos.x = pos.x - 1
+                dig_if_group(pos, player, groups)
+                pos.x = pos.x + 1
+                dig_if_group(pos, player, groups)
+            else
+                pos.z = pos.z - 1
+                dig_if_group(pos, player, groups)
+                pos.z = pos.z + 1
+                dig_if_group(pos, player, groups)
+            end
+        else
+            pos.y = pos.y - 1
+            dig_if_group(pos, player, groups)
+            pos.y = pos.y + 1
+            dig_if_group(pos, player, groups)
+        end
+    elseif mode == "3x1_wide" then
+        if player_rotation.x ~= 0 then
+            pos.z = pos.z - 1
+            dig_if_group(pos, player, groups)
+            pos.z = pos.z + 1
+            dig_if_group(pos, player, groups)
+        else
+            pos.x = pos.x - 1
+            dig_if_group(pos, player, groups)
+            pos.x = pos.x + 1
+            dig_if_group(pos, player, groups)
+        end
+    end
+end
+
+function exchangeclone.multi_on_dig(groups)
+    return function(pos, node, player)
+		local item = player:get_wielded_item()
+		local mode = item:get_meta():get_string("exchangeclone_multidig_mode") or "1x1"
+		exchangeclone.multidig(pos, node, player, mode, groups)
+	end
+end
+
+-- Given an item and effiency level, return the groupcaps of the item with that efficiency level.
+function exchangeclone.get_groupcaps(item, efficiency)
+    item = ItemStack(item)
+    if exchangeclone.mcl then
+        local thingy = mcl_autogroup.get_groupcaps(item:get_name(), efficiency)
+        minetest.log(dump(thingy))
+        return thingy
+    else
+        local groupcaps = table.copy(minetest.registered_items[item:get_name()].tool_capabilities.groupcaps)
+        local adjusted_efficiency = 1 -- TODO finish this
+        if not groupcaps then return end
+        for group, def in groupcaps do
+            for level, time in def.times do
+                def[level] = time -- TODO finish this
+            end
+        end
+    end
+end
+
+function exchangeclone.update_tool_capabilities(itemstack)
+    local meta = itemstack:get_meta()
+    local mode = meta:get_string("exchangeclone_multidig_mode")
+    local charge_level = meta:get_int("exchangeclone_item_range")
+    local efficiency
+    if mode == "1x1" then
+        efficiency = charge_level
+    elseif mode == "3x3" then
+        efficiency = 0.7*charge_level
+    elseif mode:sub(1,3) == "3x1" then
+        efficiency = 0.8*charge_level
+    end
+    local tool_capabilities = table.copy(minetest.registered_items[itemstack:get_name()].tool_capabilities)
+    tool_capabilities.groupcaps = exchangeclone.get_groupcaps(itemstack, efficiency)
+    meta:set_tool_capabilities(tool_capabilities)
 end

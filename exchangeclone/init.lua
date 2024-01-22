@@ -120,7 +120,6 @@ if exchangeclone.mcl then
 	dofile(modpath.."/shears.lua")
 	dofile(modpath.."/tool_upgrades.lua")
 end
-dofile(modpath.."/multidig.lua")
 dofile(modpath.."/swords.lua")
 dofile(modpath.."/axes.lua")
 dofile(modpath.."/hoes.lua")

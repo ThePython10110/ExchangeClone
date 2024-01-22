@@ -1,22 +1,16 @@
 local S = minetest.get_translator()
 
-local stone_group = "cracky"
-if exchangeclone.mcl then
-	stone_group = "pickaxey"
-end
-
 exchangeclone.hammer_action = {
 	start_action = function(player, center, range, itemstack)
 		if exchangeclone.check_cooldown(player, "hammer") then return end
 		local data = {}
-		exchangeclone.multidig[player:get_player_name()] = true -- to prevent doing 3x3 as well as AOE
 		exchangeclone.play_ability_sound(player)
 		data.itemstack = itemstack
         data.remove_positions = {}
 		return data
 	end,
 	action = function(player, pos, node, data)
-		if minetest.get_item_group(node.name, stone_group) ~= 0 then
+		if minetest.get_item_group(node.name, exchangeclone.stone_group) ~= 0 then
 			if minetest.is_protected(pos, player:get_player_name()) then
 				minetest.record_protection_violation(pos, player:get_player_name())
 			else
@@ -29,8 +23,7 @@ exchangeclone.hammer_action = {
 	end,
 	end_action = function(player, center, range, data)
         exchangeclone.remove_nodes(data.remove_positions)
-		exchangeclone.multidig[player:get_player_name()] = nil
-		exchangeclone.start_cooldown(player, "hammer", range/2) -- The hammer has by far the most lag potential and therefore a long cooldown.
+		exchangeclone.start_cooldown(player, "hammer", range/2) -- The hammer has by far the most lag potential and therefore a longer cooldown.
 	end
 }
 
@@ -49,12 +42,15 @@ local function hammer_on_place(itemstack, player, pointed_thing)
     end
 
 	if player:get_player_control().sneak then
-		local current_name = itemstack:get_name()
-		if string.sub(current_name, -4, -1) == "_3x3" then
-			itemstack:set_name(string.sub(current_name, 1, -5))
+		local meta = itemstack:get_meta()
+		local current_mode = meta:get_string("exchangeclone_multidig_mode")
+		if current_mode == "3x3" then
+			meta:set_string("exchangeclone_multidig_mode", "1x1")
+			exchangeclone.update_tool_capabilities(itemstack)
 			minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
 		else
-			itemstack:set_name(current_name.."_3x3")
+			meta:set_string("exchangeclone_multidig_mode", "3x3")
+			exchangeclone.update_tool_capabilities(itemstack)
 			minetest.chat_send_player(player:get_player_name(), S("3x3 mode"))
 		end
 		return itemstack
@@ -84,13 +80,14 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 			cracky = {times={[1]=1.5, [2]=0.75, [3]=0.325}, uses=0, maxlevel=4},
 		},
 	},
-	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
 		pickaxey = { speed = 16, level = 5, uses = 0 }
 	},
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place,
+	exchangeclone_multidig_mode = "1x1",
+	on_dig = exchangeclone.multi_on_dig(exchangeclone.stone_group)
 })
 
 minetest.register_tool("exchangeclone:dark_matter_hammer_3x3", {
@@ -109,7 +106,6 @@ minetest.register_tool("exchangeclone:dark_matter_hammer_3x3", {
 			cracky = {times={[1]=1.8, [2]=0.9, [3]=0.5}, uses=0, maxlevel=4},
 		},
 	},
-	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
 		pickaxey = { speed = 12, level = 5, uses = 0 }
@@ -118,7 +114,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer_3x3", {
     on_secondary_use = hammer_on_place,
 })
 
-exchangeclone.register_alias("exchangeclone:dark_matter_hammer", "exchangeclone:dark_matter_hammer_3x3")
+minetest.register_alias("exchangeclone:dark_matter_hammer", "exchangeclone:dark_matter_hammer_3x3")
 
 minetest.register_tool("exchangeclone:red_matter_hammer", {
 	description = S("Red Matter Hammer").."\n"..S("Single node mode"),
@@ -136,7 +132,6 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
 			cracky = {times={[1]=1, [2]=0.5, [3]=0.2}, uses=0, maxlevel=5},
 		},
 	},
-	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
 		pickaxey = { speed = 19, level = 6, uses = 0 }

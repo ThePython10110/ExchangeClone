@@ -66,9 +66,11 @@ Dependencies: Minetest Game or MineClone.
 
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
+* #### FINISH MULTIDIG
 * Achievements/advancements/awards
 * Improvements to tools
     * Wear bar for charge level
+    * Charge levels match ProjectE (both in number and in range)
     * Charge level affects speed
     * Correct/accurate speeds compared to ProjectE (hopefully)
     * Wear bar on Exchange Orbs for energy
@@ -82,12 +84,24 @@ Dependencies: Minetest Game or MineClone.
 * Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
 * Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
 * Remove deprecated PESA item (add alias to some existing item with 64 energy)
+* Edit wiki:
+    * Add pages for:
+        * Achievements?
+        * Divining rods
+        * Swiftwolf's Rending Gale
+        * Talisman of Repair
+        * Gem of Eternal Density
+        * Mind, Life, Body, and Soul Stones
+    * Modify tools page
+    * Remove page for PESA
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
 ### v7.0
-* Nothing yet. See the to-do list above for my plans.
+* Changes:
+    * I'm now using a free AI tool called Codeium, which seems to work well. This obviously isn't a change to the mod, but it makes it easier to do certain things.
+    * The pickaxe vein mining ability is now more efficient, only checking each position once.
 
 ### v6.6
 * Removed energy value for Ancient Debris (since it could be smelted in a DM/RM Furnace to get 2 Netherite Scrap)

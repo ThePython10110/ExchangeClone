@@ -2,12 +2,14 @@ exchangeclone = {recipes = {}, base_energy_values = {}, group_values = {}}
 
 if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
     error("ExchangeClone requires Minetest Game, MineClone2, or MineClonia (and possibly variant subgames).\nPlease use one of those games.")
-else
-	exchangeclone.mcl = minetest.get_modpath("mcl_core")
 end
 
-exchangeclone.mcla = minetest.get_game_info().id == "mineclonia" -- if exchangeclone.mcla, exchangeclone.mcl is also defined.
-exchangeclone.mcl2 = minetest.get_game_info().id == "mineclone2"
+-- Ensure that value is either true or nil
+if minetest.get_game_info().id == "mineclonia" then exchangeclone.mcla = true end
+if minetest.get_game_info().id == "mineclone2" then exchangeclone.mcl2 = true end
+if exchangeclone.mcl2 or exchangeclone.mcla then exchangeclone.mcl = true end
+if not exchangeclone.mcl then exchangeclone.mtg = true end
+
 exchangeclone.pipeworks = minetest.get_modpath("pipeworks")
 exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000 -- Max capacity of Klein Star Omega in ProjectE
 exchangeclone.keep_data = minetest.settings:get_bool("exchangeclone.keep_data", false)

@@ -1,24 +1,40 @@
 local S = minetest.get_translator()
 
-function exchangeclone.mine_vein(player, start_pos, node_name, pos, depth)
-    -- Not the most efficient, but it works.
-    if not player then return end
-    if not start_pos then return end
+function exchangeclone.mine_vein(player, start_pos, node_name, pos, depth, visited)
+    if not player or not start_pos then
+        return
+    end
+
     pos = pos or start_pos
     depth = depth or 0
+    visited = visited or {}
+
+    local pos_str = minetest.pos_to_string(pos)
+    if visited[pos_str] then
+        return
+    end
+    visited[pos_str] = true
+
     local node = minetest.get_node(pos)
-    if not node_name then node_name = node.name end
+    if not node_name then
+        node_name = node.name
+    end
+
     if node_name == node.name then
-        exchangeclone.drop_items_on_player(pos, minetest.get_node_drops(node.name, "exchangeclone:red_matter_pickaxe"), player)
+        local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_pickaxe")
+        exchangeclone.drop_items_on_player(pos, drops, player)
         exchangeclone.check_nearby_falling(pos)
         minetest.set_node(pos, {name = "air"})
-        for x = pos.x-1,pos.x+1 do for y = pos.y-1,pos.y+1 do for z = pos.z-1,pos.z+1 do
-            if depth <= 10 then
-                exchangeclone.mine_vein(player, start_pos, node_name, {x=x,y=y,z=z}, depth+1)
+
+        if depth < 10 then
+            for _, neighbor_pos in ipairs(minetest.find_nodes_in_area(
+                {x = pos.x - 1, y = pos.y - 1, z = pos.z - 1},
+                {x = pos.x + 1, y = pos.y + 1, z = pos.z + 1},
+                node_name)) do
+                exchangeclone.mine_vein(player, start_pos, node_name, neighbor_pos, depth + 1, visited)
             end
-        end end end
+        end
     end
-    return 0
 end
 
 local torch_itemstring = "default:torch"
@@ -81,7 +97,7 @@ local pick_def = {
     exchangeclone_pick_mode = "1x1",
 	groups = { tool=1, pickaxe=1, dig_speed_class=5, enchantability=0, dark_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
-	tool_capabilities = {
+	tool_capabilities = (not exchangeclone.mcl) and {
 		-- 1/1.2
 		full_punch_interval = 0.5,
 		max_drop_level=6,
