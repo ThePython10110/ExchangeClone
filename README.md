@@ -74,7 +74,6 @@ Dependencies: Minetest Game or MineClone.
     * Charge level affects speed
     * Correct/accurate speeds compared to ProjectE (hopefully)
     * Wear bar on Exchange Orbs for energy
-    * Slightly more efficient 3x3/3x1 digging (before, it would check every time any node was broken, now it will check when it's dug specifically with 3x3/3x1-capable tools)
     * Only one item per tool (not a separate 3x3 tool)
     * *MAYBE* changes to armor (but it's so hard to get it right)
     * Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)

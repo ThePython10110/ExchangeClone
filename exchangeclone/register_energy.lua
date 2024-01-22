@@ -276,7 +276,7 @@ if exchangeclone.mcl2 then
     end
 end
 
-if not exchangeclone.mcl then
+if exchangeclone.mtg then
     exchangeclone.register_alias("default:book", "default:book_written")
 end
 

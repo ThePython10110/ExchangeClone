@@ -204,7 +204,7 @@ local function on_metadata_inventory_take(pos, listname, index, stack, player)
 end
 
 local function spawn_flames(pos, param2)
-	if not exchangeclone.mcl then return end
+	if exchangeclone.mtg then return end
 	local minrelpos, maxrelpos
 	local dir = minetest.facedir_to_dir(param2)
 	if dir.x > 0 then

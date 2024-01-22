@@ -97,7 +97,7 @@ local pick_def = {
     exchangeclone_pick_mode = "1x1",
 	groups = { tool=1, pickaxe=1, dig_speed_class=5, enchantability=0, dark_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
-	tool_capabilities = (not exchangeclone.mcl) and {
+	tool_capabilities = exchangeclone.mtg and {
 		-- 1/1.2
 		full_punch_interval = 0.5,
 		max_drop_level=6,
@@ -122,7 +122,9 @@ local pick_def_3x1 = table.copy(pick_def)
 pick_def_3x1.description = S("Dark Matter Pickaxe").."\n"..S("3x1 mode")
 pick_def_3x1.exchangeclone_pick_mode = "tall"
 pick_def_3x1.groups.not_in_creative_inventory = 1
-pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.45, [2]=0.27, [3]=0.11}
+if exchangeclone.mtg then
+    pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.45, [2]=0.27, [3]=0.11}
+end
 pick_def_3x1._mcl_diggroups.pickaxey.speed = 35
 
 minetest.register_tool("exchangeclone:dark_matter_pickaxe_3x1", table.copy(pick_def_3x1))
@@ -152,7 +154,9 @@ pick_def_3x1.description = S("Red Matter Pickaxe").."\n"..S("3x1 mode")
 pick_def_3x1 = table.copy(pick_def)
 pick_def_3x1.exchangeclone_pick_mode = "tall"
 pick_def_3x1.groups.not_in_creative_inventory = 1
-pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.32, [2]=0.16, [3]=0.08}
+if exchangeclone.mtg then
+    pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.32, [2]=0.16, [3]=0.08}
+end
 pick_def_3x1._mcl_diggroups.pickaxey.speed = 52
 
 minetest.register_tool("exchangeclone:red_matter_pickaxe_3x1", table.copy(pick_def_3x1))

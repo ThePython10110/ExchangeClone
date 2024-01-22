@@ -1,6 +1,7 @@
 -- A ton of functions with approximately zero organization. At least there are comments now.
 
 local S = minetest.get_translator()
+local exchangeclone = exchangeclone
 
 --- Rounds to the nearest integer
 function exchangeclone.round(num)
@@ -435,7 +436,7 @@ end
 
 -- This function gets the drops from a node and drops them at the player's position
 function exchangeclone.drop_items_on_player(pos, drops, player) -- modified from MineClone's code
-    if not exchangeclone.mcl then
+    if exchangeclone.mtg then
         return minetest.handle_node_drops(pos, drops, player)
     end
     -- NOTE: This function override allows player to be nil.
@@ -948,40 +949,34 @@ exchangeclone.stone_group = exchangeclone.mcl and "pickaxey" or "cracky"
 
 exchangeclone.dirt_group = exchangeclone.mcl and "shovely" or "crumbly"
 
-local function dig_if_group(pos, player, groups)
-	local node = minetest.get_node(pos)
-	for _, group in pairs(groups) do
-		if minetest.get_item_group(node.name, group) > 0 then
-			minetest.node_dig(pos, minetest.get_node(pos), player)
-            return
-		end
-	end
+exchangeclone.multidig_data = {tools = {}, players = {}}
+
+function exchangeclone.register_multidig_tool(itemstring, nodes)
+    exchangeclone.multidig_data.tools[itemstring] = nodes
 end
 
-function exchangeclone.multidig(pos, node, player, mode, groups)
-    minetest.log(dump({node, mode, groups}))
+function exchangeclone.multidig(pos, node, player, mode, nodes)
     if not player then return end
-
-    -- Dig center node no matter what
-    minetest.node_dig(pos, minetest.get_node(pos), player)
-
+    minetest.log(dump(mode))
     local player_rotation = exchangeclone.get_face_direction(player)
 
-    if mode == "1x1" then
-        return
-    elseif mode == "3x3" then
+    if mode == "3x3" then
         local dir1
         local dir2
+        local unused_dir -- this variable is necessary because vectors get mad when it doesn't exist
 
         if player_rotation.y ~= 0 then
             dir1 = "x"
             dir2 = "z"
+            unused_dir = "y"
         elseif player_rotation.x ~= 0 then
             dir1 = "y"
             dir2 = "z"
+            unused_dir = "x"
         elseif player_rotation.z ~= 0 then
             dir1 = "x"
             dir2 = "y"
+            unused_dir = "z"
         end
 
         --[[
@@ -990,80 +985,74 @@ function exchangeclone.multidig(pos, node, player, mode, groups)
             678
         ]]
 
-        pos[dir1] = pos[dir1] - 1 --7
-        dig_if_group(pos, player, groups)
-        pos[dir2] = pos[dir2] - 1 --6
-        dig_if_group(pos, player, groups)
-        pos[dir1] = pos[dir1] + 1 --4
-        dig_if_group(pos, player, groups)
-        pos[dir1] = pos[dir1] + 1 --1
-        dig_if_group(pos, player, groups)
-        pos[dir2] = pos[dir2] + 1 --2
-        dig_if_group(pos, player, groups)
-        pos[dir2] = pos[dir2] + 1 --3
-        dig_if_group(pos, player, groups)
-        pos[dir1] = pos[dir1] - 1 --5
-        dig_if_group(pos, player, groups)
-        pos[dir1] = pos[dir1] - 1 --8
-        dig_if_group(pos, player, groups)
-    elseif mode == "3x1_long" then
-        if player_rotation.y ~= 0 then
-            pos.y = pos.y + player_rotation.y
-            dig_if_group(pos, player, groups)
-            pos.y = pos.y + player_rotation.y
-            dig_if_group(pos, player, groups)
-        elseif player_rotation.z ~= 0 then
-            pos.z = pos.z + player_rotation.z
-            dig_if_group(pos, player, groups)
-            pos.z = pos.z + player_rotation.z
-            dig_if_group(pos, player, groups)
-        else
-            pos.x = pos.x + player_rotation.x
-            dig_if_group(pos, player, groups)
-            pos.x = pos.x + player_rotation.x
-            dig_if_group(pos, player, groups)
+        local pos1 = vector.add(pos, {[dir1] = -1, [dir2] = -1, [unused_dir] = 0})
+        local pos2 = vector.add(pos, {[dir1] = 1, [dir2] = 1, [unused_dir] = 0})
+        local nodes = minetest.find_nodes_in_area(pos1, pos2, nodes)
+        for _, node_pos in pairs(nodes) do
+            minetest.node_dig(node_pos, minetest.get_node(node_pos), player)
         end
-    elseif mode == "3x1_tall" then
+    elseif mode == "3x1_long" then
+        local dir
         if player_rotation.y ~= 0 then
-            if player_rotation.x ~= 0 then
-                pos.x = pos.x - 1
-                dig_if_group(pos, player, groups)
-                pos.x = pos.x + 1
-                dig_if_group(pos, player, groups)
+            dir = "y"
+        elseif player_rotation.z ~= 0 then
+            dir = "z"
+        else
+            dir = "x"
+        end
+        local added_vector = vector.zero
+        added_vector[dir] = player_rotation[dir]*2
+        local pos2 = vector.add(pos, added_vector)
+        local found_nodes = minetest.find_nodes_in_area(pos, pos2, nodes)
+        for _, node_pos in pairs(found_nodes) do
+            minetest.node_dig(node_pos, minetest.get_node(node_pos), player)
+        end
+    elseif mode == "3x1_tall" or mode == "3x1_wide" then
+        local dir
+        if mode == "3x1_tall" then
+            if player_rotation.y ~= 0 then
+                if player_rotation.x ~= 0 then
+                    dir = "x"
+                else
+                    dir = "z"
+                end
             else
-                pos.z = pos.z - 1
-                dig_if_group(pos, player, groups)
-                pos.z = pos.z + 1
-                dig_if_group(pos, player, groups)
+                dir = "y"
             end
         else
-            pos.y = pos.y - 1
-            dig_if_group(pos, player, groups)
-            pos.y = pos.y + 1
-            dig_if_group(pos, player, groups)
+            if player_rotation.x ~= 0 then
+                dir = "z"
+            else
+                dir = "x"
+            end
         end
-    elseif mode == "3x1_wide" then
-        if player_rotation.x ~= 0 then
-            pos.z = pos.z - 1
-            dig_if_group(pos, player, groups)
-            pos.z = pos.z + 1
-            dig_if_group(pos, player, groups)
-        else
-            pos.x = pos.x - 1
-            dig_if_group(pos, player, groups)
-            pos.x = pos.x + 1
-            dig_if_group(pos, player, groups)
+        local pos1 = vector.add(pos, {[dir]=-1})
+        local pos2 = vector.add(pos, {[dir]=1})
+        local found_nodes = minetest.find_nodes_in_area(pos1, pos2, nodes)
+        for _, node_pos in pairs(found_nodes) do
+            minetest.node_dig(node_pos, minetest.get_node(node_pos), player)
         end
     end
 end
 
-function exchangeclone.multi_on_dig(groups)
-    return function(pos, node, player)
-		local item = player:get_wielded_item()
-		local mode = item:get_meta():get_string("exchangeclone_multidig_mode") or "1x1"
-		exchangeclone.multidig(pos, node, player, mode, groups)
-	end
-end
+minetest.register_on_dignode(function(pos, node, player)
+    if not player then return end
+    local player_name = player:get_player_name()
+    if exchangeclone.multidig_data.players[player_name] then return end
+
+    local wielded_item = player:get_wielded_item()
+    local nodes = exchangeclone.multidig_data.tools[wielded_item:get_name()]
+    if nodes then
+        exchangeclone.multidig_data.players[player_name] = true
+        local mode = wielded_item:get_meta():get_string("exchangeclone_multidig_mode")
+        exchangeclone.multidig(pos, node, player, mode, nodes)
+        exchangeclone.multidig_data.players[player_name] = nil
+    end
+end)
+
+minetest.register_on_joinplayer(function(player)
+    exchangeclone.multidig_data.players[player:get_player_name()] = nil
+end)
 
 -- Given an item and effiency level, return the groupcaps of the item with that efficiency level.
 function exchangeclone.get_groupcaps(item, efficiency)
@@ -1076,8 +1065,8 @@ function exchangeclone.get_groupcaps(item, efficiency)
         local groupcaps = table.copy(minetest.registered_items[item:get_name()].tool_capabilities.groupcaps)
         local adjusted_efficiency = 1 -- TODO finish this
         if not groupcaps then return end
-        for group, def in groupcaps do
-            for level, time in def.times do
+        for group, def in pairs(groupcaps) do
+            for level, time in pairs(def.times) do
                 def[level] = time -- TODO finish this
             end
         end

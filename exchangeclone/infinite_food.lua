@@ -15,7 +15,7 @@ local function infinite_food_function(itemstack, player, pointed_thing)
             if stamina.get_saturation(player) >= stamina_max then
                 return nil
             end
-        elseif not exchangeclone.mcl and player:get_hp() >= player:get_properties().hp_max then
+        elseif exchangeclone.mtg and player:get_hp() >= player:get_properties().hp_max then
             return nil
         end
         -- no idea why this is different between games but it works
@@ -32,7 +32,7 @@ minetest.register_tool("exchangeclone:infinite_food", {
     groups = { food = 2, eatable = 8, disable_repair = 1, fire_immune = 1},
     on_place = exchangeclone.mcl and infinite_food_function,
     on_secondary_use = exchangeclone.mcl and infinite_food_function,
-    on_use = (not exchangeclone.mcl) and infinite_food_function,
+    on_use = exchangeclone.mcl and infinite_food_function,
     _mcl_saturation = 12.8,
 })
 

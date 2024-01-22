@@ -85,36 +85,12 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 		pickaxey = { speed = 16, level = 5, uses = 0 }
 	},
     on_place = hammer_on_place,
-    on_secondary_use = hammer_on_place,
-	exchangeclone_multidig_mode = "1x1",
-	on_dig = exchangeclone.multi_on_dig(exchangeclone.stone_group)
+    on_secondary_use = hammer_on_place
 })
 
-minetest.register_tool("exchangeclone:dark_matter_hammer_3x3", {
-	description = S("Dark Matter Hammer").."\n"..S("3x3 mode"),
-	wield_image = "exchangeclone_dark_matter_hammer.png",
-	inventory_image = "exchangeclone_dark_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=5, enchantability=0, dark_matter_hammer = 1, not_in_creative_inventory = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
-	wield_scale = exchangeclone.wield_scale,
-	tool_capabilities = {
-		-- 1/1.2
-		full_punch_interval = 0.5,
-		max_drop_level=6,
-		damage_groups = {fleshy=7},
-		punch_attack_uses = 0,
-		groupcaps={
-			cracky = {times={[1]=1.8, [2]=0.9, [3]=0.5}, uses=0, maxlevel=4},
-		},
-	},
-	_mcl_toollike_wield = true,
-	_mcl_diggroups = {
-		pickaxey = { speed = 12, level = 5, uses = 0 }
-	},
-    on_place = hammer_on_place,
-    on_secondary_use = hammer_on_place,
-})
+exchangeclone.register_multidig_tool("exchangeclone:dark_matter_hammer", {"group:"..exchangeclone.stone_group})
 
-minetest.register_alias("exchangeclone:dark_matter_hammer", "exchangeclone:dark_matter_hammer_3x3")
+minetest.register_alias("exchangeclone:dark_matter_hammer_3x3", "exchangeclone:dark_matter_hammer")
 
 minetest.register_tool("exchangeclone:red_matter_hammer", {
 	description = S("Red Matter Hammer").."\n"..S("Single node mode"),
@@ -140,32 +116,9 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
     on_secondary_use = hammer_on_place,
 })
 
-minetest.register_tool("exchangeclone:red_matter_hammer_3x3", {
-	description = S("Red Matter Hammer\n3x3 mode"),
-	wield_image = "exchangeclone_red_matter_hammer.png",
-	inventory_image = "exchangeclone_red_matter_hammer.png",
-	groups = { tool=1, hammer=1, dig_speed_class=6, enchantability=0, red_matter_hammer = 1, not_in_creative_inventory = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
-	wield_scale = exchangeclone.wield_scale,
-	tool_capabilities = {
-		-- 1/1.2
-		full_punch_interval = 0.3,
-		max_drop_level=7,
-		damage_groups = {fleshy=9},
-		punch_attack_uses = 0,
-		groupcaps={
-			cracky = {times={[1]=1.25, [2]=0.6, [3]=0.3}, uses=0, maxlevel=5},
-		},
-	},
-	sound = { breaks = "default_tool_breaks" },
-	_mcl_toollike_wield = true,
-	_mcl_diggroups = {
-		pickaxey = { speed = 14, level = 6, uses = 0 }
-	},
-    on_place = hammer_on_place,
-    on_secondary_use = hammer_on_place,
-})
+exchangeclone.register_multidig_tool("exchangeclone:red_matter_hammer", {"group:"..exchangeclone.stone_group})
 
-exchangeclone.register_alias("exchangeclone:red_matter_hammer", "exchangeclone:red_matter_hammer_3x3")
+minetest.register_alias("exchangeclone:red_matter_hammer_3x3", "exchangeclone:red_matter_hammer")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hammer",

@@ -132,7 +132,6 @@ if minetest.get_modpath("hopper") then
 	dofile(modpath.."/hopper_compat.lua")
 end
 dofile(modpath.."/philosophers_stone.lua")
-dofile(modpath.."/pesa.lua")
 dofile(modpath.."/infinite_food.lua")
 dofile(modpath.."/alchemical_chests.lua")
 dofile(modpath.."/transmutation_table.lua")
