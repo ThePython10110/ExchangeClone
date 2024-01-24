@@ -9,7 +9,7 @@ local katar_on_use = function(itemstack, player, pointed_thing)
     end
 
     if player:get_player_control().aux1 then
-		return exchangeclone.range_update(itemstack, player, 5)
+		return exchangeclone.charge_update(itemstack, player, 5)
     end
 
 	if pointed_thing.type == "object" then
@@ -20,7 +20,7 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 	end
 	if pointed_thing.type == "node" then
 		local node = minetest.get_node(pointed_thing.under)
-		local range = itemstack:get_meta():get_int("exchangeclone_item_range")
+		local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
 		local center = player:get_pos()
 		if pointed_thing.type == "node" then
 			center = pointed_thing.under
@@ -168,10 +168,10 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
     end
 
     if player:get_player_control().aux1 then
-		return exchangeclone.range_update(itemstack, player, 5)
+		return exchangeclone.charge_update(itemstack, player, 5)
     end
 
-	local range = itemstack:get_meta():get_int("exchangeclone_item_range")
+	local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
 	local center = player:get_pos()
 
 	if pointed_thing.type == "node" then

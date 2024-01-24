@@ -45,9 +45,9 @@ local shears_rightclick = function(itemstack, player, pointed_thing)
 
     if player:get_player_control().aux1 then
         if itemstack:get_name():find("dark") then
-            return exchangeclone.range_update(itemstack, player, 3)
+            return exchangeclone.charge_update(itemstack, player, 3)
         else
-            return exchangeclone.range_update(itemstack, player, 4)
+            return exchangeclone.charge_update(itemstack, player, 4)
         end
     end
 
@@ -67,7 +67,7 @@ local shears_rightclick = function(itemstack, player, pointed_thing)
     if (pointed_thing.type == "node") and pointed_thing.under then
         center = pointed_thing.under
     end
-    local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
+    local range = tonumber(itemstack:get_meta():get_int("exchangeclone_tool_charge"))
     exchangeclone.node_radius_action(player, center, range, exchangeclone.shear_action, itemstack)
     return itemstack
 end

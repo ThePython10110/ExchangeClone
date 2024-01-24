@@ -49,13 +49,13 @@ local function axe_on_place(itemstack, player, pointed_thing)
 
     if player:get_player_control().aux1 then
         if itemstack:get_name():find("dark") then
-            return exchangeclone.range_update(itemstack, player, 3)
+            return exchangeclone.charge_update(itemstack, player, 3)
         else
-            return exchangeclone.range_update(itemstack, player, 4)
+            return exchangeclone.charge_update(itemstack, player, 4)
         end
     end
 
-    local range = itemstack:get_meta():get_int("exchangeclone_item_range")
+    local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
 
     local center = player:get_pos()
     if pointed_thing.type == "node" then center = pointed_thing.under end

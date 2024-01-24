@@ -34,11 +34,7 @@ local function hammer_on_place(itemstack, player, pointed_thing)
     end
 
     if player:get_player_control().aux1 then
-        if itemstack:get_name():find("dark") then
-            return exchangeclone.range_update(itemstack, player, 3)
-        else
-            return exchangeclone.range_update(itemstack, player, 4)
-        end
+		return exchangeclone.charge_update(itemstack, player)
     end
 
 	if player:get_player_control().sneak then
@@ -46,17 +42,15 @@ local function hammer_on_place(itemstack, player, pointed_thing)
 		local current_mode = meta:get_string("exchangeclone_multidig_mode")
 		if current_mode == "3x3" then
 			meta:set_string("exchangeclone_multidig_mode", "1x1")
-			exchangeclone.update_tool_capabilities(itemstack)
 			minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
 		else
 			meta:set_string("exchangeclone_multidig_mode", "3x3")
-			exchangeclone.update_tool_capabilities(itemstack)
 			minetest.chat_send_player(player:get_player_name(), S("3x3 mode"))
 		end
 		return itemstack
 	end
 
-    local range = itemstack:get_meta():get_int("exchangeclone_item_range")
+    local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
     local center = player:get_pos()
     if pointed_thing.type == "node" then
         center = pointed_thing.under
@@ -82,7 +76,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 	},
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 16, level = 5, uses = 0 }
+		pickaxey = { speed = 14, level = 5, uses = 0 }
 	},
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place
@@ -110,7 +104,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
 	},
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 19, level = 6, uses = 0 }
+		pickaxey = { speed = 16, level = 6, uses = 0 }
 	},
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place,

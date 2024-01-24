@@ -97,10 +97,24 @@ Dependencies: Minetest Game or MineClone.
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
-### v7.0
+### v7.0 (The Parity Update)
+
+
+#### Overview:
+* **NOTE: Updating to this version resets tools to their default mode and range (1x1, range 0). Upgrades will not be affected.**
+* Tools' mining speeds, attack damage, and attack speeds now match ProjectE's
+* Most tools' abilities are more similar to ProjectE's, and are more efficient in some cases.
+
+
+#### Full changelog:
 * Changes:
-    * I'm now using a free AI tool called Codeium, which seems to work well. This obviously isn't a change to the mod, but it makes it easier to do certain things.
+    * I'm now using a free AI tool called Codeium (no relation to VSCodium), which seems to work well. This obviously isn't a change to the mod, but it makes it easier to do certain things.
     * The pickaxe vein mining ability is now more efficient, only checking each position once.
+    * Tools do not mine slower in 3x1/3x3 modes (to match ProjectE)
+    * Tools do not have a separate 3x1/3x3 item.
+
+### v6.7
+* Made More Ores energy values not MTG-specific
 
 ### v6.6
 * Removed energy value for Ancient Debris (since it could be smelted in a DM/RM Furnace to get 2 Netherite Scrap)
@@ -127,7 +141,7 @@ Dependencies: Minetest Game or MineClone.
 ### v6.0 (The Compatibility Update)
 This update took a while... there was just so much that had to be done.
 
-**The biggest changes:**
+#### Overview
 *   I'm naming updates now for some reason.
 *   Automatic energy values! This means I don't have to manually add energy values for every single item. If it's craftable or cookable, ExchangeClone will automatically figure out an energy value for it. There's also an API (with very little documentation because I'm lazy) for adding custom energy recipes and recipe types.
 *   The minimum Minetest version has been changed to 5.7.0, because I'm never going to test on any older versions. Of course, it will probably still work (at least mostly) on other versions, but I can't promise anything.

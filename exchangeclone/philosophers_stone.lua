@@ -282,17 +282,17 @@ local function on_right_click(itemstack, player, pointed_thing)
         return click_test
     end
     if player:get_player_control().aux1 then
-        return exchangeclone.range_update(itemstack, player)
+        return exchangeclone.charge_update(itemstack, player)
     end
     local center = player:get_pos()
     if pointed_thing and pointed_thing.type == "node" then
         center = pointed_thing.under
     end
     if player:get_player_control().sneak then
-        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
+        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_tool_charge"))
         exchangeclone.node_radius_action(player, center, range, exchangeclone.stone_action, 2)
     else
-        local range = itemstack:get_meta():get_int("exchangeclone_item_range")
+        local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
         exchangeclone.node_radius_action(player, center, range, exchangeclone.stone_action, 1)
     end
 end
@@ -301,7 +301,7 @@ minetest.register_tool("exchangeclone:philosophers_stone", {
     description = S("Philosopher's Stone").."\n"..S("Always returned when crafting"),
     inventory_image = "exchangeclone_philosophers_stone.png",
     wield_image = "exchangeclone_philosophers_stone.png",
-    exchangeclone_item_range = 0,
+    exchangeclone_tool_charge = 0,
     on_use = on_left_click,
     on_place = on_right_click,
     on_secondary_use = on_right_click,

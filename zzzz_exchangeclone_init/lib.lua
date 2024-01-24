@@ -318,25 +318,28 @@ function exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
     return false
 end
 
--- Update the range of an ExchangeClone tool
-function exchangeclone.range_update(itemstack, player, max)
-    if not max then max = 4 end
-    local range = tonumber(itemstack:get_meta():get_int("exchangeclone_item_range"))
+-- Update the charge level of an ExchangeClone tool
+function exchangeclone.charge_update(itemstack, player)
+    itemstack = ItemStack(itemstack) -- don't affect original
+    local charge_type = exchangeclone.charge_types[itemstack:get_name()]
+    local max_level = exchangeclone.tool_levels.count[charge_type]
+    if not max_level then return itemstack end
+    local level = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 0
     if player:get_player_control().sneak then
-        if range == 0 then
-            range = max
+        if level == 0 then
+            level = max_level
         else
-            range = range - 1
+            level = level - 1
         end
     else
-        if range == max then
-            range = 0
+        if level == max_level then
+            level = 0
         else
-            range = range + 1
+            level = level + 1
         end
     end
-    minetest.chat_send_player(player:get_player_name(), S("Current Range: @1", range))
-    itemstack:get_meta():set_int("exchangeclone_item_range", range)
+    itemstack:get_meta():set_int("exchangeclone_tool_charge", level)
+    itemstack = exchangeclone.update_tool_capabilities(itemstack)
     return itemstack
 end
 
@@ -1054,6 +1057,64 @@ minetest.register_on_joinplayer(function(player)
     exchangeclone.multidig_data.players[player:get_player_name()] = nil
 end)
 
+exchangeclone.tool_levels = {
+    count = {dark_matter = 2, red_matter = 3, red_multi = 4, phil = 4},
+    efficiency = {
+        dark_matter = {nil, 3, 5},
+        red_matter = {nil, 3.5, 5, 7},
+        red_multi = {nil, 3.5, 5, 7, 7.5}
+    },
+    range = {
+        hammer = { -- hammer
+            type = "front",
+            ranges = {
+                -- facing direction, perpendicular 1, perpendicular 2
+                nil,
+                {2,3,3},
+                {3,5,5},
+                {4,7,7},
+                {5,9,9}
+            }
+        },
+        flat = {
+            type = "radius", -- shovel (dirt/sand), hoe
+            ranges = {
+                nil,
+                {x=1,y=0,z=1},
+                {x=2,y=0,z=2},
+                {x=3,y=0,z=3},
+                {x=4,y=0,z=4},
+            }
+        },
+        basic_radius = { -- Philosopher's Stone
+            type = "radius",
+            ranges = {
+                nil,
+                {x=1,y=1,z=1},
+                {x=2,y=2,z=2},
+                {x=3,y=3,z=3},
+                {x=4,y=4,z=4},
+            }
+        },
+        large_radius = { -- shears, axe
+            type = "radius",
+            ranges = {
+                nil,
+                {x=4,y=4,z=4},
+                {x=9,y=9,z=9},
+                {x=14,y=14,z=14},
+                {x=19,y=19,z=19},
+            }
+        },
+    }
+}
+
+exchangeclone.charge_types = {}
+
+function exchangeclone.set_charge_type(itemstring, type)
+    exchangeclone.charge_types[itemstring] = type
+end
+
 -- Given an item and effiency level, return the groupcaps of the item with that efficiency level.
 function exchangeclone.get_groupcaps(item, efficiency)
     item = ItemStack(item)
@@ -1074,17 +1135,11 @@ function exchangeclone.get_groupcaps(item, efficiency)
 end
 
 function exchangeclone.update_tool_capabilities(itemstack)
+    itemstack = ItemStack(itemstack) -- don't affect original
     local meta = itemstack:get_meta()
-    local mode = meta:get_string("exchangeclone_multidig_mode")
-    local charge_level = meta:get_int("exchangeclone_item_range")
-    local efficiency
-    if mode == "1x1" then
-        efficiency = charge_level
-    elseif mode == "3x3" then
-        efficiency = 0.7*charge_level
-    elseif mode:sub(1,3) == "3x1" then
-        efficiency = 0.8*charge_level
-    end
+    local charge_type = exchangeclone.charge_types[itemstack:get_name()]
+    local charge_level = meta:get_int("exchangeclone_tool_charge")
+    local efficiency = exchangeclone.tool_levels.efficiency[charge_type][charge_level+1]
     local tool_capabilities = table.copy(minetest.registered_items[itemstack:get_name()].tool_capabilities)
     tool_capabilities.groupcaps = exchangeclone.get_groupcaps(itemstack, efficiency)
     meta:set_tool_capabilities(tool_capabilities)
