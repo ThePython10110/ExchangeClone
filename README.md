@@ -72,10 +72,9 @@ Dependencies: Minetest Game or MineClone.
     * Charge level affects speed
     * Correct/accurate speeds compared to ProjectE (hopefully)
     * Wear bar on Exchange Orbs for energy
-    * Slightly more efficient 3x3/3x1 digging (before, it would check every time any node was broken, now it will check when it's dug specifically with 3x3/3x1-capable tools)
     * Only one item per tool (not a separate 3x3 tool)
-    * *MAYBE* changes to armor (but it's so hard to get it right)
     * Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
+    * *MAYBE* changes to armor (but it's so hard to get it right)
 * Divining rods
 * Swiftwolf's Rending Gale (maybe rename?)
 * Mind, Life, Body and Soul Stones (Mind = MCL only)
@@ -88,6 +87,12 @@ Dependencies: Minetest Game or MineClone.
 
 ### v7.0
 * Nothing yet. See the to-do list above for my plans.
+
+### v6.8
+* Fixed a crash caused by using tool abilities on certain nodes
+
+### v6.7
+* Allowed More Ores energy values to work in MCL
 
 ### v6.6
 * Removed energy value for Ancient Debris (since it could be smelted in a DM/RM Furnace to get 2 Netherite Scrap)
