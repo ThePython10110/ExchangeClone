@@ -18,7 +18,7 @@ exchangeclone.shear_action = {
             if minetest.is_protected(pos, player:get_player_name()) then
                 minetest.record_protection_violation(pos, player:get_player_name())
             else
-                local drops = minetest.get_node_drops(node.name, data.itemstack)
+                local drops = minetest.get_node_drops(node.name, data.itemstack:get_name())
                 exchangeclone.drop_items_on_player(pos, drops, player)
                 -- Annoying manual override
                 if node.name:sub(1,18) == "mcl_ocean:seagrass" then

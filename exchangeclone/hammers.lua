@@ -14,7 +14,7 @@ function exchangeclone.hammer_action(itemstack, player, center)
 		if minetest.is_protected(pos, player:get_player_name()) then
 			minetest.record_protection_violation(pos, player:get_player_name())
 		else
-			local drops = minetest.get_node_drops(minetest.get_node(pos).name, itemstack)
+			local drops = minetest.get_node_drops(minetest.get_node(pos).name, itemstack:get_name())
 			exchangeclone.drop_items_on_player(pos, drops, player)
 		end
 	end

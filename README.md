@@ -119,6 +119,12 @@ Dependencies: Minetest Game or MineClone.
 ### v6.7
 * Made More Ores energy values not MTG-specific
 
+### v6.8
+* Fixed a crash caused by using tool abilities on certain nodes
+
+### v6.7
+* Allowed More Ores energy values to work in MCL
+
 ### v6.6
 * Removed energy value for Ancient Debris (since it could be smelted in a DM/RM Furnace to get 2 Netherite Scrap)
 * Removed Philosopher's Stone recipes involving Ancient Debris, Netherite Scrap, and Netherite Ingots (since that's not a thing in ProjectE)

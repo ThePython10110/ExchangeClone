@@ -25,7 +25,7 @@ exchangeclone.axe_action = {
                         minetest.swap_node(pos, {name=node_def._mcl_stripped_variant, param2=node.param2})
                     end
                 else
-                    local drops = minetest.get_node_drops(node.name, data.itemstack)
+                    local drops = minetest.get_node_drops(node.name, data.itemstack:get_name())
                     exchangeclone.drop_items_on_player(pos, drops, player)
                     table.insert(data.remove_positions, pos)
                 end
