@@ -27,7 +27,7 @@ exchangeclone.shovel_action = {
                         end
                     end
                 else
-                    local drops = minetest.get_node_drops(node.name, data.itemstack)
+                    local drops = minetest.get_node_drops(node.name, data.itemstack:get_name())
                     exchangeclone.drop_items_on_player(pos, drops, player)
                     table.insert(data.remove_positions, pos)
                 end
