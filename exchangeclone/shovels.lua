@@ -1,17 +1,71 @@
-exchangeclone.shovel_action = {
-    start_action = function(player, center, range, itemstack)
-        if exchangeclone.check_cooldown(player, "shovel") then return end
-        local data = {}
-        if exchangeclone.mcl then
-            data.path = not player:get_player_control().sneak
+function exchangeclone.shovel_action(itemstack, player, center)
+	if not (itemstack and player and center) then return end
+	if exchangeclone.check_cooldown(player, "shovel") then return end
+	local charge = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 0
+    local start_node = minetest.get_node(center)
+    local action
+    if exchangeclone.mcl then
+        if minetest.registered_items[start_node.name]._on_shovel_place
+        or minetest.get_item_group(start_node.name, "path_creation_possible") == 1 then
+            if minetest.get_node(vector.offset(center,0,1,0)).name == "air" then
+                action = "path"
+            end
         end
-        if range > 0 or not data.path then
-            exchangeclone.play_ability_sound(player)
+    end
+    if action ~= "path" then
+        if exchangeclone.mcl2 and start_node.name == "mcl_core:grass_path" then
+            action = "unpath"
+        elseif minetest.get_item_group(start_node.name, "exchangeclone_dirt") or start_node.name:find("sand") then
+            action = "crumbly_flat"
+        elseif minetest.get_item_group(start_node.name, exchangeclone.mcl and "shovely" or "crumbly") then
+            action = "crumbly"
         end
-        data.itemstack = itemstack
-        data.remove_positions = {}
-        return data
-    end,
+    end
+    
+    local groups_to_search, range_type
+    if action == "path" then
+        groups_to_search = exchangeclone.mcl2 and {"group:path_creation_possible"} or {"group:exchangeclone_dirt"}
+        range_type = "flat"
+    elseif action == "unpath" then
+        groups_to_search = {"mcl_core:grass_path"}
+        range_type = "flat"
+    elseif action == "crumbly_flat" then
+        groups_to_search = {"group:"..(exchangeclone.mcl and "shoveley" or "crumbly")}
+        range_type = "flat"
+    else
+        groups_to_search = {start_node.name}
+        range_type = "large_radius"
+    end
+	local vector1, vector2 = exchangeclone.process_range(player, range_type, charge)
+    if not (vector1 and vector2) then vector1, vector2 = vector.zero(), vector.zero() end
+    
+	local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
+	exchangeclone.play_ability_sound(player)
+	local nodes = minetest.find_nodes_in_area(pos1, pos2, groups_to_search)
+	for _, pos in pairs(nodes) do
+        local node = minetest.get_node(pos)
+		if minetest.is_protected(pos, player:get_player_name()) then
+			minetest.record_protection_violation(pos, player:get_player_name())
+		else
+            if action == "path" then
+                if exchangeclone.mcla then
+                    if minetest.registered_items[node.name]._on_shovel_place then
+                        minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
+                        minetest.swap_node(pos, {name="mcl_core:grass_path"})
+                    end
+                else
+                    minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
+                    minetest.swap_node(pos, {name="mcl_core:grass_path"})
+                end
+            end
+			local drops = minetest.get_node_drops(minetest.get_node(pos).name, itemstack)
+			exchangeclone.drop_items_on_player(pos, drops, player)
+		end
+	end
+
+	exchangeclone.remove_nodes(nodes)
+	exchangeclone.start_cooldown(player, "shovel", charge/2)
+end
     action = function(player, pos, node, data)
         if ((minetest.get_item_group(node.name, "crumbly") > 0) or (minetest.get_item_group(node.name, "shovely") > 0)) then
             if minetest.is_protected(pos, player:get_player_name()) then

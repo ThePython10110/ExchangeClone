@@ -50,118 +50,93 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
         return click_test
     end
 
-	if player:get_player_control().sneak then
-		local current_name = itemstack:get_name()
+    if player:get_player_control().aux1 then
+		return exchangeclone.charge_update(itemstack, player)
+    elseif player:get_player_control().sneak then
         local meta = itemstack:get_meta()
-        local current_mode = itemstack:get_meta():get_string("exchangeclone_pick_mode")
-        if current_mode == "" or not current_mode then current_mode = "1x1" end
+        local current_mode = itemstack:get_meta():get_string("exchangeclone_multidig_mode") or "1x1"
         if current_mode == "1x1" then
-            itemstack:set_name(current_name.."_3x1") -- set to 3x1 pick
-            meta:set_string("exchangeclone_pick_mode", "tall")
+            meta:set_string("exchangeclone_multidig_mode", "3x1_tall")
             minetest.chat_send_player(player:get_player_name(), S("3x1 tall mode"))
         elseif current_mode == "tall" then
-            meta:set_string("exchangeclone_pick_mode", "wide")
+            meta:set_string("exchangeclone_multidig_mode", "3x1_wide")
             minetest.chat_send_player(player:get_player_name(), S("3x1 wide mode"))
         elseif current_mode == "wide" then
-            meta:set_string("exchangeclone_pick_mode", "long")
+            meta:set_string("exchangeclone_multidig_mode", "3x1_long")
             minetest.chat_send_player(player:get_player_name(), S("3x1 long mode"))
-        elseif current_mode == "long" then
-            itemstack:set_name(string.sub(current_name, 1, -5)) -- set to 1x1 pick
-            meta:set_string("exchangeclone_pick_mode", "1x1")
+        else
+            meta:set_string("exchangeclone_multidig_mode", "1x1")
             minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
         end
 		return itemstack
-	end
-
-    if pointed_thing.type == "node" then
-        if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
+	elseif pointed_thing.type == "node" then
         if (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
+            if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
             exchangeclone.play_ability_sound(player)
-            exchangeclone.multidig[player:get_player_name()] = true
             exchangeclone.mine_vein(player, pointed_thing.under)
-            exchangeclone.multidig[player:get_player_name()] = nil
-        elseif itemstack:get_name():find("red") then
+            exchangeclone.start_cooldown(player, "pickaxe", 0.5)
+        elseif itemstack:get_name():find("red_") then
             local player_energy = exchangeclone.get_player_energy(player)
-            torch_on_place(ItemStack(torch_itemstring), player, pointed_thing)
+            minetest.log(dump(torch_on_place(ItemStack(torch_itemstring), player, pointed_thing)))
             exchangeclone.set_player_energy(player, player_energy - math.max(exchangeclone.get_item_energy(torch_itemstring) or 0, 8))
             -- If the torch could not be placed, it still costs energy... not sure how to fix that
         end
-        exchangeclone.start_cooldown(player, "pickaxe", 0.3)
     end
 end
 
-local pick_def = {
+minetest.register_tool("exchangeclone:dark_matter_pickaxe", {
 	description = S("Dark Matter Pickaxe").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_dark_matter_pickaxe.png",
 	inventory_image = "exchangeclone_dark_matter_pickaxe.png",
-    exchangeclone_pick_mode = "1x1",
 	groups = { tool=1, pickaxe=1, dig_speed_class=5, enchantability=0, dark_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = exchangeclone.mtg and {
-		-- 1/1.2
-		full_punch_interval = 0.5,
+		full_punch_interval = 1/1.2,
 		max_drop_level=6,
-		damage_groups = {fleshy=7},
+		damage_groups = {fleshy=8},
 		punch_attack_uses = 0,
 		groupcaps={
 			cracky = {times={[1]=0.4, [2]=0.2, [3]=0.1}, uses=0, maxlevel=4},
 		},
 	},
-	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		pickaxey = { speed = 40, level = 5, uses = 0 }
+		pickaxey = { speed = 14, level = 5, uses = 0 }
 	},
     on_secondary_use = pickaxe_on_use,
     on_place = pickaxe_on_use,
-}
+})
 
-minetest.register_tool("exchangeclone:dark_matter_pickaxe", table.copy(pick_def))
+exchangeclone.register_multidig_tool("exchangeclone:dark_matter_pickaxe", {"group:"..exchangeclone.stone_group})
+minetest.register_alias("exchangeclone:dark_matter_pickaxe_3x1", "exchangeclone:dark_matter_pickaxe")
+exchangeclone.set_charge_type("exchangeclone:dark_matter_pickaxe", "dark_matter")
 
-local pick_def_3x1 = table.copy(pick_def)
-pick_def_3x1.description = S("Dark Matter Pickaxe").."\n"..S("3x1 mode")
-pick_def_3x1.exchangeclone_pick_mode = "tall"
-pick_def_3x1.groups.not_in_creative_inventory = 1
-if exchangeclone.mtg then
-    pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.45, [2]=0.27, [3]=0.11}
-end
-pick_def_3x1._mcl_diggroups.pickaxey.speed = 35
+minetest.register_tool("exchangeclone:red_matter_pickaxe", {
+	description = S("Red Matter Pickaxe").."\n"..S("Single node mode"),
+	wield_image = "exchangeclone_red_matter_pickaxe.png",
+	inventory_image = "exchangeclone_red_matter_pickaxe.png",
+	groups = { tool=1, pickaxe=1, dig_speed_class=5, enchantability=0, red_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	wield_scale = exchangeclone.wield_scale,
+	tool_capabilities = exchangeclone.mtg and {
+		full_punch_interval = 1/1.2,
+		max_drop_level=7,
+		damage_groups = {fleshy=9},
+		punch_attack_uses = 0,
+		groupcaps={
+			cracky = {times={[1]=0.27, [2]=0.13, [3]=0.07}, uses=0, maxlevel=5},
+		},
+	},
+	_mcl_toollike_wield = true,
+	_mcl_diggroups = {
+		pickaxey = { speed = 16, level = 6, uses = 0 }
+	},
+    on_secondary_use = pickaxe_on_use,
+    on_place = pickaxe_on_use,
+})
 
-minetest.register_tool("exchangeclone:dark_matter_pickaxe_3x1", table.copy(pick_def_3x1))
-
-exchangeclone.register_alias("exchangeclone:dark_matter_pickaxe", "exchangeclone:dark_matter_pickaxe_3x1")
-
-pick_def.description = S("Red Matter Pickaxe").."\n"..S("Single node mode")
-pick_def.wield_image = "exchangeclone_red_matter_pickaxe.png"
-pick_def.inventory_image = "exchangeclone_red_matter_pickaxe.png"
-pick_def.groups.dark_matter_pickaxe = nil
-pick_def.groups.red_matter_pickaxe = 1
-pick_def.groups.dig_speed_class = 6
-pick_def.tool_capabilities = {
-    full_punch_interval = 0.5,
-    max_drop_level=7,
-    damage_groups = {fleshy=9},
-    punch_attack_uses = 0,
-    groupcaps={
-        cracky = {times={[1]=0.27, [2]=0.13, [3]=0.07}, uses=0, maxlevel=5},
-    },
-}
-pick_def._mcl_diggroups.pickaxey = { speed = 60, level = 6, uses = 0 }
-
-minetest.register_tool("exchangeclone:red_matter_pickaxe", table.copy(pick_def))
-
-pick_def_3x1.description = S("Red Matter Pickaxe").."\n"..S("3x1 mode")
-pick_def_3x1 = table.copy(pick_def)
-pick_def_3x1.exchangeclone_pick_mode = "tall"
-pick_def_3x1.groups.not_in_creative_inventory = 1
-if exchangeclone.mtg then
-    pick_def_3x1.tool_capabilities.groupcaps.cracky.times = {[1]=0.32, [2]=0.16, [3]=0.08}
-end
-pick_def_3x1._mcl_diggroups.pickaxey.speed = 52
-
-minetest.register_tool("exchangeclone:red_matter_pickaxe_3x1", table.copy(pick_def_3x1))
-
-exchangeclone.register_alias("exchangeclone:red_matter_pickaxe", "exchangeclone:red_matter_pickaxe_3x1")
+exchangeclone.register_multidig_tool("exchangeclone:red_matter_pickaxe", {"group:"..exchangeclone.stone_group})
+minetest.register_alias("exchangeclone:red_matter_pickaxe_3x1", "exchangeclone:red_matter_pickaxe")
+exchangeclone.set_charge_type("exchangeclone:red_matter_pickaxe", "red_matter")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_pickaxe",

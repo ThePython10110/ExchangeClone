@@ -324,21 +324,16 @@ function exchangeclone.charge_update(itemstack, player)
     local charge_type = exchangeclone.charge_types[itemstack:get_name()]
     local max_level = exchangeclone.tool_levels.count[charge_type]
     if not max_level then return itemstack end
-    local level = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 0
+    local level = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 1
     if player:get_player_control().sneak then
-        if level == 0 then
-            level = max_level
-        else
+        if level > 1 then
             level = level - 1
         end
-    else
-        if level == max_level then
-            level = 0
-        else
-            level = level + 1
-        end
+    elseif level < max_level then
+        level = level + 1
     end
     itemstack:get_meta():set_int("exchangeclone_tool_charge", level)
+    itemstack:set_wear(math.max(1, math.min(65535, 65535-(65535/(max_level-1))*(level-1))))
     itemstack = exchangeclone.update_tool_capabilities(itemstack)
     return itemstack
 end
@@ -575,39 +570,6 @@ function exchangeclone.get_face_direction(player)
     end
 
     return result
-end
-
--- Execute an action for every node within a cubic radius
--- extra_info is usually used for the tool's itemstack.
-function exchangeclone.node_radius_action(player, center, range, functions, extra_info)
-    if not functions.action then return end
-    local data
-    local stop = false
-    if functions.start_action then
-        data = functions.start_action(player, center, range, extra_info)
-        if not data then return end
-    end
-    if not center then center = player:get_pos() end
-    center.x = exchangeclone.round(center.x)
-    center.y = math.floor(center.y) --make sure y is node BELOW player's feet
-    center.z = exchangeclone.round(center.z)
-    for x = center.x-range,center.x+range do
-    for y = center.y-range,center.y+range do
-    for z = center.z-range,center.z+range do
-        local pos = {x=x,y=y,z=z}
-        local node = minetest.get_node(pos)
-        local result = functions.action(player, pos, node, data)
-        if not result then stop = true break end
-        if result ~= true then data = result end
-    end
-    if stop then break end
-    end
-    if stop then break end
-    end
-    if functions.end_action then
-        data = functions.end_action(player, center, range, data)
-    end
-    return data
 end
 
 -- Cooldowns
@@ -982,12 +944,6 @@ function exchangeclone.multidig(pos, node, player, mode, nodes)
             unused_dir = "z"
         end
 
-        --[[
-            123
-            4 5
-            678
-        ]]
-
         local pos1 = vector.add(pos, {[dir1] = -1, [dir2] = -1, [unused_dir] = 0})
         local pos2 = vector.add(pos, {[dir1] = 1, [dir2] = 1, [unused_dir] = 0})
         local nodes = minetest.find_nodes_in_area(pos1, pos2, nodes)
@@ -1068,42 +1024,42 @@ exchangeclone.tool_levels = {
         hammer = { -- hammer
             type = "front",
             ranges = {
-                -- facing direction, perpendicular 1, perpendicular 2
+                -- horizontal, vertical, depth (relative to look direction)
                 nil,
-                {2,3,3},
-                {3,5,5},
-                {4,7,7},
-                {5,9,9}
+                {3,3,2},
+                {5,5,3},
+                {7,7,4},
+                {9,9,5}
             }
         },
         flat = {
             type = "radius", -- shovel (dirt/sand), hoe
             ranges = {
                 nil,
-                {x=1,y=0,z=1},
-                {x=2,y=0,z=2},
-                {x=3,y=0,z=3},
-                {x=4,y=0,z=4},
+                vector.new(1,0,1),
+                vector.new(2,0,2),
+                vector.new(3,0,3),
+                vector.new(4,0,4),
             }
         },
         basic_radius = { -- Philosopher's Stone
             type = "radius",
             ranges = {
                 nil,
-                {x=1,y=1,z=1},
-                {x=2,y=2,z=2},
-                {x=3,y=3,z=3},
-                {x=4,y=4,z=4},
+                vector.new(1,1,1),
+                vector.new(2,2,2),
+                vector.new(3,3,3),
+                vector.new(4,4,4),
             }
         },
         large_radius = { -- shears, axe
             type = "radius",
             ranges = {
                 nil,
-                {x=4,y=4,z=4},
-                {x=9,y=9,z=9},
-                {x=14,y=14,z=14},
-                {x=19,y=19,z=19},
+                vector.new(4,4,4),
+                vector.new(9,9,9),
+                vector.new(14,14,14),
+                vector.new(19,19,19),
             }
         },
     }
@@ -1113,6 +1069,11 @@ exchangeclone.charge_types = {}
 
 function exchangeclone.set_charge_type(itemstring, type)
     exchangeclone.charge_types[itemstring] = type
+end
+
+function exchangeclone.add_range_setting(name, data)
+    if not (name and data.type and data.ranges) then return end
+    exchangeclone.tool_levels.range[name] = data
 end
 
 -- Given an item and effiency level, return the groupcaps of the item with that efficiency level.
@@ -1143,4 +1104,45 @@ function exchangeclone.update_tool_capabilities(itemstack)
     local tool_capabilities = table.copy(minetest.registered_items[itemstack:get_name()].tool_capabilities)
     tool_capabilities.groupcaps = exchangeclone.get_groupcaps(itemstack, efficiency)
     meta:set_tool_capabilities(tool_capabilities)
+    minetest.log(dump(charge_level, efficiency))
+    return itemstack
+end
+
+function exchangeclone.process_range(player, range, charge)
+    if not (player and range and charge) then return end
+    local range_data = exchangeclone.tool_levels.range[range]
+    local range_amounts = range_data.ranges[charge]
+    if not range_amounts then return end
+    if range_data.type == "radius" then
+        return range_amounts, -range_amounts
+    elseif range_data.type == "front" then
+        local player_rotation = exchangeclone.get_face_direction(player)
+        -- relative to player look direction
+        local vertical
+        local horizontal
+        local depth
+
+        if player_rotation.y ~= 0 then
+            horizontal = (player_rotation.x ~= 0) and "z" or "x"
+            vertical = (player_rotation.x ~= 0) and "x" or "z"
+            depth = "y"
+        elseif player_rotation.x ~= 0 then
+            horizontal = "z"
+            vertical = "y"
+            depth = "x"
+        elseif player_rotation.z ~= 0 then
+            horizontal = "x"
+            vertical = "y"
+            depth = "z"
+        end
+        return {
+            [horizontal] = range_amounts[1],
+            [vertical] = range_amounts[2],
+            [depth] = 0
+        }, {
+            [horizontal] = -range_amounts[1],
+            [vertical] = -range_amounts[2],
+            [depth] = range_amounts[3]
+        }
+    end
 end

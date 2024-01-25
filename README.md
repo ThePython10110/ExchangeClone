@@ -44,8 +44,8 @@ Dependencies: Minetest Game or MineClone.
 * Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by dispensers. This will not be fixed.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
 * In Mineclonia, hoppers can put invalid items into Energy Collectors.
-* DM/RM tools and armor aren't great... the DM tools are TOO fast and the armor is (depending on which game you're playing), too good or not good enough. I would love it if someone with more patience would submit a PR to improve them. I would like them to be as close to ProjectE as possible, and as similar as possible between MTG and MCL... but I just hate doing that kind of thing.
-* DM tools mine RM nodes too quickly for something that doesn't drop (MCL).
+* DM/RM armor isn't great... the armor is (depending on which game you're playing), too good or not good enough. I would love it if someone with more patience would submit a PR to improve them. I would like them to be as close to ProjectE as possible, and as similar as possible between MTG and MCL... but I just hate doing that kind of thing.
+* Tools do not show the wear bar (to show the charge level) when first created or crafted. It only appears after changing the range. This will not be fixed.
 
 **If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -66,17 +66,17 @@ Dependencies: Minetest Game or MineClone.
 
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
-* #### FINISH MULTIDIG
 * Achievements/advancements/awards
 * Improvements to tools
-    * Wear bar for charge level
-    * Charge levels match ProjectE (both in number and in range)
-    * Charge level affects speed
-    * Correct/accurate speeds compared to ProjectE (hopefully)
-    * Wear bar on Exchange Orbs for energy
-    * Only one item per tool (not a separate 3x3 tool)
-    * *MAYBE* changes to armor (but it's so hard to get it right)
-    * Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
+    [x] Wear bar for charge level
+    [ ] Charge levels match ProjectE (both in number and in range)
+    [ ] Charge level affects speed
+    [ ] Correct/accurate speeds compared to ProjectE (hopefully)
+    [ ] Wear bar on Exchange Orbs for energy
+    [ ] Only one item per tool (not a separate 3x3 tool)
+    [ ] Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
+    [ ] Shovels can remove paths (MCL2)
+    [ ] *MAYBE* changes to armor (but it's so hard to get it right)
 * Divining rods
 * Swiftwolf's Rending Gale (maybe rename?)
 * Mind, Life, Body and Soul Stones (Mind = MCL only)
@@ -112,6 +112,9 @@ Dependencies: Minetest Game or MineClone.
     * The pickaxe vein mining ability is now more efficient, only checking each position once.
     * Tools do not mine slower in 3x1/3x3 modes (to match ProjectE)
     * Tools do not have a separate 3x1/3x3 item.
+    * Charge level is now shown by the wear/durability bar
+    * Charge level now affects tool speed
+    * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
 
 ### v6.7
 * Made More Ores energy values not MTG-specific

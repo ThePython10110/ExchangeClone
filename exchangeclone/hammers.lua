@@ -1,31 +1,27 @@
 local S = minetest.get_translator()
 
-exchangeclone.hammer_action = {
-	start_action = function(player, center, range, itemstack)
-		if exchangeclone.check_cooldown(player, "hammer") then return end
-		local data = {}
-		exchangeclone.play_ability_sound(player)
-		data.itemstack = itemstack
-        data.remove_positions = {}
-		return data
-	end,
-	action = function(player, pos, node, data)
-		if minetest.get_item_group(node.name, exchangeclone.stone_group) ~= 0 then
-			if minetest.is_protected(pos, player:get_player_name()) then
-				minetest.record_protection_violation(pos, player:get_player_name())
-			else
-				local drops = minetest.get_node_drops(node.name, data.itemstack)
-				exchangeclone.drop_items_on_player(pos, drops, player)
-				table.insert(data.remove_positions, pos)
-			end
+function exchangeclone.hammer_action(itemstack, player, center)
+	if not (itemstack and player and center) then return end
+	if exchangeclone.check_cooldown(player, "hammer") then return end
+	local charge = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 0
+	local vector1, vector2 = exchangeclone.process_range(player, "hammer", charge)
+	if not (vector1 and vector2) then return end
+
+	local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
+	exchangeclone.play_ability_sound(player)
+	local nodes = minetest.find_nodes_in_area(pos1, pos2, {"group:"..exchangeclone.stone_group})
+	for _, pos in pairs(nodes) do
+		if minetest.is_protected(pos, player:get_player_name()) then
+			minetest.record_protection_violation(pos, player:get_player_name())
+		else
+			local drops = minetest.get_node_drops(minetest.get_node(pos).name, itemstack)
+			exchangeclone.drop_items_on_player(pos, drops, player)
 		end
-		return data
-	end,
-	end_action = function(player, center, range, data)
-        exchangeclone.remove_nodes(data.remove_positions)
-		exchangeclone.start_cooldown(player, "hammer", range/2) -- The hammer has by far the most lag potential and therefore a longer cooldown.
 	end
-}
+
+	exchangeclone.remove_nodes(nodes)
+	exchangeclone.start_cooldown(player, "hammer", charge/2)
+end
 
 local function hammer_on_place(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -55,7 +51,7 @@ local function hammer_on_place(itemstack, player, pointed_thing)
     if pointed_thing.type == "node" then
         center = pointed_thing.under
     end
-    exchangeclone.node_radius_action(player, center, range, exchangeclone.hammer_action, itemstack)
+    exchangeclone.hammer_action(itemstack, player, center)
 end
 
 minetest.register_tool("exchangeclone:dark_matter_hammer", {
@@ -66,9 +62,9 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
-		full_punch_interval = 0.5,
+		full_punch_interval = 1,
 		max_drop_level=6,
-		damage_groups = {fleshy=7},
+		damage_groups = {fleshy=14},
 		punch_attack_uses = 0,
 		groupcaps={
 			cracky = {times={[1]=1.5, [2]=0.75, [3]=0.325}, uses=0, maxlevel=4},
@@ -83,8 +79,8 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:dark_matter_hammer", {"group:"..exchangeclone.stone_group})
-
 minetest.register_alias("exchangeclone:dark_matter_hammer_3x3", "exchangeclone:dark_matter_hammer")
+exchangeclone.set_charge_type("exchangeclone:dark_matter_hammer", "dark_matter")
 
 minetest.register_tool("exchangeclone:red_matter_hammer", {
 	description = S("Red Matter Hammer").."\n"..S("Single node mode"),
@@ -94,9 +90,9 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
-		full_punch_interval = 0.3,
+		full_punch_interval = 1,
 		max_drop_level=7,
-		damage_groups = {fleshy=9},
+		damage_groups = {fleshy=15},
 		punch_attack_uses = 0,
 		groupcaps={
 			cracky = {times={[1]=1, [2]=0.5, [3]=0.2}, uses=0, maxlevel=5},
@@ -111,8 +107,8 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:red_matter_hammer", {"group:"..exchangeclone.stone_group})
-
 minetest.register_alias("exchangeclone:red_matter_hammer_3x3", "exchangeclone:red_matter_hammer")
+exchangeclone.set_charge_type("exchangeclone:red_matter_hammer", "red_matter")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hammer",

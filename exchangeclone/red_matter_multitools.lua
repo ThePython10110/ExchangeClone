@@ -182,9 +182,9 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 		elseif (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
 			if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
 			exchangeclone.play_ability_sound(player)
-			exchangeclone.multidig[player:get_player_name()] = true
+			exchangeclone.multidig_data[player:get_player_name()] = true
 			exchangeclone.mine_vein(player, pointed_thing.under)
-			exchangeclone.multidig[player:get_player_name()] = nil
+			exchangeclone.multidig_data[player:get_player_name()] = nil
 			exchangeclone.start_cooldown(player, "pickaxe", 0.3)
 			return
 		else
