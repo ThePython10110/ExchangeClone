@@ -3,7 +3,7 @@ local S = minetest.get_translator()
 function exchangeclone.hammer_action(itemstack, player, center)
 	if not (itemstack and player and center) then return end
 	if exchangeclone.check_cooldown(player, "hammer") then return end
-	local charge = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 0
+	local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
 	local vector1, vector2 = exchangeclone.process_range(player, "hammer", charge)
 	if not (vector1 and vector2) then return end
 
@@ -46,12 +46,9 @@ local function hammer_on_place(itemstack, player, pointed_thing)
 		return itemstack
 	end
 
-    local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
-    local center = player:get_pos()
     if pointed_thing.type == "node" then
-        center = pointed_thing.under
+		exchangeclone.hammer_action(itemstack, player, pointed_thing.under)
     end
-    exchangeclone.hammer_action(itemstack, player, center)
 end
 
 minetest.register_tool("exchangeclone:dark_matter_hammer", {

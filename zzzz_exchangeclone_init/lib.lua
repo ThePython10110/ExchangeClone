@@ -322,33 +322,35 @@ end
 function exchangeclone.charge_update(itemstack, player)
     itemstack = ItemStack(itemstack) -- don't affect original
     local charge_type = exchangeclone.charge_types[itemstack:get_name()]
-    local max_level = exchangeclone.tool_levels.count[charge_type]
-    if not max_level then return itemstack end
-    local level = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 1
+    local max_charge = exchangeclone.tool_levels.count[charge_type]
+    if not max_charge then return itemstack end
+    local charge = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 1
     if player:get_player_control().sneak then
-        if level > 1 then
-            level = level - 1
-        end
-    elseif level < max_level then
-        level = level + 1
+        charge = math.max(1, charge - 1)
+    else
+        charge = math.min(max_charge, charge + 1)
     end
-    itemstack:get_meta():set_int("exchangeclone_tool_charge", level)
-    itemstack:set_wear(math.max(1, math.min(65535, 65535-(65535/(max_level-1))*(level-1))))
+    minetest.log(charge)
+    itemstack:get_meta():set_int("exchangeclone_tool_charge", charge)
+    itemstack:set_wear(math.max(1, math.min(65535, 65535-(65535/(max_charge-1))*(charge-1))))
     itemstack = exchangeclone.update_tool_capabilities(itemstack)
     return itemstack
 end
 
 -- Itemstrings for various items used in crafting recipes.
 exchangeclone.itemstrings = {
-    cobble =            (exchangeclone.mcl and "mcl_core:cobble")             or "default:cobble",
-    redstoneworth =     (exchangeclone.mcl and "mesecons:redstone")           or "default:obsidian",
-    glowstoneworth =    (exchangeclone.mcl and "mcl_nether:glowstone_dust")   or "default:tin_ingot",
-    coal =              (exchangeclone.mcl and "mcl_core:coal_lump")          or "default:coal_lump",
-    iron =              (exchangeclone.mcl and "mcl_core:iron_ingot")         or "default:steel_ingot",
-    copper =            (exchangeclone.mcl and "mcl_copper:copper_ingot")     or "default:copper_ingot",
-    gold =              (exchangeclone.mcl and "mcl_core:gold_ingot")         or "default:gold_ingot",
-    emeraldworth =      (exchangeclone.mcl and "mcl_core:emerald")            or "default:mese_crystal",
-    diamond =           (exchangeclone.mcl and "mcl_core:diamond")            or "default:diamond",
+    cobble =            exchangeclone.mcl and "mcl_core:cobble"             or "default:cobble",
+    redstoneworth =     exchangeclone.mcl and "mesecons:redstone"           or "default:obsidian",
+    glowstoneworth =    exchangeclone.mcl and "mcl_nether:glowstone_dust"   or "default:tin_ingot",
+    coal =              exchangeclone.mcl and "mcl_core:coal_lump"          or "default:coal_lump",
+    iron =              exchangeclone.mcl and "mcl_core:iron_ingot"         or "default:steel_ingot",
+    copper =            exchangeclone.mcl and "mcl_copper:copper_ingot"     or "default:copper_ingot",
+    gold =              exchangeclone.mcl and "mcl_core:gold_ingot"         or "default:gold_ingot",
+    emeraldworth =      exchangeclone.mcl and "mcl_core:emerald"            or "default:mese_crystal",
+    diamond =           exchangeclone.mcl and "mcl_core:diamond"            or "default:diamond",
+    gravel =            exchangeclone.mcl and "mcl_core:gravel"             or "default:gravel",
+    dirt =              exchangeclone.mcl and "mcl_core:dirt"               or "default:dirt",
+    clay =              exchangeclone.mcl and "mcl_core:clay"               or "default:clay",
 }
 
 exchangeclone.energy_aliases = {}
@@ -585,6 +587,7 @@ end)
 
 -- Start a <time>-second cooldown called <name> for <player>
 function exchangeclone.start_cooldown(player, name, time)
+    if not (player and name and time and (time > 0)) then return end
     local player_name = player:get_player_name()
     exchangeclone.cooldowns[player_name][name] = time
     minetest.after(time, function()
@@ -701,11 +704,11 @@ exchangeclone.neighbors = {
 
 function exchangeclone.check_nearby_falling(pos)
 	for i = 1, 6 do
-        local pos = vector.add(pos, exchangeclone.neighbors[i])
+        local new_pos = vector.add(pos, exchangeclone.neighbors[i])
         if exchangeclone.mcl then
-            local node = minetest.get_node(pos)
+            local node = minetest.get_node(new_pos)
             if node.name == "mcl_core:vine" then
-                mcl_core.check_vines_supported(pos, node)
+                mcl_core.check_vines_supported(new_pos, node)
             end
         end
 	end
@@ -715,7 +718,9 @@ end
 function exchangeclone.remove_nodes(positions)
     minetest.bulk_set_node(positions, {name = "air"})
     for _, pos in pairs(positions) do
-        exchangeclone.check_nearby_falling(pos)
+        if pos then
+            exchangeclone.check_nearby_falling(pos)
+        end
     end
 end
 
@@ -922,7 +927,6 @@ end
 
 function exchangeclone.multidig(pos, node, player, mode, nodes)
     if not player then return end
-    minetest.log(dump(mode))
     local player_rotation = exchangeclone.get_face_direction(player)
 
     if mode == "3x3" then
@@ -959,7 +963,7 @@ function exchangeclone.multidig(pos, node, player, mode, nodes)
         else
             dir = "x"
         end
-        local added_vector = vector.zero
+        local added_vector = vector.zero()
         added_vector[dir] = player_rotation[dir]*2
         local pos2 = vector.add(pos, added_vector)
         local found_nodes = minetest.find_nodes_in_area(pos, pos2, nodes)
@@ -985,8 +989,11 @@ function exchangeclone.multidig(pos, node, player, mode, nodes)
                 dir = "x"
             end
         end
-        local pos1 = vector.add(pos, {[dir]=-1})
-        local pos2 = vector.add(pos, {[dir]=1})
+        local vector1, vector2 = vector.zero(), vector.zero()
+        vector1[dir] = -1
+        vector2[dir] = 1
+        local pos1 = vector.add(pos, vector1)
+        local pos2 = vector.add(pos, vector2)
         local found_nodes = minetest.find_nodes_in_area(pos1, pos2, nodes)
         for _, node_pos in pairs(found_nodes) do
             minetest.node_dig(node_pos, minetest.get_node(node_pos), player)
@@ -1014,7 +1021,7 @@ minetest.register_on_joinplayer(function(player)
 end)
 
 exchangeclone.tool_levels = {
-    count = {dark_matter = 2, red_matter = 3, red_multi = 4, phil = 4},
+    count = {dark_matter = 3, red_matter = 4, red_multi = 5, phil = 5},
     efficiency = {
         dark_matter = {nil, 3, 5},
         red_matter = {nil, 3.5, 5, 7},
@@ -1025,11 +1032,13 @@ exchangeclone.tool_levels = {
             type = "front",
             ranges = {
                 -- horizontal, vertical, depth (relative to look direction)
+                -- horizontal/vertical are radii (1,1 = 3x3, 2,2 = 5,5)
+                -- depth does NOT include starting position (1,1,1 mines 3x3x2 area)
                 nil,
-                {3,3,2},
-                {5,5,3},
-                {7,7,4},
-                {9,9,5}
+                {1,1,1},
+                {2,2,2},
+                {3,3,3},
+                {4,4,4}
             }
         },
         flat = {
@@ -1081,7 +1090,6 @@ function exchangeclone.get_groupcaps(item, efficiency)
     item = ItemStack(item)
     if exchangeclone.mcl then
         local thingy = mcl_autogroup.get_groupcaps(item:get_name(), efficiency)
-        minetest.log(dump(thingy))
         return thingy
     else
         local groupcaps = table.copy(minetest.registered_items[item:get_name()].tool_capabilities.groupcaps)
@@ -1104,7 +1112,6 @@ function exchangeclone.update_tool_capabilities(itemstack)
     local tool_capabilities = table.copy(minetest.registered_items[itemstack:get_name()].tool_capabilities)
     tool_capabilities.groupcaps = exchangeclone.get_groupcaps(itemstack, efficiency)
     meta:set_tool_capabilities(tool_capabilities)
-    minetest.log(dump(charge_level, efficiency))
     return itemstack
 end
 
@@ -1142,7 +1149,7 @@ function exchangeclone.process_range(player, range, charge)
         }, {
             [horizontal] = -range_amounts[1],
             [vertical] = -range_amounts[2],
-            [depth] = range_amounts[3]
+            [depth] = player_rotation[depth]*range_amounts[3]
         }
     end
 end

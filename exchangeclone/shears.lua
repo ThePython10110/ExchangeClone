@@ -1,40 +1,35 @@
--- TODO: Before releasing, check the shears. Just do it.
--- I know you don't want to... but test EVERY SINGLE FUNCTION.
--- MineClonia probably broke them.
+function exchangeclone.shear_action(itemstack, player, center)
+	if not (itemstack and player and center) then return end
+	if exchangeclone.check_cooldown(player, "shears") then return end
+    local start_node = minetest.get_node(center)
+    local leaves = minetest.get_item_group(start_node.name, "leaves") > 0
+	local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
+	local vector1, vector2 = exchangeclone.process_range(player, leaves and "large_radius" or "basic_radius", charge)
+	if not (vector1 and vector2) then return end
 
-exchangeclone.shear_action = {
-    start_action = function(player, center, range, itemstack)
-        if exchangeclone.check_cooldown(player, "shears") then return end
-        local data = {}
-        exchangeclone.play_ability_sound(player)
-        data.itemstack = itemstack
-        data.remove_positions = {}
-        return data
-    end,
-    action = function(player, pos, node, data)
-        local node_def = minetest.registered_items[ItemStack(node.name):get_name()]
-        if not node_def then return data end
-        if (node_def.groups.shearsy or node_def.groups.shearsy_cobweb) and node.name ~= "mcl_flowers:double_grass_top" then
+	local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
+    exchangeclone.play_ability_sound(player)
+    local grouped = leaves and {"group:leaves"} or {"group:shearsy", "group:shearsy_cobweb"}
+    local nodes = minetest.find_nodes_in_area(pos1, pos2, grouped)
+    for i, pos in pairs(nodes) do
+        local node = minetest.get_node(pos)
+        if leaves or (not leaves and node.name ~= "mcl_flowers:double_grass_top") then
             if minetest.is_protected(pos, player:get_player_name()) then
                 minetest.record_protection_violation(pos, player:get_player_name())
             else
-                local drops = minetest.get_node_drops(node.name, data.itemstack:get_name())
+                local drops = minetest.get_node_drops(node.name, itemstack:get_name())
                 exchangeclone.drop_items_on_player(pos, drops, player)
                 -- Annoying manual override
                 if node.name:sub(1,18) == "mcl_ocean:seagrass" then
                     minetest.set_node(pos, {name="sand"})
-                else
-                    table.insert(data.remove_positions, pos)
+                    nodes[i] = nil
                 end
             end
         end
-        return data
-    end,
-    end_action = function(player, center, range, data)
-        exchangeclone.remove_nodes(data.remove_positions)
-        exchangeclone.start_cooldown(player, "shears", (range+1)/7)
     end
-}
+    exchangeclone.remove_nodes(nodes)
+    exchangeclone.start_cooldown(player, "shears", (charge+1)/7)
+end
 
 local shears_rightclick = function(itemstack, player, pointed_thing)
     -- Use pointed node's on_rightclick function first, if present
@@ -44,11 +39,7 @@ local shears_rightclick = function(itemstack, player, pointed_thing)
     end
 
     if player:get_player_control().aux1 then
-        if itemstack:get_name():find("dark") then
-            return exchangeclone.charge_update(itemstack, player, 3)
-        else
-            return exchangeclone.charge_update(itemstack, player, 4)
-        end
+        return exchangeclone.charge_update(itemstack, player)
     end
 
     if (pointed_thing.type == "node") and pointed_thing.above and not player:get_player_control().sneak  then
@@ -62,13 +53,14 @@ local shears_rightclick = function(itemstack, player, pointed_thing)
         end
     end
 
-    local center = player:get_pos()
-
-    if (pointed_thing.type == "node") and pointed_thing.under then
-        center = pointed_thing.under
+    if pointed_thing.type == "node" then
+        local node = minetest.get_node(pointed_thing.under)
+        if minetest.get_item_group(node.name, "shearsy") > 0
+        or minetest.get_item_group(node.name, "shearsy_cobweb") > 0
+        or minetest.get_item_group(node.name, "leaves") > 0 then
+            exchangeclone.shear_action(itemstack, player, pointed_thing.under)
+        end
     end
-    local range = tonumber(itemstack:get_meta():get_int("exchangeclone_tool_charge"))
-    exchangeclone.node_radius_action(player, center, range, exchangeclone.shear_action, itemstack)
     return itemstack
 end
 
@@ -79,18 +71,18 @@ minetest.register_tool("exchangeclone:dark_matter_shears", {
     stack_max = 1,
     groups = { tool=1, shears=1, dig_speed_class=5, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
     tool_capabilities = {
-            full_punch_interval = 0.4,
+            full_punch_interval = 0.25,
             max_drop_level=1,
-            damage_groups = { fleshy = 2, },
+            damage_groups = { fleshy = 1, },
     },
     on_place = shears_rightclick,
     on_secondary_use = shears_rightclick,
     sound = { breaks = "default_tool_breaks" },
     _mcl_toollike_wield = true,
     _mcl_diggroups = {
-        shearsy = { speed = 5, level = 2, uses = 0 },
-        shearsy_wool = { speed = 10, level = 2, uses = 0 },
-        shearsy_cobweb = { speed = 30, level = 2, uses = 0 }
+        shearsy = { speed = 14, level = 2, uses = 0 },
+        shearsy_wool = { speed = 14, level = 2, uses = 0 },
+        shearsy_cobweb = { speed = 14, level = 2, uses = 0 }
     },
 })
 
@@ -101,18 +93,18 @@ minetest.register_tool("exchangeclone:red_matter_shears", {
     stack_max = 1,
     groups = { tool=1, shears=1, dig_speed_class=6, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
     tool_capabilities = {
-            full_punch_interval = 0.3,
+            full_punch_interval = 0.25,
             max_drop_level=1,
-            damage_groups = { fleshy = 4, },
+            damage_groups = { fleshy = 1, },
     },
     on_place = shears_rightclick,
     on_secondary_use = shears_rightclick,
     sound = { breaks = "default_tool_breaks" },
     _mcl_toollike_wield = true,
     _mcl_diggroups = {
-        shearsy = { speed = 8, level = 3, uses = 0 },
-        shearsy_wool = { speed = 14, level = 3, uses = 0 },
-        shearsy_cobweb = { speed = 34, level = 3, uses = 0 }
+        shearsy = { speed = 16, level = 3, uses = 0 },
+        shearsy_wool = { speed = 16, level = 3, uses = 0 },
+        shearsy_cobweb = { speed = 16, level = 3, uses = 0 }
     },
 })
 

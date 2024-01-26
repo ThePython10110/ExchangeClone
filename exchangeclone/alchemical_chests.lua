@@ -38,8 +38,8 @@ local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connectio
 minetest.register_node("exchangeclone:alchemical_chest", {
     description = S("Alchemical Chest"),
     groups = {container = 2, alchemical_chest = 1, cracky = 2, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
-    _mcl_hardness = 3,
-	_mcl_blast_resistance = 6,
+    _mcl_hardness = 10,
+	_mcl_blast_resistance = 15,
     paramtype2 = "4dir",
 	tiles = {
 		"exchangeclone_alchemical_chest_top.png"..pipeworks_connect,
@@ -158,8 +158,8 @@ for color, color_data in pairs(exchangeclone.colors) do
 
     minetest.register_node(advanced_itemstring, {
         description = S("@1 Advanced Alchemical Chest", color_data.name).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
-        _mcl_hardness = 3,
-        _mcl_blast_resistance = 6,
+        _mcl_hardness = 10,
+        _mcl_blast_resistance = 15,
         groups = {container = 1, advanced_alchemical_chest = 1, cracky = 2, pickaxey = 2},
         paramtype2 = "4dir",
         tiles = {

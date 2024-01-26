@@ -77,7 +77,7 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
             exchangeclone.start_cooldown(player, "pickaxe", 0.5)
         elseif itemstack:get_name():find("red_") then
             local player_energy = exchangeclone.get_player_energy(player)
-            minetest.log(dump(torch_on_place(ItemStack(torch_itemstring), player, pointed_thing)))
+            minetest.log(dump(torch_on_place(ItemStack(torch_itemstring), player, pointed_thing):get_name()))
             exchangeclone.set_player_energy(player, player_energy - math.max(exchangeclone.get_item_energy(torch_itemstring) or 0, 8))
             -- If the torch could not be placed, it still costs energy... not sure how to fix that
         end

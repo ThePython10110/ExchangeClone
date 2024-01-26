@@ -1,11 +1,9 @@
 local S = minetest.get_translator()
 
 local function create_soil(itemstack, player, pointed_thing)
-	if not pointed_thing.under then return end
-	if not pointed_thing.under.x then return end
 	local pos = pointed_thing.under
 	local name = minetest.get_node(pos).name
-	local above_name = minetest.get_node({x=pos.x,y=pos.y+1,z=pos.z}).name
+	local above_name = minetest.get_node(vector.offset(pos,0,1,0)).name
 
 	if minetest.is_protected(pointed_thing.under, player:get_player_name()) then
 		minetest.record_protection_violation(pointed_thing.under, player:get_player_name())
@@ -39,27 +37,33 @@ else
 	end
 end
 
-exchangeclone.hoe_action = {
-	start_action = function(player, center, range, itemstack)
-		if exchangeclone.check_cooldown(player, "hoe") then return end
-		local data = {}
-		if range > 0 then
-			exchangeclone.play_ability_sound(player)
-		end
-		data.itemstack = itemstack
-		return data
-	end,
-	action = function(player, pos, node, data)
-		local new_pointed_thing = {type = "node", under = pos, above = {x=pos.x,y=pos.y+1,z=pos.z}}
-		hoe_function(data.itemstack, player, new_pointed_thing)
-		return data
-	end,
-	end_action = function(player, center, range, data)
-		if range > 0 then
-			exchangeclone.start_cooldown(player, "hoe", range/4)
+function exchangeclone.hoe_action(itemstack, player, center)
+	if not (itemstack and player and center) then return end
+	if exchangeclone.check_cooldown(player, "hoe") then return end
+	local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
+	local nodes
+	if charge > 1 then
+		local vector1, vector2 = exchangeclone.process_range(player, "flat", charge)
+		if not (vector1 and vector2) then return end
+		local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
+		nodes = minetest.find_nodes_in_area(pos1, pos2, {"group:cultivatable"})
+		exchangeclone.play_ability_sound(player)
+	else
+		nodes = {center}
+	end
+	for _, pos in pairs(nodes) do
+		if minetest.is_protected(pos, player:get_player_name()) then
+			minetest.record_protection_violation(pos, player:get_player_name())
+		else
+			local new_pointed_thing = {type = "node", under = pos, above = vector.offset(pos,0,1,0)}
+			hoe_function(itemstack, player, new_pointed_thing)
 		end
 	end
-}
+
+	if charge > 0 then
+		exchangeclone.start_cooldown(player, "hoe", charge/4)
+	end
+end
 
 local hoe_on_place = function(itemstack, player, pointed_thing)
 	local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -68,31 +72,30 @@ local hoe_on_place = function(itemstack, player, pointed_thing)
 	end
 
 	if player:get_player_control().aux1 then
-		if itemstack:get_name():find("dark") then
-			return exchangeclone.charge_update(itemstack, player, 3)
-		else
-			return exchangeclone.charge_update(itemstack, player, 4)
-		end
+		return exchangeclone.charge_update(itemstack, player)
 	end
 
 	if player:get_player_control().sneak then
-		local current_name = itemstack:get_name()
-		if string.sub(current_name, -4, -1) == "_3x3" then
-			itemstack:set_name(string.sub(current_name, 1, -5))
+		local meta = itemstack:get_meta()
+		local current_mode = meta:get_string("exchangeclone_multidig_mode")
+		if current_mode == "3x3" then
+			meta:set_string("exchangeclone_multidig_mode", "1x1")
 			minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
 		else
-			itemstack:set_name(current_name.."_3x3")
+			meta:set_string("exchangeclone_multidig_mode", "3x3")
 			minetest.chat_send_player(player:get_player_name(), S("3x3 mode"))
 		end
 		return itemstack
 	end
-
-	local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
-	local center = player:get_pos()
 	if pointed_thing.type == "node" then
-		center = pointed_thing.under
+		local node_name = minetest.get_node(pointed_thing.under).name
+		local def = minetest.registered_nodes[node_name]
+		if minetest.get_item_group(node_name, "cultivatable") > 0
+		or (minetest.get_item_group(node_name, "soil") > 0 and
+		(def.soil and def.soil.wet and def.soil.dry)) then
+			exchangeclone.hoe_action(itemstack, player, pointed_thing.under)
+		end
 	end
-	exchangeclone.node_radius_action(player, center, range, exchangeclone.hoe_action, itemstack)
 end
 
 if exchangeclone.mcl then
@@ -109,7 +112,7 @@ for name, def in pairs(minetest.registered_nodes) do
 	end
 end
 
-local hoe_def = {
+minetest.register_tool("exchangeclone:dark_matter_hoe", {
 	description = S("Dark Matter Hammer").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_dark_matter_hoe.png",
 	inventory_image = "exchangeclone_dark_matter_hoe.png",
@@ -119,57 +122,47 @@ local hoe_def = {
 	groups = { tool=1, hoe=1, enchantability=0, dark_matter_hoe = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	tool_capabilities = {
 		full_punch_interval = 0.25,
-		damage_groups = { fleshy = 7, },
+		damage_groups = { fleshy = 1, },
 		groupcaps={
 			exchangeclone_dirt = {times={[1]=0.25, [2]=0.25, [3]=0.25}, uses=0, maxlevel=4},
 		},
 	},
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-        exchangeclone_dirt = { speed = 12, level = 7, uses = 0 },
-		hoey = { speed = 12, level = 7, uses = 0 }
+        exchangeclone_dirt = { speed = 14, level = 7, uses = 0 },
+		hoey = { speed = 14, level = 7, uses = 0 }
 	},
-}
+})
 
-minetest.register_tool("exchangeclone:dark_matter_hoe", table.copy(hoe_def))
+exchangeclone.register_multidig_tool("exchangeclone:dark_matter_hoe", {"group:exchangeclone_dirt"})
+minetest.register_alias("exchangeclone:dark_matter_hoe_3x3", "exchangeclone:dark_matter_hoe")
+exchangeclone.set_charge_type("exchangeclone:dark_matter_hoe", "dark_matter")
 
-local hoe_3x3_def = table.copy(hoe_def)
-hoe_3x3_def.description = S("Dark Matter Hammer").."\n"..S("3x3 mode")
-hoe_3x3_def.groups.not_in_creative_inventory = 1
-hoe_3x3_def.tool_capabilities.groupcaps.exchangeclone_dirt.times = {[1]=0.4, [2]=0.4, [3]=0.4}
-hoe_3x3_def._mcl_diggroups.exchangeclone_dirt = { speed = 8, level = 7, uses = 0 }
-
-minetest.register_tool("exchangeclone:dark_matter_hoe_3x3", table.copy(hoe_3x3_def))
-
-exchangeclone.register_alias("exchangeclone:dark_matter_hoe", "exchangeclone:dark_matter_hoe_3x3")
-
-hoe_def.description = S("Red Matter Hammer").."\n"..S("Single node mode")
-hoe_def.wield_image = "exchangeclone_red_matter_hoe.png"
-hoe_def.inventory_image = "exchangeclone_red_matter_hoe.png"
-hoe_def.groups = { tool=1, hoe=1, enchantability=0, red_matter_hoe = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1}
-hoe_def.tool_capabilities = {
-	full_punch_interval = 0.25,
-	damage_groups = { fleshy = 8, },
-	groupcaps={
-		exchangeclone_dirt = {times={[1]=0.15, [2]=0.15, [3]=0.15}, uses=0, maxlevel=4},
+minetest.register_tool("exchangeclone:red_matter_hoe", {
+	description = S("Red Matter Hammer").."\n"..S("Single node mode"),
+	wield_image = "exchangeclone_red_matter_hoe.png",
+	inventory_image = "exchangeclone_red_matter_hoe.png",
+	wield_scale = exchangeclone.wield_scale,
+	on_place = hoe_on_place,
+	on_secondary_use = hoe_on_place,
+	groups = { tool=1, hoe=1, enchantability=0, red_matter_hoe = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
+	tool_capabilities = {
+		full_punch_interval = 0.25,
+		damage_groups = { fleshy = 1, },
+		groupcaps={
+			exchangeclone_dirt = {times={[1]=0.25, [2]=0.25, [3]=0.25}, uses=0, maxlevel=4},
+		},
 	},
-}
-hoe_def._mcl_diggroups = {
-	exchangeclone_dirt = { speed = 13, level = 8, uses = 0 },
-	hoey = { speed = 13, level = 8, uses = 0 }
-}
+	_mcl_toollike_wield = true,
+	_mcl_diggroups = {
+        exchangeclone_dirt = { speed = 16, level = 8, uses = 0 },
+		hoey = { speed = 16, level = 8, uses = 0 }
+	},
+})
 
-minetest.register_tool("exchangeclone:red_matter_hoe", table.copy(hoe_def))
-
-hoe_3x3_def = table.copy(hoe_def)
-hoe_3x3_def.description = S("Red Matter Hammer").."\n"..S("3x3 mode")
-hoe_3x3_def.groups.not_in_creative_inventory = 1
-hoe_3x3_def.tool_capabilities.groupcaps.exchangeclone_dirt.times = {[1]=0.25, [2]=0.25, [3]=0.25}
-hoe_3x3_def._mcl_diggroups.exchangeclone_dirt = { speed = 9, level = 8, uses = 0 }
-
-minetest.register_tool("exchangeclone:red_matter_hoe_3x3", table.copy(hoe_3x3_def))
-
-exchangeclone.register_alias("exchangeclone:red_matter_hoe", "exchangeclone:red_matter_hoe_3x3")
+exchangeclone.register_multidig_tool("exchangeclone:red_matter_hoe", {"group:exchangeclone_dirt"})
+minetest.register_alias("exchangeclone:red_matter_hoe_3x3", "exchangeclone:red_matter_hoe")
+exchangeclone.set_charge_type("exchangeclone:red_matter_hoe", "red_matter")
 
 minetest.register_craft({
     output = "exchangeclone:dark_matter_hoe",

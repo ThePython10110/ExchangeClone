@@ -360,7 +360,7 @@ minetest.register_node("exchangeclone:transmutation_table", {
     description = "Transmutation Table",
     paramtype2 = "wallmounted",
     tiles = {"exchangeclone_transmutation_table.png", "exchangeclone_transmutation_table.png", "exchangeclone_transmutation_table_side.png"},
-    groups = {oddly_breakable_by_hand = 3, handy = 1},
+    groups = {cracky = 3, pickaxey = 1, handy = 1, oddly_breakable_by_hand = 1},
     drawtype = "nodebox",
     node_box = {
         type = "fixed",
@@ -370,7 +370,7 @@ minetest.register_node("exchangeclone:transmutation_table", {
     on_rightclick = function(pos, node, player, itemstack, pointed_thing)
         exchangeclone.show_transmutation_table_formspec(player)
     end,
-    _mcl_hardness = 0.6,
+    _mcl_hardness = 10,
     _mcl_blast_resistance = 6,
 })
 

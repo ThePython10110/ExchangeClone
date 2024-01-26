@@ -68,7 +68,7 @@ minetest.register_node("exchangeclone:dark_matter_block", {
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	groups = {pickaxey=5, material_stone=1, cracky = 3, level = get_level(4)}, --ridiculous workaround
 	_mcl_blast_resistance = 1500,
-	_mcl_hardness = 75,
+	_mcl_hardness = 12,
 })
 
 minetest.register_node("exchangeclone:red_matter_block", {
@@ -79,7 +79,7 @@ minetest.register_node("exchangeclone:red_matter_block", {
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	groups = {pickaxey=6, material_stone=1, cracky = 3, level = get_level(5)},
 	_mcl_blast_resistance = 1500,
-	_mcl_hardness = 100,
+	_mcl_hardness = 37,
 })
 if exchangeclone.mcl then
     minetest.register_craft({

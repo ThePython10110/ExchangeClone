@@ -86,13 +86,13 @@ local katar_def = {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-        exchangeclone_dirt = { speed = 10, level = 8, uses = 0 },
-        shearsy = { speed = 10, level = 3, uses = 0 },
-        shearsy_wool = { speed = 16, level = 3, uses = 0 },
-        shearsy_cobweb = { speed = 36, level = 3, uses = 0 },
-		hoey = { speed = 9, level = 8, uses = 0 },
-		swordy = { speed = 20, level = 8, uses = 0 },
-		axey = { speed = 20, level = 8, uses = 0 }
+        exchangeclone_dirt = { speed = 64, level = 8, uses = 0 },
+        shearsy = { speed = 64, level = 3, uses = 0 },
+        shearsy_wool = { speed = 64, level = 3, uses = 0 },
+        shearsy_cobweb = { speed = 64, level = 3, uses = 0 },
+		hoey = { speed = 64, level = 8, uses = 0 },
+		swordy = { speed = 64, level = 8, uses = 0 },
+		axey = { speed = 64, level = 8, uses = 0 }
 	},
 }
 
@@ -248,9 +248,9 @@ local morningstar_def = {
 	 sound = { breaks = "default_tool_breaks" },
 	 _mcl_toollike_wield = true,
 	 _mcl_diggroups = {
-		pickaxey = {speed = 80, level = 7, uses = 0},
-		shovely = {speed = 22, level = 7, uses = 0},
-		axey = { speed = 22, level = 7, uses = 0 }
+		pickaxey = {speed = 64, level = 7, uses = 0},
+		shovely = {speed = 64, level = 7, uses = 0},
+		axey = { speed = 64, level = 7, uses = 0 },
 	 },
 }
 

@@ -171,10 +171,9 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	groups = { tool=1, sword=1, dig_speed_class=5, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
-		-- 1/1.2
-		full_punch_interval = 0.7,
+		full_punch_interval = 1/1.6,
 		max_drop_level=6,
-		damage_groups = {fleshy=15},
+		damage_groups = {fleshy=13},
 		punch_attack_uses = 0,
 		groupcaps={
 			snappy = {times={[1]=0.95, [2]=0.45, [3]=0.15}, uses=0, maxlevel=4},
@@ -185,7 +184,7 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		swordy = { speed = 16, level = 5, uses = 0 }
+		swordy = { speed = 14, level = 5, uses = 0 }
 	},
 })
 
@@ -197,9 +196,9 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	wield_scale = exchangeclone.wield_scale,
 	tool_capabilities = {
 		-- 1/1.2
-		full_punch_interval = 0.7,
+		full_punch_interval = 1/1.6,
 		max_drop_level=7,
-		damage_groups = {fleshy=20},
+		damage_groups = {fleshy=17},
 		punch_attack_uses = 0,
 		groupcaps={
 			snappy = {times={[1]=0.6, [2]=0.25, [3]=0.1}, uses=0, maxlevel=5},
@@ -210,7 +209,7 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-		swordy = { speed = 20, level = 6, uses = 0 }
+		swordy = { speed = 16, level = 6, uses = 0 }
 	},
 })
 
