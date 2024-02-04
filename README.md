@@ -66,7 +66,7 @@ Dependencies: Minetest Game or MineClone.
 
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
-* Achievements/advancements/awards
+[ ] Achievements/advancements/awards
 * Improvements to tools (mostly only in MCL at the moment)
     [x] Wear bar for charge level
     [x] Charge levels match ProjectE (both in number and in range)
@@ -78,22 +78,22 @@ Dependencies: Minetest Game or MineClone.
     [x] Shovels can remove paths (MCL2)
     [x] Changes to armor (but it's so hard to get it right)
         * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are kind of invincible most of the time.
-* Divining rods
-* Swiftwolf's Rending Gale (maybe rename?)
-* Mind, Life, Body and Soul Stones (Mind = MCL only)
-* Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
-* Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
-* Remove and add alias for DM/RM shields
-* Edit wiki:
-    * Add pages for:
-        * Achievements?
-        * Divining rods
-        * Swiftwolf's Rending Gale
-        * Talisman of Repair
-        * Gem of Eternal Density
-        * Mind, Life, Body, and Soul Stones
-    * Modify tools page
-    * Remove page for PESA
+    [ ] Remove and add alias for DM/RM shields
+[ ] Divining rods
+[ ] Swiftwolf's Rending Gale (maybe rename?)
+[ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
+[ ] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
+[ ] Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
+[ ] Edit wiki:
+    [ ] Add pages for:
+        [ ] Achievements?
+        [ ] Divining rods
+        [ ] Swiftwolf's Rending Gale
+        [ ] Talisman of Repair
+        [ ] Gem of Eternal Density
+        [ ] Mind, Life, Body, and Soul Stones
+    [ ] Modify tools page
+[ ] Remove page for PESA
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
@@ -111,7 +111,7 @@ Dependencies: Minetest Game or MineClone.
 * Changes:
     * I'm started a free AI tool called Codeium (no relation to VSCodium), which seems to work well. This obviously isn't a change to the mod, but it makes it easier to do certain things.
     * Several improvements to tools:
-        * The pickaxe vein mining ability is now more efficient, only checking each position once.
+        * The pickaxe vein mining ability only checks each position once.
         * Tools do not mine slower in 3x1/3x3 modes (to match ProjectE)
         * Tools do not have a separate 3x1/3x3 item.
         * Charge level is now shown by the wear/durability bar
