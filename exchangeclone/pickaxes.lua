@@ -37,13 +37,6 @@ function exchangeclone.mine_vein(player, start_pos, node_name, pos, depth, visit
     end
 end
 
-local torch_itemstring = "default:torch"
-if exchangeclone.mcl then
-    torch_itemstring = "mcl_torches:torch"
-end
-
-local torch_on_place = minetest.registered_items[torch_itemstring].on_place
-
 local function pickaxe_on_use(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
     if click_test ~= false then
@@ -76,9 +69,8 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
             exchangeclone.mine_vein(player, pointed_thing.under)
             exchangeclone.start_cooldown(player, "pickaxe", 0.5)
         elseif itemstack:get_name():find("red_") then
-            local player_energy = exchangeclone.get_player_energy(player)
-            minetest.log(dump(torch_on_place(ItemStack(torch_itemstring), player, pointed_thing):get_name()))
-            exchangeclone.set_player_energy(player, player_energy - math.max(exchangeclone.get_item_energy(torch_itemstring) or 0, 8))
+            exchangeclone.place_torch(player, pointed_thing)
+            exchangeclone.add_player_energy(player, -math.max(exchangeclone.get_item_energy(exchangeclone.itemstrings.torch) or 0, 8))
             -- If the torch could not be placed, it still costs energy... not sure how to fix that
         end
     end
@@ -107,7 +99,7 @@ minetest.register_tool("exchangeclone:dark_matter_pickaxe", {
     on_place = pickaxe_on_use,
 })
 
-exchangeclone.register_multidig_tool("exchangeclone:dark_matter_pickaxe", {"group:"..exchangeclone.stone_group})
+exchangeclone.register_multidig_tool("exchangeclone:dark_matter_pickaxe", {"group:"..exchangeclone.pickaxe_group})
 minetest.register_alias("exchangeclone:dark_matter_pickaxe_3x1", "exchangeclone:dark_matter_pickaxe")
 exchangeclone.set_charge_type("exchangeclone:dark_matter_pickaxe", "dark_matter")
 
@@ -134,7 +126,7 @@ minetest.register_tool("exchangeclone:red_matter_pickaxe", {
     on_place = pickaxe_on_use,
 })
 
-exchangeclone.register_multidig_tool("exchangeclone:red_matter_pickaxe", {"group:"..exchangeclone.stone_group})
+exchangeclone.register_multidig_tool("exchangeclone:red_matter_pickaxe", {"group:"..exchangeclone.pickaxe_group})
 minetest.register_alias("exchangeclone:red_matter_pickaxe_3x1", "exchangeclone:red_matter_pickaxe")
 exchangeclone.set_charge_type("exchangeclone:red_matter_pickaxe", "red_matter")
 

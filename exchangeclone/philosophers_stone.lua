@@ -36,226 +36,40 @@ if exchangeclone.mcl then
         mcl_formspec.get_itemslot_bg(2*width/3-0.5,1,1,1)
 end
 
-exchangeclone.node_transmutations = {
-    { --use
-        ["mcl_core:stone"] = "mcl_core:cobble",
-        ["mcl_core:cobble"] = "mcl_core:stone",
-        ["mcl_core:dirt_with_grass"] = "mcl_core:sand",
-        ["mcl_core:dirt"] = "mcl_core:sand",
-        ["mcl_core:sand"] = "mcl_core:dirt_with_grass",
-        ["mcl_core:podzol"] = "mcl_core:redsand",
-        ["mcl_core:redsand"] = "mcl_core:podzol",
-        ["mcl_flowers:tallgrass"] = "mcl_flowers:fern",
-        ["mcl_flowers:fern"] = "mcl_flowers:tallgrass",
-        ["mcl_core:redsandstone"] = "mcl_core:gravel",
-        ["mcl_farming:pumpkin"] = "mcl_farming:melon",
-        ["mcl_farming:melon"] = "mcl_farming:pumpkin",
-        ["mcl_core:water_source"] = "mcl_core:ice",
-        ["mclx_core:river_water_source"] = "mcl_core:ice",
-        ["mcl_core:ice"] = "mcl_core:water_source",
-        ["mcl_core:lava_source"] = "mcl_core:obsidian",
-        ["mcl_core:obsidian"] = "mcl_core:lava_source",
-        ["mcl_flowers:dandelion"] = "mcl_flowers:poppy",
-        ["mcl_flowers:poppy"] = "mcl_flowers:dandelion",
-        ["mcl_mushrooms:mushroom_brown"] = "mcl_mushrooms:mushroom_red",
-        ["mcl_mushrooms:mushroom_red"] = "mcl_mushrooms:mushroom_brown",
-        ["mcl_core:acacialeaves"] = "mcl_core:birchleaves",
-        ["mcl_core:birchleaves"] = "mcl_core:darkleaves",
-        ["mcl_core:darkleaves"] = "mcl_core:jungleleaves",
-        ["mcl_core:jungleleaves"] = "mcl_mangrove:mangroveleaves",
-        ["mcl_mangrove:mangroveleaves"] = "mcl_core:leaves",
-        ["mcl_core:leaves"] = "mcl_core:spruceleaves",
-        ["mcl_core:spruceleaves"] = "mcl_core:acacialeaves",
-        ["mcl_core:acaciatree"] = "mcl_core:birchtree",
-        ["mcl_core:birchtree"] = "mcl_core:darktree",
-        ["mcl_core:darktree"] = "mcl_core:jungletree",
-        ["mcl_core:jungletree"] = "mcl_mangrove:mangrove_tree",
-        ["mcl_mangrove:mangrove_tree"] = "mcl_core:tree",
-        ["mcl_core:tree"] = "mcl_core:sprucetree",
-        ["mcl_core:sprucetree"] = "mcl_core:acaciatree",
-        ["mcl_crimson:warped_fungus"] = "mcl_crimson:crimson_fungus",
-        ["mcl_crimson:warped_hyphae"] = "mcl_crimson:crimson_hyphae",
-        ["mcl_crimson:warped_nylium"] = "mcl_crimson:crimson_nylium",
-        ["mcl_crimson:warped_roots"] = "mcl_crimson:crimson_roots",
-        ["mcl_crimson:warped_wart_block"] = "mcl_nether:nether_wart_block",
-        ["mcl_crimson:crimson_fungus"] = "mcl_crimson:warped_fungus",
-        ["mcl_crimson:crimson_hyphae"] = "mcl_crimson:warped_hyphae",
-        ["mcl_crimson:crimson_nylium"] = "mcl_crimson:warped_nylium",
-        ["mcl_crimson:crimson_roots"] = "mcl_crimson:warped_roots",
-        ["mcl_nether:nether_wart_block"] = "mcl_crimson:warped_wart_block",
-        ["mcl_core:glass"] = "mcl_core:sand",
-        ["mcl_blackstone:blackstone"] = "mcl_blackstone:basalt",
-        ["mcl_blackstone:basalt"] = "mcl_blackstone:blackstone",
-        ["mcl_flowers:double_grass"] = "mcl_flowers:fern",
-        --["mcl_flowers:double_grass_top"] = "air",
-        ["mcl_core:andesite"] = "mcl_core:diorite",
-        ["mcl_core:diorite"] = "mcl_core:granite",
-        ["mcl_core:granite"] = "mcl_deepslate:tuff",
-        ["mcl_deepslate:tuff"] = "mcl_core:andesite",
-        ["mcl_deepslate:deepslate"] = "mcl_deepslate:deepslate_cobbled",
-        ["mcl_deepslate:deepslate_cobbled"] = "mcl_deepslate:deepslate",
-        ["mcl_core:stone_with_coal"] = "mcl_deepslate:deepslate_with_coal",
-        ["mcl_core:stone_with_iron"] = "mcl_deepslate:deepslate_with_iron",
-        ["mcl_core:stone_with_lapis"] = "mcl_deepslate:deepslate_with_lapis",
-        ["mcl_core:stone_with_gold"] = "mcl_deepslate:deepslate_with_gold",
-        ["mcl_core:stone_with_emerald"] = "mcl_deepslate:deepslate_with_emerald",
-        ["mcl_core:stone_with_redstone"] = "mcl_deepslate:deepslate_with_redstone",
-        ["mcl_core:stone_with_redstone_lit"] = "mcl_deepslate:deepslate_with_redstone_lit",
-        ["mcl_core:stone_with_diamond"] = "mcl_deepslate:deepslate_with_diamond",
-        ["mcl_copper:stone_with_copper"] = "mcl_deepslate:deepslate_with_copper",
-        ["mcl_deepslate:deepslate_with_coal"] = "mcl_core:stone_with_coal",
-        ["mcl_deepslate:deepslate_with_iron"] = "mcl_core:stone_with_iron",
-        ["mcl_deepslate:deepslate_with_lapis"] = "mcl_core:stone_with_lapis",
-        ["mcl_deepslate:deepslate_with_gold"] = "mcl_core:stone_with_gold",
-        ["mcl_deepslate:deepslate_with_emerald"] = "mcl_core:stone_with_emerald",
-        ["mcl_deepslate:deepslate_with_redstone"] = "mcl_core:stone_with_redstone",
-        ["mcl_deepslate:deepslate_with_diamond"] = "mcl_core:stone_with_diamond",
-        ["mcl_deepslate:deepslate_with_copper"] = "mcl_copper:stone_with_copper",
-        ["mcl_end:end_stone"] = "mcl_nether:netherrack",
-        ["mcl_nether:soul_sand"] = "mcl_blackstone:soul_soil",
-        ["mcl_blackstone:soul_soil"] = "mcl_nether:soul_sand",
+-- exchangeclone.node_transmutations moved to zzzz_exchangeclone_init/init.lua so it would load first
+-- This means it can be modified by other mods
 
-        ["default:stone"] = "default:cobble",
-        ["default:desert_stone"] = "default:desert_cobble",
-        ["default:cobble"] = "default:stone",
-        ["default:desert_cobble"] = "default:desert_stone",
-        ["default:dirt_with_grass"] = "default:sand",
-        ["default:dirt_with_snow"] = "default:sand",
-        ["default:dirt_with_dry_grass"] = "default:sand",
-        ["default:dry_dirt_with_dry_grass"] = "default:desert_sand",
-        ["default:dirt"] = "default:sand",
-        ["default:dry_dirt"] = "default:desert_sand",
-        ["default:dirt_with_coniferous_litter"] = "default:sand",
-        ["default:dirt_with_rainforest_litter"] = "default:sand",
-        ["default:sand"] = "default:dirt_with_grass",
-        ["default:desert_sand"] = "default:dry_dirt_with_dry_grass",
-        ["default:silver_sand"] = "default:dirt_with_grass",
-        ["default:grass_1"] = "default:dry_shrub",
-        ["default:grass_2"] = "default:dry_shrub",
-        ["default:grass_3"] = "default:dry_shrub",
-        ["default:grass_4"] = "default:dry_shrub",
-        ["default:grass_5"] = "default:dry_shrub",
-        ["default:gravel"] = "default:sandstone",
-        ["default:sandstone"] = "default:gravel",
-        ["default:desert_sandstone"] = "default:gravel",
-        ["default:silver_sandstone"] = "default:gravel",
-        ["default:water_source"] = "default:ice",
-        ["default:river_water_source"] = "default:ice",
-        ["default:ice"] = "default:water_source",
-        ["default:lava_source"] = "default:obsidian",
-        ["default:obsidian"] = "default:lava_source",
-        ["flowers:mushroom_brown"] = "flowers:mushroom_red",
-        ["flowers:mushroom_red"] = "flowers:mushroom_brown",
-        ["flowers:dandelion_yellow"] = "flowers:rose",
-        ["flowers:rose"] = "flowers:dandelion_yellow",
-        ["default:acacia_tree"] = "default:tree",
-        ["default:tree"] = "default:aspen_tree",
-        ["default:aspen_tree"] = "default:jungletree",
-        ["default:jungletree"] = "default:pine_tree",
-        ["default:pine_tree"] = "default:acacia_tree",
-        ["default:acacia_leaves"] = "default:leaves",
-        ["default:leaves"] = "default:aspen_leaves",
-        ["default:aspen_leaves"] = "default:jungleleaves",
-        ["default:jungleleaves"] = "default:pine_needles",
-        ["default:pine_needles"] = "default:acacia_leaves",
-        ["default:acacia_bush_leaves"] = "default:bush_leaves",
-        ["default:bush_leaves"] = "default:pine_bush_needles",
-        ["default:pine_bush_needles"] = "default:acacia_bush_leaves",
-        ["default:acacia_bush_stem"] = "default:bush_stem",
-        ["default:bush_stem"] = "default:pine_bush_stem",
-        ["default:pine_bush_stem"] = "default:acacia_bush_stem",
-        ["default:glass"] = "default:sand",
-    },
-    { --sneak+use
-        ["mcl_core:stone"] = "mcl_core:dirt_with_grass",
-        ["mcl_core:cobble"] = "mcl_core:dirt_with_grass",
-        ["mcl_deepslate:deepslate"] = "mcl_core:podzol",
-        ["mcl_deepslate:deepslate_cobbled"] = "mcl_core:podzol",
-        ["mcl_core:sand"] = "mcl_core:cobble",
-        ["mcl_core:redsand"] = "mcl_core:cobble",
-        ["mcl_core:dirt_with_grass"] = "mcl_core:cobble",
-        ["mcl_core:dirt"] = "mcl_core:cobble",
-        ["mcl_core:podzol"] = "mcl_deepslate:deepslate_cobbled",
-        ["mcl_deepslate:tuff"] = "mcl_core:granite",
-        ["mcl_core:granite"] = "mcl_core:diorite",
-        ["mcl_core:diorite"] = "mcl_core:andesite",
-        ["mcl_core:andesite"] = "mcl_deepslate:tuff",
-        ["mcl_core:acacialeaves"] = "mcl_core:spruceleaves",
-        ["mcl_core:birchleaves"] = "mcl_core:acacialeaves",
-        ["mcl_core:darkleaves"] = "mcl_core:birchleaves",
-        ["mcl_core:jungleleaves"] = "mcl_core:darkleaves",
-        ["mcl_mangrove:mangroveleaves"] = "mcl_core:jungleleaves",
-        ["mcl_core:leaves"] = "mcl_mangrove:mangroveleaves",
-        ["mcl_core:spruceleaves"] = "mcl_core:leaves",
-        ["mcl_core:acaciatree"] = "mcl_core:sprucetree",
-        ["mcl_core:birchtree"] = "mcl_core:acaciatree",
-        ["mcl_core:darktree"] = "mcl_core:birchtree",
-        ["mcl_core:jungletree"] = "mcl_core:darktree",
-        ["mcl_mangrove:mangrove_tree"] = "mcl_core:jungletree",
-        ["mcl_core:tree"] = "mcl_mangrove:mangrove_tree",
-        ["mcl_core:sprucetree"] = "mcl_core:tree",
-        ["mcl_nether:netherrack"] = "mcl_end:end_stone",
-
-        ["default:stone"] = "default:dirt_with_grass",
-        ["default:cobble"] = "default:dirt_with_grass",
-        ["default:desert_stone"] = "default:dry_dirt_with_dry_grass",
-        ["default:desert_cobble"] = "default:dry_dirt_with_dry_grass",
-        ["default:dry_dirt_with_dry_grass"] = "default:desert_cobble",
-        ["default:dirt_with_dry_grass"] = "default:cobble",
-        ["default:dirt_with_grass"] = "default:cobble",
-        ["default:dirt_with_snow"] = "default:cobble",
-        ["default:dirt"] = "default:cobble",
-        ["default:dry_dirt"] = "default:desert_cobble",
-        ["default:dirt_with_coniferous_litter"] = "default:cobble",
-        ["default:dirt_with_rainforest_litter"] = "default:cobble",
-        ["default:sand"] = "default:cobble",
-        ["default:desert_sand"] = "default:desert_cobble",
-        ["default:silver_sand"] = "default:cobble",
-        ["default:acacia_tree"] = "default:pine_tree",
-        ["default:tree"] = "default:acacia_tree",
-        ["default:aspen_tree"] = "default:tree",
-        ["default:jungletree"] = "default:aspen_tree",
-        ["default:pine_tree"] = "default:jungletree",
-        ["default:acacia_leaves"] = "default:pine_needles",
-        ["default:leaves"] = "default:acacia_leaves",
-        ["default:aspen_leaves"] = "default:leaves",
-        ["default:jungleleaves"] = "default:aspen_leaves",
-        ["default:pine_needles"] = "default:jungleleaves",
-        ["default:acacia_bush_leaves"] = "default:pine_bush_needles",
-        ["default:bush_leaves"] = "default:acacia_bush_leaves",
-        ["default:pine_bush_needles"] = "default:bush_leaves",
-        ["default:acacia_bush_stem"] = "default:pine_bush_stem",
-        ["default:bush_stem"] = "default:acacia_bush_stem",
-        ["default:pine_bush_stem"] = "default:bush_stem",
-    }
-}
-
-exchangeclone.stone_action = {
-    start_action = function(player, center, range, mode)
-        -- Yes, I named the cooldown Phil. His last name is Osophersstone.
-        if exchangeclone.check_cooldown(player, "phil") then return end
-        exchangeclone.play_ability_sound(player)
-        return mode
-    end,
-    action = function(player, pos, node, mode)
-        local new_node = exchangeclone.node_transmutations[mode][node.name]
-        if not new_node and mode == 2 then
-            new_node = exchangeclone.node_transmutations[1][node.name]
-        end
-        if new_node then
-            if minetest.is_protected(pos, player:get_player_name()) then
-                minetest.record_protection_violation(pos, player:get_player_name())
-            else
-                node.name = new_node
-                minetest.swap_node(pos, node)
-            end
-        end
-        return true
-    end,
-    end_action = function(player, center, range, data)
-        exchangeclone.start_cooldown(player, "phil", 0.3)
+function exchangeclone.phil_action(itemstack, player, center)
+    if exchangeclone.check_cooldown(player, "phil") then return end
+    local mode = player:get_player_control().sneak and 2 or 1
+    local start_node = minetest.get_node(center)
+    local transmute_name = exchangeclone.node_transmutations[mode][start_node.name]
+    if not transmute_name and mode == 2 then
+        transmute_name = exchangeclone.node_transmutations[1][start_node.name]
     end
-}
+    if not transmute_name then return end
+	local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
+    local nodes
+    if charge == 1 then
+        nodes = {center}
+    else
+        local vector1, vector2 = exchangeclone.process_range(player, "basic_radius", charge)
+        if not (vector1 and vector2) then return end
+        local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
+        nodes = minetest.find_nodes_in_area(pos1, pos2, start_node.name)
+    end
+    exchangeclone.play_ability_sound(player)
+    for i, pos in pairs(nodes) do
+        if minetest.is_protected(pos, player:get_player_name()) then
+            minetest.record_protection_violation(pos, player:get_player_name())
+        else
+            local node = minetest.get_node(pos)
+            node.name = transmute_name
+            minetest.swap_node(pos, node)
+        end
+    end
+    exchangeclone.start_cooldown(player, "phil", 0.3)
+end
 
 local on_left_click
 if exchangeclone.mcl then
@@ -284,16 +98,8 @@ local function on_right_click(itemstack, player, pointed_thing)
     if player:get_player_control().aux1 then
         return exchangeclone.charge_update(itemstack, player)
     end
-    local center = player:get_pos()
     if pointed_thing and pointed_thing.type == "node" then
-        center = pointed_thing.under
-    end
-    if player:get_player_control().sneak then
-        local range = tonumber(itemstack:get_meta():get_int("exchangeclone_tool_charge"))
-        exchangeclone.node_radius_action(player, center, range, exchangeclone.stone_action, 2)
-    else
-        local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
-        exchangeclone.node_radius_action(player, center, range, exchangeclone.stone_action, 1)
+        exchangeclone.phil_action(itemstack, player, pointed_thing.under)
     end
 end
 
@@ -307,6 +113,8 @@ minetest.register_tool("exchangeclone:philosophers_stone", {
     on_secondary_use = on_right_click,
     groups = {philosophers_stone = 1, disable_repair = 1, fire_immune = 1}
 })
+
+exchangeclone.set_charge_type("exchangeclone:philosophers_stone", "phil")
 
 local diamond = exchangeclone.itemstrings.diamond
 local corner = exchangeclone.itemstrings.glowstoneworth

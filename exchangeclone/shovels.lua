@@ -19,17 +19,13 @@ function exchangeclone.shovel_action(itemstack, player, center)
         (not player:get_player_control().sneak or charge == 1) then
             action = "unpath"
         elseif start_node.name == exchangeclone.itemstrings.gravel or start_node.name == exchangeclone.itemstrings.clay then
-            if player:get_player_control().sneak and charge > 1 then
+            if charge > 1 then
                 action = "crumbly"
             else
                 return
             end
-        else
-            if player:get_player_control().sneak and charge > 1  then
-                action = "crumbly_flat"
-            else
-                return
-            end
+        elseif charge > 1  then
+            action = "crumbly_flat"
         end
     end
 
@@ -69,10 +65,10 @@ function exchangeclone.shovel_action(itemstack, player, center)
                 if exchangeclone.mcla then
                     local on_shovel_place = minetest.registered_items[node.name]._on_shovel_place
                     if on_shovel_place then
-                        on_shovel_place(itemstack, player, pos)
+                        on_shovel_place(itemstack, player, {type="node",under=pos,above=vector.offset(pos,0,1,0)})
                     end
                 else -- in MCL2, it only searches for pathable nodes
-                    if minetest.get_node(vector.offset(center,0,1,0)).name == "air" then
+                    if minetest.get_node(vector.offset(pos,0,1,0)).name == "air" then
                         minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
                         minetest.swap_node(pos, {name="mcl_core:grass_path"})
                     end

@@ -1,7 +1,7 @@
 -- The z's at the beginning of this mod's name (zzzz_exchangeclone_init) are to ensure that it
 -- loads first, since Minetest loads mods in reverse alphabetical order.
 
-exchangeclone = {recipes = {}, base_energy_values = {}, group_values = {}}
+exchangeclone = {recipes = {}}
 
 if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
     error("ExchangeClone requires Minetest Game, MineClone2, or MineClonia (and possibly variant subgames).\nPlease use one of those games.")

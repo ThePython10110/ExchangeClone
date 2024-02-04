@@ -9,7 +9,7 @@ function exchangeclone.hammer_action(itemstack, player, center)
 
 	local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
 	exchangeclone.play_ability_sound(player)
-	local nodes = minetest.find_nodes_in_area(pos1, pos2, {"group:"..exchangeclone.stone_group})
+	local nodes = minetest.find_nodes_in_area(pos1, pos2, {"group:"..exchangeclone.pickaxe_group})
 	for _, pos in pairs(nodes) do
 		if minetest.is_protected(pos, player:get_player_name()) then
 			minetest.record_protection_violation(pos, player:get_player_name())
@@ -75,7 +75,7 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
     on_secondary_use = hammer_on_place
 })
 
-exchangeclone.register_multidig_tool("exchangeclone:dark_matter_hammer", {"group:"..exchangeclone.stone_group})
+exchangeclone.register_multidig_tool("exchangeclone:dark_matter_hammer", {"group:"..exchangeclone.pickaxe_group})
 minetest.register_alias("exchangeclone:dark_matter_hammer_3x3", "exchangeclone:dark_matter_hammer")
 exchangeclone.set_charge_type("exchangeclone:dark_matter_hammer", "dark_matter")
 
@@ -103,7 +103,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
     on_secondary_use = hammer_on_place,
 })
 
-exchangeclone.register_multidig_tool("exchangeclone:red_matter_hammer", {"group:"..exchangeclone.stone_group})
+exchangeclone.register_multidig_tool("exchangeclone:red_matter_hammer", {"group:"..exchangeclone.pickaxe_group})
 minetest.register_alias("exchangeclone:red_matter_hammer_3x3", "exchangeclone:red_matter_hammer")
 exchangeclone.set_charge_type("exchangeclone:red_matter_hammer", "red_matter")
 

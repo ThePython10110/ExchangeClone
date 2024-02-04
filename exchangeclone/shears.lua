@@ -21,8 +21,7 @@ function exchangeclone.shear_action(itemstack, player, center)
                 exchangeclone.drop_items_on_player(pos, drops, player)
                 -- Annoying manual override
                 if node.name:sub(1,18) == "mcl_ocean:seagrass" then
-                    minetest.set_node(pos, {name="sand"})
-                    nodes[i] = nil
+                    minetest.set_node(pos, {name="mcl_core:sand"})
                 end
             end
         end
@@ -42,22 +41,20 @@ local shears_rightclick = function(itemstack, player, pointed_thing)
         return exchangeclone.charge_update(itemstack, player)
     end
 
-    if (pointed_thing.type == "node") and pointed_thing.above and not player:get_player_control().sneak  then
+    if (pointed_thing.type == "node") and not player:get_player_control().sneak  then
         local node = minetest.get_node(pointed_thing.under)
+        local on_shears_place = minetest.registered_items[node.name]._on_shears_place
+        if on_shears_place then
+            return on_shears_place(itemstack, player, pointed_thing)
+        end
         if node.name == "mcl_farming:pumpkin" and (pointed_thing.above.y ~= pointed_thing.under.y) then
             minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pointed_thing.above}, true)
             local dir = vector.subtract(pointed_thing.under, pointed_thing.above)
             local param2 = minetest.dir_to_facedir(dir)
             minetest.set_node(pointed_thing.under, {name="mcl_farming:pumpkin_face", param2 = param2})
             minetest.add_item(pointed_thing.above, "mcl_farming:pumpkin_seeds 4")
-        end
-    end
-
-    if pointed_thing.type == "node" then
-        local node = minetest.get_node(pointed_thing.under)
-        if minetest.get_item_group(node.name, "shearsy") > 0
-        or minetest.get_item_group(node.name, "shearsy_cobweb") > 0
-        or minetest.get_item_group(node.name, "leaves") > 0 then
+        elseif minetest.get_item_group(node.name, "shearsy") > 0
+        or minetest.get_item_group(node.name, "shearsy_cobweb") then
             exchangeclone.shear_action(itemstack, player, pointed_thing.under)
         end
     end
@@ -80,11 +77,14 @@ minetest.register_tool("exchangeclone:dark_matter_shears", {
     sound = { breaks = "default_tool_breaks" },
     _mcl_toollike_wield = true,
     _mcl_diggroups = {
-        shearsy = { speed = 14, level = 2, uses = 0 },
-        shearsy_wool = { speed = 14, level = 2, uses = 0 },
-        shearsy_cobweb = { speed = 14, level = 2, uses = 0 }
+        shearsy = { speed = 14, level = 5, uses = 0 },
+        shearsy_wool = { speed = 14, level = 5, uses = 0 },
+        shearsy_cobweb = { speed = 14, level = 5, uses = 0 }
     },
 })
+
+
+exchangeclone.set_charge_type("exchangeclone:dark_matter_shears", "dark_matter")
 
 minetest.register_tool("exchangeclone:red_matter_shears", {
     description = "Red Matter Shears",
@@ -102,11 +102,13 @@ minetest.register_tool("exchangeclone:red_matter_shears", {
     sound = { breaks = "default_tool_breaks" },
     _mcl_toollike_wield = true,
     _mcl_diggroups = {
-        shearsy = { speed = 16, level = 3, uses = 0 },
-        shearsy_wool = { speed = 16, level = 3, uses = 0 },
-        shearsy_cobweb = { speed = 16, level = 3, uses = 0 }
+        shearsy = { speed = 16, level = 6, uses = 0 },
+        shearsy_wool = { speed = 16, level = 6, uses = 0 },
+        shearsy_cobweb = { speed = 16, level = 6, uses = 0 }
     },
 })
+
+exchangeclone.set_charge_type("exchangeclone:red_matter_shears", "red_matter")
 
 local special_shears = {
     ["exchangeclone:dark_matter_shears"] = true,

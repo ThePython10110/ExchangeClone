@@ -18,31 +18,40 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 			return -- Don't do AOE when pointed at sheep/mooshroom, shear instead.
 		end
 	end
+
 	if pointed_thing.type == "node" then
 		local node = minetest.get_node(pointed_thing.under)
-		local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
-		local center = player:get_pos()
-		if pointed_thing.type == "node" then
-			center = pointed_thing.under
+		local on_shears_place = minetest.registered_items[node.name]._on_shears_place
+		if on_shears_place then
+			return on_shears_place(itemstack, player, pointed_thing)
 		end
-		if minetest.get_item_group(node.name, "exchangeclone_dirt") > 0 then
+		if node.name == "mcl_farming:pumpkin" and (pointed_thing.above.y ~= pointed_thing.under.y) then
+			minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pointed_thing.above}, true)
+			local dir = vector.subtract(pointed_thing.under, pointed_thing.above)
+			local param2 = minetest.dir_to_facedir(dir)
+			minetest.set_node(pointed_thing.under, {name="mcl_farming:pumpkin_face", param2 = param2})
+			minetest.add_item(pointed_thing.above, "mcl_farming:pumpkin_seeds 4")
+		elseif minetest.get_item_group(node.name, "exchangeclone_dirt") > 0 then
 			if player:get_player_control().sneak then
-				local current_name = itemstack:get_name()
-				if string.sub(current_name, -4, -1) == "_3x3" then
-					itemstack:set_name(string.sub(current_name, 1, -5))
-					minetest.chat_send_player(player:get_player_name(), "Single node mode")
+				local meta = itemstack:get_meta()
+				local current_mode = meta:get_string("exchangeclone_multidig_mode")
+				if current_mode == "3x3" then
+					meta:set_string("exchangeclone_multidig_mode", "1x1")
+					minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
 				else
-					itemstack:set_name(current_name.."_3x3")
-					minetest.chat_send_player(player:get_player_name(), "3x3 mode")
+					meta:set_string("exchangeclone_multidig_mode", "3x3")
+					minetest.chat_send_player(player:get_player_name(), S("3x3 mode"))
 				end
 				return itemstack
 			else
-				exchangeclone.node_radius_action(player, center, range, exchangeclone.hoe_action, itemstack)
+				exchangeclone.hoe_action(itemstack, player, pointed_thing.under)
 			end
 		elseif minetest.get_item_group(node.name, "tree") > 0 then
-			exchangeclone.node_radius_action(player, center, range, exchangeclone.axe_action, itemstack)
-		elseif minetest.get_item_group(node.name, "shearsy") > 0 or minetest.get_item_group(node.name, "shearsy_cobweb") > 0 then
-			exchangeclone.node_radius_action(player, center, range, exchangeclone.shear_action, itemstack)
+			exchangeclone.axe_action(itemstack, player, pointed_thing.under)
+		elseif exchangeclone.mcl
+		and (minetest.get_item_group(node.name, "shearsy") > 0
+		or minetest.get_item_group(node.name, "shearsy_cobweb") > 0) then
+			exchangeclone.shear_action(itemstack, player, pointed_thing.under)
 		end
 	else
 		local damage_all = itemstack:get_meta():get_int("exchangeclone_damage_all")
@@ -59,12 +68,12 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 			return itemstack
 		end
 
-		local aoe_function = exchangeclone.aoe_attack({damage = 1000, knockback = 20, radius = 10, damage_all = damage_all, cooldown = 0.7})
+		local aoe_function = exchangeclone.aoe_attack({damage = 1000, knockback = 20, radius = 10, damage_all = damage_all, cooldown = 0.625})
 		aoe_function(itemstack, player, pointed_thing)
 	end
 end
 
-local katar_def = {
+minetest.register_tool("exchangeclone:red_katar", {
     description = S("Red Katar").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_red_katar.png",
 	inventory_image = "exchangeclone_red_katar.png",
@@ -86,26 +95,19 @@ local katar_def = {
 	sound = { breaks = "default_tool_breaks" },
 	_mcl_toollike_wield = true,
 	_mcl_diggroups = {
-        exchangeclone_dirt = { speed = 64, level = 8, uses = 0 },
+        exchangeclone_dirt = { speed = 64, level = 7, uses = 0 },
         shearsy = { speed = 64, level = 3, uses = 0 },
-        shearsy_wool = { speed = 64, level = 3, uses = 0 },
-        shearsy_cobweb = { speed = 64, level = 3, uses = 0 },
-		hoey = { speed = 64, level = 8, uses = 0 },
-		swordy = { speed = 64, level = 8, uses = 0 },
-		axey = { speed = 64, level = 8, uses = 0 }
+        shearsy_wool = { speed = 64, level = 7, uses = 0 },
+        shearsy_cobweb = { speed = 64, level = 7, uses = 0 },
+		hoey = { speed = 64, level = 7, uses = 0 },
+		swordy = { speed = 64, level = 7, uses = 0 },
+		axey = { speed = 64, level = 7, uses = 0 }
 	},
-}
+})
 
-minetest.register_tool("exchangeclone:red_katar", table.copy(katar_def))
-
-katar_def.description = S("Red Katar").."\n"..S("3x3 mode")
-katar_def.groups.not_in_creative_inventory = 1
-katar_def._mcl_diggroups.exchangeclone_dirt = {speed = 8, level = 8, uses = 0}
-katar_def.tool_capabilities.groupcaps.exchangeclone_dirt = {times={[1]=0.25,[2]=0.25,[3]=0.25}}
-
-minetest.register_tool("exchangeclone:red_katar_3x3", table.copy(katar_def))
-
-exchangeclone.register_alias("exchangeclone:red_katar", "exchangeclone:red_katar_3x3")
+minetest.register_alias("exchangeclone:red_katar_3x3", "exchangeclone:red_katar")
+exchangeclone.register_multidig_tool("exchangeclone:red_katar", {"group:exchangeclone_dirt"})
+exchangeclone.set_charge_type("exchangeclone:red_katar", "red_multi")
 
 minetest.register_craft({
 	output = "exchangeclone:red_katar",
@@ -114,7 +116,7 @@ minetest.register_craft({
 		"exchangeclone:red_matter_sword",
 		"exchangeclone:red_matter_axe",
 		"group:red_matter_hoe",
-		(exchangeclone.mcl and "exchangeclone:red_matter_shears") or "exchangeclone:red_matter",
+		exchangeclone.mcl and "exchangeclone:red_matter_shears" or "exchangeclone:red_matter",
 		"exchangeclone:red_matter",
 		"exchangeclone:red_matter",
 		"exchangeclone:red_matter",
@@ -124,42 +126,22 @@ minetest.register_craft({
 })
 
 --------------------------------------RED MORNINGSTAR--------------------------------------
-exchangeclone.morningstar_action = {
-    start_action = function(player, center, range, itemstack)
-        if exchangeclone.check_cooldown(player, "shovel") then return end
-        if exchangeclone.check_cooldown(player, "hammer") then return end
-        local data = {}
-		data.itemstack = itemstack
-		exchangeclone.play_ability_sound(player)
-        data.remove_positions = {}
-        return data
-    end,
-    action = function(player, pos, node, data)
-        if ((minetest.get_item_group(node.name, "crumbly") > 0) or (minetest.get_item_group(node.name, "shovely") > 0))
-		or ((minetest.get_item_group(node.name, "cracky") > 0) or (minetest.get_item_group(node.name, "pickaxey") > 0)) then
-            if minetest.is_protected(pos, player:get_player_name()) then
-                minetest.record_protection_violation(pos, player:get_player_name())
-            else
-				local drops = minetest.get_node_drops(node.name, data.itemstack:get_name())
-				exchangeclone.drop_items_on_player(pos, drops, player)
-				table.insert(data.remove_positions, pos)
-            end
-        end
-        return data
-    end,
-    end_action = function(player, center, range, data)
-        exchangeclone.remove_nodes(data.remove_positions)
-		exchangeclone.start_cooldown(player, "shovel", range/4) -- Longish cooldown
-		exchangeclone.start_cooldown(player, "hammer", range/2)
-    end
-}
 
-local torch_itemstring = "default:torch"
-if exchangeclone.mcl then
-    torch_itemstring = "mcl_torches:torch"
-end
-
-local torch_on_place = minetest.registered_items[torch_itemstring].on_place
+--	If pointed_thing has on_rightclick
+--		Run on_rightclick function
+--	Elseif player holding aux1
+-- 		Range update
+-- 	Elseif pointed at node:
+--		If node is an ore:
+--			Vein mine
+--		Elseif node is dirt and MCL:
+--			Shovel action (since paths exist, there has to be a way to do it without sneaking)
+--		Elseif node is shovely and player is sneaking
+--			Shovel action
+--		Elseif node is pickaxey:
+--			Hammer action
+--	Elseif player is sneaking
+--		Update the mode
 
 local function morningstar_on_use(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -168,69 +150,61 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
     end
 
     if player:get_player_control().aux1 then
-		return exchangeclone.charge_update(itemstack, player, 5)
+		return exchangeclone.charge_update(itemstack, player)
     end
 
-	local range = itemstack:get_meta():get_int("exchangeclone_tool_charge")
-	local center = player:get_pos()
-
+	local sneaking = player:get_player_control().sneak
 	if pointed_thing.type == "node" then
-		center = pointed_thing.under
-		if player:get_player_control().sneak then
-			exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action, itemstack)
-			return
-		elseif (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
+		local name = minetest.get_node(pointed_thing.under).name
+		if (minetest.get_item_group(name, "exchangeclone_ore") > 0) then
 			if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
 			exchangeclone.play_ability_sound(player)
 			exchangeclone.multidig_data[player:get_player_name()] = true
 			exchangeclone.mine_vein(player, pointed_thing.under)
 			exchangeclone.multidig_data[player:get_player_name()] = nil
-			exchangeclone.start_cooldown(player, "pickaxe", 0.3)
+			exchangeclone.start_cooldown(player, "pickaxe", 0.5)
 			return
+		elseif minetest.get_item_group(name, "exchangeclone_dirt") > 0 and exchangeclone.mcl then
+			exchangeclone.shovel_action(itemstack, player, pointed_thing.under)
+		elseif minetest.get_item_group(name, exchangeclone.shovel_group) > 0 and sneaking then
+			exchangeclone.shovel_action(itemstack, player, pointed_thing.under)
+		elseif minetest.get_item_group(name, exchangeclone.pickaxe_group) > 0 and sneaking then
+			exchangeclone.hammer_action(itemstack, player, pointed_thing.under)
 		else
-			local player_energy = exchangeclone.get_player_energy(player)
-			torch_on_place(ItemStack(torch_itemstring), player, pointed_thing)
-			exchangeclone.set_player_energy(player, player_energy - math.max(exchangeclone.get_item_energy(torch_itemstring) or 0, 8))
+			exchangeclone.place_torch(player, pointed_thing)
+			exchangeclone.add_player_energy(player, -math.max(exchangeclone.get_item_energy(exchangeclone.itemstrings.torch) or 0, 8))
 			-- If the torch could not be placed, it still costs energy... not sure how to fix that
-			exchangeclone.start_cooldown(player, "pickaxe", 0.3)
 			return
 		end
-	elseif player:get_player_control().sneak then
-		local current_name = itemstack:get_name()
+	elseif sneaking then
 		local meta = itemstack:get_meta()
-		local current_mode = itemstack:get_meta():get_string("exchangeclone_pick_mode")
+		local current_mode = itemstack:get_meta():get_string("exchangeclone_multidig_mode")
 		if current_mode == "" or not current_mode then current_mode = "1x1" end
 		if current_mode == "1x1" then
-			itemstack:set_name(current_name.."_3x3") -- set to 3x3 pick
-			meta:set_string("exchangeclone_pick_mode", "3x3")
+			meta:set_string("exchangeclone_multidig_mode", "3x3")
 			minetest.chat_send_player(player:get_player_name(), S("3x3 mode"))
 		elseif current_mode == "3x3" then
-			itemstack:set_name(string.sub(current_name, 1, -5).."_3x1") -- set to 3x1 pick
-			meta:set_string("exchangeclone_pick_mode", "tall")
+			meta:set_string("exchangeclone_multidig_mode", "3x1_tall")
 			minetest.chat_send_player(player:get_player_name(), S("3x1 tall mode"))
-		elseif current_mode == "tall" then
-			meta:set_string("exchangeclone_pick_mode", "wide")
+		elseif current_mode == "3x1_tall" then
+			meta:set_string("exchangeclone_multidig_mode", "3x1_wide")
 			minetest.chat_send_player(player:get_player_name(), S("3x1 wide mode"))
-		elseif current_mode == "wide" then
-			meta:set_string("exchangeclone_pick_mode", "long")
+		elseif current_mode == "3x1_wide" then
+			meta:set_string("exchangeclone_multidig_mode", "3x1_long")
 			minetest.chat_send_player(player:get_player_name(), S("3x1 long mode"))
-		elseif current_mode == "long" then
-			itemstack:set_name(string.sub(current_name, 1, -5)) -- set to 1x1 pick
-			meta:set_string("exchangeclone_pick_mode", "1x1")
+		elseif current_mode == "3x1_long" then
+			meta:set_string("exchangeclone_multidig_mode", "1x1")
 			minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
 		end
 		return itemstack
-	else
-		exchangeclone.node_radius_action(player, center, range, exchangeclone.morningstar_action, itemstack)
 	end
 end
 
-local morningstar_def = {
+minetest.register_tool("exchangeclone:red_morningstar", {
 	 description = S("Red Morningstar").."\n"..S("Single node mode"),
 	 wield_image = "exchangeclone_red_morningstar.png",
 	 inventory_image = "exchangeclone_red_morningstar.png",
 	 on_secondary_use = morningstar_on_use,
-	 exchangeclone_pick_mode = "1x1",
 	 on_place = morningstar_on_use,
 	 groups = { tool=1, red_morningstar = 1, shovel = 1, hammer=1, pickaxe = 1, dig_speed_class=7, enchantability=0, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
 	 wield_scale = exchangeclone.wield_scale,
@@ -252,33 +226,12 @@ local morningstar_def = {
 		shovely = {speed = 64, level = 7, uses = 0},
 		axey = { speed = 64, level = 7, uses = 0 },
 	 },
-}
+})
 
-minetest.register_tool("exchangeclone:red_morningstar", table.copy(morningstar_def))
-
-for k, v in pairs({cracky = "pickaxey", crumbly = "shovely"}) do
-	morningstar_def.tool_capabilities.groupcaps[k].times = {[1]=0.7,[2]=0.5,[3]=0.25}
-	morningstar_def._mcl_diggroups[v].speed = 70
-end
-morningstar_def.description = S("Red Morningstar").."\n"..S("3x3 mode")
-morningstar_def.groups.not_in_creative_inventory = 1
-morningstar_def.exchangeclone_pick_mode = "3x3"
-
-minetest.register_tool("exchangeclone:red_morningstar_3x3", table.copy(morningstar_def))
-
-exchangeclone.register_alias("exchangeclone:red_morningstar", "exchangeclone:red_morningstar_3x3")
-
-for k, v in pairs({cracky = "pickaxey", crumbly = "shovely"}) do
-	morningstar_def.tool_capabilities.groupcaps[k].times = {[1]=0.6,[2]=0.4,[3]=0.20}
-	morningstar_def._mcl_diggroups[v].speed = 80
-end
-morningstar_def.exchangeclone_pick_mode = "tall"
-
-morningstar_def.description = S("Red Morningstar").."\n"..S("3x1 mode")
-
-minetest.register_tool("exchangeclone:red_morningstar_3x1", table.copy(morningstar_def))
-
-exchangeclone.register_alias("exchangeclone:red_morningstar", "exchangeclone:red_morningstar_3x1")
+minetest.register_alias("exchangeclone:red_morningstar_3x1", "exchangeclone:red_morningstar")
+minetest.register_alias("exchangeclone:red_morningstar_3x3", "exchangeclone:red_morningstar")
+exchangeclone.register_multidig_tool("exchangeclone:red_morningstar", {"group:"..exchangeclone.pickaxe_group, "group:"..exchangeclone.shovel_group})
+exchangeclone.set_charge_type("exchangeclone:red_morningstar", "red_multi")
 
 minetest.register_craft({
 	output = "exchangeclone:red_morningstar",

@@ -38,16 +38,16 @@ See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more in
 Dependencies: Minetest Game or MineClone.
 
 ## Known issues:
-* Dark/Red Matter armor don't work they way they should, especially in MTG. I would greatly appreciate a PR that makes them work more like ProjectE.
+* Dark/Red Matter armor don't work they way they should, especially in MTG. I would greatly appreciate a PR that makes them more like ProjectE.
 * The sword/katar AOE ability does not take upgrades into account. This will probably not be fixed (MCL)
-* For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is new enough that most people are using it.
+* For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper APIs is new enough that most people are using them.
 * Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by dispensers. This will not be fixed.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
 * In Mineclonia, hoppers can put invalid items into Energy Collectors.
-* DM/RM armor isn't great... the armor is (depending on which game you're playing), too good or not good enough. I would love it if someone with more patience would submit a PR to improve them. I would like them to be as close to ProjectE as possible, and as similar as possible between MTG and MCL... but I just hate doing that kind of thing.
 * Tools do not show the wear bar (to show the charge level) when first created or crafted. It only appears after changing the range. This will not be fixed.
+* Unfortunately, caused by the performance improvements to various tool abilities, using the shear ability on sea grass (MCL) will also remove the sand below the sea grass. I can't think of a good way to fix it.
 
-**If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
+**If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
 ![Screenshot](screenshot.png)
 ![Transmutation GUI Screenshot](transmutation_screenshot.png)
@@ -67,22 +67,23 @@ Dependencies: Minetest Game or MineClone.
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
 * Achievements/advancements/awards
-* Improvements to tools
+* Improvements to tools (mostly only in MCL at the moment)
     [x] Wear bar for charge level
-    [ ] Charge levels match ProjectE (both in number and in range)
-    [ ] Charge level affects speed
-    [ ] Correct/accurate speeds compared to ProjectE (hopefully)
-    [ ] Wear bar on Exchange Orbs for energy
-    [ ] Only one item per tool (not a separate 3x3 tool)
-    [ ] Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
-    [ ] Shovels can remove paths (MCL2)
-    [ ] *MAYBE* changes to armor (but it's so hard to get it right)
+    [x] Charge levels match ProjectE (both in number and in range)
+    [x] Charge level affects speed
+    [x] Correct/accurate speeds compared to ProjectE (hopefully)
+    [x] Wear bar on Exchange Orbs for energy
+    [x] Only one item per tool (not a separate 3x3 tool)
+    [x] Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
+    [x] Shovels can remove paths (MCL2)
+    [x] Changes to armor (but it's so hard to get it right)
+        * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are kind of invincible most of the time.
 * Divining rods
 * Swiftwolf's Rending Gale (maybe rename?)
 * Mind, Life, Body and Soul Stones (Mind = MCL only)
 * Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
 * Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
-* Remove deprecated PESA item (add alias to some existing item with 64 energy)
+* Remove and add alias for DM/RM shields
 * Edit wiki:
     * Add pages for:
         * Achievements?
@@ -108,13 +109,19 @@ Dependencies: Minetest Game or MineClone.
 
 #### Full changelog:
 * Changes:
-    * I'm now using a free AI tool called Codeium (no relation to VSCodium), which seems to work well. This obviously isn't a change to the mod, but it makes it easier to do certain things.
-    * The pickaxe vein mining ability is now more efficient, only checking each position once.
-    * Tools do not mine slower in 3x1/3x3 modes (to match ProjectE)
-    * Tools do not have a separate 3x1/3x3 item.
-    * Charge level is now shown by the wear/durability bar
-    * Charge level now affects tool speed
-    * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
+    * I'm started a free AI tool called Codeium (no relation to VSCodium), which seems to work well. This obviously isn't a change to the mod, but it makes it easier to do certain things.
+    * Several improvements to tools:
+        * The pickaxe vein mining ability is now more efficient, only checking each position once.
+        * Tools do not mine slower in 3x1/3x3 modes (to match ProjectE)
+        * Tools do not have a separate 3x1/3x3 item.
+        * Charge level is now shown by the wear/durability bar
+        * Charge level now affects tool speed
+        * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
+        * Several changes to tool abilities (*mostly* making them closer to the ProjectE versions)
+    * Removed the deprecated PESA.
+    * Removed dark and red matter shields (so I could use the same math for MTG and MCL)
+* Bugfixes
+    * The Philosopher's Stone is no longer unable to transmute logs and leaves in Mineclonia.
 
 ### v6.7
 * Made More Ores energy values not MTG-specific

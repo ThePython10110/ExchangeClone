@@ -142,6 +142,9 @@ function exchangeclone.set_orb_itemstack_energy(itemstack, amount)
     meta:set_float("stored_energy", amount)
     meta:set_string("description", S("Exchange Orb").."\n"..S("Current Charge: @1", exchangeclone.format_number(amount)))
     meta:set_string("color", colorstring)
+    local wear = math.min(1, math.max(65535, 65535 - 65535*amount/exchangeclone.orb_max))
+    minetest.log(dump(wear))
+    itemstack:set_wear(wear)
     return itemstack
 end
 
@@ -324,13 +327,18 @@ function exchangeclone.charge_update(itemstack, player)
     local charge_type = exchangeclone.charge_types[itemstack:get_name()]
     local max_charge = exchangeclone.tool_levels.count[charge_type]
     if not max_charge then return itemstack end
-    local charge = itemstack:get_meta():get_int("exchangeclone_tool_charge") or 1
+    local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
     if player:get_player_control().sneak then
-        charge = math.max(1, charge - 1)
-    else
-        charge = math.min(max_charge, charge + 1)
+        if charge > 1 then
+            charge = charge - 1
+            local new_pitch = 1+(charge-3)/8 + (math.random(-10, 10) / 200)
+            minetest.sound_play("exchangeclone_charge_down", {pitch = new_pitch, pos = player:get_pos(), max_hear_distance = 20, })
+        end
+    elseif charge < max_charge then
+        charge = charge + 1
+        local new_pitch = 1+(charge-3)/8 + (math.random(-10, 10) / 200)
+        minetest.sound_play("exchangeclone_charge_up", {pitch = new_pitch, pos = player:get_pos(), max_hear_distance = 20, })
     end
-    minetest.log(charge)
     itemstack:get_meta():set_int("exchangeclone_tool_charge", charge)
     itemstack:set_wear(math.max(1, math.min(65535, 65535-(65535/(max_charge-1))*(charge-1))))
     itemstack = exchangeclone.update_tool_capabilities(itemstack)
@@ -351,6 +359,8 @@ exchangeclone.itemstrings = {
     gravel =            exchangeclone.mcl and "mcl_core:gravel"             or "default:gravel",
     dirt =              exchangeclone.mcl and "mcl_core:dirt"               or "default:dirt",
     clay =              exchangeclone.mcl and "mcl_core:clay"               or "default:clay",
+    sand =              exchangeclone.mcl and "mcl_core:sand"               or "default:sand",
+    torch =             exchangeclone.mcl and "mcl_torches:torch"           or "default:torch"
 }
 
 exchangeclone.energy_aliases = {}
@@ -915,9 +925,9 @@ function exchangeclone.can_dig(pos)
     return true
 end
 
-exchangeclone.stone_group = exchangeclone.mcl and "pickaxey" or "cracky"
+exchangeclone.pickaxe_group = exchangeclone.mcl and "pickaxey" or "cracky"
 
-exchangeclone.dirt_group = exchangeclone.mcl and "shovely" or "crumbly"
+exchangeclone.shovel_group = exchangeclone.mcl and "shovely" or "crumbly"
 
 exchangeclone.multidig_data = {tools = {}, players = {}}
 
@@ -1105,10 +1115,11 @@ end
 
 function exchangeclone.update_tool_capabilities(itemstack)
     itemstack = ItemStack(itemstack) -- don't affect original
-    local meta = itemstack:get_meta()
     local charge_type = exchangeclone.charge_types[itemstack:get_name()]
-    local charge_level = meta:get_int("exchangeclone_tool_charge")
-    local efficiency = exchangeclone.tool_levels.efficiency[charge_type][charge_level+1]
+    if not exchangeclone.tool_levels.efficiency[charge_type] then return itemstack end
+    local meta = itemstack:get_meta()
+    local charge_level = math.max(1, meta:get_int("exchangeclone_tool_charge"))
+    local efficiency = exchangeclone.tool_levels.efficiency[charge_type][charge_level]
     local tool_capabilities = table.copy(minetest.registered_items[itemstack:get_name()].tool_capabilities)
     tool_capabilities.groupcaps = exchangeclone.get_groupcaps(itemstack, efficiency)
     meta:set_tool_capabilities(tool_capabilities)
@@ -1151,5 +1162,19 @@ function exchangeclone.process_range(player, range, charge)
             [vertical] = -range_amounts[2],
             [depth] = player_rotation[depth]*range_amounts[3]
         }
+    end
+end
+
+function exchangeclone.add_transmutation_loop(itemstrings)
+    for i, itemstring in ipairs(itemstrings) do
+        exchangeclone.node_transmutations[1][itemstring] = itemstrings[i+1] or itemstrings[1]
+        exchangeclone.node_transmutations[2][itemstring] = itemstrings[i-1] or itemstrings[#itemstrings]
+    end
+end
+
+function exchangeclone.place_torch(player, pointed_thing)
+    local torch_on_place = minetest.registered_items[exchangeclone.itemstrings.torch].on_place
+    if torch_on_place then
+        torch_on_place(ItemStack(exchangeclone.itemstrings.torch), player, pointed_thing)
     end
 end

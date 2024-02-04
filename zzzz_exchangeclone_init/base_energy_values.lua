@@ -1,3 +1,6 @@
+exchangeclone.group_values = {}
+exchangeclone.base_energy_values = {}
+
 if exchangeclone.mcl then
     --[[ Groups are organized so that order matters. Groups that are lower on the
     list will have their energies applied later, making them  higher priority. It's
@@ -206,8 +209,7 @@ if exchangeclone.mcl then
         exchangeclone.base_energy_values[itemstring] = exchangeclone.base_energy_values[itemstring] or energy_value
     end
     -- TODO: Check after every update
-    exchangeclone.mcl_potion_data = exchangeclone.mcl_potion_data or {}
-    table.insert_all(exchangeclone.mcl_potion_data, { -- automatically assumes base is awkward potion if not specified
+    exchangeclone.mcl_potion_data = { -- automatically assumes base is awkward potion if not specified
         {name = "water", bases = {"mcl_potions:glass_bottle"}, no_arrow = true},
         {name = "awkward", bases = {"mcl_potions:water"}, ingredient = "mcl_nether:nether_wart_item", no_arrow = true},
         {name = "mundane", ingredient_cost = 32, no_arrow = true, custom_base_cost = 0},
@@ -224,7 +226,7 @@ if exchangeclone.mcl then
         {name = "water_breathing", ingredient = "mcl_fishing:pufferfish_raw", plus = true},
         {name = "invisibility", bases = {"mcl_potions:night_vision"}, ingredient = "mcl_potions:fermented_spider_eye", custom_base_cost = 623, plus = true},
         {name = "withering", ingredient = "mcl_flowers:wither_rose", plus = true, two = true}
-    })
+    }
 else
     -- MTG stuff
     table.insert_all(exchangeclone.group_values, {
@@ -308,3 +310,213 @@ table.insert_all(exchangeclone.group_values, {
     {"useless", 0},
     {"exchangeclone_dirt", 1},
 })
+
+
+-- Moved here so other mods could modify it without dependency issues
+exchangeclone.node_transmutations = {
+    { --use (mode 1)
+        -- Basic nodes
+        ["mcl_core:stone"] = "mcl_core:cobble",
+        ["mcl_core:cobble"] = "mcl_core:stone",
+        ["mcl_core:dirt_with_grass"] = "mcl_core:sand",
+        ["mcl_core:dirt"] = "mcl_core:sand",
+        ["mcl_core:sand"] = "mcl_core:dirt_with_grass",
+        ["mcl_core:podzol"] = "mcl_core:redsand",
+        ["mcl_core:redsand"] = "mcl_core:podzol",
+        ["mcl_core:redsandstone"] = "mcl_core:gravel",
+        ["mcl_core:glass"] = "mcl_core:sand",
+        ["mcl_blackstone:blackstone"] = "mcl_blackstone:basalt",
+        ["mcl_blackstone:basalt"] = "mcl_blackstone:blackstone",
+        ["mcl_flowers:double_grass"] = "mcl_flowers:fern",
+        ["mcl_deepslate:deepslate"] = "mcl_deepslate:deepslate_cobbled",
+        ["mcl_deepslate:deepslate_cobbled"] = "mcl_deepslate:deepslate",
+        ["mcl_end:end_stone"] = "mcl_nether:netherrack",
+        ["mcl_nether:soul_sand"] = "mcl_blackstone:soul_soil",
+        ["mcl_blackstone:soul_soil"] = "mcl_nether:soul_sand",
+
+        -- "Frozen" liquids
+        ["mcl_core:obsidian"] = "mcl_core:lava_source",
+        ["mcl_core:ice"] = "mcl_core:water_source",
+
+        -- Plants
+        ["mcl_flowers:tallgrass"] = "mcl_flowers:fern",
+        ["mcl_flowers:fern"] = "mcl_flowers:tallgrass",
+        ["mcl_farming:pumpkin"] = "mcl_farming:melon",
+        ["mcl_farming:melon"] = "mcl_farming:pumpkin",
+        ["mcl_flowers:dandelion"] = "mcl_flowers:poppy",
+        ["mcl_flowers:poppy"] = "mcl_flowers:dandelion",
+        ["mcl_mushrooms:mushroom_brown"] = "mcl_mushrooms:mushroom_red", --technically not plants
+        ["mcl_mushrooms:mushroom_red"] = "mcl_mushrooms:mushroom_brown",
+
+        -- Warped/crimson
+        ["mcl_crimson:warped_fungus"] = "mcl_crimson:crimson_fungus",
+        ["mcl_crimson:warped_hyphae"] = "mcl_crimson:crimson_hyphae",
+        ["mcl_crimson:warped_nylium"] = "mcl_crimson:crimson_nylium",
+        ["mcl_crimson:warped_roots"] = "mcl_crimson:crimson_roots",
+        ["mcl_crimson:warped_wart_block"] = "mcl_nether:nether_wart_block",
+        ["mcl_crimson:crimson_fungus"] = "mcl_crimson:warped_fungus",
+        ["mcl_crimson:crimson_hyphae"] = "mcl_crimson:warped_hyphae",
+        ["mcl_crimson:crimson_nylium"] = "mcl_crimson:warped_nylium",
+        ["mcl_crimson:crimson_roots"] = "mcl_crimson:warped_roots",
+        ["mcl_nether:nether_wart_block"] = "mcl_crimson:warped_wart_block",
+
+        -- Ores
+        ["mcl_core:stone_with_coal"] = "mcl_deepslate:deepslate_with_coal",
+        ["mcl_core:stone_with_iron"] = "mcl_deepslate:deepslate_with_iron",
+        ["mcl_core:stone_with_lapis"] = "mcl_deepslate:deepslate_with_lapis",
+        ["mcl_core:stone_with_gold"] = "mcl_deepslate:deepslate_with_gold",
+        ["mcl_core:stone_with_emerald"] = "mcl_deepslate:deepslate_with_emerald",
+        ["mcl_core:stone_with_redstone"] = "mcl_deepslate:deepslate_with_redstone",
+        ["mcl_core:stone_with_redstone_lit"] = "mcl_deepslate:deepslate_with_redstone_lit",
+        ["mcl_core:stone_with_diamond"] = "mcl_deepslate:deepslate_with_diamond",
+        ["mcl_copper:stone_with_copper"] = "mcl_deepslate:deepslate_with_copper",
+        ["mcl_deepslate:deepslate_with_coal"] = "mcl_core:stone_with_coal",
+        ["mcl_deepslate:deepslate_with_iron"] = "mcl_core:stone_with_iron",
+        ["mcl_deepslate:deepslate_with_lapis"] = "mcl_core:stone_with_lapis",
+        ["mcl_deepslate:deepslate_with_gold"] = "mcl_core:stone_with_gold",
+        ["mcl_deepslate:deepslate_with_emerald"] = "mcl_core:stone_with_emerald",
+        ["mcl_deepslate:deepslate_with_redstone"] = "mcl_core:stone_with_redstone",
+        ["mcl_deepslate:deepslate_with_diamond"] = "mcl_core:stone_with_diamond",
+        ["mcl_deepslate:deepslate_with_copper"] = "mcl_copper:stone_with_copper",
+
+        -- Basic nodes
+        ["default:stone"] = "default:cobble",
+        ["default:desert_stone"] = "default:desert_cobble",
+        ["default:cobble"] = "default:stone",
+        ["default:desert_cobble"] = "default:desert_stone",
+        ["default:dirt_with_grass"] = "default:sand",
+        ["default:dirt_with_snow"] = "default:sand",
+        ["default:dirt_with_dry_grass"] = "default:sand",
+        ["default:dry_dirt_with_dry_grass"] = "default:desert_sand",
+        ["default:dirt"] = "default:sand",
+        ["default:dry_dirt"] = "default:desert_sand",
+        ["default:dirt_with_coniferous_litter"] = "default:sand",
+        ["default:dirt_with_rainforest_litter"] = "default:sand",
+        ["default:sand"] = "default:dirt_with_grass",
+        ["default:desert_sand"] = "default:dry_dirt_with_dry_grass",
+        ["default:silver_sand"] = "default:dirt_with_grass",
+        ["default:sandstone"] = "default:gravel",
+        ["default:desert_sandstone"] = "default:gravel",
+        ["default:silver_sandstone"] = "default:gravel",
+        ["default:gravel"] = "default:sandstone",
+        ["default:glass"] = "default:sand",
+
+        -- "Frozen" liquids
+        ["default:ice"] = "default:water_source",
+        ["default:obsidian"] = "default:lava_source",
+
+        -- Plants
+        ["default:grass_1"] = "default:dry_shrub",
+        ["default:grass_2"] = "default:dry_shrub",
+        ["default:grass_3"] = "default:dry_shrub",
+        ["default:grass_4"] = "default:dry_shrub",
+        ["default:grass_5"] = "default:dry_shrub",
+        ["flowers:mushroom_brown"] = "flowers:mushroom_red",
+        ["flowers:mushroom_red"] = "flowers:mushroom_brown",
+        ["flowers:dandelion_yellow"] = "flowers:rose",
+        ["flowers:rose"] = "flowers:dandelion_yellow",
+    },
+    { --sneak+use (mode 2)
+        ["mcl_core:stone"] = "mcl_core:dirt_with_grass",
+        ["mcl_core:cobble"] = "mcl_core:dirt_with_grass",
+        ["mcl_deepslate:deepslate"] = "mcl_core:podzol",
+        ["mcl_deepslate:deepslate_cobbled"] = "mcl_core:podzol",
+        ["mcl_core:sand"] = "mcl_core:cobble",
+        ["mcl_core:redsand"] = "mcl_core:cobble",
+        ["mcl_core:dirt_with_grass"] = "mcl_core:cobble",
+        ["mcl_core:dirt"] = "mcl_core:cobble",
+        ["mcl_core:podzol"] = "mcl_deepslate:deepslate_cobbled",
+        ["mcl_nether:netherrack"] = "mcl_end:end_stone",
+
+        ["default:stone"] = "default:dirt_with_grass",
+        ["default:cobble"] = "default:dirt_with_grass",
+        ["default:desert_stone"] = "default:dry_dirt_with_dry_grass",
+        ["default:desert_cobble"] = "default:dry_dirt_with_dry_grass",
+        ["default:dry_dirt_with_dry_grass"] = "default:desert_cobble",
+        ["default:dirt_with_dry_grass"] = "default:cobble",
+        ["default:dirt_with_grass"] = "default:cobble",
+        ["default:dirt_with_snow"] = "default:cobble",
+        ["default:dirt"] = "default:cobble",
+        ["default:dry_dirt"] = "default:desert_cobble",
+        ["default:dirt_with_coniferous_litter"] = "default:cobble",
+        ["default:dirt_with_rainforest_litter"] = "default:cobble",
+        ["default:sand"] = "default:cobble",
+        ["default:desert_sand"] = "default:desert_cobble",
+        ["default:silver_sand"] = "default:cobble",
+    }
+}
+if exchangeclone.mcl2 then
+    exchangeclone.add_transmutation_loop({
+        "mcl_core:acacialeaves",
+        "mcl_core:birchleaves",
+        "mcl_core:darkleaves",
+        "mcl_core:jungleleaves",
+        "mcl_mangrove:mangroveleaves",
+        "mcl_core:leaves",
+        "mcl_core:spruceleaves",
+    })
+    exchangeclone.add_transmutation_loop({
+        "mcl_core:acaciatree",
+        "mcl_core:birchtree",
+        "mcl_core:darktree",
+        "mcl_core:jungletree",
+        "mcl_mangrove:mangrovetree",
+        "mcl_core:tree",
+        "mcl_core:sprucetree",
+    })
+elseif exchangeclone.mcla then
+    exchangeclone.add_transmutation_loop({
+        "mcl_lush_caves:azalea_leaves",
+        "mcl_lush_caves:azalea_leaves_flowering",
+        "mcl_trees:leaves_acacia",
+        "mcl_trees:leaves_birch",
+        "mcl_trees:leaves_dark_oak",
+        "mcl_trees:leaves_jungle",
+        "mcl_trees:leaves_mangrove",
+        "mcl_trees:leaves_oak",
+        "mcl_trees:leaves_spruce",
+    })
+    exchangeclone.add_transmutation_loop({
+        "mcl_trees:tree_acacia",
+        "mcl_trees:tree_birch",
+        "mcl_trees:tree_dark_oak",
+        "mcl_trees:tree_jungle",
+        "mcl_trees:tree_mangrove",
+        "mcl_trees:tree_oak",
+        "mcl_trees:tree_spruce",
+    })
+else
+    exchangeclone.add_transmutation_loop({
+        "default:acacia_leaves",
+        "default:leaves",
+        "default:aspen_leaves",
+        "default:jungleleaves",
+        "default:pine_needles"
+    })
+    exchangeclone.add_transmutation_loop({
+        "default:acacia_tree",
+        "default:tree",
+        "default:aspen_tree",
+        "default:jungle_tree",
+        "default:pine_tree",
+    })
+    exchangeclone.add_transmutation_loop({
+        "default:acacia_bush_leaves",
+        "default:bush_leaves",
+        "default:pine_bush_needles"
+    })
+    exchangeclone.add_transmutation_loop({
+        "default:acacia_bush_stem",
+        "default:bush_stem",
+        "default:pine_bush_stem"
+    })
+end
+
+if exchangeclone.mcl then
+    exchangeclone.add_transmutation_loop({
+        "mcl_core:andesite",
+        "mcl_core:diorite",
+        "mcl_core:granite",
+        "mcl_deepslate:tuff"
+    })
+end

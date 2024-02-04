@@ -34,10 +34,15 @@ function exchangeclone.axe_action(itemstack, player, center)
         else
             if strip then
                 if node.param2 == start_node.param2 then
+                    local on_axe_place = minetest.registered_items[node.name]._on_axe_place
+                    if on_axe_place then
+                        on_axe_place(itemstack, player, {type="node",under=pos})
+                    end
                     minetest.swap_node(pos, {name=stripped_variant, param2=node.param2})
                 end
             else
-                local drops = minetest.get_node_drops(node.name, itemstack:get_name())
+                -- specify the tool so the katar doesn't shear all the leaves
+                local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_axe")
                 exchangeclone.drop_items_on_player(pos, drops, player)
             end
         end
@@ -61,7 +66,7 @@ local function axe_on_place(itemstack, player, pointed_thing)
     end
 
     if pointed_thing.type == "node" then
-        if minetest.get_item_group(minetest.get_node(pointed_thing.under), "tree" > 0) then
+        if minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "tree") > 0 then
             exchangeclone.axe_action(itemstack, player, pointed_thing.under)
         end
     end
