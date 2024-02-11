@@ -207,10 +207,10 @@ if exchangeclone.mcl then
         end
     end
 
+    -- Until Minetest fixes an issue, there's no way to make this work correctly.
     mcl_damage.register_modifier(function(obj, damage, reason)
         local start_time = minetest.get_us_time()
         if not obj:is_player() then return end
-        minetest.log(dump({damage, reason}))
         local inv = mcl_util.get_inventory(obj)
         local blocked = 0
         if inv then
