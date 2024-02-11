@@ -52,8 +52,8 @@ Dependencies: Minetest Game or MineClone.
 ![Screenshot](screenshot.png)
 ![Transmutation GUI Screenshot](transmutation_screenshot.png)
 
-## Sources/license:
-* Code: Forked and *heavily* modified from Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (at this point, I'd say 95% of the code is my own). Both this mod and Element Exchange are licenced under GPLv3+. Based on Equivalent Exchange and ProjectE, mods for MineCraft.
+## Sources/license: (note: this will change soon)
+* Code: Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Since then, there have been tons of new bugs and features (at this point, at least 95% of the code is my own). Both this mod and Element Exchange are licenced under GPLv3+. Based on Equivalent Exchange and ProjectE, mods for Minecraft.
 * Textures:
     * Energy Collector, Deconstructor, Constructor: Directly from Element Exchange, GPLv3+.
     * Exchange Orb: *Slightly* modified from Element Exchange (I just changed the color to white so it could change colors correctly)
@@ -67,7 +67,8 @@ Dependencies: Minetest Game or MineClone.
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
 [ ] Achievements/advancements/awards
-* Improvements to tools (mostly only in MCL at the moment)
+[ ] Textures from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
+[ ] Improvements to tools (mostly only in MCL at the moment)
     [x] Wear bar for charge level
     [x] Charge levels match ProjectE (both in number and in range)
     [x] Charge level affects speed
@@ -79,6 +80,7 @@ Dependencies: Minetest Game or MineClone.
     [x] Changes to armor (but it's so hard to get it right)
         * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are kind of invincible most of the time.
     [ ] Remove and add alias for DM/RM shields
+    [ ] Upgrades affect energy value
 [ ] Divining rods
 [ ] Swiftwolf's Rending Gale (maybe rename?)
 [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
