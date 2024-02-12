@@ -36,7 +36,7 @@ if exchangeclone.mcl then
         mcl_formspec.get_itemslot_bg(2*width/3-0.5,1,1,1)
 end
 
--- exchangeclone.node_transmutations moved to zzzz_exchangeclone_init/init.lua so it would load first
+-- exchangeclone.node_transmutations moved to zzzz_exchangeclone_init so it would load first
 -- This means it can be modified by other mods
 
 function exchangeclone.phil_action(itemstack, player, center)
@@ -58,7 +58,7 @@ function exchangeclone.phil_action(itemstack, player, center)
         local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
         nodes = minetest.find_nodes_in_area(pos1, pos2, start_node.name)
     end
-    exchangeclone.play_ability_sound(player)
+    exchangeclone.play_sound(player, "exchangeclone_transmute")
     for i, pos in pairs(nodes) do
         if minetest.is_protected(pos, player:get_player_name()) then
             minetest.record_protection_violation(pos, player:get_player_name())

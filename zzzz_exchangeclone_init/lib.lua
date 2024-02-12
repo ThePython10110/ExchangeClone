@@ -283,11 +283,9 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
 end
 
 -- Plays the sound caused by ExchangeClone abilities
-function exchangeclone.play_ability_sound(player, base_pitch)
+function exchangeclone.play_sound(player, sound, pitch)
     if not player then return end
-    if not base_pitch then base_pitch = 1 end
-    local new_pitch = base_pitch + (math.random(-100, 100) / 500)
-    minetest.sound_play("exchangeclone_ability", {pitch = new_pitch, pos = player:get_pos(), max_hear_distance = 20, })
+    minetest.sound_play("exchangeclone_ability", {pitch = pitch or 1, pos = player:get_pos(), max_hear_distance = 20, })
 end
 
 -- Check the clicked node for a right-click function.
@@ -313,12 +311,12 @@ function exchangeclone.charge_update(itemstack, player)
     if player:get_player_control().sneak then
         if charge > 1 then
             charge = charge - 1
-            local new_pitch = 1+(charge-3)/8 + (math.random(-10, 10) / 200)
-            minetest.sound_play("exchangeclone_charge_down", {pitch = new_pitch, pos = player:get_pos(), max_hear_distance = 20, })
+            local new_pitch = charge/max_charge
+            exchangeclone.play_sound(player, "exchangeclone_charge_down", new_pitch)
         end
     elseif charge < max_charge then
         charge = charge + 1
-        local new_pitch = 1+(charge-3)/8 + (math.random(-10, 10) / 200)
+        local new_pitch = charge/max_charge
         minetest.sound_play("exchangeclone_charge_up", {pitch = new_pitch, pos = player:get_pos(), max_hear_distance = 20, })
     end
     itemstack:get_meta():set_int("exchangeclone_tool_charge", charge)
