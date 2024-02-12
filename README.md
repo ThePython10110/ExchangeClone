@@ -81,7 +81,7 @@ Dependencies: Minetest Game or MineClone.
         * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are kind of invincible most of the time.
     [ ] Remove and add alias for DM/RM shields
     [ ] Upgrades affect energy value
-[ ] Multiple levels of Exchange Orbs (change to Klein Stars)
+[ ] Multiple levels of Exchange Orbs (change to Klein Stars, adjust recipes)
 [ ] Divining rods
 [ ] Swiftwolf's Rending Gale (maybe rename?)
 [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
@@ -98,6 +98,7 @@ Dependencies: Minetest Game or MineClone.
     [ ] Modify tools page
 [ ] Remove page for PESA
 [ ] DM/RM blocks can only be broken by correct (or higher) type.
+[ ] Change energy collector recipes to match ProjectE
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>

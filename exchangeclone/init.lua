@@ -111,7 +111,7 @@ end
 dofile(modpath.."/constructor.lua")
 dofile(modpath.."/deconstructor.lua")
 dofile(modpath.."/energy_collector.lua")
-dofile(modpath.."/orb.lua")
+dofile(modpath.."/klein_stars.lua")
 dofile(modpath.."/craftitems.lua")
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then
 	dofile(modpath.."/armor.lua")

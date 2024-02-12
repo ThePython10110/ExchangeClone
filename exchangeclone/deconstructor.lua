@@ -4,7 +4,7 @@ local formspec =
     "size["..(exchangeclone.mcl and 9 or 8)..",9]"..
     "label[2,1;"..S("Input").."]"..
     "list[context;src;2,2;1,1;]"..
-    "label[5,1;"..S("Orb").."]"..
+    "label[5,1;"..S("Star").."]"..
     "list[context;fuel;5,2;1,1;]"..
     exchangeclone.inventory_formspec(0,5)..
     "listring[current_player;main]"..
@@ -22,17 +22,19 @@ end
 minetest.register_alias("exchangeclone:element_deconstructor", "exchangeclone:deconstructor")
 
 local function deconstructor_action(pos, elapsed)
-    local limit = exchangeclone.orb_max
-    local using_orb = true
+    local limit
+    local using_star = true
     local player
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
 
-    if inv:get_stack("fuel", 1):get_name() ~= "exchangeclone:exchange_orb" then
+    if minetest.get_item_group(inv:get_stack("fuel", 1):get_name(), "klein_star") < 1 then
         limit = exchangeclone.limit
-        using_orb = false
+        using_star = false
         player = minetest.get_player_by_name(meta:get_string("exchangeclone_placer"))
         if not (player and player ~= "") then return end
+    else
+        limit = exchangeclone.get_star_max(inv:get_stack("fuel", 1))
     end
 
     local stack = inv:get_stack("src", 1)
@@ -42,13 +44,13 @@ local function deconstructor_action(pos, elapsed)
     if wear and wear > 0 then
         individual_energy_value = math.max(math.floor(individual_energy_value * ((65536 - wear)/65536)), 1)
     end
-    if stack:get_name() == "exchangeclone:exchange_orb" then
-        individual_energy_value = individual_energy_value + exchangeclone.get_orb_itemstack_energy(stack)
+    if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
+        individual_energy_value = individual_energy_value + exchangeclone.get_star_itemstack_energy(stack)
     end
 
     local current_energy
-    if using_orb then
-        current_energy = exchangeclone.get_orb_energy(inv, "fuel", 1)
+    if using_star then
+        current_energy = exchangeclone.get_star_energy(inv, "fuel", 1)
     else
         current_energy = exchangeclone.get_player_energy(player)
     end
@@ -58,8 +60,8 @@ local function deconstructor_action(pos, elapsed)
     local result = current_energy + energy_value
     if result < 0 or result > limit then return end
 
-    if using_orb then
-        exchangeclone.set_orb_energy(inv, "fuel", 1, result)
+    if using_star then
+        exchangeclone.set_star_energy(inv, "fuel", 1, result)
     else
         exchangeclone.set_player_energy(player, result)
     end
@@ -92,7 +94,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
         return 0
     end
     if listname == "fuel" then
-        if stack:get_name() == "exchangeclone:exchange_orb" then
+        if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
             return stack:get_count()
         else
             return 0
@@ -155,13 +157,13 @@ minetest.register_node("exchangeclone:deconstructor", {
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
     on_timer = deconstructor_action,
-	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(nil, function(stack) return stack:get_name() == "exchangeclone:exchange_orb" end),
+	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(nil, function(stack) return minetest.get_item_group(stack:get_name(), "klein_star") > 0 end),
 	_mcl_hoppers_on_after_push = function(pos)
 		minetest.get_node_timer(pos):start(1.0)
 	end,
 	_on_hopper_in = exchangeclone.mcla_on_hopper_in(
         nil,
-        function(stack) return stack:get_name() == "exchangeclone:exchange_orb" end
+        function(stack) return minetest.get_item_group(stack:get_name(), "klein_star") > 0 end
     ),
 })
 
@@ -186,7 +188,7 @@ if exchangeclone.pipeworks then
                 local meta = minetest.get_meta(pos)
                 local inv = meta:get_inventory()
                 if get_list(direction) == "fuel" then
-                    if stack:get_name() == "exchangeclone:exchange_orb" then
+                    if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
                         return inv:room_for_item("fuel", stack)
                     end
                 else
@@ -207,8 +209,8 @@ end
 minetest.register_craft({
     output = "exchangeclone:deconstructor",
     recipe = {
-        {"exchangeclone:exchange_orb"},
+        {"exchangeclone:klein_star_drei"},
         {recipe_ingredient},
-        {"exchangeclone:exchange_orb"}
+        {"exchangeclone:klein_star_drei"}
     }
 })

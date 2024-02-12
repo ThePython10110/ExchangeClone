@@ -14,7 +14,6 @@ if exchangeclone.mcl2 or exchangeclone.mcla then exchangeclone.mcl = true end
 if not exchangeclone.mcl then exchangeclone.mtg = true end
 
 exchangeclone.pipeworks = minetest.get_modpath("pipeworks")
-exchangeclone.orb_max = minetest.settings:get("exchangeclone.orb_max") or 51200000 -- Max capacity of Klein Star Omega in ProjectE
 exchangeclone.keep_data = minetest.settings:get_bool("exchangeclone.keep_data", false)
 
 local modpath = minetest.get_modpath("zzzz_exchangeclone_init")

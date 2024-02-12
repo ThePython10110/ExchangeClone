@@ -2,7 +2,7 @@ local S = minetest.get_translator()
 
 local formspec =
     "size["..(exchangeclone.mcl and 9 or 8)..",9]"..
-    "label[2,1;"..S("Orb").."]"..
+    "label[2,1;"..S("Star").."]"..
     "list[context;fuel;2,2;1,1;]"..
     "label[3,1;"..S("Source").."]"..
     "list[context;src;3,2;1,1;]"..
@@ -25,12 +25,12 @@ end
 minetest.register_alias("exchangeclone:element_constructor", "exchangeclone:constructor")
 
 local function constructor_action(pos)
-    local using_orb = true
+    local using_star = true
     local player
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
-    if inv:get_stack("fuel", 1):get_name() ~= "exchangeclone:exchange_orb" then
-        using_orb = false
+    if minetest.get_item_group(inv:get_stack("fuel", 1):get_name(), "klein_star" < 1 then
+        using_star = false
         player = minetest.get_player_by_name(meta:get_string("exchangeclone_placer"))
         if not (player and player ~= "") then return end
     end
@@ -45,10 +45,10 @@ local function constructor_action(pos)
             end
         end
         local result = exchangeclone.handle_alias(src_stack)
-        -- make sure orb/player has enough energy
+        -- make sure star/player has enough energy
         local current_energy
-        if using_orb then
-            current_energy = exchangeclone.get_orb_energy(inv, "fuel", 1)
+        if using_star then
+            current_energy = exchangeclone.get_star_energy(inv, "fuel", 1)
         else
             current_energy = exchangeclone.get_player_energy(player)
         end
@@ -57,8 +57,8 @@ local function constructor_action(pos)
             local max_amount = math.min(src_stack:get_stack_max(), math.floor(current_energy/energy_value))
             local added_amount = max_amount - inv:add_item("dst", ItemStack(result.." "..max_amount)):get_count()
             local result_energy = math.min(current_energy, current_energy - (energy_value * added_amount)) -- not sure if "math.min()" is necessary
-            if using_orb then
-                exchangeclone.set_orb_energy(inv, "fuel", 1, result_energy)
+            if using_star then
+                exchangeclone.set_star_energy(inv, "fuel", 1, result_energy)
             else
                 exchangeclone.set_player_energy(player, result_energy)
             end
@@ -90,7 +90,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
         return 0
     end
     if listname == "fuel" then
-        if stack:get_name() == "exchangeclone:exchange_orb" then
+        if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
             return stack:get_count()
         else
             return 0
@@ -155,13 +155,13 @@ minetest.register_node("exchangeclone:constructor", {
     allow_metadata_inventory_take = allow_metadata_inventory_take,
     on_timer = constructor_action,
 	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
-	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(nil, function(stack) return stack:get_name() == "exchangeclone:exchange_orb" end),
+	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(nil, function(stack) return minetest.get_item_group(stack:get_name(), "klein_star") > 0 end),
 	_mcl_hoppers_on_after_push = function(pos)
 		minetest.get_node_timer(pos):start(1.0)
 	end,
 	_on_hopper_in = exchangeclone.mcla_on_hopper_in(
         nil,
-        function(stack) return stack:get_name() == "exchangeclone:exchange_orb" end
+        function(stack) return minetest.get_item_group(stack:get_name(), "klein_star") > 0 end
     ),
 })
 
@@ -186,7 +186,7 @@ if exchangeclone.pipeworks then
                 local meta = minetest.get_meta(pos)
                 local inv = meta:get_inventory()
                 if get_list(direction) == "fuel" then
-                    if stack:get_name() == "exchangeclone:exchange_orb" then
+                    if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
                         return inv:room_for_item("fuel", stack)
                     end
                 else
@@ -207,8 +207,8 @@ minetest.register_craft({
     type = "shaped",
     output = "exchangeclone:constructor",
     recipe = {
-        {"exchangeclone:exchange_orb"},
+        {"exchangeclone:klein_star_drei"},
         {recipe_ingredient},
-        {"exchangeclone:exchange_orb"}
+        {"exchangeclone:klein_star_drei"}
     }
 })

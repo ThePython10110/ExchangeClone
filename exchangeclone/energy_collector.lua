@@ -2,7 +2,7 @@ local S = minetest.get_translator()
 
 local formspec =
     "size["..(exchangeclone.mcl and 9 or 8)..",9]"..
-    "label[3,2;"..S("Orb").."]"..
+    "label[3,2;"..S("Star").."]"..
     "list[context;main;4,2;1,1;]"..
     exchangeclone.inventory_formspec(0,5)..
     "listring[current_player;main]"..
@@ -46,9 +46,9 @@ local function on_timer(pos, elapsed)
     -- get node above
     local above = vector.add({x=0,y=1,z=0}, pos)
 
-    local using_orb = true
+    local using_star = true
     if inv:is_empty("main") then
-        using_orb = false
+        using_star = false
     end
 
     local light = minetest.get_natural_light(above)
@@ -59,14 +59,15 @@ local function on_timer(pos, elapsed)
             return true
         end
         local amount = meta:get_int("collector_amount")
-        if using_orb then
-            local stored = exchangeclone.get_orb_energy(inv, "main", 1)
-            if stored + amount <= exchangeclone.orb_max then
+        if using_star then
+            local max = exchangeclone.get_star_max(inv:get_stack("main", 1))
+            local stored = exchangeclone.get_star_energy(inv, "main", 1)
+            if stored + amount <= max then
                 stored = stored + amount
             else
-                stored = math.max(stored, exchangeclone.orb_max)
+                stored = math.max(stored, max)
             end
-            exchangeclone.set_orb_energy(inv, "main", 1, stored)
+            exchangeclone.set_star_energy(inv, "main", 1, stored)
         else
             local placer = meta:get_string("exchangeclone_placer")
             if placer and placer ~= "" then
@@ -95,7 +96,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
         return 0
     end
     if listname == "main" then
-        if stack:get_name() == "exchangeclone:exchange_orb" then
+        if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
             return stack:get_count()
         else
             return 0
@@ -122,12 +123,12 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
     minetest.register_node(itemstring, {
         description = name.."\nGenerates "..exchangeclone.format_number(amount).." energy/second",
         tiles = {
-            "exchangeclone_energy_collector_base.png"..modifier,
-            "exchangeclone_energy_collector_down.png"..modifier,
-            "exchangeclone_energy_collector_right.png"..modifier,
-            "exchangeclone_energy_collector_right.png"..modifier,
-            "exchangeclone_energy_collector_right.png"..modifier,
-            "exchangeclone_energy_collector_right.png"..modifier
+            "exchangeclone_energy_collector_base.png^(exchangeclone_energy_collector_overlay.png"..modifier..")",
+            "exchangeclone_energy_collector_base.png",
+            "exchangeclone_energy_collector_base.png",
+            "exchangeclone_energy_collector_base.png",
+            "exchangeclone_energy_collector_base.png",
+            "exchangeclone_energy_collector_base.png",
         },
         groups = {cracky = 2, container = 2, pickaxey = 2, energy_collector = amount, tubedevice = 1, tubedevice_receiver = 1},
         _mcl_hardness = 3,
@@ -183,7 +184,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
                 can_insert = function(pos, node, stack, direction)
                     local meta = minetest.get_meta(pos)
                     local inv = meta:get_inventory()
-                    if stack:get_name() == "exchangeclone:exchange_orb" then
+                    if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
                         return inv:room_for_item("main", stack)
                     end
                 end,
@@ -205,7 +206,7 @@ end
 
 exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk1", S("Energy Collector MK1"), 4, "", {
         {glass, glass, glass},
-        {"exchangeclone:exchange_orb", chest, "exchangeclone:exchange_orb"},
+        {"exchangeclone:klein_star_drei", chest, "exchangeclone:klein_star_drei"},
         {iron_block, iron_block, iron_block}
     }
 )

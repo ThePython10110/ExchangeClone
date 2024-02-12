@@ -78,9 +78,9 @@ function exchangeclone.get_item_energy(item)
     end
     local def = minetest.registered_items[item:get_name()]
     if not def then return end
-    if item:get_name() == "exchangeclone:exchange_orb" then
+    if minetest.get_item_group(item:get_name(), "klein_star" then
         if def.energy_value then
-            return def.energy_value + exchangeclone.get_orb_itemstack_energy(item)
+            return def.energy_value + exchangeclone.get_star_itemstack_energy(item)
         end
     end
     if def.energy_value then
@@ -94,69 +94,51 @@ function exchangeclone.map(input, min1, max1, min2, max2)
     return (input - min1) / (max1 - min1) * (max2 - min2) + min2
 end
 
--- Gets the energy stored in a specified exchange_orb itemstack.
-function exchangeclone.get_orb_itemstack_energy(itemstack)
+-- Gets the energy stored in a specified star itemstack.
+function exchangeclone.get_star_itemstack_energy(itemstack)
     if not itemstack then return end
-    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
+    if minetest.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
     return math.max(itemstack:get_meta():get_float("stored_energy"), 0)
 end
 
--- Gets the amount of energy stored in an orb in a specific inventory slot
-function exchangeclone.get_orb_energy(inventory, listname, index)
+-- Gets the amount of energy stored in a star in a specific inventory slot
+function exchangeclone.get_star_energy(inventory, listname, index)
     if not inventory then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    return exchangeclone.get_orb_itemstack_energy(itemstack)
+    return exchangeclone.get_star_itemstack_energy(itemstack)
 end
 
-function exchangeclone.set_orb_itemstack_energy(itemstack, amount)
+function exchangeclone.set_star_itemstack_energy(itemstack, amount)
     if not itemstack or not amount then return end
     if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
-    local old_energy = exchangeclone.get_orb_itemstack_energy(itemstack)
-    if amount > old_energy and old_energy > exchangeclone.orb_max then return end -- don't allow more energy to be put into an over-filled orb
+    local old_energy = exchangeclone.get_star_itemstack_energy(itemstack)
+    local max = exchangeclone.get_star_max(itemstack)
+    if amount > old_energy and old_energy > max then return end -- don't allow more energy to be put into an over-filled star
 
-    -- Square roots will hopefully make it less linear
-    -- And if they don't, I don't really care and I don't want to think about math anymore.
-    local sqrt_amount = math.sqrt(amount)
-    local sqrt_max = math.sqrt(exchangeclone.orb_max)
-
-    local r, g, b = 0, 0, 0
-    if amount <= 0 then
-        -- do nothing
-    elseif sqrt_amount < (sqrt_max/4) then
-        r = exchangeclone.map(sqrt_amount, 0, sqrt_max/4, 0, 255)
-    elseif sqrt_amount < (sqrt_max/2) then
-        g = exchangeclone.map(sqrt_amount, sqrt_max/4, sqrt_max/2, 0, 255)
-        r = 255 - g
-    elseif sqrt_amount < (3*sqrt_max/4) then
-        b = exchangeclone.map(sqrt_amount, sqrt_max/2, 3*sqrt_max/4, 0, 255)
-        g = 255 - b
-    else
-        r = math.min(exchangeclone.map(sqrt_amount, 3*sqrt_max/4, sqrt_max, 0, 255), 255)
-        b = 255
-    end
-
-    local colorstring = minetest.rgba(r,g,b)
     local meta = itemstack:get_meta()
     meta:set_float("stored_energy", amount)
-    meta:set_string("description", S("Exchange Orb").."\n"..S("Current Charge: @1", exchangeclone.format_number(amount)))
-    meta:set_string("color", colorstring)
-    local wear = math.min(1, math.max(65535, 65535 - 65535*amount/exchangeclone.orb_max))
-    minetest.log(dump(wear))
+    meta:set_string("description", itemstack:_mcl_generate_description())
+    local wear = math.min(1, math.max(65535, 65535 - 65535*amount/max))
     itemstack:set_wear(wear)
     return itemstack
 end
 
--- Sets the amount of energy in an orb in a specific inventory slot
-function exchangeclone.set_orb_energy(inventory, listname, index, amount)
+-- Sets the amount of energy in a star in a specific inventory slot
+function exchangeclone.set_star_energy(inventory, listname, index, amount)
     if not inventory or not amount or amount < 0 then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    local new_stack = exchangeclone.set_orb_itemstack_energy(itemstack, amount)
+    local new_stack = exchangeclone.set_star_itemstack_energy(itemstack, amount)
     if not new_stack then return end
     inventory:set_stack(listname, index, new_stack)
+end
+
+function exchangeclone.get_star_max(item)
+    item = ItemStack(item)
+    return item:get_definition().max_capacity or 0
 end
 
 -- HUD stuff (show energy value in bottom right)

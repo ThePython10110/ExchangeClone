@@ -139,8 +139,8 @@ local function handle_inventory(player, inventory, to_list)
             if wear and wear > 1 then
                 individual_energy_value = math.max(math.floor(individual_energy_value * ((65536 - wear)/65536)), 1)
             end
-            if itemstring == "exchangeclone:exchange_orb" then
-                individual_energy_value = individual_energy_value + exchangeclone.get_orb_itemstack_energy(stack)
+            if minetest.get_item_group(itemstring, "klein_star") then
+                individual_energy_value = individual_energy_value + exchangeclone.get_star_itemstack_energy(stack)
             end
             local player_energy = exchangeclone.get_player_energy(player)
             local max_count = math.floor((exchangeclone.limit - player_energy)/individual_energy_value)
@@ -164,11 +164,11 @@ local function handle_inventory(player, inventory, to_list)
         return
     elseif to_list == "charge" then
         local player_energy = exchangeclone.get_player_energy(player)
-        local orb_energy = exchangeclone.get_orb_itemstack_energy(stack)
-        local charge_amount = math.min(exchangeclone.orb_max - orb_energy, player_energy)
+        local star_energy = exchangeclone.get_star_itemstack_energy(stack)
+        local charge_amount = math.min(exchangeclone.get_star_max(stack) - star_energy, player_energy)
         if charge_amount > 0 then
             exchangeclone.add_player_energy(player, 0-charge_amount)
-            exchangeclone.set_orb_energy(inventory, to_list, 1, orb_energy + charge_amount)
+            exchangeclone.set_star_energy(inventory, to_list, 1, star_energy + charge_amount)
             exchangeclone.show_transmutation_table_formspec(player)
         end
     end
@@ -193,7 +193,7 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
     if not check_for_table(player, inventory) then return 0 end
     if to_list == "output" then
         return 0
-    elseif to_list == "charge" and stack:get_name() ~= "exchangeclone:exchange_orb" then
+    elseif to_list == "charge" and minetest.get_item_group(stack:get_name, "klein_star") then
         return 0
     elseif to_list == "learn" then
         if stack:get_name() == "exchangeclone:alchemical_tome" then return count end
@@ -375,7 +375,7 @@ minetest.register_node("exchangeclone:transmutation_table", {
 })
 
 minetest.register_tool("exchangeclone:alchemical_tome", {
-    description = "Alchemical Tome\nOrbs in crafting recipe must be full",
+    description = "Alchemical Tome\Magnum Star Omegas in crafting recipe must be full",
     inventory_image = "exchangeclone_alchemical_tome.png",
     wield_image = "exchangeclone_alchemical_tome.png",
     groups = {disable_repair = 1, fire_immune = 1}
@@ -414,7 +414,7 @@ if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", tr
         output = "exchangeclone:alchemical_tome",
         recipe = {
             {"", book, ""},
-            {"exchangeclone:exchange_orb", "exchangeclone:philosophers_stone", "exchangeclone:exchange_orb"},
+            {"exchangeclone:magnum_star_omega", "exchangeclone:philosophers_stone", "exchangeclone:magnum_star_omega"},
             {"", "exchangeclone:red_matter", ""}
         },
         replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
@@ -423,11 +423,11 @@ end
 
 minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
     if itemstack == ItemStack("exchangeclone:alchemical_tome") then
-        if exchangeclone.get_orb_itemstack_energy(old_craft_grid[4]) >= exchangeclone.orb_max
-        and exchangeclone.get_orb_itemstack_energy(old_craft_grid[6]) >= exchangeclone.orb_max then
-            return
-        else
-            return ItemStack("")
+        for _, i in {4,6} do
+            local stack = old_craft_grid[i]
+            if exchangeclone.get_star_itemstack_energy(stack) < exchangeclone.get_star_max(stack) then
+                return ItemStack("")
+            end
         end
     end
 end)
