@@ -122,7 +122,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
     minetest.register_node(itemstring, {
         description = name.."\nGenerates "..exchangeclone.format_number(amount).." energy/second",
         tiles = {
-            "exchangeclone_energy_collector_up.png"..modifier,
+            "exchangeclone_energy_collector_base.png"..modifier,
             "exchangeclone_energy_collector_down.png"..modifier,
             "exchangeclone_energy_collector_right.png"..modifier,
             "exchangeclone_energy_collector_right.png"..modifier,

@@ -53,8 +53,28 @@ minetest.register_node("exchangeclone:alchemical_coal_block", {
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = get_level(2)}, --ridiculous workaround
-	_mcl_blast_resistance = 6,
-	_mcl_hardness = 5,
+	_mcl_blast_resistance = 8,
+	_mcl_hardness = 7,
+})
+
+minetest.register_node("exchangeclone:mobius_fuel_block", {
+    description = S("Mobius Fuel Block"),
+    tiles = {"exchangeclone_mobius_fuel_block.png"},
+	is_ground_content = false,
+	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
+	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = get_level(2)}, --ridiculous workaround
+	_mcl_blast_resistance = 10,
+	_mcl_hardness = 8,
+})
+
+minetest.register_node("exchangeclone:aeternalis_fuel_block", {
+    description = S("Aeternalis Fuel Block"),
+    tiles = {"exchangeclone_aeternalis_fuel_block.png"},
+	is_ground_content = false,
+	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
+	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = get_level(2)}, --ridiculous workaround
+	_mcl_blast_resistance = 10,
+	_mcl_hardness = 8,
 })
 
 minetest.register_craftitem("exchangeclone:dark_matter", {
