@@ -107,8 +107,6 @@ for color, color_data in pairs(exchangeclone.colors) do
     local bag_modifier = "^[multiply:"..color_data.hex
     if color == "white" then bag_modifier = "" end
     if color == "black" then bag_modifier = "^[invert:rgb" end
-    local chest_modifier = bag_modifier
-    if color == "black" then chest_modifier = "^[invert:rgb^[colorize:#000000:220" end
 
     local function alchemical_bag_action(itemstack, player, pointed_thing)
         local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -163,12 +161,12 @@ for color, color_data in pairs(exchangeclone.colors) do
         groups = {container = 1, advanced_alchemical_chest = 1, cracky = 2, pickaxey = 2},
         paramtype2 = "4dir",
         tiles = {
-            "exchangeclone_advanced_alchemical_chest_top.png"..chest_modifier,
-            "exchangeclone_advanced_alchemical_chest_bottom.png"..chest_modifier,
-            "exchangeclone_advanced_alchemical_chest_side.png"..chest_modifier,
-            "exchangeclone_advanced_alchemical_chest_side.png"..chest_modifier,
-            "exchangeclone_advanced_alchemical_chest_side.png"..chest_modifier,
-            "exchangeclone_advanced_alchemical_chest_front.png"..chest_modifier,
+            "exchangeclone_advanced_alchemical_chest_top.png",
+            "exchangeclone_alchemical_chest_bottom.png",
+            "exchangeclone_alchemical_chest_side.png",
+            "exchangeclone_alchemical_chest_side.png",
+            "exchangeclone_alchemical_chest_side.png",
+            "exchangeclone_alchemical_chest_side.png^(exchangeclone_advanced_alchemical_chest_overlay.png^[multiply:"..color_data.hex..")",
         },
         on_construct = alchemical_on_construct(color_data.name)
     })

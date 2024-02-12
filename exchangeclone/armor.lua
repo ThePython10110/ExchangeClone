@@ -2,7 +2,7 @@ local S = minetest.get_translator()
 
 local function get_armor_texture(type, matter, preview)
     local modifier
-    -- hsl only works in 5.8 which hasn't been released yet
+    -- hsl unfortunately only works in 5.8
     if matter == "dark" then
         modifier = "^[multiply:#222222"
         --modifier = "^[hsl:0:-100:-100^[hsl:0:-100:-100"
@@ -11,7 +11,9 @@ local function get_armor_texture(type, matter, preview)
         --modifier = "^[hsl:-180:100:-100"
     end
     local result
-    if exchangeclone.mcl then
+    if type:sub(1,3) == "inv" then
+        result = "exchangeclone_"..type..".png"
+    elseif exchangeclone.mcl then
         result = "exchangeclone_mcl_"..type.."_base.png"..modifier
     else
         result = "exchangeclone_mtg_"..type.."_base"

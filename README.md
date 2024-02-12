@@ -67,7 +67,7 @@ Dependencies: Minetest Game or MineClone.
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
 [ ] Achievements/advancements/awards
-[ ] Textures from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
+[ ] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
 [ ] Improvements to tools (mostly only in MCL at the moment)
     [x] Wear bar for charge level
     [x] Charge levels match ProjectE (both in number and in range)
@@ -81,6 +81,7 @@ Dependencies: Minetest Game or MineClone.
         * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are kind of invincible most of the time.
     [ ] Remove and add alias for DM/RM shields
     [ ] Upgrades affect energy value
+[ ] Multiple levels of Exchange Orbs (change to Klein Stars)
 [ ] Divining rods
 [ ] Swiftwolf's Rending Gale (maybe rename?)
 [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
@@ -96,6 +97,7 @@ Dependencies: Minetest Game or MineClone.
         [ ] Mind, Life, Body, and Soul Stones
     [ ] Modify tools page
 [ ] Remove page for PESA
+[ ] DM/RM blocks can only be broken by correct (or higher) type.
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
