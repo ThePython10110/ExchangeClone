@@ -362,14 +362,12 @@ minetest.register_craft({
 })
 
 if exchangeclone.mtg then
-    minetest.register_tool("exchangeclone:dark_matter_shield", {
-        description = "Dark Matter Shield (deprecated)\nYou still have this so you can turn it into energy.",
-        wield_image = get_armor_texture("shield", "dark"),
-        inventory_image = get_armor_texture("shield", "dark"),
+    minetest.register_tool("exchangeclone:shield_dark_matter", {
+        description = "Dark Matter Shield (deprecated)\nYou still have this so you can turn it into energy.\nAnd no, it's not supposed to have a texture.",
         groups = {disable_repair = 1, not_in_creative_inventory = 1}
     })
     exchangeclone.register_craft({
-        output = "exchangeclone:dark_matter_shield",
+        output = "exchangeclone:shield_dark_matter",
         type = "shapeless",
         recipe = {
             "exchangeclone:dark_matter",
@@ -379,28 +377,24 @@ if exchangeclone.mtg then
             "exchangeclone:dark_matter",
             "exchangeclone:dark_matter",
             "exchangeclone:dark_matter",
-            "exchangeclone:dark_matter"
         }
     })
 
-    minetest.register_tool("exchangeclone:red_matter_shield", {
-        description = "Red Matter Shield (deprecated)\nYou still have this so you can turn it into energy.",
-        wield_image = get_armor_texture("shield", "red"),
-        inventory_image = get_armor_texture("shield", "red"),
+    minetest.register_tool("exchangeclone:shield_red_matter", {
+        description = "Red Matter Shield (deprecated)\nYou still have this so you can turn it into energy.\nAnd no, it's not supposed to have a texture.",
         groups = {disable_repair = 1, not_in_creative_inventory = 1}
     })
     exchangeclone.register_craft({
-        output = "exchangeclone:red_matter_shield",
+        output = "exchangeclone:shield_red_matter",
         type = "shapeless",
         recipe = {
-            "exchangeclone:dark_matter_shield",
+            "exchangeclone:shield_dark_matter",
             "exchangeclone:red_matter",
             "exchangeclone:red_matter",
             "exchangeclone:red_matter",
             "exchangeclone:red_matter",
             "exchangeclone:red_matter",
             "exchangeclone:red_matter",
-            "exchangeclone:red_matter"
         }
     })
 end
