@@ -82,6 +82,7 @@ Dependencies: Minetest Game or MineClone.
     * [ ] Remove and add alias for DM/RM shields
     * [ ] Upgrades affect energy value
 * [x] Multiple levels of Exchange Orbs (change to Klein Stars, adjust recipes)
+* [x] Fuel storage blocks
 * [ ] Divining rods
 * [ ] Swiftwolf's Rending Gale (maybe rename?)
 * [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
@@ -109,10 +110,18 @@ Dependencies: Minetest Game or MineClone.
 * **NOTE: Updating to this version resets tools to their default mode and range (1x1, range 0). Upgrades will not be affected.**
 * Tools' mining speeds, attack damage, and attack speeds now match ProjectE's
 * Most tools' abilities are more similar to ProjectE's, and are more efficient in some cases.
+* ExchangeClone now uses EE2/ProjectE's textures (I didn't know until recently that EE2's license had been changed to MIT)
 
 #### Full changelog:
+* New features:
+    * Replaced Exchange Orbs with Klein Stars and Magnum Stars
+    * Added storage blocks for Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
 * Changes:
-    * I'm started a free AI tool called Codeium (no relation to VSCodium), which seems to work well. This obviously isn't a change to the mod, but it makes it easier to do certain things.
+    * Most textures and all sounds are now from ProjectE/EE2.
+        * Only (De)Constructors, and worn armor have the original textures.
+        * Textures for Upgrades and Upgraders have been changed.
+        * Textures for Collectors are based on ProjectE's but not identical.
+        * Textures for Alchemical Chests are slightly modified from ProjectE's to make them 16x16 instead of 14x14
     * Several improvements to tools:
         * The pickaxe vein mining ability only checks each position once.
         * Tools do not mine slower in 3x1/3x3 modes (to match ProjectE)
@@ -120,9 +129,12 @@ Dependencies: Minetest Game or MineClone.
         * Charge level is now shown by the wear/durability bar
         * Charge level now affects tool speed
         * Speeds match ProjectE
-        * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
         * Several changes to tool abilities (*mostly* making them closer to the ProjectE versions)
+        * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
     * Removed the deprecated PESA.
+    * Replaced Exchange Orbs with Klein Stars and Magnum Stars
+        * Since Klein Star Omegas have the same capacity as the old Exchange Orbs, they now replace them (meaning players don't lose anything).
+        * Klein Star Ein->Zwei->Drei->Vier->Sphere->Omega, then the same order for Magnum Stars.
 * Bugfixes
     * The Philosopher's Stone no longer fails to transmute logs and leaves in Mineclonia.
 
