@@ -129,7 +129,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
             "exchangeclone_energy_collector_base.png",
             "exchangeclone_energy_collector_base.png",
         },
-        groups = {cracky = 2, container = 2, pickaxey = 2, energy_collector = amount, tubedevice = 1, tubedevice_receiver = 1},
+        groups = {cracky = 2, container = 2, pickaxey = 2, energy_collector = 1, tubedevice = 1, tubedevice_receiver = 1},
         _mcl_hardness = 3,
         _mcl_blast_resistance = 6,
         sounds = exchangeclone.sound_mod.node_sound_metal_defaults(),

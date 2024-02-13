@@ -12,7 +12,7 @@ ExchangeClone is tested with the latest release of Minetest, Minetest Game, Mine
 * Philosopher's Stone
 * Transmutation Table
 * Alchemical Tome
-* Exchange Orb
+* Klein Stars
 * Deconstructor
 * Constructor
 * Energy Collectors
@@ -21,7 +21,6 @@ ExchangeClone is tested with the latest release of Minetest, Minetest Game, Mine
 * Dark and Red Matter Tools
 * Dark and Red Matter Armor
 * Dark and Red Matter Furnaces
-* PESA (deprecated, WILL BE REMOVED in 7.0)
 
 See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more information
 
@@ -66,7 +65,7 @@ Dependencies: Minetest Game or MineClone.
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
 * [ ] Achievements/advancements/awards
-* [ ] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
+* [x] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
 * [ ] Improvements to tools (mostly only in MCL at the moment)
     * [x] Wear bar for charge level
     * [x] Charge levels match ProjectE (both in number and in range)
@@ -89,6 +88,7 @@ Dependencies: Minetest Game or MineClone.
 * [ ] Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
 * [ ] DM/RM blocks can only be broken by correct (or higher) type.
 * [ ] Change energy collector recipes to match ProjectE
+* [ ] Update screenshots
 * [ ] Edit wiki:
     * [ ] Achievements?
     * [ ] Divining rods
@@ -99,6 +99,7 @@ Dependencies: Minetest Game or MineClone.
     * [ ] Modify tools page
     * [ ] Klein Stars
     * [ ] Remove page for PESA
+    * [ ] Update screenshots
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>

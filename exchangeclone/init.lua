@@ -136,6 +136,9 @@ dofile(modpath.."/infinite_food.lua")
 dofile(modpath.."/alchemical_chests.lua")
 dofile(modpath.."/transmutation_table.lua")
 dofile(modpath.."/furnaces.lua")
+if minetest.get_modpath("awards") then
+	dofile(modpath.."/awards.lua")
+end
 
 minetest.register_on_mods_loaded(function()
 	local energy_start_time = minetest.get_us_time()
