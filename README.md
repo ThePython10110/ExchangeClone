@@ -38,14 +38,14 @@ See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more in
 Dependencies: Minetest Game or MineClone.
 
 ## Known issues:
-* Dark/Red Matter armor don't work they way they should, especially in MTG. I would greatly appreciate a PR that makes them work more like ProjectE.
-* The sword/katar AOE ability does not take upgrades into account. This will probably not be fixed (MCL)
-* For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is new enough that most people are using it.
+* The sword/katar AOE ability does not take upgrades (looting, fire aspect, etc.) into account. This will probably not be fixed (MCL)
+* For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is old enough that most people are using it.
 * Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by dispensers. This will not be fixed.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
 * In Mineclonia, hoppers can put invalid items into Energy Collectors.
-* DM/RM tools and armor aren't great... the DM tools are TOO fast and the armor is (depending on which game you're playing), too good or not good enough. I would love it if someone with more patience would submit a PR to improve them. I would like them to be as close to ProjectE as possible, and as similar as possible between MTG and MCL... but I just hate doing that kind of thing.
-* DM tools mine RM nodes too quickly for something that doesn't drop (MCL).
+* DM/RM tools and armor aren't great... the DM tools are TOO fast and the armor is (depending on which game you're playing), too good or not good enough. I would love it if someone with more patience would submit a PR to improve them. I would like them to be as close to ProjectE as possible, and as similar as possible between MTG and MCL... but I just hate doing that kind of thing. Tools will be fixed in v7.0, and armor *might* be (depends on whether [this engine issue](https://github.com/minetest/minetest/issues/14344) gets fixed)
+* DM tools mine RM nodes too quickly for something that doesn't drop (MCL). This will be fixed in v7.0.
+* In Mineclonia, the Philosopher's Stone is unable to transmute wood and leaves. This will be fixed in v7.0.
 
 **If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -86,7 +86,10 @@ Dependencies: Minetest Game or MineClone.
 <details><summary>Look at this fancy expanding changelog</summary>
 
 ### v7.0
-* Nothing yet. See the to-do list above for my plans.
+* Nothing yet. See the to-do list above for my plans and the dev branch on GitHub for my current progress.
+
+### v6.9
+* Fixed a bug where characters were not escaped in the search bar of the  Transmutation Table(t) formspec.
 
 ### v6.8
 * Fixed a crash caused by using tool abilities on certain nodes
