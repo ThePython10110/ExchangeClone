@@ -1,11 +1,11 @@
 local suffixes = {"", "K", "M", "B", "T"}
 
-local function get_amount_label(itemstring, player_energy)
+local function get_amount_label(itemstring, player_emc)
     if not minetest.registered_items[itemstring] then return "" end
-    if player_energy <= 0 then return "0" end
+    if player_emc <= 0 then return "0" end
     local item_energy = exchangeclone.get_item_energy(itemstring)
-    local amount = math.floor(player_energy/item_energy)
-    if player_energy <= 0 then return "0" end
+    local amount = math.floor(player_emc/item_energy)
+    if player_emc <= 0 then return "0" end
     for _, suffix in ipairs(suffixes) do
         if amount < 1000 then
             return amount..suffix
@@ -16,7 +16,7 @@ local function get_amount_label(itemstring, player_energy)
 end
 
 local function get_transmutation_buttons(player, page, x, y)
-    local player_energy = exchangeclone.get_player_energy(player)
+    local player_emc = exchangeclone.get_player_emc(player)
     local pages = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation")) or {}
     if page < 1 then page = 1 end
     if not pages[1] then
@@ -29,7 +29,7 @@ local function get_transmutation_buttons(player, page, x, y)
         local column = (i%4)
         local row = math.floor(i/4)
         if itemstring then
-            buttons = buttons.."item_image_button["..tostring(x+column)..","..tostring(y+row)..";1,1;"..itemstring..";"..itemstring..";"..get_amount_label(itemstring, player_energy).."]"
+            buttons = buttons.."item_image_button["..tostring(x+column)..","..tostring(y+row)..";1,1;"..itemstring..";"..itemstring..";"..get_amount_label(itemstring, player_emc).."]"
         else
             buttons = buttons.."image_button["..tostring(x+column)..","..tostring(y+row)..";1,1;blank.png;empty_button"..tostring(i)..";]"
         end
@@ -52,7 +52,7 @@ end
 
 function exchangeclone.reload_transmutation_list(player, search)
     local meta = player:get_meta()
-    local player_energy = exchangeclone.get_player_energy(player)
+    local player_emc = exchangeclone.get_player_emc(player)
     local items_to_show = minetest.deserialize(meta:get_string("exchangeclone_transmutation_learned_items")) or {}
 	local lang = minetest.get_player_information(player:get_player_name()).lang_code
     local pages = {}
@@ -75,7 +75,7 @@ function exchangeclone.reload_transmutation_list(player, search)
     for _, item in pairs(items_to_show) do
         if type(item) == "string" then
             local energy_value = exchangeclone.get_item_energy(item)
-            if energy_value and energy_value <= player_energy and energy_value > 0 then
+            if energy_value and energy_value <= player_emc and energy_value > 0 then
                 no_duplicates[exchangeclone.handle_alias(item)] = true -- gets rid of duplicates
             end
         end
@@ -102,13 +102,13 @@ local function add_to_output(player, amount, show)
     if minetest.registered_items[item] then
         local energy_value = exchangeclone.get_item_energy(item)
         if not energy_value then return end
-        local player_energy = exchangeclone.get_player_energy(player)
+        local player_emc = exchangeclone.get_player_emc(player)
         local stack_max = ItemStack(item):get_stack_max()
         if amount == true then amount = stack_max end
-        local max_amount = math.min(amount, stack_max, math.floor(player_energy/energy_value))
+        local max_amount = math.min(amount, stack_max, math.floor(player_emc/energy_value))
         local inventory = minetest.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..player:get_player_name()})
         local added_amount = max_amount - inventory:add_item("output", ItemStack(item.." "..max_amount)):get_count()
-        exchangeclone.set_player_energy(player, math.min(player_energy, player_energy - (energy_value * added_amount))) -- not sure if "math.min()" is necessary
+        exchangeclone.set_player_emc(player, math.min(player_emc, player_emc - (energy_value * added_amount))) -- not sure if "math.min()" is necessary
         if show then exchangeclone.show_transmutation_table_formspec(player) end
     end
 end
@@ -142,13 +142,13 @@ local function handle_inventory(player, inventory, to_list)
             if minetest.get_item_group(itemstring, "klein_star") > 0 then
                 individual_energy_value = individual_energy_value + exchangeclone.get_star_itemstack_energy(stack)
             end
-            local player_energy = exchangeclone.get_player_energy(player)
-            local max_count = math.floor((exchangeclone.limit - player_energy)/individual_energy_value)
+            local player_emc = exchangeclone.get_player_emc(player)
+            local max_count = math.floor((exchangeclone.limit - player_emc)/individual_energy_value)
             local add_count = math.min(max_count, stack:get_count())
             local energy_value = individual_energy_value * add_count
-            local result = player_energy + energy_value
+            local result = player_emc + energy_value
             if result < 0 or result > exchangeclone.limit then return end
-            exchangeclone.set_player_energy(player, result)
+            exchangeclone.set_player_emc(player, result)
             local item_index = table.indexof(list, itemstring)
             if item_index == -1 then
                 list[#list+1] = itemstring
@@ -163,12 +163,12 @@ local function handle_inventory(player, inventory, to_list)
     elseif to_list == "forget" then
         return
     elseif to_list == "charge" then
-        local player_energy = exchangeclone.get_player_energy(player)
-        local star_energy = exchangeclone.get_star_itemstack_energy(stack)
-        local charge_amount = math.min(exchangeclone.get_star_max(stack) - star_energy, player_energy)
+        local player_emc = exchangeclone.get_player_emc(player)
+        local star_emc = exchangeclone.get_star_itemstack_energy(stack)
+        local charge_amount = math.min(exchangeclone.get_star_max(stack) - star_emc, player_emc)
         if charge_amount > 0 then
-            exchangeclone.add_player_energy(player, 0-charge_amount)
-            exchangeclone.set_star_energy(inventory, to_list, 1, star_energy + charge_amount)
+            exchangeclone.add_player_emc(player, 0-charge_amount)
+            exchangeclone.set_star_emc(inventory, to_list, 1, star_emc + charge_amount)
             exchangeclone.show_transmutation_table_formspec(player)
         end
     end
@@ -228,11 +228,11 @@ end
 function exchangeclone.show_transmutation_table_formspec(player, data)
     exchangeclone.reload_transmutation_list(player, data and data.search)
     if not data then data = {} end
-    local player_energy = exchangeclone.get_player_energy(player)
+    local player_emc = exchangeclone.get_player_emc(player)
     local selection = data.selection or player:get_meta():get_string("exchangeclone_transmutation_selection")
     local player_name = player:get_player_name()
     local inventory_name = "detached:exchangeclone_transmutation_"..player_name
-    local label = "Transmutation\n"..exchangeclone.format_number(player_energy).." energy"
+    local label = "Transmutation\n"..exchangeclone.format_number(player_emc).." energy"
 
     local formspec =
     "size[9,11]"..

@@ -28,9 +28,9 @@ awards.register_award("exchangeclone:on_the_go", {
     }
 })
 
-awards.register_award("exchangeclone:energy_batteries", {
-    title = "Energy Batteries",
-    description = "Storing energy for a rainy day.",
+awards.register_award("exchangeclone:emc_batteries", {
+    title = "EMC Batteries",
+    description = "Storing EMC for a rainy day.",
     icon = "exchangeclone_klein_star_ein.png",
     trigger = {
         type = "craft",
@@ -38,8 +38,8 @@ awards.register_award("exchangeclone:energy_batteries", {
     }
 })
 
-awards.register_award("exchangeclone:energy_batteries", {
-    title = "BIG Energy Batteries",
+awards.register_award("exchangeclone:big_emc_batteries", {
+    title = "BIG EMC Batteries",
     description = "Holding the universe in your pocket.",
     icon = "exchangeclone_klein_star_omega.png",
     trigger = {
@@ -48,8 +48,8 @@ awards.register_award("exchangeclone:energy_batteries", {
     }
 })
 
-awards.register_award("exchangeclone:big_energy_batteries", {
-    title = "MASSIVE Energy Batteries",
+awards.register_award("exchangeclone:massive_emc_batteries", {
+    title = "MASSIVE EMC Batteries",
     description = "Holding... uhh... the multiverse in your pocket.",
     icon = "exchangeclone_magnum_star_omega.png",
     trigger = {

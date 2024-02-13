@@ -50,9 +50,9 @@ local function deconstructor_action(pos, elapsed)
 
     local current_energy
     if using_star then
-        current_energy = exchangeclone.get_star_energy(inv, "fuel", 1)
+        current_energy = exchangeclone.get_star_emc(inv, "fuel", 1)
     else
-        current_energy = exchangeclone.get_player_energy(player)
+        current_energy = exchangeclone.get_player_emc(player)
     end
     local max_count = math.floor((limit - current_energy)/individual_energy_value)
     local add_count = math.min(max_count, stack:get_count())
@@ -61,9 +61,9 @@ local function deconstructor_action(pos, elapsed)
     if result < 0 or result > limit then return end
 
     if using_star then
-        exchangeclone.set_star_energy(inv, "fuel", 1, result)
+        exchangeclone.set_star_emc(inv, "fuel", 1, result)
     else
-        exchangeclone.set_player_energy(player, result)
+        exchangeclone.set_player_emc(player, result)
     end
     stack:set_count(stack:get_count() - add_count)
     if stack:get_count() == 0 then stack = ItemStack("") end

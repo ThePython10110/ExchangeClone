@@ -102,7 +102,7 @@ function exchangeclone.get_star_itemstack_energy(itemstack)
 end
 
 -- Gets the amount of energy stored in a star in a specific inventory slot
-function exchangeclone.get_star_energy(inventory, listname, index)
+function exchangeclone.get_star_emc(inventory, listname, index)
     if not inventory then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
@@ -127,7 +127,7 @@ function exchangeclone.set_star_itemstack_energy(itemstack, amount)
 end
 
 -- Sets the amount of energy in a star in a specific inventory slot
-function exchangeclone.set_star_energy(inventory, listname, index, amount)
+function exchangeclone.set_star_emc(inventory, listname, index, amount)
     if not inventory or not amount or amount < 0 then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
@@ -147,7 +147,7 @@ local hud_elements = {}
 
 function exchangeclone.update_hud(player)
     local hud_text = hud_elements[player:get_player_name()]
-    player:hud_change(hud_text, "text", S("Personal Energy: @1", exchangeclone.format_number(exchangeclone.get_player_energy(player))))
+    player:hud_change(hud_text, "text", S("Personal Energy: @1", exchangeclone.format_number(exchangeclone.get_player_emc(player))))
 end
 
 minetest.register_on_joinplayer(function(player, last_login)
@@ -168,12 +168,12 @@ minetest.register_on_leaveplayer(function(player, timed_out)
 end)
 
 -- Get a player's personal energy
-function exchangeclone.get_player_energy(player)
+function exchangeclone.get_player_emc(player)
     return tonumber(player:get_meta():get_string("exchangeclone_stored_energy")) or 0
 end
 
 -- Set a player's personal energy
-function exchangeclone.set_player_energy(player, amount)
+function exchangeclone.set_player_emc(player, amount)
     amount = tonumber(amount)
     if not (player and amount) then return end
     if amount < 0 or amount > exchangeclone.limit then return end
@@ -182,9 +182,9 @@ function exchangeclone.set_player_energy(player, amount)
 end
 
 -- Add to a player's personal energy (amount can be negative)
-function exchangeclone.add_player_energy(player, amount)
+function exchangeclone.add_player_emc(player, amount)
     if not (player and amount) then return end
-    exchangeclone.set_player_energy(player, (exchangeclone.get_player_energy(player) or 0) + amount)
+    exchangeclone.set_player_emc(player, (exchangeclone.get_player_emc(player) or 0) + amount)
 end
 
 -- Through trial and error, I have found that this number (1 trillion) works the best.
@@ -597,7 +597,7 @@ function exchangeclone.check_cooldown(player, name)
 end
 
 -- Chat commands:
-minetest.register_chatcommand("add_player_energy", {
+minetest.register_chatcommand("add_player_emc", {
     params = "[player] <value>",
     description = "Add to a player's personal energy (player is self if not included, value can be negative to subtract)",
     privs = {privs = true},
@@ -615,21 +615,21 @@ minetest.register_chatcommand("add_player_energy", {
         end
         target_player = minetest.get_player_by_name(target_name)
         if (not (target_player and value)) or not tonumber(value) then
-            minetest.chat_send_player(name, "Bad command. Use /add_player_energy [player] [value] or /add_player_energy [value]")
+            minetest.chat_send_player(name, "Bad command. Use /add_player_emc [player] [value] or /add_player_emc [value]")
             return
         end
-        local energy = exchangeclone.get_player_energy(target_player)
+        local energy = exchangeclone.get_player_emc(target_player)
         if (energy + value > exchangeclone.limit) or (energy + value < 0) then
             minetest.chat_send_player(name, "Out of bounds; personal energy must be between 0 and 1 trillion.")
             return
         end
-        exchangeclone.add_player_energy(target_player, tonumber(value))
+        exchangeclone.add_player_emc(target_player, tonumber(value))
         minetest.chat_send_player(name, "Added "..exchangeclone.format_number(value).." to "..target_name.."'s personal energy.")
     end
 })
 
 -- Chat commands:
-minetest.register_chatcommand("get_player_energy", {
+minetest.register_chatcommand("get_player_emc", {
     params = "[player]",
     description = "Gets a player's personal energy (player is self if not included).",
     privs = {privs = true},
@@ -643,15 +643,15 @@ minetest.register_chatcommand("get_player_energy", {
         end
         target_player = minetest.get_player_by_name(target_name)
         if not (target_player) then
-            minetest.chat_send_player(name, "Bad command. Use /get_player_energy [player] or /get_player_energy")
+            minetest.chat_send_player(name, "Bad command. Use /get_player_emc [player] or /get_player_emc")
             return
         end
-        local energy = exchangeclone.get_player_energy(target_player)
+        local energy = exchangeclone.get_player_emc(target_player)
         minetest.chat_send_player(name, target_name.."'s personal energy: "..exchangeclone.format_number(energy))
     end
 })
 
-minetest.register_chatcommand("set_player_energy", {
+minetest.register_chatcommand("set_player_emc", {
     params = "[player] <value>",
     description = "Set a player's personal energy (player is self if not included; use 'limit' as value to set it to maximum)",
     privs = {privs = true},
@@ -670,7 +670,7 @@ minetest.register_chatcommand("set_player_energy", {
         end
         target_player = minetest.get_player_by_name(name)
         if (not (target_player and value)) or (not (value == "limit" or tonumber(value))) then
-            minetest.chat_send_player(name, "Bad command. Use /set_player_energy [player] [value] or /set_player_energy [value]")
+            minetest.chat_send_player(name, "Bad command. Use /set_player_emc [player] [value] or /set_player_emc [value]")
             return
         end
         if value:lower() == "limit" then
@@ -679,7 +679,7 @@ minetest.register_chatcommand("set_player_energy", {
             minetest.chat_send_player(name, "Failed to set energy; must be between 0 and 1 trillion.")
             return
         end
-        exchangeclone.set_player_energy(target_player, tonumber(value))
+        exchangeclone.set_player_emc(target_player, tonumber(value))
         minetest.chat_send_player(name, "Set "..target_name.."'s personal energy to "..exchangeclone.format_number(value))
     end
 })

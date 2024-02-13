@@ -45,22 +45,22 @@ local function constructor_action(pos)
             end
         end
         local result = exchangeclone.handle_alias(src_stack)
-        -- make sure star/player has enough energy
-        local current_energy
+        -- make sure star/player has enough EMC
+        local current_emc
         if using_star then
-            current_energy = exchangeclone.get_star_energy(inv, "fuel", 1)
+            current_emc = exchangeclone.get_star_emc(inv, "fuel", 1)
         else
-            current_energy = exchangeclone.get_player_energy(player)
+            current_emc = exchangeclone.get_player_emc(player)
         end
-        local energy_value = exchangeclone.get_item_energy(src_stack:get_name())
-        if energy_value and energy_value > 0 then
-            local max_amount = math.min(src_stack:get_stack_max(), math.floor(current_energy/energy_value))
+        local emc_value = exchangeclone.get_item_energy(src_stack:get_name())
+        if emc_value and emc_value > 0 then
+            local max_amount = math.min(src_stack:get_stack_max(), math.floor(current_emc/emc_value))
             local added_amount = max_amount - inv:add_item("dst", ItemStack(result.." "..max_amount)):get_count()
-            local result_energy = math.min(current_energy, current_energy - (energy_value * added_amount)) -- not sure if "math.min()" is necessary
+            local result_emc = math.min(current_emc, current_emc - (emc_value * added_amount)) -- not sure if "math.min()" is necessary
             if using_star then
-                exchangeclone.set_star_energy(inv, "fuel", 1, result_energy)
+                exchangeclone.set_star_emc(inv, "fuel", 1, result_emc)
             else
-                exchangeclone.set_player_energy(player, result_energy)
+                exchangeclone.set_player_emc(player, result_emc)
             end
         end
     end

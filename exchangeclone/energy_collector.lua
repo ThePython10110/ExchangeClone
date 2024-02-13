@@ -61,19 +61,19 @@ local function on_timer(pos, elapsed)
         local amount = meta:get_int("collector_amount")
         if using_star then
             local max = exchangeclone.get_star_max(inv:get_stack("main", 1))
-            local stored = exchangeclone.get_star_energy(inv, "main", 1)
+            local stored = exchangeclone.get_star_emc(inv, "main", 1)
             if stored + amount <= max then
                 stored = stored + amount
             else
                 stored = math.max(stored, max)
             end
-            exchangeclone.set_star_energy(inv, "main", 1, stored)
+            exchangeclone.set_star_emc(inv, "main", 1, stored)
         else
             local placer = meta:get_string("exchangeclone_placer")
             if placer and placer ~= "" then
                 local player = minetest.get_player_by_name(placer)
                 if player then
-                    exchangeclone.add_player_energy(player, amount)
+                    exchangeclone.add_player_emc(player, amount)
                 end
             end
         end
