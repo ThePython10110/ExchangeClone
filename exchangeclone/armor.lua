@@ -255,13 +255,6 @@ else
         preview = get_armor_texture("boots","dark", true),
         groups = {armor_feet = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1, armor_feather = 1}
     })
-    armor:register_armor("exchangeclone:shield_dark_matter", {
-        description = S("Dark Matter Shield"),
-        texture = get_armor_texture("shield","dark"),
-        inventory_image = get_armor_texture("inv_shield","dark"),
-        preview = get_armor_texture("shield","dark", true),
-        groups = {armor_shield = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
     armor:register_armor("exchangeclone:helmet_red_matter", {
         description = S("Red Matter Helmet"),
         texture = get_armor_texture("helmet","red"),
@@ -289,13 +282,6 @@ else
         inventory_image = get_armor_texture("inv_boots","red"),
         preview = get_armor_texture("boots","red", true),
         groups = {armor_feet = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
-    armor:register_armor("exchangeclone:shield_red_matter", {
-        description = S("Red Matter Shield"),
-        texture = get_armor_texture("shield","red"),
-        inventory_image = get_armor_texture("inv_shield","red"),
-        preview = get_armor_texture("shield","red", true),
-        groups = {armor_shield = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     minetest.register_on_player_hpchange(function(player, hp_change, reason)
         if hp_change < 0 then
@@ -374,21 +360,47 @@ minetest.register_craft({
         {r,"",r},
     }
 })
-if minetest.get_modpath("3d_armor") then
-    minetest.register_craft({
-        output = "exchangeclone:shield_dark_matter",
+
+if exchangeclone.mtg then
+    minetest.register_tool("exchangeclone:dark_matter_shield", {
+        description = "Dark Matter Shield (deprecated)\nYou still have this so you can turn it into energy.",
+        wield_image = get_armor_texture("shield", "dark"),
+        inventory_image = get_armor_texture("shield", "dark"),
+        groups = {disable_repair = 1, not_in_creative_inventory = 1}
+    })
+    exchangeclone.register_craft({
+        output = "exchangeclone:dark_matter_shield",
+        type = "shapeless",
         recipe = {
-            {d,d,d},
-            {d,d,d},
-            {"",d,""},
+            "exchangeclone:dark_matter",
+            "exchangeclone:dark_matter",
+            "exchangeclone:dark_matter",
+            "exchangeclone:dark_matter",
+            "exchangeclone:dark_matter",
+            "exchangeclone:dark_matter",
+            "exchangeclone:dark_matter",
+            "exchangeclone:dark_matter"
         }
     })
-    minetest.register_craft({
-        output = "exchangeclone:shield_red_matter",
+
+    minetest.register_tool("exchangeclone:red_matter_shield", {
+        description = "Red Matter Shield (deprecated)\nYou still have this so you can turn it into energy.",
+        wield_image = get_armor_texture("shield", "red"),
+        inventory_image = get_armor_texture("shield", "red"),
+        groups = {disable_repair = 1, not_in_creative_inventory = 1}
+    })
+    exchangeclone.register_craft({
+        output = "exchangeclone:red_matter_shield",
+        type = "shapeless",
         recipe = {
-            {r,r,r},
-            {r,r,r},
-            {"exchangeclone:shield_dark_matter",r,""},
+            "exchangeclone:dark_matter_shield",
+            "exchangeclone:red_matter",
+            "exchangeclone:red_matter",
+            "exchangeclone:red_matter",
+            "exchangeclone:red_matter",
+            "exchangeclone:red_matter",
+            "exchangeclone:red_matter",
+            "exchangeclone:red_matter"
         }
     })
 end

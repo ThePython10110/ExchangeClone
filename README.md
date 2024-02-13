@@ -87,6 +87,8 @@ Dependencies: Minetest Game or MineClone.
 * [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
 * [ ] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
 * [ ] Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
+* [ ] DM/RM blocks can only be broken by correct (or higher) type.
+* [ ] Change energy collector recipes to match ProjectE
 * [ ] Edit wiki:
     * [ ] Achievements?
     * [ ] Divining rods
@@ -97,8 +99,6 @@ Dependencies: Minetest Game or MineClone.
     * [ ] Modify tools page
     * [ ] Klein Stars
     * [ ] Remove page for PESA
-* [ ] DM/RM blocks can only be broken by correct (or higher) type.
-* [ ] Change energy collector recipes to match ProjectE
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
