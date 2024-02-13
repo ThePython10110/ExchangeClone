@@ -89,7 +89,7 @@ Dependencies: Minetest Game or MineClone.
 * Nothing yet. See the to-do list above for my plans and the dev branch on GitHub for my current progress.
 
 ### v6.9
-* Fixed a bug where characters were not escaped in the search bar of the  Transmutation Table(t) formspec.
+* Fixed a bug where characters were not escaped in the search bar of the Transmutation Table(t) formspec.
 
 ### v6.8
 * Fixed a crash caused by using tool abilities on certain nodes
