@@ -38,9 +38,8 @@ See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more in
 Dependencies: Minetest Game or MineClone.
 
 ## Known issues:
-* Dark/Red Matter armor don't work they way they should, especially in MTG. I would greatly appreciate a PR that makes them more like ProjectE.
-* The sword/katar AOE ability does not take upgrades into account. This will probably not be fixed (MCL)
-* For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper APIs is new enough that most people are using them.
+* The sword/katar AOE ability does not take upgrades (looting, fire aspect, etc.) into account. This will probably not be fixed (MCL)
+* For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is old enough that most people are using it.
 * Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by dispensers. This will not be fixed.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
 * In Mineclonia, hoppers can put invalid items into Energy Collectors.
@@ -138,14 +137,14 @@ Dependencies: Minetest Game or MineClone.
 * Bugfixes
     * The Philosopher's Stone no longer fails to transmute logs and leaves in Mineclonia.
 
-### v6.7
-* Made More Ores energy values not MTG-specific
+### v6.9
+* Fixed a bug where characters were not escaped in the search bar of the Transmutation Table(t) formspec (reported by @programmerjake).
 
 ### v6.8
-* Fixed a crash caused by using tool abilities on certain nodes
+* Fixed a crash caused by using tool abilities on certain nodes (reported by @programmerjake).
 
 ### v6.7
-* Allowed More Ores energy values to work in MCL
+* Allowed More Ores energy values to work in MCL (reported by @programmerjake).
 
 ### v6.6
 * Removed energy value for Ancient Debris (since it could be smelted in a DM/RM Furnace to get 2 Netherite Scrap)

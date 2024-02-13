@@ -252,7 +252,7 @@ function exchangeclone.show_transmutation_table_formspec(player, data)
     "button[1,3.5;1,1;plus5;+5]"..
     "button[0,4.5;1,1;plus10;+10]"..
     "button[1,4.5;1,1;plusstack;+Stack]"..
-    "field[4.25,0.25;4,1;search_box;;"..(data.search or player:get_meta():get_string("exchangeclone_transmutation_search") or "").."]"..
+    "field[4.25,0.25;4,1;search_box;;"..minetest.formspec_escape(data.search or player:get_meta():get_string("exchangeclone_transmutation_search") or "").."]"..
     "field_close_on_enter[search_box;false]"..
     "button[8,0;1,1;search_button;Search]"..
     exchangeclone.inventory_formspec(0,6.25)..
