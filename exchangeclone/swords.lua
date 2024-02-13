@@ -79,7 +79,7 @@ function exchangeclone.aoe_attack(info)
 
 		if exchangeclone.check_cooldown(player, "sword") then return end
 
-		exchangeclone.play_ability_sound(player)
+		exchangeclone.play_sound(player, "exchangeclone_charge_up")
 
 		local pos = player:get_pos()
 

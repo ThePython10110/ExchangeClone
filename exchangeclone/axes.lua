@@ -22,7 +22,7 @@ function exchangeclone.axe_action(itemstack, player, center)
     if charge > 1 then
         local vector1, vector2 = exchangeclone.process_range(player, range_type, charge)
         local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
-        exchangeclone.play_ability_sound(player)
+        exchangeclone.play_sound(player, strip and "exchangeclone_charge_up" or "exchangeclone_destruct")
         nodes = minetest.find_nodes_in_area(pos1, pos2, groups_to_search)
     else
         nodes = {center}

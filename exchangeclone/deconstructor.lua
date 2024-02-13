@@ -120,17 +120,15 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
     return stack:get_count()
 end
 
-local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connection_metallic.png" or ""
-
 minetest.register_node("exchangeclone:deconstructor", {
     description = S("Deconstructor"),
     tiles = {
-        "exchangeclone_deconstructor_up.png"..pipeworks_connect,
-        "exchangeclone_deconstructor_down.png"..pipeworks_connect,
-        "exchangeclone_deconstructor_right.png"..pipeworks_connect,
-        "exchangeclone_deconstructor_right.png"..pipeworks_connect,
-        "exchangeclone_deconstructor_right.png"..pipeworks_connect,
-        "exchangeclone_deconstructor_right.png"..pipeworks_connect,
+        "exchangeclone_deconstructor_up.png",
+        "exchangeclone_deconstructor_down.png",
+        "exchangeclone_deconstructor_right.png",
+        "exchangeclone_deconstructor_right.png",
+        "exchangeclone_deconstructor_right.png",
+        "exchangeclone_deconstructor_right.png",
     },
     groups = {cracky = 2, container = exchangeclone.mcl2 and 2 or 4, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
     _mcl_hardness = 3,

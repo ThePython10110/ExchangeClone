@@ -78,7 +78,7 @@ function exchangeclone.get_item_energy(item)
     end
     local def = minetest.registered_items[item:get_name()]
     if not def then return end
-    if minetest.get_item_group(item:get_name(), "klein_star" then
+    if minetest.get_item_group(item:get_name(), "klein_star") > 0 then
         if def.energy_value then
             return def.energy_value + exchangeclone.get_star_itemstack_energy(item)
         end
@@ -285,7 +285,7 @@ end
 -- Plays the sound caused by ExchangeClone abilities
 function exchangeclone.play_sound(player, sound, pitch)
     if not player then return end
-    minetest.sound_play("exchangeclone_ability", {pitch = pitch or 1, pos = player:get_pos(), max_hear_distance = 20, })
+    minetest.sound_play(sound, {pitch = pitch or 1, pos = player:get_pos(), max_hear_distance = 20, })
 end
 
 -- Check the clicked node for a right-click function.
@@ -308,16 +308,16 @@ function exchangeclone.charge_update(itemstack, player)
     local max_charge = exchangeclone.tool_levels.count[charge_type]
     if not max_charge then return itemstack end
     local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
+    local new_pitch = 0.5 + ((0.5 / (max_charge - 1)) * (charge-1))
+    minetest.log(new_pitch or 1)
     if player:get_player_control().sneak then
         if charge > 1 then
-            charge = charge - 1
-            local new_pitch = charge/max_charge
             exchangeclone.play_sound(player, "exchangeclone_charge_down", new_pitch)
+            charge = charge - 1
         end
     elseif charge < max_charge then
+        exchangeclone.play_sound(player, "exchangeclone_charge_up", new_pitch)
         charge = charge + 1
-        local new_pitch = charge/max_charge
-        minetest.sound_play("exchangeclone_charge_up", {pitch = new_pitch, pos = player:get_pos(), max_hear_distance = 20, })
     end
     itemstack:get_meta():set_int("exchangeclone_tool_charge", charge)
     itemstack:set_wear(math.max(1, math.min(65535, 65535-(65535/(max_charge-1))*(charge-1))))
@@ -940,8 +940,8 @@ function exchangeclone.multidig(pos, node, player, mode, nodes)
 
         local pos1 = vector.add(pos, {[dir1] = -1, [dir2] = -1, [unused_dir] = 0})
         local pos2 = vector.add(pos, {[dir1] = 1, [dir2] = 1, [unused_dir] = 0})
-        local nodes = minetest.find_nodes_in_area(pos1, pos2, nodes)
-        for _, node_pos in pairs(nodes) do
+        local found_nodes = minetest.find_nodes_in_area(pos1, pos2, nodes)
+        for _, node_pos in pairs(found_nodes) do
             minetest.node_dig(node_pos, minetest.get_node(node_pos), player)
         end
     elseif mode == "3x1_long" then

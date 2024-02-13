@@ -33,8 +33,6 @@ local function alchemical_on_construct(color)
     end
 end
 
-local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connection_stony.png" or ""
-
 minetest.register_node("exchangeclone:alchemical_chest", {
     description = S("Alchemical Chest"),
     groups = {container = 2, alchemical_chest = 1, cracky = 2, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
@@ -42,12 +40,12 @@ minetest.register_node("exchangeclone:alchemical_chest", {
 	_mcl_blast_resistance = 15,
     paramtype2 = "4dir",
 	tiles = {
-		"exchangeclone_alchemical_chest_top.png"..pipeworks_connect,
-		"exchangeclone_alchemical_chest_bottom.png"..pipeworks_connect,
-		"exchangeclone_alchemical_chest_side.png"..pipeworks_connect,
-		"exchangeclone_alchemical_chest_side.png"..pipeworks_connect,
-		"exchangeclone_alchemical_chest_side.png"..pipeworks_connect,
-		"exchangeclone_alchemical_chest_front.png"..pipeworks_connect,
+		"exchangeclone_alchemical_chest_top.png",
+		"exchangeclone_alchemical_chest_bottom.png",
+		"exchangeclone_alchemical_chest_side.png",
+		"exchangeclone_alchemical_chest_side.png",
+		"exchangeclone_alchemical_chest_side.png",
+		"exchangeclone_alchemical_chest_front.png",
 	},
     on_construct = function(pos)
         local meta = minetest.get_meta(pos)

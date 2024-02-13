@@ -139,7 +139,7 @@ local function handle_inventory(player, inventory, to_list)
             if wear and wear > 1 then
                 individual_energy_value = math.max(math.floor(individual_energy_value * ((65536 - wear)/65536)), 1)
             end
-            if minetest.get_item_group(itemstring, "klein_star") then
+            if minetest.get_item_group(itemstring, "klein_star") > 0 then
                 individual_energy_value = individual_energy_value + exchangeclone.get_star_itemstack_energy(stack)
             end
             local player_energy = exchangeclone.get_player_energy(player)
@@ -193,7 +193,7 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
     if not check_for_table(player, inventory) then return 0 end
     if to_list == "output" then
         return 0
-    elseif to_list == "charge" and minetest.get_item_group(stack:get_name, "klein_star") then
+    elseif to_list == "charge" and minetest.get_item_group(stack:get_name(), "klein_star") < 1 then
         return 0
     elseif to_list == "learn" then
         if stack:get_name() == "exchangeclone:alchemical_tome" then return count end
@@ -375,7 +375,7 @@ minetest.register_node("exchangeclone:transmutation_table", {
 })
 
 minetest.register_tool("exchangeclone:alchemical_tome", {
-    description = "Alchemical Tome\Magnum Star Omegas in crafting recipe must be full",
+    description = "Alchemical Tome\nMagnum Star Omegas in crafting recipe must be full",
     inventory_image = "exchangeclone_alchemical_tome.png",
     wield_image = "exchangeclone_alchemical_tome.png",
     groups = {disable_repair = 1, fire_immune = 1}

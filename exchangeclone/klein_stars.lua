@@ -31,7 +31,7 @@ minetest.register_alias("exchangeclone:exchange_orb", "exchangeclone:klein_star_
 for i, name in ipairs(names) do
     local codified_name = name:lower():gsub(" ", "_")
     minetest.register_tool("exchangeclone:"..codified_name, {
-        description = S(name).."\n"..S("Current Charge: @1", 0)
+        description = S(name).."\n"..S("Current Charge: @1", 0),
         inventory_image = "exchangeclone_"..codified_name..".png",
         wield_image = "exchangeclone_"..codified_name..".png",
         on_secondary_use = read_star_charge,
@@ -44,7 +44,7 @@ for i, name in ipairs(names) do
     })
 
     if i > 1 then
-        previous_codified_name = names[i-1]:lower():gsub(" ", "_")
+        local previous_codified_name = names[i-1]:lower():gsub(" ", "_")
         minetest.register_craft({
             output = "exchangeclone:"..codified_name,
             type = "shapeless",

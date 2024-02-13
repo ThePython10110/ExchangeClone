@@ -63,9 +63,9 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
         end
 		return itemstack
 	elseif pointed_thing.type == "node" then
-        if (minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0) then
+        if minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0 then
             if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
-            exchangeclone.play_ability_sound(player)
+            exchangeclone.play_sound(player, "exchangeclone_destruct")
             exchangeclone.mine_vein(player, pointed_thing.under)
             exchangeclone.start_cooldown(player, "pickaxe", 0.5)
         elseif itemstack:get_name():find("red_") then

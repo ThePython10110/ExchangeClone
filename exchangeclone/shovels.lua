@@ -47,7 +47,11 @@ function exchangeclone.shovel_action(itemstack, player, center)
     if charge > 1 then
         local vector1, vector2 = exchangeclone.process_range(player, range_type, charge)
         local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
-        exchangeclone.play_ability_sound(player)
+        if action == "path" or action == "unpath" then
+            exchangeclone.play_sound(player, "exchangeclone_charge_up")
+        else
+            exchangeclone.play_sound(player, "exchangeclone_destruct")
+        end
         nodes = minetest.find_nodes_in_area(pos1, pos2, groups_to_search)
     else
         if action == "path" or action == "unpath" then

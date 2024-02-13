@@ -203,7 +203,7 @@ if exchangeclone.mcl then
     for _, matter in pairs({"dark", "red"}) do
         for _, type in pairs({"helmet", "chestplate", "leggings", "boots"}) do
             minetest.override_item("exchangeclone:"..type.."_"..matter.."_matter", {
-                inventory_image = get_armor_texture("inv_"..type, matter),
+                inventory_image = get_armor_texture("inv_"..matter.."_matter_"..type, matter),
                 wield_image = get_armor_texture("inv_"..type, matter),
             })
         end

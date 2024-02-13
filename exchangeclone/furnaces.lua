@@ -502,16 +502,15 @@ if minetest.get_modpath("screwdriver") then
 		end
 	end
 end
-local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connection_stony.png" or ""
 
 local inactive_def = {
 	description = S("Dark Matter Furnace"),
 	tiles = {
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png",
 		"exchangeclone_dark_matter_furnace.png",
 	},
 	paramtype2 = "4dir",
@@ -579,11 +578,11 @@ local inactive_def = {
 local active_def = {
 	description = S("Active Dark Matter Furnace"),
 	tiles = {
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
-		"exchangeclone_dark_matter_block.png"..pipeworks_connect,
+		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png",
+		"exchangeclone_dark_matter_block.png",
 		"exchangeclone_dark_matter_furnace_active.png",
 	},
 	paramtype2 = "4dir",
@@ -658,11 +657,11 @@ minetest.register_node("exchangeclone:red_matter_furnace_active", table.copy(act
 minetest.override_item("exchangeclone:red_matter_furnace", {
 	description = S("Red Matter Furnace"),
 	tiles = {
-		"exchangeclone_red_matter_block.png"..pipeworks_connect,
-		"exchangeclone_red_matter_block.png"..pipeworks_connect,
-		"exchangeclone_red_matter_block.png"..pipeworks_connect,
-		"exchangeclone_red_matter_block.png"..pipeworks_connect,
-		"exchangeclone_red_matter_block.png"..pipeworks_connect,
+		"exchangeclone_red_matter_block.png",
+		"exchangeclone_red_matter_block.png",
+		"exchangeclone_red_matter_block.png",
+		"exchangeclone_red_matter_block.png",
+		"exchangeclone_red_matter_block.png",
 		"exchangeclone_red_matter_furnace.png",
 	},
 	groups = {pickaxey=6, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},

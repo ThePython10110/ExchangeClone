@@ -79,7 +79,7 @@ local listnames = {exchangeclone_covalence_dust = true, exchangeclone_covalence_
 local function is_repairable_gear(item)
     item = ItemStack(item)
     if item:get_wear() <= 0 then return end
-    if minetest.get_item_group(item:get_name(), "disable_repair") then return end
+    if minetest.get_item_group(item:get_name(), "disable_repair") > 0 then return end
     if (exchangeclone.get_item_energy(item) or 0) <= 0 then return end
 
     local result = 0

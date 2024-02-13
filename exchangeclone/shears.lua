@@ -8,7 +8,7 @@ function exchangeclone.shear_action(itemstack, player, center)
 	if not (vector1 and vector2) then return end
 
 	local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
-    exchangeclone.play_ability_sound(player)
+    exchangeclone.play_sound(player, "exchangeclone_destruct")
     local grouped = leaves and {"group:leaves"} or {"group:shearsy", "group:shearsy_cobweb"}
     local nodes = minetest.find_nodes_in_area(pos1, pos2, grouped)
     for i, pos in pairs(nodes) do
@@ -54,7 +54,7 @@ local shears_rightclick = function(itemstack, player, pointed_thing)
             minetest.set_node(pointed_thing.under, {name="mcl_farming:pumpkin_face", param2 = param2})
             minetest.add_item(pointed_thing.above, "mcl_farming:pumpkin_seeds 4")
         elseif minetest.get_item_group(node.name, "shearsy") > 0
-        or minetest.get_item_group(node.name, "shearsy_cobweb") then
+        or minetest.get_item_group(node.name, "shearsy_cobweb") > 0 then
             exchangeclone.shear_action(itemstack, player, pointed_thing.under)
         end
     end

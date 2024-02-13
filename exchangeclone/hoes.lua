@@ -47,7 +47,7 @@ function exchangeclone.hoe_action(itemstack, player, center)
 		if not (vector1 and vector2) then return end
 		local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
 		nodes = minetest.find_nodes_in_area(pos1, pos2, {"group:cultivatable"})
-		exchangeclone.play_ability_sound(player)
+		exchangeclone.play_sound(player, "exchangeclone_charge_up")
 	else
 		nodes = {center}
 	end

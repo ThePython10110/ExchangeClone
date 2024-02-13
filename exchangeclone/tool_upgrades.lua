@@ -136,14 +136,12 @@ local function get_level(level)
     end
 end
 
-local pipeworks_connect = exchangeclone.pipeworks and "^pipeworks_tube_connection_stony.png" or ""
-
 minetest.register_node("exchangeclone:upgrader", {
     description = "Upgrader",
     tiles = {
-        "exchangeclone_upgrader_top.png"..pipeworks_connect,
-        "exchangeclone_upgrader_bottom.png"..pipeworks_connect,
-        "exchangeclone_upgrader_side.png"..pipeworks_connect,
+        "exchangeclone_upgrader_top.png",
+        "exchangeclone_upgrader_bottom.png",
+        "exchangeclone_upgrader_side.png",
     },
     on_construct = function(pos)
         local meta = minetest.get_meta(pos)

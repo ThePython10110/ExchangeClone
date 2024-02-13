@@ -156,9 +156,9 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 	local sneaking = player:get_player_control().sneak
 	if pointed_thing.type == "node" then
 		local name = minetest.get_node(pointed_thing.under).name
-		if (minetest.get_item_group(name, "exchangeclone_ore") > 0) then
+		if minetest.get_item_group(name, "exchangeclone_ore") > 0 then
 			if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
-			exchangeclone.play_ability_sound(player)
+			exchangeclone.play_sound(player, "exchangeclone_destruct")
 			exchangeclone.multidig_data[player:get_player_name()] = true
 			exchangeclone.mine_vein(player, pointed_thing.under)
 			exchangeclone.multidig_data[player:get_player_name()] = nil
