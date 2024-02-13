@@ -89,13 +89,13 @@ Dependencies: Minetest Game or MineClone.
 * Nothing yet. See the to-do list above for my plans and the dev branch on GitHub for my current progress.
 
 ### v6.9
-* Fixed a bug where characters were not escaped in the search bar of the Transmutation Table(t) formspec.
+* Fixed a bug where characters were not escaped in the search bar of the Transmutation Table(t) formspec (reported by @programmerjake).
 
 ### v6.8
-* Fixed a crash caused by using tool abilities on certain nodes
+* Fixed a crash caused by using tool abilities on certain nodes (reported by @programmerjake).
 
 ### v6.7
-* Allowed More Ores energy values to work in MCL
+* Allowed More Ores energy values to work in MCL (reported by @programmerjake).
 
 ### v6.6
 * Removed energy value for Ancient Debris (since it could be smelted in a DM/RM Furnace to get 2 Netherite Scrap)
