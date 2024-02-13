@@ -66,51 +66,49 @@ Dependencies: Minetest Game or MineClone.
 
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
-[ ] Achievements/advancements/awards
-[ ] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
-[ ] Improvements to tools (mostly only in MCL at the moment)
-    [x] Wear bar for charge level
-    [x] Charge levels match ProjectE (both in number and in range)
-    [x] Charge level affects speed
-    [x] Correct/accurate speeds compared to ProjectE (hopefully)
-    [x] Wear bar on Exchange Orbs for energy
-    [x] Only one item per tool (not a separate 3x3 tool)
-    [x] Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
-    [x] Shovels can remove paths (MCL2)
-    [x] Changes to armor (but it's so hard to get it right)
+* [ ] Achievements/advancements/awards
+* [ ] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
+* [ ] Improvements to tools (mostly only in MCL at the moment)
+    * [x] Wear bar for charge level
+    * [x] Charge levels match ProjectE (both in number and in range)
+    * [x] Charge level affects speed
+    * [x] Correct/accurate speeds compared to ProjectE (hopefully)
+    * [x] Wear bar on Exchange Orbs for energy
+    * [x] Only one item per tool (not a separate 3x3 tool)
+    * [x] Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
+    * [x] Shovels can remove paths (MCL2)
+    * [x] Changes to armor (but it's so hard to get it right)
         * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are kind of invincible most of the time.
-    [ ] Remove and add alias for DM/RM shields
-    [ ] Upgrades affect energy value
-[ ] Multiple levels of Exchange Orbs (change to Klein Stars, adjust recipes)
-[ ] Divining rods
-[ ] Swiftwolf's Rending Gale (maybe rename?)
-[ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
-[ ] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
-[ ] Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
-[ ] Edit wiki:
-    [ ] Add pages for:
-        [ ] Achievements?
-        [ ] Divining rods
-        [ ] Swiftwolf's Rending Gale
-        [ ] Talisman of Repair
-        [ ] Gem of Eternal Density
-        [ ] Mind, Life, Body, and Soul Stones
-    [ ] Modify tools page
-[ ] Remove page for PESA
-[ ] DM/RM blocks can only be broken by correct (or higher) type.
-[ ] Change energy collector recipes to match ProjectE
+    * [ ] Remove and add alias for DM/RM shields
+    * [ ] Upgrades affect energy value
+* [x] Multiple levels of Exchange Orbs (change to Klein Stars, adjust recipes)
+* [ ] Divining rods
+* [ ] Swiftwolf's Rending Gale (maybe rename?)
+* [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
+* [ ] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
+* [ ] Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
+* [ ] Edit wiki:
+    * [ ] Achievements?
+    * [ ] Divining rods
+    * [ ] Swiftwolf's Rending Gale
+    * [ ] Talisman of Repair
+    * [ ] Gem of Eternal Density
+    * [ ] Mind, Life, Body, and Soul Stones
+    * [ ] Modify tools page
+    * [ ] Klein Stars
+    * [ ] Remove page for PESA
+* [ ] DM/RM blocks can only be broken by correct (or higher) type.
+* [ ] Change energy collector recipes to match ProjectE
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
 ### v7.0 (The Parity Update)
 
-
 #### Overview:
 * **NOTE: Updating to this version resets tools to their default mode and range (1x1, range 0). Upgrades will not be affected.**
 * Tools' mining speeds, attack damage, and attack speeds now match ProjectE's
 * Most tools' abilities are more similar to ProjectE's, and are more efficient in some cases.
-
 
 #### Full changelog:
 * Changes:
@@ -121,12 +119,12 @@ Dependencies: Minetest Game or MineClone.
         * Tools do not have a separate 3x1/3x3 item.
         * Charge level is now shown by the wear/durability bar
         * Charge level now affects tool speed
+        * Speeds match ProjectE
         * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
         * Several changes to tool abilities (*mostly* making them closer to the ProjectE versions)
     * Removed the deprecated PESA.
-    * Removed dark and red matter shields (so I could use the same math for MTG and MCL)
 * Bugfixes
-    * The Philosopher's Stone is no longer unable to transmute logs and leaves in Mineclonia.
+    * The Philosopher's Stone no longer fails to transmute logs and leaves in Mineclonia.
 
 ### v6.7
 * Made More Ores energy values not MTG-specific
