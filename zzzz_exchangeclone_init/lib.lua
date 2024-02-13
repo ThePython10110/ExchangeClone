@@ -112,15 +112,16 @@ end
 
 function exchangeclone.set_star_itemstack_energy(itemstack, amount)
     if not itemstack or not amount then return end
-    if itemstack:get_name() ~= "exchangeclone:exchange_orb" then return end
+    if minetest.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
     local old_energy = exchangeclone.get_star_itemstack_energy(itemstack)
     local max = exchangeclone.get_star_max(itemstack)
     if amount > old_energy and old_energy > max then return end -- don't allow more energy to be put into an over-filled star
 
     local meta = itemstack:get_meta()
     meta:set_float("stored_energy", amount)
-    meta:set_string("description", itemstack:_mcl_generate_description())
-    local wear = math.min(1, math.max(65535, 65535 - 65535*amount/max))
+    meta:set_string("description", itemstack:get_definition()._mcl_generate_description(itemstack))
+    local wear = math.max(1, math.min(65535, 65535 - 65535*amount/max))
+    minetest.log(65535 - 65535*amount/max)
     itemstack:set_wear(wear)
     return itemstack
 end

@@ -29,24 +29,6 @@ minetest.register_craftitem("exchangeclone:aeternalis_fuel", {
 	groups = { craftitem=1},
 })
 
-minetest.register_craft({
-    type = "fuel",
-    recipe = "exchangeclone:alchemical_coal",
-    burntime = 320,
-})
-
-minetest.register_craft({
-    type = "fuel",
-    recipe = "exchangeclone:mobius_fuel",
-    burntime = 1280,
-})
-
-minetest.register_craft({
-    type = "fuel",
-    recipe = "exchangeclone:aeternalis_fuel",
-    burntime = 5120,
-})
-
 minetest.register_node("exchangeclone:alchemical_coal_block", {
     description = S("Alchemical Coal Block"),
     tiles = {"exchangeclone_alchemical_coal_block.png"},
@@ -75,6 +57,84 @@ minetest.register_node("exchangeclone:aeternalis_fuel_block", {
 	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = get_level(2)}, --ridiculous workaround
 	_mcl_blast_resistance = 10,
 	_mcl_hardness = 8,
+})
+
+minetest.register_craft({
+    type = "fuel",
+    recipe = "exchangeclone:alchemical_coal",
+    burntime = 320,
+})
+
+minetest.register_craft({
+    type = "fuel",
+    recipe = "exchangeclone:mobius_fuel",
+    burntime = 1280,
+})
+
+minetest.register_craft({
+    type = "fuel",
+    recipe = "exchangeclone:aeternalis_fuel",
+    burntime = 5120,
+})
+
+minetest.register_craft({
+    type = "fuel",
+    recipe = "exchangeclone:alchemical_coal_block",
+    burntime = 3200,
+})
+
+minetest.register_craft({
+    type = "fuel",
+    recipe = "exchangeclone:mobius_fuel_block",
+    burntime = 12800,
+})
+
+minetest.register_craft({
+    type = "fuel",
+    recipe = "exchangeclone:aeternalis_fuel_block",
+    burntime = 51200,
+})
+
+minetest.register_craft({
+    output = "exchangeclone:alchemical_coal_block",
+    recipe = {
+        {"exchangeclone:alchemical_coal","exchangeclone:alchemical_coal","exchangeclone:alchemical_coal"},
+        {"exchangeclone:alchemical_coal","exchangeclone:alchemical_coal","exchangeclone:alchemical_coal"},
+        {"exchangeclone:alchemical_coal","exchangeclone:alchemical_coal","exchangeclone:alchemical_coal"}
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:alchemical_coal 9",
+    recipe = {{"exchangeclone:alchemical_coal_block"}}
+})
+
+minetest.register_craft({
+    output = "exchangeclone:aeternalis_fuel_block",
+    recipe = {
+        {"exchangeclone:aeternalis_fuel","exchangeclone:aeternalis_fuel","exchangeclone:aeternalis_fuel"},
+        {"exchangeclone:aeternalis_fuel","exchangeclone:aeternalis_fuel","exchangeclone:aeternalis_fuel"},
+        {"exchangeclone:aeternalis_fuel","exchangeclone:aeternalis_fuel","exchangeclone:aeternalis_fuel"}
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:aeternalis_fuel 9",
+    recipe = {{"exchangeclone:aeternalis_fuel_block"}}
+})
+
+minetest.register_craft({
+    output = "exchangeclone:mobius_fuel_block",
+    recipe = {
+        {"exchangeclone:mobius_fuel","exchangeclone:mobius_fuel","exchangeclone:mobius_fuel"},
+        {"exchangeclone:mobius_fuel","exchangeclone:mobius_fuel","exchangeclone:mobius_fuel"},
+        {"exchangeclone:mobius_fuel","exchangeclone:mobius_fuel","exchangeclone:mobius_fuel"}
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:mobius_fuel 9",
+    recipe = {{"exchangeclone:mobius_fuel_block"}}
 })
 
 minetest.register_craftitem("exchangeclone:dark_matter", {

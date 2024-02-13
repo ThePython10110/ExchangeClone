@@ -30,16 +30,21 @@ minetest.register_alias("exchangeclone:exchange_orb", "exchangeclone:klein_star_
 
 for i, name in ipairs(names) do
     local codified_name = name:lower():gsub(" ", "_")
+    local capacity = 50000*math.pow(4,i-1)
     minetest.register_tool("exchangeclone:"..codified_name, {
-        description = S(name).."\n"..S("Current Charge: @1", 0),
+        description = S(name).."\n"..S("Current Charge: @1/@2", 0, exchangeclone.format_number(capacity)),
         inventory_image = "exchangeclone_"..codified_name..".png",
         wield_image = "exchangeclone_"..codified_name..".png",
         on_secondary_use = read_star_charge,
         on_place = read_star_charge,
         groups = {klein_star = i, disable_repair = 1, fire_immune = 1},
-        max_capacity = 50000*math.pow(4,i-1),
+        max_capacity = capacity,
         _mcl_generate_description = function(itemstack)
-            return name.."\n"..S("Current Charge: @1", exchangeclone.get_star_itemstack_energy(itemstack))
+            return name.."\n"..S(
+                "Current Charge: @1/@2",
+                exchangeclone.format_number(exchangeclone.get_star_itemstack_energy(itemstack)),
+                exchangeclone.format_number(capacity)
+            )
         end
     })
 
@@ -60,7 +65,7 @@ for i, name in ipairs(names) do
     minetest.register_craft({ -- Making it fuel so old versions of MCL's hoppers will work with (de)constructors
         type = "fuel",
         recipe = "exchangeclone:"..codified_name,
-        burntime = 24000 --Basically 30 coal blocks...
+        burntime = 800*i
     })
 end
 

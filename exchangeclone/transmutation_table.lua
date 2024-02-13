@@ -338,8 +338,8 @@ end)
 minetest.register_tool("exchangeclone:transmutation_tablet", {
     description = "Transmutation Tablet",
     groups = {disable_repair = 1, fire_immune = 1},
-    wield_image = "exchangeclone_transmutation_table.png",
-    inventory_image = "exchangeclone_transmutation_table.png",
+    wield_image = "exchangeclone_transmutation_tablet.png",
+    inventory_image = "exchangeclone_transmutation_tablet.png",
     on_secondary_use = function(itemstack, player, pointed_thing)
         local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
         if click_test ~= false then
@@ -359,7 +359,11 @@ minetest.register_tool("exchangeclone:transmutation_tablet", {
 minetest.register_node("exchangeclone:transmutation_table", {
     description = "Transmutation Table",
     paramtype2 = "wallmounted",
-    tiles = {"exchangeclone_transmutation_table.png", "exchangeclone_transmutation_table.png", "exchangeclone_transmutation_table_side.png"},
+    tiles = {
+        "exchangeclone_transmutation_table_top.png",
+        "exchangeclone_transmutation_table_bottom.png",
+        "exchangeclone_transmutation_table_side.png"
+    },
     groups = {cracky = 3, pickaxey = 1, handy = 1, oddly_breakable_by_hand = 1},
     drawtype = "nodebox",
     node_box = {
