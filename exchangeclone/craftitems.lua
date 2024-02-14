@@ -1,13 +1,5 @@
 local S = minetest.get_translator()
 
-local function get_level(level)
-    if exchangeclone.mcl then
-        return nil
-    else
-        return level
-    end
-end
-
 minetest.register_craftitem("exchangeclone:alchemical_coal", {
     description = S("Alchemical Coal"),
     wield_image = "exchangeclone_alchemical_coal.png",
@@ -34,7 +26,7 @@ minetest.register_node("exchangeclone:alchemical_coal_block", {
     tiles = {"exchangeclone_alchemical_coal_block.png"},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
-	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = get_level(2)}, --ridiculous workaround
+	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = exchangeclone.mtg and 2 or 0},
 	_mcl_blast_resistance = 8,
 	_mcl_hardness = 7,
 })
@@ -44,7 +36,7 @@ minetest.register_node("exchangeclone:mobius_fuel_block", {
     tiles = {"exchangeclone_mobius_fuel_block.png"},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
-	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = get_level(2)}, --ridiculous workaround
+	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = exchangeclone.mtg and 2 or 0},
 	_mcl_blast_resistance = 10,
 	_mcl_hardness = 8,
 })
@@ -54,7 +46,7 @@ minetest.register_node("exchangeclone:aeternalis_fuel_block", {
     tiles = {"exchangeclone_aeternalis_fuel_block.png"},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
-	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = get_level(2)}, --ridiculous workaround
+	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = exchangeclone.mtg and 2 or 0},
 	_mcl_blast_resistance = 10,
 	_mcl_hardness = 8,
 })
@@ -156,7 +148,7 @@ minetest.register_node("exchangeclone:dark_matter_block", {
     tiles = {"exchangeclone_dark_matter_block.png"},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
-	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = get_level(4)}, --ridiculous workaround
+	groups = {pickaxey=5, material_stone=1, cracky = 3, building_block = 1, level = exchangeclone.mtg and 4 or 0},
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 12,
 })
@@ -167,7 +159,7 @@ minetest.register_node("exchangeclone:red_matter_block", {
 	is_ground_content = false,
 	light_source = 14,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
-	groups = {pickaxey=6, material_stone=1, cracky = 3, building_block = 1, level = get_level(5)},
+	groups = {pickaxey=6, material_stone=1, cracky = 3, building_block = 1, level = exchangeclone.mtg and 5 or 0},
 	_mcl_blast_resistance = 1500,
 	_mcl_hardness = 37,
 })

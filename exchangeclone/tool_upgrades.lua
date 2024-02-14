@@ -81,6 +81,10 @@ local function upgrader_action(pos)
     local new_tool = exchangeclone.enchant(tool, upgrade_def.enchantment, upgrade_def.level)
     if not new_tool then return end -- If the tool already has that enchantment
 
+    local new_emc = exchangeclone.get_item_emc(new_tool) + exchangeclone.get_item_emc(upgrade:get_name())
+
+    new_tool:get_meta():set_string("exchangeclone_emc_value", tostring(new_emc))
+
     inv:set_stack("dst", 1, new_tool)
 
     tool:set_count(tool:get_count() - 1)
@@ -128,14 +132,6 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
     return stack:get_count()
 end
 
-local function get_level(level)
-    if exchangeclone.mcl then
-        return nil
-    else
-        return level
-    end
-end
-
 minetest.register_node("exchangeclone:upgrader", {
     description = "Upgrader",
     tiles = {
@@ -152,7 +148,7 @@ minetest.register_node("exchangeclone:upgrader", {
         meta:set_string("infotext", "Upgrader")
         meta:set_string("formspec", upgrader_formspec)
     end,
-	groups = {pickaxey=5, material_stone=1, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, level = get_level(4), tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=5, material_stone=1, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, level = exchangeclone.mtg and 4 or 0, tubedevice = 1, tubedevice_receiver = 1},
     allow_metadata_inventory_move = allow_metadata_inventory_move,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
     allow_metadata_inventory_put = allow_metadata_inventory_put,

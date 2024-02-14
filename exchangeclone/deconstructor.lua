@@ -38,15 +38,9 @@ local function deconstructor_action(pos, elapsed)
     end
 
     local stack = inv:get_stack("src", 1)
-    local individual_emc_value = exchangeclone.get_item_emc(stack:get_name())
+    local single_item = stack:peek_item(1)
+    local individual_emc_value = exchangeclone.get_item_emc(single_item)
     if not (individual_emc_value and individual_emc_value > 0) then return end
-    local wear = stack:get_wear()
-    if wear and wear > 0 then
-        individual_emc_value = math.max(math.floor(individual_emc_value * ((65536 - wear)/65536)), 1)
-    end
-    if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
-        individual_emc_value = individual_emc_value + exchangeclone.get_star_itemstack_emc(stack)
-    end
 
     local current_emc
     if using_star then
@@ -57,13 +51,11 @@ local function deconstructor_action(pos, elapsed)
     local max_count = math.floor((limit - current_emc)/individual_emc_value)
     local add_count = math.min(max_count, stack:get_count())
     local emc = individual_emc_value * add_count
-    local result = current_emc + emc
-    if result < 0 or result > limit then return end
 
     if using_star then
-        exchangeclone.set_star_emc(inv, "fuel", 1, result)
+        exchangeclone.add_star_emc(inv, "fuel", 1, emc)
     else
-        exchangeclone.set_player_emc(player, result)
+        exchangeclone.add_player_emc(player, emc)
     end
     stack:set_count(stack:get_count() - add_count)
     if stack:get_count() == 0 then stack = ItemStack("") end

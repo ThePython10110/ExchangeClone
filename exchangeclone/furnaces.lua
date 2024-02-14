@@ -30,14 +30,6 @@ if exchangeclone.mcl then
 	furnace_itemstring = "mcl_furnaces:furnace"
 end
 
-local function get_level(level)
-    if exchangeclone.mcl then
-        return nil
-    else
-        return level
-    end
-end
-
 local function is_ore(itemstring)
 	if ores[itemstring] then return true end
 	local exchangeclone_ore = minetest.get_item_group(itemstring, "exchangeclone_ore")
@@ -514,7 +506,7 @@ local inactive_def = {
 		"exchangeclone_dark_matter_furnace.png",
 	},
 	paramtype2 = "4dir",
-	groups = {pickaxey=5, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, material_stone=1, level = get_level(4), exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=5, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, material_stone=1, level = exchangeclone.mtg and 4 or 0, exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 
@@ -589,7 +581,7 @@ local active_def = {
 	parammatter_type = "light",
 	light_source = LIGHT_ACTIVE_FURNACE,
 	drop = "exchangeclone:dark_matter_furnace",
-	groups = {pickaxey=5, not_in_creative_inventory = 1, container = exchangeclone.mcl2 and 2 or 4, material_stone=1, cracky = 3, level = get_level(4), exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=5, not_in_creative_inventory = 1, container = exchangeclone.mcl2 and 2 or 4, material_stone=1, cracky = 3, level = exchangeclone.mtg and 4 or 0, exchangeclone_furnace = 1, tubedevice = 1, tubedevice_receiver = 1},
 	is_ground_content = false,
 	sounds = exchangeclone.sound_mod.node_sound_stone_defaults(),
 	on_timer = furnace_node_timer,
@@ -664,7 +656,7 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		"exchangeclone_red_matter_block.png",
 		"exchangeclone_red_matter_furnace.png",
 	},
-	groups = {pickaxey=6, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=6, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = exchangeclone.mtg and 5 or 0, exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
 	_mcl_hardness = 100,
 
 	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
@@ -719,7 +711,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 		"exchangeclone_red_matter_furnace_active.png",
 	},
 	drop = "exchangeclone:red_matter_furnace",
-	groups = {pickaxey=6, not_in_creative_inventory = 1, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = get_level(5), exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
+	groups = {pickaxey=6, not_in_creative_inventory = 1, cracky = 3, container = exchangeclone.mcl2 and 2 or 4, deco_block=1, material_stone=1, level = exchangeclone.mtg and 5 or 0, exchangeclone_furnace = 2, tubedevice = 1, tubedevice_receiver = 1},
 	_mcl_hardness = 100,
 
 	on_construct = function(pos)

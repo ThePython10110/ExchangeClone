@@ -67,20 +67,21 @@ Dependencies: Minetest Game or MineClone.
 * [x] Achievements/advancements/awards
 * [x] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
 * [x] Change "energy" to EMC
-* [ ] Improvements to tools (mostly only in MCL at the moment)
+* [ ] Improvements to tools (\* = only in MCL at the moment)
     * [x] Wear bar for charge level
     * [x] Charge levels match ProjectE (both in number and in range)
-    * [x] Charge level affects speed
-    * [x] Correct/accurate speeds compared to ProjectE (hopefully)
-    * [x] Wear bar on Exchange Orbs for EMC
+    * [x] Charge level affects speed\*
+    * [x] Correct/accurate speeds compared to ProjectE\*
     * [x] Only one item per tool (not a separate 3x3 tool)
     * [x] Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
     * [x] Shovels can remove paths (MCL2)
-    * [x] Changes to armor (but it's so hard to get it right)
-        * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are kind of invincible most of the time.
+    * [x] Accurate armor protection\*
+        * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are invincible 90% of the time.
     * [x] Remove and add alias for DM/RM shields
-    * [ ] Upgrades affect EMC value
+    * [x] Upgrades affect EMC value
+    * [ ] Make tool speeds work in Minetest Game
 * [x] Multiple levels of Exchange Orbs (change to Klein Stars, adjust recipes)
+* [x] Wear bar on Klein Stars for EMC
 * [x] Fuel storage blocks
 * [ ] Divining rods
 * [ ] Swiftwolf's Rending Gale (maybe rename?)

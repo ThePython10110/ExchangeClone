@@ -67,15 +67,18 @@ function exchangeclone.get_item_emc(item)
         end
         return cheapest
     end
+
+    if type(item) == "userdata" then
+        minetest.log("thingithingi")
+        local meta_emc_value = tonumber(item:get_meta():get_string("exchangeclone_emc_value"))
+        if meta_emc_value then minetest.log(dump(meta_emc_value)) return math.max(0, meta_emc_value) end
+    end
+
     -- handle items/itemstacks
     item = ItemStack(item)
     if item == ItemStack("") then return end
     item:set_name(exchangeclone.handle_alias(item))
-    local meta_emc_value = tonumber(item:get_meta():get_string("exchangeclone_emc_value"))
-    if meta_emc_value then
-        if meta_emc_value < 0 then return 0 end
-        if meta_emc_value > 0 then return meta_emc_value end
-    end
+
     local def = minetest.registered_items[item:get_name()]
     if not def then return end
     if minetest.get_item_group(item:get_name(), "klein_star") > 0 then
@@ -133,6 +136,26 @@ function exchangeclone.set_star_emc(inventory, listname, index, amount)
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
     local new_stack = exchangeclone.set_star_itemstack_emc(itemstack, amount)
+    if not new_stack then return end
+    inventory:set_stack(listname, index, new_stack)
+end
+
+function exchangeclone.add_star_itemstack_emc(itemstack, amount)
+    if itemstack and amount then
+        local emc = exchangeclone.get_star_itemstack_emc(itemstack) + amount
+        minetest.log(dump(emc))
+        if not emc or emc < 0 or emc > exchangeclone.get_star_max(itemstack) then return end
+        return exchangeclone.set_star_itemstack_emc(itemstack, emc)
+    end
+end
+
+-- Adds to the amount of EMC in a star in a specific inventory slot
+function exchangeclone.add_star_emc(inventory, listname, index, amount)
+    if not inventory or not amount or amount < 0 then return end
+    if not listname then listname = "main" end
+    if not index then index = 1 end
+    local itemstack = inventory:get_stack(listname, index)
+    local new_stack = exchangeclone.add_star_itemstack_emc(itemstack, amount)
     if not new_stack then return end
     inventory:set_stack(listname, index, new_stack)
 end
