@@ -30,7 +30,7 @@ local function get_cheapest_recipe(itemstring, log)
                             if replaced and replaced > 0 then
                                 identical_replacements[item] = replaced - 1
                             else
-                                local cost = exchangeclone.get_item_energy(item)
+                                local cost = exchangeclone.get_item_emc(item)
                                 if (not cost) or cost == 0 then
                                     skip = item
                                 else
@@ -51,7 +51,7 @@ local function get_cheapest_recipe(itemstring, log)
                         if replaced and replaced > 0 then
                             identical_replacements[item] = replaced - 1
                         else
-                            local cost = exchangeclone.get_item_energy(item)
+                            local cost = exchangeclone.get_item_emc(item)
                             if (not cost) or cost == 0 then
                                 skip = item
                             else
@@ -71,7 +71,7 @@ local function get_cheapest_recipe(itemstring, log)
                     if replaced and replaced > 0 then
                         identical_replacements[item] = replaced - 1
                     else
-                        local cost = exchangeclone.get_item_energy(item)
+                        local cost = exchangeclone.get_item_emc(item)
                         if (not cost) or cost == 0 then
                             skip = item
                         else
@@ -80,13 +80,13 @@ local function get_cheapest_recipe(itemstring, log)
                     end
                 end
             end
-        elseif exchangeclone.craft_types[recipe.type].type == "energy" then
+        elseif exchangeclone.craft_types[recipe.type].type == "emc" then
             ingredient_cost = recipe.recipe
         end
         if recipe.replacements and not skip then
             for _, item in pairs(recipe.replacements) do
                 if item[1] ~= item[2] then
-                    local cost = exchangeclone.get_item_energy(item[2])
+                    local cost = exchangeclone.get_item_emc(item[2])
                     if (not cost) or cost == 0 then
                         skip = item[2]
                     else
@@ -111,35 +111,35 @@ local function get_cheapest_recipe(itemstring, log)
     return cheapest and cheapest[1]
 end
 
-exchangeclone.energy_values = {}
+exchangeclone.emc_values = {}
 
--- Sets the energy value of an item, must be called during load time.
-local function set_item_energy(itemstring, energy_value)
-    if not (energy_value and itemstring) then return end
-    energy_value = math.floor(energy_value*20)/20 -- floor to nearest .05
-    if energy_value < 0 then return end
+-- Sets the EMC value of an item, must be called during load time.
+local function set_item_emc(itemstring, emc_value)
+    if not (emc_value and itemstring) then return end
+    emc_value = math.floor(emc_value*20)/20 -- floor to nearest .05
+    if emc_value < 0 then return end
     local def = minetest.registered_items[itemstring]
     if not def then return end
     local description = def.description or ""
 
-    -- Override energy value if it already exists
-    local existing_energy_value = description:find("Energy Value: ([%d%.,]+)")
-    if existing_energy_value then
-        description = description:gsub("Energy Value: ([%d%.,]+)", "Energy Value: "..exchangeclone.format_number(energy_value))
+    -- Override EMC value if it already exists
+    local existing_emc_value = description:find("EMC Value: ([%d%.,]+)")
+    if existing_emc_value then
+        description = description:gsub("EMC Value: ([%d%.,]+)", "EMC Value: "..exchangeclone.format_number(emc_value))
     else
         if description[#description] ~= "\n" then
             description = description.."\n"
         end
-        description = description.."Energy Value: "..exchangeclone.format_number(energy_value)
+        description = description.."EMC Value: "..exchangeclone.format_number(emc_value)
     end
     minetest.override_item(itemstring, {
         description = description,
-        energy_value = energy_value,
+        emc_value = emc_value,
     })
-    if energy_value > 0 then
-        exchangeclone.energy_values[itemstring] = energy_value
+    if emc_value > 0 then
+        exchangeclone.emc_values[itemstring] = emc_value
     else
-        exchangeclone.energy_values[itemstring] = nil
+        exchangeclone.emc_values[itemstring] = nil
     end
 end
 
@@ -183,7 +183,7 @@ if exchangeclone.mcla then
     end
 end
 
--- Register clock/compass aliases, handle enchanted/netherite stuff, potions, and concrete, and register coral energy values
+-- Register clock/compass aliases, handle enchanted/netherite stuff, potions, and concrete, and register coral EMC values
 if exchangeclone.mcl then
     for i = 0, 31 do
         exchangeclone.register_alias("mcl_compass:18", "mcl_compass:"..i)
@@ -261,7 +261,7 @@ if exchangeclone.mcl then
     exchangeclone.register_alias("mcl_sponges:sponge", "mcl_sponges:sponge_wet_river_water")
 end
 
--- Register copper block/stonecutting energy recipes in MineClone2
+-- Register copper block/stonecutting EMC recipes in MineClone2
 if exchangeclone.mcl2 then
     exchangeclone.register_craft_type("oxidation", "cooking")
     local states = {"", "_exposed", "_weathered", "_oxidized"}
@@ -283,12 +283,11 @@ end
 
 
 
--- Up to this point, no energy values have actually been set.
+-- Up to this point, no EMC values have actually been set.
 
 
 
-
--- Register group energy values
+-- Register group EMC values
 local groupnames = {}
 for index, group in ipairs(exchangeclone.group_values) do
     groupnames[#groupnames + 1] = group[1] --Get list of group names
@@ -296,19 +295,19 @@ end
 local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
 for index, group in ipairs(exchangeclone.group_values) do
     for i, item in pairs(grouped_items[group[1]]) do
-        set_item_energy(item, group[2])
+        set_item_emc(item, group[2])
     end
 end
 
--- Register base energy values
-for itemstring, energy_value in pairs(exchangeclone.base_energy_values) do
-    set_item_energy(itemstring, energy_value)
+-- Register base EMC values
+for itemstring, emc_value in pairs(exchangeclone.base_emc_values) do
+    set_item_emc(itemstring, emc_value)
 end
 
--- Register `exchangeclone_custom_energy` values and decide whether to automatically register energy values
+-- Register `exchangeclone_custom_emc` values and decide whether to automatically register EMC values
 for itemstring, def in pairs(minetest.registered_items) do
-    if def.exchangeclone_custom_energy then
-        set_item_energy(itemstring, def.exchangeclone_custom_energy)
+    if def.exchangeclone_custom_emc then
+        set_item_emc(itemstring, def.exchangeclone_custom_emc)
     else
         itemstring = exchangeclone.handle_alias(itemstring) or itemstring
         def = minetest.registered_items[itemstring] -- in case itemstring changed
@@ -320,7 +319,7 @@ for itemstring, def in pairs(minetest.registered_items) do
             and def.description
             and def.description ~= ""
             and ((minetest.get_item_group(item_name, "not_in_creative_inventory") < 1) or mod_name == "mcl_compass")
-            and (not exchangeclone.get_item_energy(itemstring))
+            and (not exchangeclone.get_item_emc(itemstring))
             and exchangeclone.recipes[itemstring]
         ) then
             auto[itemstring] = true
@@ -342,7 +341,7 @@ end
 local old_auto
 local same = false
 local i = 1
--- Automatically register energy values
+-- Automatically register EMC values
 while not same do
     minetest.log("action", "[ExchangeClone] \tIteration #"..i)
     if auto == {} then break end
@@ -363,7 +362,7 @@ while not same do
     for itemstring, _ in pairs(auto) do
         local cheapest = get_cheapest_recipe(itemstring)
         if cheapest then
-            set_item_energy(itemstring, cheapest)
+            set_item_emc(itemstring, cheapest)
             auto[itemstring] = nil
         end
     end
@@ -371,11 +370,11 @@ while not same do
 end
 
 if exchangeclone.mcl then
-    set_item_energy("mcl_campfires:campfire", exchangeclone.get_item_energy("mcl_campfires:campfire_lit"))
-    set_item_energy("mcl_campfires:soul_campfire", exchangeclone.get_item_energy("mcl_campfires:soul_campfire_lit"))
+    set_item_emc("mcl_campfires:campfire", exchangeclone.get_item_emc("mcl_campfires:campfire_lit"))
+    set_item_emc("mcl_campfires:soul_campfire", exchangeclone.get_item_emc("mcl_campfires:soul_campfire_lit"))
     -- Recovery compasses use a random compass frame for the crafting recipe... Incredibly irritating.
     for i = 0, 31 do
-        if exchangeclone.get_item_energy("mcl_compass:"..i.."_recovery") then
+        if exchangeclone.get_item_emc("mcl_compass:"..i.."_recovery") then
             for j = 0, 31 do
                 exchangeclone.register_alias("mcl_compass:"..i.."_recovery", "mcl_compass:"..j.."_recovery")
             end
@@ -388,11 +387,11 @@ local cheapest_color = {""}
 
 for color, color_data in pairs(exchangeclone.colors) do
     local dye_itemstring = (exchangeclone.mcl and "mcl_dye:" or "dye:")..color
-    local dye_energy = exchangeclone.get_item_energy(dye_itemstring)
-    if dye_energy then
-        if (not cheapest_color[2]) or (dye_energy < cheapest_color[2])  then
+    local dye_emc = exchangeclone.get_item_emc(dye_itemstring)
+    if dye_emc then
+        if (not cheapest_color[2]) or (dye_emc < cheapest_color[2])  then
             cheapest_color[1] = color
-            cheapest_color[2] = dye_energy
+            cheapest_color[2] = dye_emc
         end
     end
 end
@@ -403,16 +402,16 @@ local cheapest_advanced_itemstring = "exchangeclone:advanced_alchemical_chest_".
 
 for color, color_data in pairs(exchangeclone.colors) do
     local advanced_itemstring = "exchangeclone:advanced_alchemical_chest_"..color
-    set_item_energy(advanced_itemstring, exchangeclone.get_item_energy(cheapest_advanced_itemstring))
+    set_item_emc(advanced_itemstring, exchangeclone.get_item_emc(cheapest_advanced_itemstring))
 end
 
--- Adds energy values to aliased items, even though they're not used (just so it's displayed)
-for alias, itemstring in pairs(exchangeclone.energy_aliases) do
-    set_item_energy(itemstring, exchangeclone.get_item_energy(alias))
+-- Adds EMC values to aliased items, even though they're not used (just so it's displayed)
+for alias, itemstring in pairs(exchangeclone.emc_aliases) do
+    set_item_emc(itemstring, exchangeclone.get_item_emc(alias))
 end
 
 -- Delete unnecessary data (waste of memory)
 if not exchangeclone.keep_data then
     exchangeclone.recipes = nil
-    exchangeclone.base_energy_values = nil
+    exchangeclone.base_emc_values = nil
 end

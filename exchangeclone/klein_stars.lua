@@ -6,7 +6,7 @@ local function read_star_charge(itemstack, player, pointed_thing)
         return click_test
     end
 
-    local stored = exchangeclone.get_star_itemstack_energy(itemstack)
+    local stored = exchangeclone.get_star_itemstack_emc(itemstack)
     minetest.chat_send_player(player:get_player_name(), S("Current Charge: @1", exchangeclone.format_number(stored)))
     return itemstack
 end
@@ -42,7 +42,7 @@ for i, name in ipairs(names) do
         _mcl_generate_description = function(itemstack)
             return name.."\n"..S(
                 "Current Charge: @1/@2",
-                exchangeclone.format_number(exchangeclone.get_star_itemstack_energy(itemstack)),
+                exchangeclone.format_number(exchangeclone.get_star_itemstack_emc(itemstack)),
                 exchangeclone.format_number(capacity)
             )
         end

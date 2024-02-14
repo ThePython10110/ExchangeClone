@@ -141,10 +141,10 @@ if minetest.get_modpath("awards") then
 end
 
 minetest.register_on_mods_loaded(function()
-	local energy_start_time = minetest.get_us_time()
-	minetest.log("action", "[ExchangeClone] Registering energy values")
-	dofile(modpath.."/register_energy.lua")
-	minetest.log("action", "[ExchangeClone] Done registering energy values ("..((minetest.get_us_time() - energy_start_time)/1000000).." seconds)")
+	local emc_start_time = minetest.get_us_time()
+	minetest.log("action", "[ExchangeClone] Registering EMC values")
+	dofile(modpath.."/register_emc.lua")
+	minetest.log("action", "[ExchangeClone] Done registering EMC values ("..((minetest.get_us_time() - emc_start_time)/1000000).." seconds)")
 end)
 
 minetest.log("action", "[ExchangeClone] Done ("..((minetest.get_us_time() - start_time)/1000).." milliseconds)")

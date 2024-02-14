@@ -3,8 +3,8 @@ local suffixes = {"", "K", "M", "B", "T"}
 local function get_amount_label(itemstring, player_emc)
     if not minetest.registered_items[itemstring] then return "" end
     if player_emc <= 0 then return "0" end
-    local item_energy = exchangeclone.get_item_energy(itemstring)
-    local amount = math.floor(player_emc/item_energy)
+    local item_emc = exchangeclone.get_item_emc(itemstring)
+    local amount = math.floor(player_emc/item_emc)
     if player_emc <= 0 then return "0" end
     for _, suffix in ipairs(suffixes) do
         if amount < 1000 then
@@ -74,8 +74,8 @@ function exchangeclone.reload_transmutation_list(player, search)
     local no_duplicates = {}
     for _, item in pairs(items_to_show) do
         if type(item) == "string" then
-            local energy_value = exchangeclone.get_item_energy(item)
-            if energy_value and energy_value <= player_emc and energy_value > 0 then
+            local emc_value = exchangeclone.get_item_emc(item)
+            if emc_value and emc_value <= player_emc and emc_value > 0 then
                 no_duplicates[exchangeclone.handle_alias(item)] = true -- gets rid of duplicates
             end
         end
@@ -100,15 +100,15 @@ end
 local function add_to_output(player, amount, show)
     local item = player:get_meta():get_string("exchangeclone_transmutation_selection")
     if minetest.registered_items[item] then
-        local energy_value = exchangeclone.get_item_energy(item)
-        if not energy_value then return end
+        local emc_value = exchangeclone.get_item_emc(item)
+        if not emc_value then return end
         local player_emc = exchangeclone.get_player_emc(player)
         local stack_max = ItemStack(item):get_stack_max()
         if amount == true then amount = stack_max end
-        local max_amount = math.min(amount, stack_max, math.floor(player_emc/energy_value))
+        local max_amount = math.min(amount, stack_max, math.floor(player_emc/emc_value))
         local inventory = minetest.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..player:get_player_name()})
         local added_amount = max_amount - inventory:add_item("output", ItemStack(item.." "..max_amount)):get_count()
-        exchangeclone.set_player_emc(player, math.min(player_emc, player_emc - (energy_value * added_amount))) -- not sure if "math.min()" is necessary
+        exchangeclone.set_player_emc(player, math.min(player_emc, player_emc - (emc_value * added_amount))) -- not sure if "math.min()" is necessary
         if show then exchangeclone.show_transmutation_table_formspec(player) end
     end
 end
@@ -116,15 +116,15 @@ end
 local function handle_inventory(player, inventory, to_list)
     local stack = inventory:get_stack(to_list, 1)
     local itemstring = stack:get_name()
-    itemstring = exchangeclone.energy_aliases[itemstring] or itemstring
+    itemstring = exchangeclone.emc_aliases[itemstring] or itemstring
     if to_list == "learn" then
         local list = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
         if itemstring == "exchangeclone:alchemical_tome" then
             list = {}
             local i = 0
             for name, def in pairs(minetest.registered_items) do
-                local energy_value = exchangeclone.get_item_energy(name)
-                if energy_value and energy_value > 0 then
+                local emc_value = exchangeclone.get_item_emc(name)
+                if emc_value and emc_value > 0 then
                     i = i + 1
                     list[i] = name
                 end
@@ -133,20 +133,20 @@ local function handle_inventory(player, inventory, to_list)
             player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
             inventory:set_stack(to_list, 1, nil)
         else
-            local individual_energy_value = exchangeclone.get_item_energy(itemstring)
-            if not individual_energy_value or individual_energy_value <= 0 then return end
+            local individual_emc_value = exchangeclone.get_item_emc(itemstring)
+            if not individual_emc_value or individual_emc_value <= 0 then return end
             local wear = stack:get_wear()
             if wear and wear > 1 then
-                individual_energy_value = math.max(math.floor(individual_energy_value * ((65536 - wear)/65536)), 1)
+                individual_emc_value = math.max(math.floor(individual_emc_value * ((65536 - wear)/65536)), 1)
             end
             if minetest.get_item_group(itemstring, "klein_star") > 0 then
-                individual_energy_value = individual_energy_value + exchangeclone.get_star_itemstack_energy(stack)
+                individual_emc_value = individual_emc_value + exchangeclone.get_star_itemstack_emc(stack)
             end
             local player_emc = exchangeclone.get_player_emc(player)
-            local max_count = math.floor((exchangeclone.limit - player_emc)/individual_energy_value)
+            local max_count = math.floor((exchangeclone.limit - player_emc)/individual_emc_value)
             local add_count = math.min(max_count, stack:get_count())
-            local energy_value = individual_energy_value * add_count
-            local result = player_emc + energy_value
+            local emc_value = individual_emc_value * add_count
+            local result = player_emc + emc_value
             if result < 0 or result > exchangeclone.limit then return end
             exchangeclone.set_player_emc(player, result)
             local item_index = table.indexof(list, itemstring)
@@ -164,7 +164,7 @@ local function handle_inventory(player, inventory, to_list)
         return
     elseif to_list == "charge" then
         local player_emc = exchangeclone.get_player_emc(player)
-        local star_emc = exchangeclone.get_star_itemstack_energy(stack)
+        local star_emc = exchangeclone.get_star_itemstack_emc(stack)
         local charge_amount = math.min(exchangeclone.get_star_max(stack) - star_emc, player_emc)
         if charge_amount > 0 then
             exchangeclone.add_player_emc(player, 0-charge_amount)
@@ -197,9 +197,9 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
         return 0
     elseif to_list == "learn" then
         if stack:get_name() == "exchangeclone:alchemical_tome" then return count end
-        local energy_value = exchangeclone.get_item_energy(exchangeclone.handle_alias(stack))
-        if not energy_value then return 0 end
-        if energy_value <= 0 then
+        local emc_value = exchangeclone.get_item_emc(exchangeclone.handle_alias(stack))
+        if not emc_value then return 0 end
+        if emc_value <= 0 then
             return 0
         else
             return count
@@ -232,7 +232,7 @@ function exchangeclone.show_transmutation_table_formspec(player, data)
     local selection = data.selection or player:get_meta():get_string("exchangeclone_transmutation_selection")
     local player_name = player:get_player_name()
     local inventory_name = "detached:exchangeclone_transmutation_"..player_name
-    local label = "Transmutation\n"..exchangeclone.format_number(player_emc).." energy"
+    local label = "Transmutation\n"..exchangeclone.format_number(player_emc).." EMC"
 
     local formspec =
     "size[9,11]"..
@@ -429,7 +429,7 @@ minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craf
     if itemstack == ItemStack("exchangeclone:alchemical_tome") then
         for _, i in {4,6} do
             local stack = old_craft_grid[i]
-            if exchangeclone.get_star_itemstack_energy(stack) < exchangeclone.get_star_max(stack) then
+            if exchangeclone.get_star_itemstack_emc(stack) < exchangeclone.get_star_max(stack) then
                 return ItemStack("")
             end
         end

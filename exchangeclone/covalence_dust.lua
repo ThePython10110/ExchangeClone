@@ -80,7 +80,7 @@ local function is_repairable_gear(item)
     item = ItemStack(item)
     if item:get_wear() <= 0 then return end
     if minetest.get_item_group(item:get_name(), "disable_repair") > 0 then return end
-    if (exchangeclone.get_item_energy(item) or 0) <= 0 then return end
+    if (exchangeclone.get_item_emc(item) or 0) <= 0 then return end
 
     local result = 0
     for group, amount in pairs(exchangeclone.tool_types) do
@@ -125,11 +125,11 @@ minetest.register_on_player_inventory_action(function(player, action, inventory,
         if gear_stack:is_empty() or dust_stack:is_empty() then return end
         if not inventory:room_for_item("exchangeclone_covalence_output", gear_stack) then return end
         local amount = is_repairable_gear(gear_stack)
-        local energy_value = exchangeclone.get_item_energy(gear_stack)
+        local emc_value = exchangeclone.get_item_emc(gear_stack)
         local tier = 3
-        if energy_value/amount < 50 then
+        if emc_value/amount < 50 then
             tier = 1
-        elseif energy_value/amount < 6000 then
+        elseif emc_value/amount < 6000 then
             tier = 2
         end
         if minetest.get_item_group(dust_stack:get_name(), "covalence_dust") >= tier and dust_stack:get_count() >= amount then

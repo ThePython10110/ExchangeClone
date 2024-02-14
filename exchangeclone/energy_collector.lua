@@ -55,7 +55,7 @@ local function on_timer(pos, elapsed)
 
     if light and light >= 14 then
         if check_for_furnaces(pos, 1, true) then
-            -- do nothing, energy is being used for the furnace.
+            -- do nothing, emc is being used for the furnace.
             return true
         end
         local amount = meta:get_int("collector_amount")
@@ -120,7 +120,7 @@ end
 
 function exchangeclone.register_energy_collector(itemstring, name, amount, modifier, recipe)
     minetest.register_node(itemstring, {
-        description = name.."\nGenerates "..exchangeclone.format_number(amount).." energy/second",
+        description = name.."\nGenerates "..exchangeclone.format_number(amount).." EMC/second",
         tiles = {
             "exchangeclone_energy_collector_base.png^(exchangeclone_energy_collector_overlay.png"..modifier..")",
             "exchangeclone_energy_collector_base.png",

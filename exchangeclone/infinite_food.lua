@@ -26,13 +26,13 @@ local function infinite_food_function(itemstack, player, pointed_thing)
 end
 
 minetest.register_tool("exchangeclone:infinite_food", {
-    description = S("Infinite Food").."\n"..S("Consumes 64 energy when eaten"),
+    description = S("Infinite Food").."\n"..S("Consumes 64 EMC when eaten"),
     wield_image = "farming_bread.png^[colorize:#ffff00:128",
     inventory_image = "farming_bread.png^[colorize:#ffff00:128",
     groups = { food = 2, eatable = 8, disable_repair = 1, fire_immune = 1},
     on_place = exchangeclone.mcl and infinite_food_function,
     on_secondary_use = exchangeclone.mcl and infinite_food_function,
-    on_use = exchangeclone.mcl and infinite_food_function,
+    on_use = exchangeclone.mtg and infinite_food_function,
     _mcl_saturation = 12.8,
 })
 

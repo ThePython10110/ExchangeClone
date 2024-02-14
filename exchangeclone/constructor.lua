@@ -52,7 +52,7 @@ local function constructor_action(pos)
         else
             current_emc = exchangeclone.get_player_emc(player)
         end
-        local emc_value = exchangeclone.get_item_energy(src_stack:get_name())
+        local emc_value = exchangeclone.get_item_emc(src_stack:get_name())
         if emc_value and emc_value > 0 then
             local max_amount = math.min(src_stack:get_stack_max(), math.floor(current_emc/emc_value))
             local added_amount = max_amount - inv:add_item("dst", ItemStack(result.." "..max_amount)):get_count()

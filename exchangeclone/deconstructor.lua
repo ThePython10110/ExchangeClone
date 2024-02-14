@@ -38,26 +38,26 @@ local function deconstructor_action(pos, elapsed)
     end
 
     local stack = inv:get_stack("src", 1)
-    local individual_energy_value = exchangeclone.get_item_energy(stack:get_name())
-    if not (individual_energy_value and individual_energy_value > 0) then return end
+    local individual_emc_value = exchangeclone.get_item_emc(stack:get_name())
+    if not (individual_emc_value and individual_emc_value > 0) then return end
     local wear = stack:get_wear()
     if wear and wear > 0 then
-        individual_energy_value = math.max(math.floor(individual_energy_value * ((65536 - wear)/65536)), 1)
+        individual_emc_value = math.max(math.floor(individual_emc_value * ((65536 - wear)/65536)), 1)
     end
     if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
-        individual_energy_value = individual_energy_value + exchangeclone.get_star_itemstack_energy(stack)
+        individual_emc_value = individual_emc_value + exchangeclone.get_star_itemstack_emc(stack)
     end
 
-    local current_energy
+    local current_emc
     if using_star then
-        current_energy = exchangeclone.get_star_emc(inv, "fuel", 1)
+        current_emc = exchangeclone.get_star_emc(inv, "fuel", 1)
     else
-        current_energy = exchangeclone.get_player_emc(player)
+        current_emc = exchangeclone.get_player_emc(player)
     end
-    local max_count = math.floor((limit - current_energy)/individual_energy_value)
+    local max_count = math.floor((limit - current_emc)/individual_emc_value)
     local add_count = math.min(max_count, stack:get_count())
-    local energy_value = individual_energy_value * add_count
-    local result = current_energy + energy_value
+    local emc = individual_emc_value * add_count
+    local result = current_emc + emc
     if result < 0 or result > limit then return end
 
     if using_star then

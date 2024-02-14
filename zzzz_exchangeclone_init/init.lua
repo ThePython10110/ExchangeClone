@@ -65,4 +65,4 @@ if minetest.get_modpath("technic") then
     end
 end
 
-dofile(modpath.."/base_energy_values.lua")
+dofile(modpath.."/base_emc_values.lua")

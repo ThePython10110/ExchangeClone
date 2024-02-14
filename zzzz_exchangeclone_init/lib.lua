@@ -43,9 +43,9 @@ function exchangeclone.on_blast(lists)
     end
 end
 
---- Gets the energy value of an itemstring or ItemStack
+--- Gets the EMC value of an itemstring or ItemStack
 --- Handles "group:group_name" syntax (although it goes through every item), returns cheapest item in group
-function exchangeclone.get_item_energy(item)
+function exchangeclone.get_item_emc(item)
     if (item == "") or not item then return end
     -- handle groups
     if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then
@@ -57,10 +57,10 @@ function exchangeclone.get_item_energy(item)
         local cheapest
         for _, group_item in pairs(group_items[item_group]) do
             if group_item then
-                local energy_value = exchangeclone.get_item_energy(group_item)
-                if energy_value then
-                    if energy_value > 0 and ((not cheapest) or energy_value < cheapest) then
-                        cheapest = energy_value
+                local emc_value = exchangeclone.get_item_emc(group_item)
+                if emc_value then
+                    if emc_value > 0 and ((not cheapest) or emc_value < cheapest) then
+                        cheapest = emc_value
                     end
                 end
             end
@@ -71,20 +71,20 @@ function exchangeclone.get_item_energy(item)
     item = ItemStack(item)
     if item == ItemStack("") then return end
     item:set_name(exchangeclone.handle_alias(item))
-    local meta_energy_value = tonumber(item:get_meta():get_string("exchangeclone_energy_value"))
-    if meta_energy_value then
-        if meta_energy_value < 0 then return 0 end
-        if meta_energy_value > 0 then return meta_energy_value end
+    local meta_emc_value = tonumber(item:get_meta():get_string("exchangeclone_emc_value"))
+    if meta_emc_value then
+        if meta_emc_value < 0 then return 0 end
+        if meta_emc_value > 0 then return meta_emc_value end
     end
     local def = minetest.registered_items[item:get_name()]
     if not def then return end
     if minetest.get_item_group(item:get_name(), "klein_star") > 0 then
-        if def.energy_value then
-            return def.energy_value + exchangeclone.get_star_itemstack_energy(item)
+        if def.emc_value then
+            return def.emc_value + exchangeclone.get_star_itemstack_emc(item)
         end
     end
-    if def.energy_value then
-        return (def.energy_value) * item:get_count()
+    if def.emc_value then
+        return (def.emc_value) * item:get_count()
     end
 end
 
@@ -94,31 +94,31 @@ function exchangeclone.map(input, min1, max1, min2, max2)
     return (input - min1) / (max1 - min1) * (max2 - min2) + min2
 end
 
--- Gets the energy stored in a specified star itemstack.
-function exchangeclone.get_star_itemstack_energy(itemstack)
+-- Gets the EMC stored in a specified Klein/Magnum Star itemstack.
+function exchangeclone.get_star_itemstack_emc(itemstack)
     if not itemstack then return end
     if minetest.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
     return math.max(itemstack:get_meta():get_float("stored_energy"), 0)
 end
 
--- Gets the amount of energy stored in a star in a specific inventory slot
+-- Gets the amount of EMC stored in a star in a specific inventory slot
 function exchangeclone.get_star_emc(inventory, listname, index)
     if not inventory then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    return exchangeclone.get_star_itemstack_energy(itemstack)
+    return exchangeclone.get_star_itemstack_emc(itemstack)
 end
 
-function exchangeclone.set_star_itemstack_energy(itemstack, amount)
+function exchangeclone.set_star_itemstack_emc(itemstack, amount)
     if not itemstack or not amount then return end
     if minetest.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
-    local old_energy = exchangeclone.get_star_itemstack_energy(itemstack)
+    local old_emc = exchangeclone.get_star_itemstack_emc(itemstack)
     local max = exchangeclone.get_star_max(itemstack)
-    if amount > old_energy and old_energy > max then return end -- don't allow more energy to be put into an over-filled star
+    if amount > old_emc and old_emc > max then return end -- don't allow more EMC to be put into an over-filled star
 
     local meta = itemstack:get_meta()
-    meta:set_float("stored_energy", amount)
+    meta:set_float("stored_energy", amount) -- Unfortunately, this is still "energy" not EMC
     meta:set_string("description", itemstack:get_definition()._mcl_generate_description(itemstack))
     local wear = math.max(1, math.min(65535, 65535 - 65535*amount/max))
     minetest.log(65535 - 65535*amount/max)
@@ -126,13 +126,13 @@ function exchangeclone.set_star_itemstack_energy(itemstack, amount)
     return itemstack
 end
 
--- Sets the amount of energy in a star in a specific inventory slot
+-- Sets the amount of EMC in a star in a specific inventory slot
 function exchangeclone.set_star_emc(inventory, listname, index, amount)
     if not inventory or not amount or amount < 0 then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    local new_stack = exchangeclone.set_star_itemstack_energy(itemstack, amount)
+    local new_stack = exchangeclone.set_star_itemstack_emc(itemstack, amount)
     if not new_stack then return end
     inventory:set_stack(listname, index, new_stack)
 end
@@ -142,12 +142,12 @@ function exchangeclone.get_star_max(item)
     return item:get_definition().max_capacity or 0
 end
 
--- HUD stuff (show energy value in bottom right)
+-- HUD stuff (show EMC value in bottom right)
 local hud_elements = {}
 
 function exchangeclone.update_hud(player)
     local hud_text = hud_elements[player:get_player_name()]
-    player:hud_change(hud_text, "text", S("Personal Energy: @1", exchangeclone.format_number(exchangeclone.get_player_emc(player))))
+    player:hud_change(hud_text, "text", S("Personal EMC: @1", exchangeclone.format_number(exchangeclone.get_player_emc(player))))
 end
 
 minetest.register_on_joinplayer(function(player, last_login)
@@ -155,7 +155,7 @@ minetest.register_on_joinplayer(function(player, last_login)
         hud_elem_type = "text",
         position      = {x = 1, y = 1},
         offset        = {x = 0,   y = 0},
-        text          = S("Personal Energy: @1", 0),
+        text          = S("Personal EMC: @1", 0),
         alignment     = {x = -1, y = -1},
         scale         = {x = 100, y = 100},
         number = 0xDDDDDD
@@ -167,12 +167,13 @@ minetest.register_on_leaveplayer(function(player, timed_out)
     hud_elements[player:get_player_name()] = nil
 end)
 
--- Get a player's personal energy
+-- Get a player's personal EMC
 function exchangeclone.get_player_emc(player)
+    -- Can't really change it to "EMC" without everyone losing everything
     return tonumber(player:get_meta():get_string("exchangeclone_stored_energy")) or 0
 end
 
--- Set a player's personal energy
+-- Set a player's personal EMC
 function exchangeclone.set_player_emc(player, amount)
     amount = tonumber(amount)
     if not (player and amount) then return end
@@ -181,15 +182,15 @@ function exchangeclone.set_player_emc(player, amount)
     exchangeclone.update_hud(player)
 end
 
--- Add to a player's personal energy (amount can be negative)
+-- Add to a player's personal EMC (amount can be negative)
 function exchangeclone.add_player_emc(player, amount)
     if not (player and amount) then return end
     exchangeclone.set_player_emc(player, (exchangeclone.get_player_emc(player) or 0) + amount)
 end
 
 -- Through trial and error, I have found that this number (1 trillion) works the best.
--- When a player has any more energy (as in ANY more), precision-based exploits such as creating infinite glass panes are possible.
--- I temporarily considered finding some Lua library that allowed for arbitrary precision (and therefore infinite maximum energy)
+-- When a player has any more EMC (as in ANY more), precision-based exploits such as creating infinite glass panes are possible.
+-- I temporarily considered finding some Lua library that allowed for arbitrary precision (and therefore infinite maximum EMC)
 -- but I decided not to.
 exchangeclone.limit = 1000000000000
 
@@ -344,17 +345,17 @@ exchangeclone.itemstrings = {
     torch =             exchangeclone.mcl and "mcl_torches:torch"           or "default:torch"
 }
 
-exchangeclone.energy_aliases = {}
+exchangeclone.emc_aliases = {}
 
 -- <itemstring> will be treated as <alias> in Deconstructors, Constructors, Transmutation Table(t)s, etc.
 -- When you put <itemstring> into a TT, you will learn <alias> instead.
 function exchangeclone.register_alias_force(alias, itemstring)
     if alias == itemstring then return end
-    exchangeclone.energy_aliases[itemstring] = alias
+    exchangeclone.emc_aliases[itemstring] = alias
 end
 
 function exchangeclone.register_alias(alias, itemstring)
-    if not exchangeclone.energy_aliases[alias] then
+    if not exchangeclone.emc_aliases[alias] then
         exchangeclone.register_alias_force(alias, itemstring)
     end
 end
@@ -363,7 +364,7 @@ end
 function exchangeclone.handle_alias(item)
     item = ItemStack(item)
     if not item:is_empty() then
-        local de_aliased = exchangeclone.energy_aliases[item:get_name()] or item:get_name() -- Resolve ExchangeClone aliases
+        local de_aliased = exchangeclone.emc_aliases[item:get_name()] or item:get_name() -- Resolve ExchangeClone aliases
         return ItemStack(de_aliased):get_name() or item:get_name() -- Resolve MT aliases
     end
 end
@@ -599,7 +600,7 @@ end
 -- Chat commands:
 minetest.register_chatcommand("add_player_emc", {
     params = "[player] <value>",
-    description = "Add to a player's personal energy (player is self if not included, value can be negative to subtract)",
+    description = "Add to a player's personal EMC (player is self if not included, value can be negative to subtract)",
     privs = {privs = true},
     func = function(name, param)
         local split_param = exchangeclone.split(param, " ")
@@ -618,20 +619,20 @@ minetest.register_chatcommand("add_player_emc", {
             minetest.chat_send_player(name, "Bad command. Use /add_player_emc [player] [value] or /add_player_emc [value]")
             return
         end
-        local energy = exchangeclone.get_player_emc(target_player)
-        if (energy + value > exchangeclone.limit) or (energy + value < 0) then
-            minetest.chat_send_player(name, "Out of bounds; personal energy must be between 0 and 1 trillion.")
+        local emc = exchangeclone.get_player_emc(target_player)
+        if (emc + value > exchangeclone.limit) or (emc + value < 0) then
+            minetest.chat_send_player(name, "Out of bounds; personal EMC must be between 0 and 1 trillion.")
             return
         end
         exchangeclone.add_player_emc(target_player, tonumber(value))
-        minetest.chat_send_player(name, "Added "..exchangeclone.format_number(value).." to "..target_name.."'s personal energy.")
+        minetest.chat_send_player(name, "Added "..exchangeclone.format_number(value).." to "..target_name.."'s personal EMC.")
     end
 })
 
 -- Chat commands:
 minetest.register_chatcommand("get_player_emc", {
     params = "[player]",
-    description = "Gets a player's personal energy (player is self if not included).",
+    description = "Gets a player's personal EMC (player is self if not included).",
     privs = {privs = true},
     func = function(name, param)
         local target_player
@@ -646,14 +647,14 @@ minetest.register_chatcommand("get_player_emc", {
             minetest.chat_send_player(name, "Bad command. Use /get_player_emc [player] or /get_player_emc")
             return
         end
-        local energy = exchangeclone.get_player_emc(target_player)
-        minetest.chat_send_player(name, target_name.."'s personal energy: "..exchangeclone.format_number(energy))
+        local emc = exchangeclone.get_player_emc(target_player)
+        minetest.chat_send_player(name, target_name.."'s personal EMC: "..exchangeclone.format_number(emc))
     end
 })
 
 minetest.register_chatcommand("set_player_emc", {
     params = "[player] <value>",
-    description = "Set a player's personal energy (player is self if not included; use 'limit' as value to set it to maximum)",
+    description = "Set a player's personal EMC (player is self if not included; use 'limit' as value to set it to maximum)",
     privs = {privs = true},
     func = function(name, param)
         local split_param = exchangeclone.split(param, " ")
@@ -676,11 +677,11 @@ minetest.register_chatcommand("set_player_emc", {
         if value:lower() == "limit" then
             value = exchangeclone.limit
         elseif (tonumber(value) > exchangeclone.limit) or (tonumber(value) < 0) then
-            minetest.chat_send_player(name, "Failed to set energy; must be between 0 and 1 trillion.")
+            minetest.chat_send_player(name, "Failed to set EMC; must be between 0 and 1 trillion.")
             return
         end
         exchangeclone.set_player_emc(target_player, tonumber(value))
-        minetest.chat_send_player(name, "Set "..target_name.."'s personal energy to "..exchangeclone.format_number(value))
+        minetest.chat_send_player(name, "Set "..target_name.."'s personal EMC to "..exchangeclone.format_number(value))
     end
 })
 
