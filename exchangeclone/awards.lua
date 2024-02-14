@@ -103,7 +103,7 @@ register_award("exchangeclone:is_this_safe", {
 register_award("exchangeclone:hot_matter", {
     title = "Hot matter!",
     description = "A furnace is even better when made from dark matter.",
-    icon = "exchangeclone_red_matter_furnace_active.png",
+    icon = "exchangeclone_dark_matter_furnace_active.png",
     trigger = {
         type = "craft",
         item = "exchangeclone:dark_matter_furnace",
