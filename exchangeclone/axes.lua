@@ -87,7 +87,7 @@ minetest.register_tool("exchangeclone:dark_matter_axe", {
 		damage_groups = {fleshy=9},
 		punch_attack_uses = 0,
 		groupcaps={
-			choppy = {times={[1]=4, [2]=0.3, [3]=0.25}, uses=0, maxlevel=4},
+			choppy = {times = exchangeclone.get_mtg_times(14, nil, "choppy"), uses=0, maxlevel=4},
 		},
 	},
 	sound = { breaks = "default_tool_breaks" },
@@ -114,7 +114,7 @@ minetest.register_tool("exchangeclone:red_matter_axe", {
 		damage_groups = {fleshy=10},
 		punch_attack_uses = 0,
 		groupcaps={
-			choppy = {times={[1]=0.35, [2]=0.25, [3]=0.2}, uses=0, maxlevel=5},
+			choppy = {times = exchangeclone.get_mtg_times(16, nil, "choppy"), uses=0, maxlevel=5},
 		},
 	},
 	sound = { breaks = "default_tool_breaks" },

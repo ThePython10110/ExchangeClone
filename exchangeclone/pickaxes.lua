@@ -88,7 +88,7 @@ minetest.register_tool("exchangeclone:dark_matter_pickaxe", {
 		damage_groups = {fleshy=8},
 		punch_attack_uses = 0,
 		groupcaps={
-			cracky = {times={[1]=0.55, [2]=0.35, [3]=0.2}, uses=0, maxlevel=4},
+			cracky = {times = exchangeclone.get_mtg_times(14, nil, "cracky"), uses=0, maxlevel=4},
 		},
 	},
 	_mcl_toollike_wield = true,
@@ -115,7 +115,7 @@ minetest.register_tool("exchangeclone:red_matter_pickaxe", {
 		damage_groups = {fleshy=9},
 		punch_attack_uses = 0,
 		groupcaps={
-			cracky = {times={[1]=0.5, [2]=0.3, [3]=0.15}, uses=0, maxlevel=5},
+			cracky = {times = exchangeclone.get_mtg_times(16, nil, "cracky"), uses=0, maxlevel=5},
 		},
 	},
 	_mcl_toollike_wield = true,
