@@ -73,19 +73,19 @@ You can find the old textures and sounds by going back to previous commits in Gi
 * [x] Achievements/advancements/awards (match ProjectE with a few missing/added)
 * [x] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
 * [x] Change "energy" to EMC
-* [ ] Improvements to tools (\* = only in MCL at the moment)
+* [x] Improvements to tools (\* = only in MCL at the moment)
     * [x] Wear bar for charge level
     * [x] Charge levels match ProjectE (both in number and in range)
     * [x] Charge level affects speed\*
-    * [x] Correct/accurate speeds compared to ProjectE\*
+    * [x] Correct/accurate speeds compared to ProjectE
     * [x] Only one item per tool (not a separate 3x3 tool)
     * [x] Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
     * [x] Shovels can remove paths (MCL2)
-    * [x] Accurate armor protection\*
+    * [x] Accurate armor protection
         * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are invincible 90% of the time.
     * [x] Remove and add alias for DM/RM shields
     * [x] Upgrades affect EMC value
-    * [ ] Make tool speeds work in Minetest Game
+    * [x] Make tool speeds work in Minetest Game
 * [x] Multiple levels of Exchange Orbs (change to Klein Stars, adjust recipes)
 * [x] Wear bar on Klein Stars for EMC
 * [x] Fuel storage blocks
@@ -93,8 +93,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 * [ ] Swiftwolf's Rending Gale (maybe rename?)
 * [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
 * [ ] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
-* [ ] Gem of Eternal Density (will only work in player inventory, not Alchemical Chests like ProjectE)
-* [ ] DM/RM blocks can only be broken by correct (or higher) type.
+* [ ] Gem of Eternal Density (will only work on right click, not automatically)
 * [ ] Change energy collector recipes to match ProjectE
 * [ ] Update screenshots
 * [x] Update media licenses
@@ -123,6 +122,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 #### Full changelog:
 * New features:
+    * Added achivements/advancements awards (mostly matching ProjectE, but with some missing or added).
     * Replaced Exchange Orbs with Klein Stars and Magnum Stars
     * Added storage blocks for Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
 * Changes:

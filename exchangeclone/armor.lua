@@ -123,7 +123,7 @@ local function get_blocked_damage(itemstack, damage, reason)
     return base_block*damage
 end
 
--- Reset health
+-- Reset health (old versions increased HP with full RM armor)
 function exchangeclone.check_armor_health(obj)
     if obj:get_meta():get_int("exchangeclone_red_matter_armor") == 1 then
         obj:set_hp(math.min(obj:get_hp(), 20))
