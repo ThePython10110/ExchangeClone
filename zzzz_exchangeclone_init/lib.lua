@@ -1100,21 +1100,49 @@ function exchangeclone.add_range_setting(name, data)
     exchangeclone.tool_levels.range[name] = data
 end
 
+local function calculate_time_from_time(time, speed, efficiency)
+    if not efficiency then return time end
+    local hardness = (2/3)*time*speed
+    speed = speed + efficiency*efficiency + 1
+    return math.ceil(30/(speed/hardness))/20
+end
+
+-- A table of estimated hardness values for MTG
+-- Calculated by finding MTG nodes with the right group, then looking up the Minecraft hardness for them
+local hacky_workaround = {
+    snappy = {1.5, 0.8, 0.2},
+    cracky = {5, 3, 2},
+    choppy = {5, 3, 2},
+    crumbly = {2, 0.6, 0.5}
+}
+
+function exchangeclone.get_mtg_times(speed, efficiency, group)
+    if efficiency then speed = speed + efficiency*efficiency + 1 end
+    local times = {}
+    for i, hardness in ipairs(hacky_workaround[group]) do
+        times[i] = math.ceil(30/(speed/hardness))/20
+    end
+    minetest.log(dump(times))
+    return times
+end
+
 -- Given an item and effiency level, return the groupcaps of the item with that efficiency level.
 function exchangeclone.get_groupcaps(item, efficiency)
     item = ItemStack(item)
     if exchangeclone.mcl then
-        local thingy = mcl_autogroup.get_groupcaps(item:get_name(), efficiency)
-        return thingy
-    else
+        local groupcaps = mcl_autogroup.get_groupcaps(item:get_name(), efficiency)
+        return groupcaps
+    else -- This only works if the tool is the same speed for every group.
         local groupcaps = table.copy(minetest.registered_items[item:get_name()].tool_capabilities.groupcaps)
-        local adjusted_efficiency = 1 -- TODO finish this
+        local next, mcl_diggroups = pairs(item:get_definition()._mcl_diggroups)
+        local _, mcl_group_def = next(mcl_diggroups)
+        local speed = mcl_group_def.speed
+
         if not groupcaps then return end
         for group, def in pairs(groupcaps) do
-            for level, time in pairs(def.times) do
-                def[level] = time -- TODO finish this
-            end
+            groupcaps[group].times = exchangeclone.get_mtg_times(speed, efficiency, group)
         end
+        return groupcaps
     end
 end
 

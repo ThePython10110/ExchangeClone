@@ -50,21 +50,27 @@ Dependencies: Minetest Game or MineClone.
 ![Screenshot](screenshot.png)
 ![Transmutation GUI Screenshot](transmutation_screenshot.png)
 
-## Sources/license: (note: this will change soon)
-* Code: Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange). Since then, there have been tons of new bugs and features (at this point, at least 95% of the code is my own). Both this mod and Element Exchange are licenced under GPLv3+. Based on Equivalent Exchange and ProjectE, mods for Minecraft.
+## Sources/licenses:
+* Code: GPLv3+
+    * Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (also GPLv3+).
+    * Based on the Minecraft mods Equivalent Exchange 2 and ProjectE (both MIT, though the source for EE2 is unavailable)
 * Textures:
-    * Energy Collector, Deconstructor, Constructor: Directly from Element Exchange, GPLv3+.
-    * Exchange Orb: *Slightly* modified from Element Exchange (I just changed the color to white so it could change colors correctly)
-    * Alchemical Coal, Mobius Fuel, and Aeternalis Fuel: modified versions of MineClone's coal texture (CC-BY-SA-3.0).
-    * Covalence Dust: Slightly modified from MineClon(e2/ia)'s redstone dust (CC-BY-SA-3.0)
-    * Dark and Red Matter Armor (and maybe eventually Gem Armor): modified versions of diamond armor from 3D Armor (CC-BY-SA-3.0) and `mcl_armor` (CC-BY-SA-3.0).
-* All other textures (and sounds): Created by me, inspired by Equivalent Exchange and licensed under CC-BY-SA-3.0.
+    * Constructor and Deconstructor: Unmodified from Element Exchange (GPLv3+)
+    * Armor (not the inventory image): Modified versions of diamond armor from 3D Armor in MTG and `mcl_armor` in MCL (both CC-BY-SA-3.0)
+    * Upgraders and Upgrades: Created by me (CC-BY-SA-3.0)
+    * Energy Collectors:
+        * Base: Glowstone block from MineClone2 (CC-BY-SA-3.0)
+        * Overlay: Created by me (CC-BY-SA-3.0)
+    * Alchemical Chests (and Advanced Alchemical Chests): Modified version of EE2/ProjectE's textures, extended to 16x16 instead of 14x14 (MIT)
+    * All other textures and sounds: Directly from EE2/ProjectE (MIT)
+
+You can find the old textures and sounds by going back to previous commits in GitHub.
 
 -----
 
 
 ### PLANS/TODO FOR v7.0 (see dev branch for current progress)
-* [x] Achievements/advancements/awards
+* [x] Achievements/advancements/awards (match ProjectE with a few missing/added)
 * [x] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
 * [x] Change "energy" to EMC
 * [ ] Improvements to tools (\* = only in MCL at the moment)
@@ -91,6 +97,7 @@ Dependencies: Minetest Game or MineClone.
 * [ ] DM/RM blocks can only be broken by correct (or higher) type.
 * [ ] Change energy collector recipes to match ProjectE
 * [ ] Update screenshots
+* [x] Update media licenses
 * [ ] Edit wiki:
     * [ ] Achievements?
     * [ ] Divining rods
@@ -119,11 +126,7 @@ Dependencies: Minetest Game or MineClone.
     * Replaced Exchange Orbs with Klein Stars and Magnum Stars
     * Added storage blocks for Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
 * Changes:
-    * Most textures and all sounds are now from ProjectE/EE2.
-        * Only (De)Constructors, and worn armor have the original textures.
-        * Textures for Upgrades and Upgraders have been changed.
-        * Textures for Collectors are based on ProjectE's but not identical.
-        * Textures for Alchemical Chests are slightly modified from ProjectE's to make them 16x16 instead of 14x14
+    * Most textures and all sounds are now from ProjectE/EE2. See license section for details.
     * Several improvements to tools:
         * The pickaxe vein mining ability only checks each position once.
         * Tools do not mine slower in 3x1/3x3 modes (to match ProjectE)
@@ -134,6 +137,7 @@ Dependencies: Minetest Game or MineClone.
         * Several changes to tool abilities (*mostly* making them closer to the ProjectE versions)
         * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
     * Removed the deprecated PESA.
+    * Changed "energy" to "EMC"
     * Replaced Exchange Orbs with Klein Stars and Magnum Stars
         * Since Klein Star Omegas have the same capacity as the old Exchange Orbs, they now replace them (meaning players don't lose anything).
         * Klein Star Ein->Zwei->Drei->Vier->Sphere->Omega, then the same order for Magnum Stars.

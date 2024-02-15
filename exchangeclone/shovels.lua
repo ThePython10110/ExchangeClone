@@ -126,10 +126,9 @@ minetest.register_tool("exchangeclone:dark_matter_shovel", {
 		damage_groups = {fleshy=6},
 		punch_attack_uses = 0,
 		groupcaps={
-			crumbly = {times={[1]=0.9, [2]=0.45, [3]=0.225}, uses=0, maxlevel=4},
+			crumbly = {times={[1]=0.25, [2]=0.1, [3]=0.1}, uses=0, maxlevel=4},
 		},
 	},
-	sound = { breaks = "default_tool_breaks" },
 	on_place = shovel_on_place,
 	on_secondary_use = shovel_on_place,
 	_mcl_toollike_wield = true,
@@ -153,10 +152,9 @@ minetest.register_tool("exchangeclone:red_matter_shovel", {
 		damage_groups = {fleshy=7},
 		punch_attack_uses = 0,
 		groupcaps={
-			crumbly = {times={[1]=0.6, [2]=0.25, [3]=0.1}, uses=0, maxlevel=5},
+			crumbly = {times={[1]=0.2, [2]=0.1, [3]=0.05}, uses=0, maxlevel=5},
 		},
 	},
-	sound = { breaks = "default_tool_breaks" },
 	on_place = shovel_on_place,
 	on_secondary_use = shovel_on_place,
 	_mcl_toollike_wield = true,

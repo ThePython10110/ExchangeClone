@@ -176,7 +176,7 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 		damage_groups = {fleshy=13},
 		punch_attack_uses = 0,
 		groupcaps={
-			snappy = {times={[1]=0.95, [2]=0.45, [3]=0.15}, uses=0, maxlevel=4},
+			snappy = {times={[1]=0.2, [2]=0.1, [3]=0.05}, uses=0, maxlevel=4},
 		},
 	},
 	on_secondary_use = exchangeclone.aoe_attack({damage = 12, knockback = 12, radius = 5, cooldown = 0.7}),
@@ -201,7 +201,7 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 		damage_groups = {fleshy=17},
 		punch_attack_uses = 0,
 		groupcaps={
-			snappy = {times={[1]=0.6, [2]=0.25, [3]=0.1}, uses=0, maxlevel=5},
+			snappy = {times={[1]=0.15, [2]=0.1, [3]=0.05}, uses=0, maxlevel=5},
 		},
 	},
 	on_secondary_use = red_matter_sword_action,

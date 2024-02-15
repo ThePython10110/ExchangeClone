@@ -124,7 +124,7 @@ minetest.register_tool("exchangeclone:dark_matter_hoe", {
 		full_punch_interval = 0.25,
 		damage_groups = { fleshy = 1, },
 		groupcaps={
-			exchangeclone_dirt = {times={[1]=0.25, [2]=0.25, [3]=0.25}, uses=0, maxlevel=4},
+			exchangeclone_dirt = {times={[1]=0.25, [2]=0.1, [3]=0.1}, uses=0, maxlevel=4},
 		},
 	},
 	_mcl_toollike_wield = true,
@@ -150,7 +150,7 @@ minetest.register_tool("exchangeclone:red_matter_hoe", {
 		full_punch_interval = 0.25,
 		damage_groups = { fleshy = 1, },
 		groupcaps={
-			exchangeclone_dirt = {times={[1]=0.25, [2]=0.25, [3]=0.25}, uses=0, maxlevel=4},
+			exchangeclone_dirt = {times={[1]=0.2, [2]=0.1, [3]=0.05}, uses=0, maxlevel=4},
 		},
 	},
 	_mcl_toollike_wield = true,
