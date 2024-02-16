@@ -44,6 +44,7 @@ Dependencies: Minetest Game or MineClone.
 * In Mineclonia, hoppers can put invalid items into Energy Collectors.
 * Tools do not show the wear bar (to show the charge level) when first created or crafted. It only appears after changing the range. This will not be fixed.
 * Unfortunately, caused by the performance improvements to various tool abilities, using the shear ability on sea grass (MCL) will also remove the sand below the sea grass. I can't think of a good way to fix it.
+* Dark and Red Matter Armor can make the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix.
 
 **If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -89,18 +90,17 @@ You can find the old textures and sounds by going back to previous commits in Gi
 * [x] Multiple levels of Exchange Orbs (change to Klein Stars, adjust recipes)
 * [x] Wear bar on Klein Stars for EMC
 * [x] Fuel storage blocks
-* [ ] Divining rods
-* [ ] Swiftwolf's Rending Gale (maybe rename?)
-* [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
-* [ ] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
-* [x] Gem of Eternal Density (will only work on right click, not automatically).
-* [ ] Change energy collector recipes to match ProjectE
-* [ ] Update screenshots
+* [x] Mind, Life, Body and Soul Stones (Mind = MCL only, Body and Life require Stamina mod in MTG)
+* [x] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
+* [x] Gem of Eternal Density
 * [x] Update media licenses
-* [ ] Edit wiki:
-    * [ ] Achievements?
-    * [ ] Divining rods
-    * [ ] Swiftwolf's Rending Gale
+* [ ] Testing
+    * [ ] Every tool ability in every game
+    * [ ] Every machine in every game
+    * [ ] Check new recipes in every game
+* [ ] Update screenshots
+* [ ] Update wiki:
+    * [ ] Achievements? Maybe don't belong in wiki...
     * [ ] Talisman of Repair
     * [ ] Gem of Eternal Density
     * [ ] Mind, Life, Body, and Soul Stones
@@ -116,9 +116,11 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 #### Overview:
 * **NOTE: Updating to this version resets tools to their default mode and range (1x1, range 0). Upgrades will not be affected.**
+* **OTHER NOTE: In this version... dark and red matter armor are ridiculously overpowered, often making the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix.**
 * Tools' mining speeds, attack damage, and attack speeds now match ProjectE's
-* Most tools' abilities are more similar to ProjectE's, and are more efficient in some cases.
-* ExchangeClone now uses EE2/ProjectE's textures (I didn't know until recently that EE2's license had been changed to MIT)
+* Most tools' abilities are more similar to ProjectE's, and perform better in some cases.
+* New items
+* ExchangeClone now mostly uses EE2/ProjectE's textures and sounds (I didn't know until recently that EE2's license had been changed to MIT).
 
 #### Full changelog:
 * New features:
@@ -126,6 +128,8 @@ You can find the old textures and sounds by going back to previous commits in Gi
     * Replaced Exchange Orbs with Klein Stars and Magnum Stars
     * Added storage blocks for Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
     * Added Gem of Eternal Density
+    * Added Soul, Body, Life, and Mind Stones (Mind = MCL only, Body/Life require Stamina mod in MTG)
+    * Added Talisman of Repair
 * Changes:
     * Most textures and all sounds are now from ProjectE/EE2. See license section for details.
     * Several improvements to tools:
@@ -138,12 +142,13 @@ You can find the old textures and sounds by going back to previous commits in Gi
         * Several changes to tool abilities (*mostly* making them closer to the ProjectE versions)
         * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
     * Removed the deprecated PESA.
-    * Changed "energy" to "EMC"
-    * Replaced Exchange Orbs with Klein Stars and Magnum Stars
+    * Changed "energy" to "EMC" (any mods that depend on this will probably have to deal with that, find/replace should work pretty well).
+    * Replaced Exchange Orbs with Klein Stars and Magnum Stars (any mods that depend on this should find/replace orb with star)
         * Since Klein Star Omegas have the same capacity as the old Exchange Orbs, they now replace them (meaning players don't lose anything).
-        * Klein Star Ein->Zwei->Drei->Vier->Sphere->Omega, then the same order for Magnum Stars.
+        * Klein Star Ein->Zwei->Drei->Vier->Sphere->Omega, then the same order for Magnum Stars, each holding (and costing) 4 times more than the last.
 * Bugfixes
     * The Philosopher's Stone no longer fails to transmute logs and leaves in Mineclonia.
+    * Added energy values for azalea bushes in Mineclonia.
 
 ### v6.9
 * Fixed a bug where characters were not escaped in the search bar of the Transmutation Table(t) formspec (reported by @programmerjake).
@@ -438,9 +443,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 </details>
 
 ### Features that I plan on adding eventually:
-* Achievements
 * ~~As soon as Minetest 5.8 comes out, better textures for armor...~~ Don't want to limit it to 5.8
-* Divining Rods
 * Rings (I'll probably add a new PESA-like item for holding rings)
     * Archangel's Smite (MCL only, arrows will not track targets)
     * Ring of Ignition
@@ -450,8 +453,5 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
     * Ring of Arcana (possibly without the Harvest Band)
 * Gem Armor
 * Catalytic Lens
-* Mind, Life, Body, and Soul Stones
 * Mercurial Eye
-* Talisman of Repair
-* Gem of Eternal Density
 * Probably other things

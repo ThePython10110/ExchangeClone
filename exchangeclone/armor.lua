@@ -288,7 +288,7 @@ else
             local damage = -hp_change
             local _, armor_inv = armor:get_valid_player(player, "3d_armor")
             local blocked = 0
-            for i = 1, 6 do
+            for i = 1, #armor_inv:get_list("armor") do
                 local itemstack = armor_inv:get_stack("armor", i)
                 blocked = blocked + get_blocked_damage(itemstack, damage, reason)
             end

@@ -12,29 +12,11 @@ local function get_gem_description(itemstack)
     local target_message = "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description()
     local emc = exchangeclone.get_item_emc(itemstack:get_name())
     local stored = exchangeclone.get_item_emc(itemstack) - emc
-    return "Gem of Eternal Density\n"..target_message.."\nEMC value: "..exchangeclone.format_number(emc).."\nStored EMC: "..exchangeclone.format_number(stored)
+    return "Gem of Eternal Density\n"..target_message.."\nEMC Value: "..exchangeclone.format_number(emc).."\nStored EMC: "..exchangeclone.format_number(stored)
 end
 
-local function gem_action(itemstack, player, pointed_thing)
-    local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
-    if click_test ~= false then
-        return click_test
-    end
-
+local function condense(player, itemstack)
     local meta = itemstack:get_meta()
-    if player:get_player_control().aux1 then
-        local current_target = math.max(meta:get_int("density_target"), 1)
-        if player:get_player_control().sneak then
-            current_target = math.max(1, current_target - 1)
-        else
-            current_target = math.min(#exchangeclone.density_targets, current_target + 1)
-        end
-        minetest.chat_send_player(player:get_player_name(), "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description())
-        meta:set_int("density_target", current_target)
-        meta:set_string("description", get_gem_description(itemstack))
-        return itemstack
-    end
-
     local inv = player:get_inventory()
     local list = inv:get_list("main")
     -- Don't include hotbar
@@ -84,17 +66,51 @@ local function gem_action(itemstack, player, pointed_thing)
     if remainder > 0 then
         remainder_emc = remainder_emc + remainder*target_emc
     end
-    exchangeclone.play_sound(player, "exchangeclone_enable")
+    if meta:get_string("exchangeclone_active") ~= "true" then
+        exchangeclone.play_sound(player, "exchangeclone_enable")
+    end
     meta:set_int("exchangeclone_emc_value", exchangeclone.get_item_emc(itemstack:get_name()) + remainder_emc)
     meta:set_string("description", get_gem_description(itemstack))
     return itemstack
+end
+
+local function gem_action(itemstack, player, pointed_thing)
+    local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
+    if click_test ~= false then
+        return click_test
+    end
+
+    local meta = itemstack:get_meta()
+    if player:get_player_control().aux1 then
+        local current_target = math.max(meta:get_int("density_target"), 1)
+        if player:get_player_control().sneak then
+            current_target = math.max(1, current_target - 1)
+        else
+            current_target = math.min(#exchangeclone.density_targets, current_target + 1)
+        end
+        minetest.chat_send_player(player:get_player_name(), "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description())
+        meta:set_int("density_target", current_target)
+        meta:set_string("description", get_gem_description(itemstack))
+        return itemstack
+    elseif player:get_player_control().sneak then
+        return exchangeclone.toggle_active(itemstack, player, pointed_thing)
+    else
+        return condense(player, itemstack)
+    end
 end
 
 minetest.register_tool("exchangeclone:gem_of_eternal_density", {
     description = "Gem of Eternal Density",
     inventory_image = "exchangeclone_gem_of_eternal_density.png",
     on_secondary_use = gem_action,
-    on_place = gem_action
+    on_place = gem_action,
+    _exchangeclone_passive = {
+        hotbar = true,
+        active_image = "exchangeclone_gem_of_eternal_density_active.png",
+        func = condense
+    },
+    groups = {disable_repair = 1, exchangeclone_passive = 1},
+    _mcl_generate_description = get_gem_description
 })
 
 minetest.register_craft({

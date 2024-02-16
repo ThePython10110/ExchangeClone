@@ -72,7 +72,8 @@ minetest.register_tool("exchangeclone:dark_matter_hammer", {
 		pickaxey = { speed = 14, level = 5, uses = 0 }
 	},
     on_place = hammer_on_place,
-    on_secondary_use = hammer_on_place
+    on_secondary_use = hammer_on_place,
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:dark_matter_hammer", {"group:"..exchangeclone.pickaxe_group})
@@ -101,6 +102,7 @@ minetest.register_tool("exchangeclone:red_matter_hammer", {
 	},
     on_place = hammer_on_place,
     on_secondary_use = hammer_on_place,
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:red_matter_hammer", {"group:"..exchangeclone.pickaxe_group})

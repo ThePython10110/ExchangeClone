@@ -97,6 +97,7 @@ minetest.register_tool("exchangeclone:dark_matter_axe", {
 	_mcl_diggroups = {
 		axey = { speed = 14, level = 5, uses = 0 }
 	},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.set_charge_type("exchangeclone:dark_matter_axe", "dark_matter")
@@ -124,6 +125,7 @@ minetest.register_tool("exchangeclone:red_matter_axe", {
 	_mcl_diggroups = {
 		axey = { speed = 16, level = 6, uses = 0 }
 	},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.set_charge_type("exchangeclone:red_matter_axe", "red_matter")

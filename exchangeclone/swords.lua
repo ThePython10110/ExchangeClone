@@ -186,6 +186,7 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	_mcl_diggroups = {
 		swordy = { speed = 14, level = 5, uses = 0 }
 	},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 minetest.register_tool("exchangeclone:red_matter_sword", {
@@ -211,6 +212,7 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	_mcl_diggroups = {
 		swordy = { speed = 16, level = 6, uses = 0 }
 	},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 minetest.register_craft({

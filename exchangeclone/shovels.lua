@@ -135,6 +135,7 @@ minetest.register_tool("exchangeclone:dark_matter_shovel", {
 	_mcl_diggroups = {
 		shovely = { speed = 14, level = 5, uses = 0 }
 	},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.set_charge_type("exchangeclone:dark_matter_shovel", "dark_matter")
@@ -161,6 +162,7 @@ minetest.register_tool("exchangeclone:red_matter_shovel", {
 	_mcl_diggroups = {
 		shovely = { speed = 16, level = 6, uses = 0 }
 	},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.set_charge_type("exchangeclone:red_matter_shovel", "red_matter")

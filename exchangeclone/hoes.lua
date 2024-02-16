@@ -132,6 +132,7 @@ minetest.register_tool("exchangeclone:dark_matter_hoe", {
         exchangeclone_dirt = { speed = 14, level = 5, uses = 0 },
 		hoey = { speed = 14, level = 5, uses = 0 }
 	},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:dark_matter_hoe", {"group:exchangeclone_dirt"})
@@ -158,6 +159,7 @@ minetest.register_tool("exchangeclone:red_matter_hoe", {
         exchangeclone_dirt = { speed = 16, level = 6, uses = 0 },
 		hoey = { speed = 16, level = 6, uses = 0 }
 	},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:red_matter_hoe", {"group:exchangeclone_dirt"})

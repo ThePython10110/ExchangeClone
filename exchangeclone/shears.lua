@@ -81,6 +81,7 @@ minetest.register_tool("exchangeclone:dark_matter_shears", {
         shearsy_wool = { speed = 14, level = 5, uses = 0 },
         shearsy_cobweb = { speed = 14, level = 5, uses = 0 }
     },
+	wear_represents = "exchangeclone_charge_level"
 })
 
 
@@ -106,6 +107,7 @@ minetest.register_tool("exchangeclone:red_matter_shears", {
         shearsy_wool = { speed = 16, level = 6, uses = 0 },
         shearsy_cobweb = { speed = 16, level = 6, uses = 0 }
     },
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.set_charge_type("exchangeclone:red_matter_shears", "red_matter")

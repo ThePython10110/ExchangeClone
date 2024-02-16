@@ -111,7 +111,8 @@ minetest.register_tool("exchangeclone:philosophers_stone", {
     on_use = on_left_click,
     on_place = on_right_click,
     on_secondary_use = on_right_click,
-    groups = {philosophers_stone = 1, disable_repair = 1, fire_immune = 1}
+    groups = {philosophers_stone = 1, disable_repair = 1, fire_immune = 1},
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.set_charge_type("exchangeclone:philosophers_stone", "phil")

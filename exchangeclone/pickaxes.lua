@@ -97,6 +97,7 @@ minetest.register_tool("exchangeclone:dark_matter_pickaxe", {
 	},
     on_secondary_use = pickaxe_on_use,
     on_place = pickaxe_on_use,
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:dark_matter_pickaxe", {"group:"..exchangeclone.pickaxe_group})
@@ -124,6 +125,7 @@ minetest.register_tool("exchangeclone:red_matter_pickaxe", {
 	},
     on_secondary_use = pickaxe_on_use,
     on_place = pickaxe_on_use,
+	wear_represents = "exchangeclone_charge_level"
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:red_matter_pickaxe", {"group:"..exchangeclone.pickaxe_group})

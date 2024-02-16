@@ -107,38 +107,50 @@ end
 if exchangeclone.mcl2 then
 	mcl_item_id.set_mod_namespace("exchangeclone")
 end
+local files = {
+	"constructor",
+	"deconstructor",
+	"energy_collector",
+	"klein_stars",
+	"craftitems",
+	"tool_upgrades",
+	"swords",
+	"pickaxes",
+	"axes",
+	"shovels",
+	"hoes",
+	"hammers",
+	"red_matter_multitools",
+	"covalence_dust",
+	"philosophers_stone",
+	"infinite_food",
+	"alchemical_chests",
+	"transmutation_table",
+	"furnaces",
+	"gem_of_eternal_density",
+	"talisman_of_repair",
+	"passive_stones",
+}
 
-dofile(modpath.."/constructor.lua")
-dofile(modpath.."/deconstructor.lua")
-dofile(modpath.."/energy_collector.lua")
-dofile(modpath.."/klein_stars.lua")
-dofile(modpath.."/craftitems.lua")
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then
 	dofile(modpath.."/armor.lua")
 end
+
 if exchangeclone.mcl then
 	dofile(modpath.."/shears.lua")
 	dofile(modpath.."/tool_upgrades.lua")
 end
-dofile(modpath.."/swords.lua")
-dofile(modpath.."/axes.lua")
-dofile(modpath.."/hoes.lua")
-dofile(modpath.."/pickaxes.lua")
-dofile(modpath.."/hammers.lua")
-dofile(modpath.."/shovels.lua")
-dofile(modpath.."/red_matter_multitools.lua")
-dofile(modpath.."/covalence_dust.lua")
+
 if minetest.get_modpath("hopper") then
 	dofile(modpath.."/hopper_compat.lua")
 end
-dofile(modpath.."/philosophers_stone.lua")
-dofile(modpath.."/infinite_food.lua")
-dofile(modpath.."/alchemical_chests.lua")
-dofile(modpath.."/transmutation_table.lua")
-dofile(modpath.."/furnaces.lua")
-dofile(modpath.."/gem_of_eternal_density.lua")
+
 if minetest.get_modpath("awards") then
 	dofile(modpath.."/awards.lua")
+end
+
+for _, file in ipairs(files) do
+	dofile(modpath.."/"..file..".lua")
 end
 
 minetest.register_on_mods_loaded(function()
