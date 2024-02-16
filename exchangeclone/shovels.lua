@@ -152,7 +152,7 @@ minetest.register_tool("exchangeclone:red_matter_shovel", {
 		damage_groups = {fleshy=7},
 		punch_attack_uses = 0,
 		groupcaps={
-			crumbly = {times=exchangeclone.get_mtg_times(16, nil, "crumbly") maxlevel=5},
+			crumbly = {times=exchangeclone.get_mtg_times(16, nil, "crumbly"), maxlevel=5},
 		},
 	},
 	on_place = shovel_on_place,

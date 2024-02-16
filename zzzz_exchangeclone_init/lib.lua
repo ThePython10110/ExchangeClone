@@ -69,7 +69,6 @@ function exchangeclone.get_item_emc(item)
     end
 
     if type(item) == "userdata" then
-        minetest.log("thingithingi")
         local meta_emc_value = tonumber(item:get_meta():get_string("exchangeclone_emc_value"))
         if meta_emc_value then minetest.log(dump(meta_emc_value)) return math.max(0, meta_emc_value) end
     end
@@ -354,6 +353,7 @@ end
 exchangeclone.itemstrings = {
     cobble =            exchangeclone.mcl and "mcl_core:cobble"             or "default:cobble",
     redstoneworth =     exchangeclone.mcl and "mesecons:redstone"           or "default:obsidian",
+    obsidian =          exchangeclone.mcl and "mcl_core:obsidian"           or "default:obsidian",
     glowstoneworth =    exchangeclone.mcl and "mcl_nether:glowstone_dust"   or "default:tin_ingot",
     coal =              exchangeclone.mcl and "mcl_core:coal_lump"          or "default:coal_lump",
     iron =              exchangeclone.mcl and "mcl_core:iron_ingot"         or "default:steel_ingot",
@@ -1100,13 +1100,6 @@ function exchangeclone.add_range_setting(name, data)
     exchangeclone.tool_levels.range[name] = data
 end
 
-local function calculate_time_from_time(time, speed, efficiency)
-    if not efficiency then return time end
-    local hardness = (2/3)*time*speed
-    speed = speed + efficiency*efficiency + 1
-    return math.ceil(30/(speed/hardness))/20
-end
-
 -- A table of estimated hardness values for MTG
 -- Calculated by finding MTG nodes with the right group, then looking up the Minecraft hardness for them
 local hacky_workaround = {
@@ -1140,7 +1133,9 @@ function exchangeclone.get_groupcaps(item, efficiency)
 
         if not groupcaps then return end
         for group, def in pairs(groupcaps) do
-            groupcaps[group].times = exchangeclone.get_mtg_times(speed, efficiency, group)
+            local test_group = group
+            if test_group == "exchangeclone_dirt" then test_group = "crumbly" end
+            groupcaps[group].times = exchangeclone.get_mtg_times(speed, efficiency, test_group)
         end
         return groupcaps
     end

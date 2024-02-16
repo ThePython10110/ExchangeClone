@@ -93,7 +93,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 * [ ] Swiftwolf's Rending Gale (maybe rename?)
 * [ ] Mind, Life, Body and Soul Stones (Mind = MCL only)
 * [ ] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
-* [ ] Gem of Eternal Density (will only work on right click, not automatically).
+* [x] Gem of Eternal Density (will only work on right click, not automatically).
 * [ ] Change energy collector recipes to match ProjectE
 * [ ] Update screenshots
 * [x] Update media licenses
@@ -125,6 +125,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
     * Added achivements/advancements awards (mostly matching ProjectE, but with some missing or added).
     * Replaced Exchange Orbs with Klein Stars and Magnum Stars
     * Added storage blocks for Alchemical Coal, Mobius Fuel, and Aeternalis Fuel
+    * Added Gem of Eternal Density
 * Changes:
     * Most textures and all sounds are now from ProjectE/EE2. See license section for details.
     * Several improvements to tools:

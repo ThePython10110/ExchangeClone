@@ -285,13 +285,14 @@ else
     })
     minetest.register_on_player_hpchange(function(player, hp_change, reason)
         if hp_change < 0 then
+            local damage = -hp_change
             local _, armor_inv = armor:get_valid_player(player, "3d_armor")
             local blocked = 0
             for i = 1, 6 do
                 local itemstack = armor_inv:get_stack("armor", i)
-                blocked = blocked + get_blocked_damage(itemstack, hp_change, reason)
+                blocked = blocked + get_blocked_damage(itemstack, damage, reason)
             end
-            return math.max(0, hp_change - blocked)
+            return -math.max(0, damage - blocked)
         else
             return hp_change
         end
@@ -364,7 +365,7 @@ minetest.register_craft({
 if exchangeclone.mtg then
     minetest.register_tool("exchangeclone:shield_dark_matter", {
         description = "Dark Matter Shield (deprecated)\nYou still have this so you can turn it into EMC.\nAnd no, it's not supposed to have a texture.",
-        groups = {disable_repair = 1, not_in_creative_inventory = 1}
+        groups = {disable_repair = 1, not_in_creative_inventory = 1, not_in_craft_guide = 1}
     })
     exchangeclone.register_craft({
         output = "exchangeclone:shield_dark_matter",
@@ -382,7 +383,7 @@ if exchangeclone.mtg then
 
     minetest.register_tool("exchangeclone:shield_red_matter", {
         description = "Red Matter Shield (deprecated)\nYou still have this so you can turn it into EMC.\nAnd no, it's not supposed to have a texture.",
-        groups = {disable_repair = 1, not_in_creative_inventory = 1}
+        groups = {disable_repair = 1, not_in_creative_inventory = 1, not_in_craft_guide = 1}
     })
     exchangeclone.register_craft({
         output = "exchangeclone:shield_red_matter",

@@ -83,7 +83,7 @@ local function upgrader_action(pos)
 
     local new_emc = exchangeclone.get_item_emc(new_tool) + exchangeclone.get_item_emc(upgrade:get_name())
 
-    new_tool:get_meta():set_string("exchangeclone_emc_value", tostring(new_emc))
+    new_tool:get_meta():set_int("exchangeclone_emc_value", new_emc)
 
     inv:set_stack("dst", 1, new_tool)
 

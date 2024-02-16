@@ -136,6 +136,7 @@ dofile(modpath.."/infinite_food.lua")
 dofile(modpath.."/alchemical_chests.lua")
 dofile(modpath.."/transmutation_table.lua")
 dofile(modpath.."/furnaces.lua")
+dofile(modpath.."/gem_of_eternal_density.lua")
 if minetest.get_modpath("awards") then
 	dofile(modpath.."/awards.lua")
 end
