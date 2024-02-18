@@ -374,7 +374,7 @@ minetest.register_node("exchangeclone:transmutation_table", {
 })
 
 minetest.register_tool("exchangeclone:alchemical_tome", {
-    description = "Alchemical Tome\nMagnum Star Omegas in crafting recipe must be full",
+    description = "Alchemical Tome\nKlein Star Omegas in crafting recipe must be full",
     inventory_image = "exchangeclone_alchemical_tome.png",
     wield_image = "exchangeclone_alchemical_tome.png",
     groups = {disable_repair = 1, fire_immune = 1}
@@ -413,7 +413,7 @@ if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", tr
         output = "exchangeclone:alchemical_tome",
         recipe = {
             {"", book, ""},
-            {"exchangeclone:magnum_star_omega", "exchangeclone:philosophers_stone", "exchangeclone:magnum_star_omega"},
+            {"exchangeclone:klein_star_omega", "exchangeclone:philosophers_stone", "exchangeclone:klein_star_omega"},
             {"", "exchangeclone:red_matter", ""}
         },
         replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}

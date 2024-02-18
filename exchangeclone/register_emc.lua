@@ -1,7 +1,8 @@
+local exchangeclone = exchangeclone
+
 -- Calculates the cheapest recipe given an itemstring.
 -- Would probably benefit from another function, since there's quite a bit
 -- of duplicate code.
-
 local function get_cheapest_recipe(itemstring, log)
     itemstring = ItemStack(itemstring):get_name()
     local recipes = exchangeclone.recipes[itemstring]
@@ -194,6 +195,7 @@ if exchangeclone.mcl then
     end
     exchangeclone.register_alias("doc_identifier:identifier_solid", "doc_identifier:identifier_liquid")
     exchangeclone.register_alias("mcl_books:writable_book", "mcl_books:written_book")
+    exchangeclone.register_craft({output = "mcl_bamboo:bamboo_block_stripped", type = "cooking", recipe = "mcl_bamboo:bamboo_block"})
 
     -- Potions
     exchangeclone.register_craft_type("brewing", "shapeless")

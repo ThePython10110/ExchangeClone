@@ -41,10 +41,11 @@ Dependencies: Minetest Game or MineClone.
 * For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is old enough that most people are using it.
 * Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by dispensers. This will not be fixed.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
-* In Mineclonia, hoppers can put invalid items into Energy Collectors.
+* In Mineclonia, hoppers can put invalid items into Energy Collectors. This will not be fixed.
 * Tools do not show the wear bar (to show the charge level) when first created or crafted. It only appears after changing the range. This will not be fixed.
 * Unfortunately, caused by the performance improvements to various tool abilities, using the shear ability on sea grass (MCL) will also remove the sand below the sea grass. I can't think of a good way to fix it.
 * Dark and Red Matter Armor can make the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix.
+* ExchangeClone axes cannot strip bamboo blocks or remove wax from copper blocks in MCL. This will probably be fixed in v7.1, but I want to release this as soon as possible.
 
 **If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -95,9 +96,11 @@ You can find the old textures and sounds by going back to previous commits in Gi
 * [x] Gem of Eternal Density
 * [x] Update media licenses
 * [ ] Testing
+    * [ ] Energy values in MCL
     * [ ] Every tool ability in every game
     * [ ] Every machine in every game
     * [ ] Check new recipes in every game
+* [ ] Remove logging
 * [ ] Update screenshots
 * [ ] Update wiki:
     * [ ] Achievements? Maybe don't belong in wiki...

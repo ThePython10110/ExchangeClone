@@ -46,6 +46,7 @@ if exchangeclone.mcl then
         ["mcl_bells:bell"] = 14336,
 
         ["mcl_blackstone:basalt"] = 4,
+        ["mcl_blackstone:basalt_smooth"] = 4,
         ["mcl_blackstone:blackstone"] = 4,
         ["mcl_blackstone:soul_soil"] = 49,
 
