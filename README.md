@@ -46,6 +46,7 @@ Dependencies: Minetest Game or MineClone.
 * DM/RM tools and armor aren't great... the DM tools are TOO fast and the armor is (depending on which game you're playing), too good or not good enough. I would love it if someone with more patience would submit a PR to improve them. I would like them to be as close to ProjectE as possible, and as similar as possible between MTG and MCL... but I just hate doing that kind of thing. Tools will be fixed in v7.0, and armor *might* be (depends on whether [this engine issue](https://github.com/minetest/minetest/issues/14344) gets fixed)
 * DM tools mine RM nodes too quickly for something that doesn't drop (MCL). This will be fixed in v7.0.
 * In Mineclonia, the Philosopher's Stone is unable to transmute wood and leaves. This will be fixed in v7.0.
+* Most MTG mob mods don't care that DM/RM tools are supposed to be unbreakable and add wear to them anyway.
 
 **If you have a suggestion or notice a bug, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -87,6 +88,9 @@ Dependencies: Minetest Game or MineClone.
 
 ### v7.0
 * Nothing yet. See the to-do list above for my plans and the dev branch on GitHub for my current progress.
+
+### v6.10
+* Fixed a bug where damaged RM swords could be duplicated with the Anvil mod in MTG (reported by @programmerjake)
 
 ### v6.9
 * Fixed a bug where characters were not escaped in the search bar of the Transmutation Table(t) formspec (reported by @programmerjake).

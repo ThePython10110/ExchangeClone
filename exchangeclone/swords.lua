@@ -145,6 +145,11 @@ function exchangeclone.aoe_attack(info)
 end
 
 local red_matter_sword_action = function(itemstack, player, pointed_thing)
+	local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
+	if click_test ~= false then
+		return click_test
+	end
+
 	local damage_all = itemstack:get_meta():get_int("exchangeclone_damage_all")
 	if damage_all ~= 0 then damage_all = 1 end
 
