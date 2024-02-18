@@ -46,6 +46,7 @@ Dependencies: Minetest Game or MineClone.
 * Unfortunately, caused by the performance improvements to various tool abilities, using the shear ability on sea grass (MCL) will also remove the sand below the sea grass. I can't think of a good way to fix it.
 * Dark and Red Matter Armor can make the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix.
 * ExchangeClone axes cannot strip bamboo blocks or remove wax from copper blocks in MCL. This will probably be fixed in v7.1, but I want to release this as soon as possible.
+* Most MTG mob mods don't care that DM/RM tools are supposed to be unbreakable and add wear to them anyway.
 
 **If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -152,6 +153,9 @@ You can find the old textures and sounds by going back to previous commits in Gi
 * Bugfixes
     * The Philosopher's Stone no longer fails to transmute logs and leaves in Mineclonia.
     * Added energy values for azalea bushes in Mineclonia.
+
+### v6.10
+* Fixed a bug where damaged RM swords could be duplicated with the Anvil mod in MTG (reported by @programmerjake)
 
 ### v6.9
 * Fixed a bug where characters were not escaped in the search bar of the Transmutation Table(t) formspec (reported by @programmerjake).
