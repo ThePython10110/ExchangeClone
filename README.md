@@ -73,42 +73,6 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 -----
 
-
-### PLANS/TODO FOR v7.0 (see dev branch for current progress)
-* [x] Achievements/advancements/awards (match ProjectE with a few missing/added)
-* [x] Textures/sounds from ProjectE/ProjectExpansion (I wanted this for a while, but I couldn't figure out how to get permission until I saw [this tweet](https://twitter.com/MercuriusXeno/status/1662203934713212932) from the creator of Equivalent Exchange)
-* [x] Change "energy" to EMC
-* [x] Improvements to tools (\* = only in MCL at the moment)
-    * [x] Wear bar for charge level
-    * [x] Charge levels match ProjectE (both in number and in range)
-    * [x] Charge level affects speed\*
-    * [x] Correct/accurate speeds compared to ProjectE
-    * [x] Only one item per tool (not a separate 3x3 tool)
-    * [x] Make Philosopher's Stone only affect the node type you click on (and also not work when not pointed at anything), so clicking on a grass block will only transmute grass blocks in range (not everything else)
-    * [x] Shovels can remove paths (MCL2)
-    * [x] Accurate armor protection
-        * Unfortunately, due to an [engine bug](https://github.com/minetest/minetest/issues/14344), this means that players are invincible 90% of the time.
-    * [x] Remove and add alias for DM/RM shields
-    * [x] Upgrades affect EMC value
-    * [x] Make tool speeds work in Minetest Game
-* [x] Multiple levels of Exchange Orbs (change to Klein Stars, adjust recipes)
-* [x] Wear bar on Klein Stars for EMC
-* [x] Fuel storage blocks
-* [x] Mind, Life, Body and Soul Stones (Mind = MCL only, Body and Life require Stamina mod in MTG)
-* [x] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
-* [x] Gem of Eternal Density
-* [x] Update media licenses
-* [x] Testing
-* [ ] Remove logging
-* [x] Update wiki:
-    * [x] Talisman of Repair
-    * [x] Gem of Eternal Density
-    * [x] Mind, Life, Body, and Soul Stones
-    * [x] Modify tools page
-    * [x] Klein Stars
-    * [x] Remove page for PESA
-    * [x] Update screenshots
-
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
