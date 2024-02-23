@@ -1,26 +1,11 @@
 # ExchangeClone
 [![ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone/shields/downloads/)](https://content.minetest.net/packages/ThePython/exchangeclone/)
 
-Allows players to turn items into energy (known as EMC, or Energy Matter Covalence), and energy into items. Supports all items in Minetest Game, Technic, More Ores, and MineClone2/Mineclonia, as well as anything that can be made from them! Also adds a whole bunch of other stuff.
+Allows players to turn items into EMC, or Energy Matter Covalence, and EMC into items. Supports all items in Minetest Game, Technic, More Ores, and MineClone2/Mineclonia, as well as anything that can be made from them! Also adds a whole bunch of other stuff.
 
 If you would like to see the latest changes, check out (pun) the dev branch! Beware of bugs.
 
 ExchangeClone is tested with the latest release of Minetest, Minetest Game, MineClone2, and Mineclonia.
-
-## ExchangeClone's Features:
-* EMC
-* Philosopher's Stone
-* Transmutation Table
-* Alchemical Tome
-* Klein Stars
-* Deconstructor
-* Constructor
-* Energy Collectors
-* Upgraded Fuels
-* Dark Matter and Red Matter
-* Dark and Red Matter Tools
-* Dark and Red Matter Armor
-* Dark and Red Matter Furnaces
 
 See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more information
 
