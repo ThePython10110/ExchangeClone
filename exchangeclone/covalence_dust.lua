@@ -85,8 +85,7 @@ local function is_repairable_gear(item)
     if def
     and def.type == "tool"
     and (not def.wear_represents or def.wear_represents == "mechanical_wear")
-    and item:get_wear() ~= 0
-    and ((exchangeclone.mcl and def.durability > 0) or exchangeclone.mtg) then
+    and item:get_wear() > 0 then
         local result = 0
         for group, amount in pairs(exchangeclone.tool_types) do
             if minetest.get_item_group(item:get_name(), group) > 0 then

@@ -128,7 +128,6 @@ function exchangeclone.set_star_itemstack_emc(itemstack, amount)
     meta:set_float("stored_energy", amount) -- Unfortunately, this is still "energy" not EMC
     meta:set_string("description", itemstack:get_definition()._mcl_generate_description(itemstack))
     local wear = math.max(1, math.min(65535, 65535 - 65535*amount/max))
-    minetest.log(65535 - 65535*amount/max)
     itemstack:set_wear(wear)
     return itemstack
 end
@@ -147,7 +146,6 @@ end
 function exchangeclone.add_star_itemstack_emc(itemstack, amount)
     if itemstack and amount then
         local emc = exchangeclone.get_star_itemstack_emc(itemstack) + amount
-        minetest.log(dump(emc))
         if not emc or emc < 0 or emc > exchangeclone.get_star_max(itemstack) then return end
         return exchangeclone.set_star_itemstack_emc(itemstack, emc)
     end
@@ -338,7 +336,6 @@ function exchangeclone.charge_update(itemstack, player)
     if not max_charge then return itemstack end
     local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
     local new_pitch = 0.5 + ((0.5 / (max_charge - 1)) * (charge-1))
-    minetest.log(new_pitch or 1)
     if player:get_player_control().sneak then
         if charge > 1 then
             exchangeclone.play_sound(player, "exchangeclone_charge_down", new_pitch)
@@ -1121,7 +1118,6 @@ function exchangeclone.get_mtg_times(speed, efficiency, group)
     for i, hardness in ipairs(hacky_workaround[group]) do
         times[i] = math.ceil(30/(speed/hardness))/20
     end
-    minetest.log(dump(times))
     return times
 end
 

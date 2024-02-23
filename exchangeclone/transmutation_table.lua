@@ -422,7 +422,7 @@ end
 
 minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
     if itemstack == ItemStack("exchangeclone:alchemical_tome") then
-        for _, i in {4,6} do
+        for _, i in pairs({4,6}) do
             local stack = old_craft_grid[i]
             if exchangeclone.get_star_itemstack_emc(stack) < exchangeclone.get_star_max(stack) then
                 return ItemStack("")

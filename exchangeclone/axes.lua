@@ -15,7 +15,6 @@ function exchangeclone.axe_action(itemstack, player, center)
         end
         if strip and not stripped_variant then return end
     end
-    minetest.log("strip = "..dump(strip))
     local nodes
     local groups_to_search = strip and {start_node.name} or {"group:tree", "group:leaves"}
     local range_type = strip and "basic_radius" or "large_radius"
@@ -41,8 +40,7 @@ function exchangeclone.axe_action(itemstack, player, center)
                     minetest.swap_node(pos, {name=stripped_variant, param2=node.param2})
                 end
             else
-                -- specify the tool so the katar doesn't shear all the leaves
-                local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_axe")
+                local drops = minetest.get_node_drops(node.name, itemstack:get_name())
                 exchangeclone.drop_items_on_player(pos, drops, player)
             end
         end

@@ -91,11 +91,13 @@ if exchangeclone.mcl then
         ["mcl_core:vine"] = 8,
 
         ["mcl_crimson:crimson_roots"] = 1,
+        ["mcl_crimson:crimson_nylium"] = 1,
         ["mcl_crimson:nether_sprouts"] = 1,
         ["mcl_crimson:shroomlight"] = 416,
         ["mcl_crimson:twisting_vines"] = 8,
         ["mcl_crimson:warped_wart_block"] = 216,
         ["mcl_crimson:warped_roots"] = 1,
+        ["mcl_crimson:warped_nylium"] = 1,
         ["mcl_crimson:weeping_vines"] = 8,
 
         ["mcl_deepslate:deepslate_cobbled"] = 2,
@@ -141,6 +143,8 @@ if exchangeclone.mcl then
         ["mcl_lush_caves:moss_carpet"] = 8,
         ["mcl_lush_caves:rooted_dirt"] = 5,
         ["mcl_lush_caves:spore_blossom"] = 64,
+        ["mcl_lush_caves:azalea"] = 32,
+        ["mcl_lush_caves:azalea_flowering"] = 32,
 
         ["mcl_mangrove:mangrove_roots"] = 4,
 
@@ -322,6 +326,7 @@ exchangeclone.node_transmutations = {
         ["mcl_core:dirt_with_grass"] = "mcl_core:sand",
         ["mcl_core:dirt"] = "mcl_core:sand",
         ["mcl_core:sand"] = "mcl_core:dirt_with_grass",
+        ["mcl_core:sandstone"] = "mcl_core:gravel",
         ["mcl_core:podzol"] = "mcl_core:redsand",
         ["mcl_core:redsand"] = "mcl_core:podzol",
         ["mcl_core:redsandstone"] = "mcl_core:gravel",
@@ -407,11 +412,6 @@ exchangeclone.node_transmutations = {
         ["default:obsidian"] = "default:lava_source",
 
         -- Plants
-        ["default:grass_1"] = "default:dry_shrub",
-        ["default:grass_2"] = "default:dry_shrub",
-        ["default:grass_3"] = "default:dry_shrub",
-        ["default:grass_4"] = "default:dry_shrub",
-        ["default:grass_5"] = "default:dry_shrub",
         ["flowers:mushroom_brown"] = "flowers:mushroom_red",
         ["flowers:mushroom_red"] = "flowers:mushroom_brown",
         ["flowers:dandelion_yellow"] = "flowers:rose",
@@ -446,10 +446,21 @@ exchangeclone.node_transmutations = {
         ["default:silver_sand"] = "default:cobble",
     }
 }
+
+if exchangeclone.mcl then
+    exchangeclone.add_transmutation_loop({
+        "mcl_core:andesite",
+        "mcl_core:diorite",
+        "mcl_core:granite",
+        "mcl_deepslate:tuff"
+    })
+end
+
 if exchangeclone.mcl2 then
     exchangeclone.add_transmutation_loop({
         "mcl_core:acacialeaves",
         "mcl_core:birchleaves",
+        "mcl_cherry_blossom:cherryleaves",
         "mcl_core:darkleaves",
         "mcl_core:jungleleaves",
         "mcl_mangrove:mangroveleaves",
@@ -459,6 +470,7 @@ if exchangeclone.mcl2 then
     exchangeclone.add_transmutation_loop({
         "mcl_core:acaciatree",
         "mcl_core:birchtree",
+        "mcl_cherry_blossom:cherrytree",
         "mcl_core:darktree",
         "mcl_core:jungletree",
         "mcl_mangrove:mangrovetree",
@@ -471,6 +483,7 @@ elseif exchangeclone.mcla then
         "mcl_lush_caves:azalea_leaves_flowering",
         "mcl_trees:leaves_acacia",
         "mcl_trees:leaves_birch",
+        "mcl_trees:leaves_cherry_blossom",
         "mcl_trees:leaves_dark_oak",
         "mcl_trees:leaves_jungle",
         "mcl_trees:leaves_mangrove",
@@ -480,6 +493,7 @@ elseif exchangeclone.mcla then
     exchangeclone.add_transmutation_loop({
         "mcl_trees:tree_acacia",
         "mcl_trees:tree_birch",
+        "mcl_trees:tree_cherry_blossom",
         "mcl_trees:tree_dark_oak",
         "mcl_trees:tree_jungle",
         "mcl_trees:tree_mangrove",
@@ -510,14 +524,5 @@ else
         "default:acacia_bush_stem",
         "default:bush_stem",
         "default:pine_bush_stem"
-    })
-end
-
-if exchangeclone.mcl then
-    exchangeclone.add_transmutation_loop({
-        "mcl_core:andesite",
-        "mcl_core:diorite",
-        "mcl_core:granite",
-        "mcl_deepslate:tuff"
     })
 end

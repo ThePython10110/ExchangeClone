@@ -39,7 +39,7 @@ local armor_categories = {
     strong = {dark_matter = exchangeclone.mcl and 0.24 or 0.18, red_matter = exchangeclone.mcl and 0.27 or 0.2}
 }
 
-local function a_damage_formula(armor_data, damage, reason)
+local function damage_formula(armor_data, damage, reason)
     local start
     local threshold
     local first_value
@@ -110,8 +110,8 @@ local function get_blocked_damage(itemstack, damage, reason)
             end
         end
         return base_block*damage
-    elseif reason.type == "explosion" or reason.type == "anvil" or reason.flags.is_projectile then
-        return a_damage_formula(armor_data, damage, reason)
+    elseif reason.type == "explosion" or reason.type == "anvil" or (exchangeclone.mcl and reason.flags.is_projectile) then
+        return damage_formula(armor_data, damage, reason)
     elseif reason.type == "drown" then
         if armor_data.piece == "helmet" then
             if damage < 10 then
@@ -204,7 +204,6 @@ if exchangeclone.mcl then
         for _, type in pairs({"helmet", "chestplate", "leggings", "boots"}) do
             minetest.override_item("exchangeclone:"..type.."_"..matter.."_matter", {
                 inventory_image = get_armor_texture("inv_"..matter.."_matter_"..type, matter),
-                wield_image = get_armor_texture("inv_"..type, matter),
             })
         end
     end
@@ -220,9 +219,7 @@ if exchangeclone.mcl then
                 local itemstack = inv:get_stack("armor", element.index)
                 local item_blocked = math.max(0,get_blocked_damage(itemstack, damage, reason))
                 blocked = blocked + item_blocked
-                minetest.log(dump({name, item_blocked}))
             end
-            minetest.log(((minetest.get_us_time() - start_time)/1000).." milliseconds")
             return math.max(0, damage - blocked)
         end
     end, -100)
@@ -230,56 +227,56 @@ else
     armor:register_armor("exchangeclone:helmet_dark_matter", {
         description = S("Dark Matter Helmet"),
         texture = get_armor_texture("helmet","dark"),
-        inventory_image = get_armor_texture("inv_helmet","dark"),
+        inventory_image = get_armor_texture("inv_dark_matter_helmet"),
         preview = get_armor_texture("helmet","dark", true),
         groups = {armor_head = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:chestplate_dark_matter", {
         description = S("Dark Matter Chestplate"),
         texture = get_armor_texture("chestplate","dark"),
-        inventory_image = get_armor_texture("inv_chestplate","dark"),
+        inventory_image = get_armor_texture("inv_dark_matter_chestplate"),
         preview = get_armor_texture("chestplate","dark", true),
         groups = {armor_torso = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:leggings_dark_matter", {
         description = S("Dark Matter Leggings"),
         texture = get_armor_texture("leggings","dark"),
-        inventory_image = get_armor_texture("inv_leggings","dark"),
+        inventory_image = get_armor_texture("inv_dark_matter_leggings"),
         preview = get_armor_texture("leggings","dark", true),
         groups = {armor_legs = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:boots_dark_matter", {
         description = S("Dark Matter Boots"),
         texture = get_armor_texture("boots","dark"),
-        inventory_image = get_armor_texture("inv_boots","dark"),
+        inventory_image = get_armor_texture("inv_dark_matter_boots"),
         preview = get_armor_texture("boots","dark", true),
         groups = {armor_feet = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1, armor_feather = 1}
     })
     armor:register_armor("exchangeclone:helmet_red_matter", {
         description = S("Red Matter Helmet"),
         texture = get_armor_texture("helmet","red"),
-        inventory_image = get_armor_texture("inv_helmet","red"),
+        inventory_image = get_armor_texture("inv_red_matter_helmet"),
         preview = get_armor_texture("helmet","red", true),
         groups = {armor_head = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:chestplate_red_matter", {
         description = S("Red Matter Chestplate"),
         texture = get_armor_texture("chestplate","red"),
-        inventory_image = get_armor_texture("inv_chestplate","red"),
+        inventory_image = get_armor_texture("inv_red_matter_chestplate"),
         preview = get_armor_texture("chestplate","red", true),
         groups = {armor_torso = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:leggings_red_matter", {
         description = S("Red Matter Leggings"),
         texture = get_armor_texture("leggings","red"),
-        inventory_image = get_armor_texture("inv_leggings","red"),
+        inventory_image = get_armor_texture("inv_red_matter_leggings"),
         preview = get_armor_texture("leggings","red", true),
         groups = {armor_legs = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })
     armor:register_armor("exchangeclone:boots_red_matter", {
         description = S("Red Matter Boots"),
         texture = get_armor_texture("boots","red"),
-        inventory_image = get_armor_texture("inv_boots","red"),
+        inventory_image = get_armor_texture("inv_red_matter_boots"),
         preview = get_armor_texture("boots","red", true),
         groups = {armor_feet = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
     })

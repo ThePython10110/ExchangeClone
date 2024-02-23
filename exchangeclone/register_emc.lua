@@ -124,14 +124,14 @@ local function set_item_emc(itemstring, emc_value)
     local description = def.description or ""
 
     -- Override EMC value if it already exists
-    local existing_emc_value = description:find("EMC Value: ([%d%.,]+)")
+    local existing_emc_value = description:find("EMC: ([%d%.,]+)")
     if existing_emc_value then
-        description = description:gsub("EMC Value: ([%d%.,]+)", "EMC Value: "..exchangeclone.format_number(emc_value))
+        description = description:gsub("EMC: ([%d%.,]+)", "EMC: "..exchangeclone.format_number(emc_value))
     else
         if description[#description] ~= "\n" then
             description = description.."\n"
         end
-        description = description.."EMC Value: "..exchangeclone.format_number(emc_value)
+        description = description.."EMC: "..exchangeclone.format_number(emc_value)
     end
     minetest.override_item(itemstring, {
         description = description,

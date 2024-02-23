@@ -12,7 +12,7 @@ local function get_gem_description(itemstack)
     local target_message = "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description()
     local emc = exchangeclone.get_item_emc(itemstack:get_name())
     local stored = exchangeclone.get_item_emc(itemstack) - emc
-    return "Gem of Eternal Density\n"..target_message.."\nEMC Value: "..exchangeclone.format_number(emc).."\nStored EMC: "..exchangeclone.format_number(stored)
+    return "Gem of Eternal Density\n"..target_message.."\nEMC: "..exchangeclone.format_number(emc).."\nStored EMC: "..exchangeclone.format_number(stored)
 end
 
 local function condense(player, itemstack)
@@ -31,7 +31,8 @@ local function condense(player, itemstack)
         local stack = list[i]
         if stack:get_name() ~= target then
             local emc = exchangeclone.get_item_emc(stack) or 0
-            if emc > 0 then
+            local individual_emc = exchangeclone.get_item_emc(stack:get_name()) or 0
+            if individual_emc > 0 and individual_emc <= exchangeclone.get_item_emc(target) then
                 total_emc = total_emc + emc
                 list[i] = ItemStack("")
             end

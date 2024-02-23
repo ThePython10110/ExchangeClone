@@ -11,14 +11,12 @@ local function create_soil(itemstack, player, pointed_thing)
 	end
 	if minetest.get_item_group(name, "cultivatable") == 2 then
 		if above_name == "air" then
-			name = "mcl_farming:soil"
-			minetest.set_node(pos, {name=name})
+			minetest.set_node(pos, {name="mcl_farming:soil"})
 			minetest.sound_play("default_dig_crumbly", { pos = pos, gain = 0.5 }, true)
 		end
 	elseif minetest.get_item_group(name, "cultivatable") == 1 then
 		if above_name == "air" then
-			name = "mcl_core:dirt"
-			minetest.set_node(pos, {name=name})
+			minetest.set_node(pos, {name="mcl_core:dirt"})
 			minetest.sound_play("default_dig_crumbly", { pos = pos, gain = 0.6 }, true)
 		end
 	end
@@ -46,21 +44,22 @@ function exchangeclone.hoe_action(itemstack, player, center)
 		local vector1, vector2 = exchangeclone.process_range(player, "flat", charge)
 		if not (vector1 and vector2) then return end
 		local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
-		nodes = minetest.find_nodes_in_area(pos1, pos2, {"group:cultivatable"})
+		nodes = minetest.find_nodes_in_area(pos1, pos2, {"group:exchangeclone_dirt"})
 		exchangeclone.play_sound(player, "exchangeclone_charge_up")
 	else
 		nodes = {center}
 	end
+
 	for _, pos in pairs(nodes) do
 		if minetest.is_protected(pos, player:get_player_name()) then
 			minetest.record_protection_violation(pos, player:get_player_name())
 		else
 			local new_pointed_thing = {type = "node", under = pos, above = vector.offset(pos,0,1,0)}
-			hoe_function(itemstack, player, new_pointed_thing)
+			hoe_function(itemstack, player, new_pointed_thing, 0)
 		end
 	end
 
-	if charge > 0 then
+	if charge > 1 then
 		exchangeclone.start_cooldown(player, "hoe", charge/4)
 	end
 end

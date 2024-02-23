@@ -166,13 +166,13 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 			return
 		elseif minetest.get_item_group(name, "exchangeclone_dirt") > 0 and exchangeclone.mcl then
 			exchangeclone.shovel_action(itemstack, player, pointed_thing.under)
-		elseif minetest.get_item_group(name, exchangeclone.shovel_group) > 0 and sneaking then
+		elseif minetest.get_item_group(name, exchangeclone.shovel_group) > 0 then
 			exchangeclone.shovel_action(itemstack, player, pointed_thing.under)
 		elseif minetest.get_item_group(name, exchangeclone.pickaxe_group) > 0 and sneaking then
 			exchangeclone.hammer_action(itemstack, player, pointed_thing.under)
 		else
 			exchangeclone.place_torch(player, pointed_thing)
-			exchangeclone.add_player_emc(player, -math.max(exchangeclone.get_item_emc(exchangeclone.itemstrings.torch) or 0, 8))
+			exchangeclone.add_player_emc(player, -math.max(exchangeclone.get_item_emc(exchangeclone.itemstrings.torch) or 8, 8))
 			-- If the torch could not be placed, it still costs EMC... not sure how to fix that
 			return
 		end
@@ -214,9 +214,9 @@ minetest.register_tool("exchangeclone:red_morningstar", {
 		 damage_groups = {fleshy=25},
 		 punch_attack_uses = 0,
 		 groupcaps={
-			 cracky = {exchangeclone.get_mtg_times(64, nil, "cracky"), uses=0, maxlevel=5},
-			 crumbly = {exchangeclone.get_mtg_times(64, nil, "crumbly"), uses=0, maxlevel=5},
-			 choppy = {exchangeclone.get_mtg_times(64, nil, "choppy"), uses=0, maxlevel=5},
+			 cracky = {times=exchangeclone.get_mtg_times(64, nil, "cracky"), uses=0, maxlevel=5},
+			 crumbly = {times=exchangeclone.get_mtg_times(64, nil, "crumbly"), uses=0, maxlevel=5},
+			 choppy = {times=exchangeclone.get_mtg_times(64, nil, "choppy"), uses=0, maxlevel=5},
 		 },
 	 },
 	 sound = { breaks = "default_tool_breaks" },

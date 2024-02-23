@@ -125,7 +125,7 @@ if exchangeclone.mcl then
         local meta = itemstack:get_meta()
         local emc = exchangeclone.get_item_emc(itemstack) or 0
         local stored = meta:get_int("exchangeclone_stored_xp") or 0
-        return "Mind Stone\nEMC Value: "..exchangeclone.format_number(emc).."\nStored XP: "..exchangeclone.format_number(stored)
+        return "Mind Stone\nEMC: "..exchangeclone.format_number(emc).."\nStored XP: "..exchangeclone.format_number(stored)
     end
 
     local function drain_xp(player, itemstack)
@@ -152,14 +152,26 @@ if exchangeclone.mcl then
             local player_xp = mcl_experience.get_xp(player)
             local amount_to_take = math.min(100, player_xp)
             mcl_experience.set_xp(player, player_xp - amount_to_take)
-            meta:set_int("exchangeclone_stored_xp", stored + amount_to_take)
+            stored = stored + amount_to_take
+            meta:set_int("exchangeclone_stored_xp", stored)
             meta:set_string("description", get_mind_description(itemstack))
+            if stored > 0 then
+                meta:set_string("exchangeclone_emc_value", "none")
+            else
+                meta:set_string("exchangeclone_emc_value", "")
+            end
             return itemstack
         else
             local player_xp = mcl_experience.get_xp(player)
             local amount_to_take = math.min(100, stored)
             mcl_experience.set_xp(player, player_xp + amount_to_take)
-            meta:set_int("exchangeclone_stored_xp", stored - amount_to_take)
+            stored = stored - amount_to_take
+            meta:set_int("exchangeclone_stored_xp", stored)
+            if stored > 0 then
+                meta:set_string("exchangeclone_emc_value", "none")
+            else
+                meta:set_string("exchangeclone_emc_value", "")
+            end
             meta:set_string("description", get_mind_description(itemstack))
             return itemstack
         end

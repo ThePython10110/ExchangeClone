@@ -11,7 +11,9 @@ local function repair_items(inv, listname)
                 local uses
                 if exchangeclone.mcl then
                     local armor_uses = minetest.get_item_group(stack:get_name(), "mcl_armor_uses")
-                    if armor_uses > 0 then
+                    if def._mcl_uses then
+                        uses = def._mcl_uses
+                    elseif armor_uses > 0 then
                         uses = armor_uses
                     elseif def._mcl_diggroups then
                         for name, data in pairs(def._mcl_diggroups) do
@@ -32,7 +34,6 @@ local function repair_items(inv, listname)
                     end
                 end
                 if uses and uses > 0 then
-                    minetest.log(uses)
                     stack:set_wear(math.max(0, stack:get_wear() - 65535/uses))
                     inv:set_stack(listname, i, stack)
                 end

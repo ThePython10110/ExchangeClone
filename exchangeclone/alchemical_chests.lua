@@ -1,13 +1,12 @@
 local S = minetest.get_translator()
 
 -- color is nil for regular alchemical chests (not advanced/bags)
-local function alchemical_formspec(color)
+local function alchemical_formspec(color, name)
     local listname, label
     local centered = exchangeclone.mcl and 2 or 2.5
-    if color then
-        local codified_color = string.lower(color):gsub(" ", "_")
-        listname = "current_player;"..codified_color.."_alchemical_inventory"
-        label = S("@1 Alchemical Inventory", color)
+    if color and name then
+        listname = "current_player;"..color.."_alchemical_inventory"
+        label = S("@1 Alchemical Inventory", name)
     else
         listname = "context;main"
         label = S("Alchemical Chest")
@@ -122,7 +121,7 @@ for color, color_data in pairs(exchangeclone.colors) do
                 return
             end
         else
-            minetest.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color_data.name))
+            minetest.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color, color_data.name))
         end
     end
 

@@ -38,7 +38,7 @@ Dependencies: Minetest Game or MineClone.
 
 ## Known issues:
 * The sword/katar AOE ability does not take upgrades (looting, fire aspect, etc.) into account. This will probably not be fixed (MCL)
-* For technical reasons (making them work with MCL hoppers), Exchange Orbs and Upgrades can be used as fuel. This isn't really a problem, but it will be removed once I decide the new hopper API is old enough that most people are using it.
+* Klein Stars and Upgrades can be used as fuel. This isn't really a problem, but it will probably be removed once I decide the new hopper API is old enough that most people are using it.
 * Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by dispensers. This will not be fixed.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
 * In Mineclonia, hoppers can put invalid items into Energy Collectors. This will not be fixed.
@@ -46,7 +46,9 @@ Dependencies: Minetest Game or MineClone.
 * Unfortunately, caused by the performance improvements to various tool abilities, using the shear ability on sea grass (MCL) will also remove the sand below the sea grass. I can't think of a good way to fix it.
 * Dark and Red Matter Armor can make the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix.
 * ExchangeClone axes cannot strip bamboo blocks or remove wax from copper blocks in MCL. This will probably be fixed in v7.1, but I want to release this as soon as possible.
-* Most MTG mob mods don't care that DM/RM tools are supposed to be unbreakable and add wear to them anyway.
+* Mobs Redo (and mods that use it) don't care that DM/RM tools are supposed to be unbreakable and add wear to them anyway.
+* Covalence Dust and the Talisman of Repair cannot repair certain tools. This will not be fixed.
+* The recipe for Energy Collectors doesn't include glowstone even though they are very glowstone-y. This will probably not be fixed because glowstone doesn't exist in MTG.
 
 **If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -56,7 +58,7 @@ Dependencies: Minetest Game or MineClone.
 ## Sources/licenses:
 * Code: GPLv3+
     * Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (also GPLv3+).
-    * Based on the Minecraft mods Equivalent Exchange 2 and ProjectE (both MIT, though the source for EE2 is unavailable)
+    * Based on the Minecraft mod Equivalent Exchange 2 and the modern version, ProjectE (both MIT, though the source for EE2 is unavailable)
 * Textures:
     * Constructor and Deconstructor: Unmodified from Element Exchange (GPLv3+)
     * Armor (not the inventory image): Modified versions of diamond armor from 3D Armor in MTG and `mcl_armor` in MCL (both CC-BY-SA-3.0)
@@ -96,22 +98,16 @@ You can find the old textures and sounds by going back to previous commits in Gi
 * [x] Talisman of Repair (will only work in player inventory, not Alchemical Chests like ProjectE)
 * [x] Gem of Eternal Density
 * [x] Update media licenses
-* [ ] Testing
-    * [ ] Energy values in MCL
-    * [ ] Every tool ability in every game
-    * [ ] Every machine in every game
-    * [ ] Check new recipes in every game
+* [x] Testing
 * [ ] Remove logging
-* [ ] Update screenshots
-* [ ] Update wiki:
-    * [ ] Achievements? Maybe don't belong in wiki...
-    * [ ] Talisman of Repair
-    * [ ] Gem of Eternal Density
-    * [ ] Mind, Life, Body, and Soul Stones
-    * [ ] Modify tools page
-    * [ ] Klein Stars
-    * [ ] Remove page for PESA
-    * [ ] Update screenshots
+* [x] Update wiki:
+    * [x] Talisman of Repair
+    * [x] Gem of Eternal Density
+    * [x] Mind, Life, Body, and Soul Stones
+    * [x] Modify tools page
+    * [x] Klein Stars
+    * [x] Remove page for PESA
+    * [x] Update screenshots
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
@@ -146,13 +142,17 @@ You can find the old textures and sounds by going back to previous commits in Gi
         * Several changes to tool abilities (*mostly* making them closer to the ProjectE versions)
         * Got rid of `exchangeclone.node_radius_action` function (it was pretty much over-refactoring and made things so much more complicated)
     * Removed the deprecated PESA.
-    * Changed "energy" to "EMC" (any mods that depend on this will probably have to deal with that, find/replace should work pretty well).
-    * Replaced Exchange Orbs with Klein Stars and Magnum Stars (any mods that depend on this should find/replace orb with star)
+    * The Philosopher's Stone only transmutes the same type of node that is clicked (if you click on sand, it will only transmute sand).
+    * Changed "energy" to "EMC" (any mods that depend on this will probably have to deal with that; find/replace should work pretty well).
+    * Replaced Exchange Orbs with Klein Stars and Magnum Stars
         * Since Klein Star Omegas have the same capacity as the old Exchange Orbs, they now replace them (meaning players don't lose anything).
         * Klein Star Ein->Zwei->Drei->Vier->Sphere->Omega, then the same order for Magnum Stars, each holding (and costing) 4 times more than the last.
+    * Removed Pipeworks connector textures (they just look bad).
+    * Energy Collectors are now glassy and not metallic. They also glow.
 * Bugfixes
     * The Philosopher's Stone no longer fails to transmute logs and leaves in Mineclonia.
     * Added energy values for azalea bushes in Mineclonia.
+    * Fixed Advanced Alchemical Chests and Alchemical Bags in Mineclonia
 
 ### v6.10
 * Fixed a bug where damaged RM swords could be duplicated with the Anvil mod in MTG (reported by @programmerjake)
