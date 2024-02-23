@@ -38,7 +38,8 @@ Dependencies: Minetest Game or MineClone.
 **If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
 ![Screenshot](screenshot.png)
-![Transmutation GUI Screenshot](transmutation_screenshot.png)
+![Transmutation GUI Screenshot](transmutation_gui.png)
+![Philosopher's Stone Transmutation Screenshot](phil_transmutation.png)
 
 ## Sources/licenses:
 * Code: GPLv3+
