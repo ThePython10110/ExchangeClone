@@ -46,8 +46,13 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 			else
 				exchangeclone.hoe_action(itemstack, player, pointed_thing.under)
 			end
-		elseif minetest.get_item_group(node.name, "tree") > 0 then
+		elseif (minetest.get_item_group(node.name, "tree") > 0)
+		or (minetest.get_item_group(node.name, "bamboo_block") > 0) then
 			exchangeclone.axe_action(itemstack, player, pointed_thing.under)
+		elseif exchangeclone.mcl2 and minetest.registered_items[node.name]._mcl_stripped_variant then
+			exchangeclone.axe_action(itemstack, player, pointed_thing.under, true)
+		elseif exchangeclone.mcla and minetest.registered_items[node.name]._on_axe_place then
+			exchangeclone.axe_action(itemstack, player, pointed_thing.under, true)
 		elseif exchangeclone.mcl
 		and (minetest.get_item_group(node.name, "shearsy") > 0
 		or minetest.get_item_group(node.name, "shearsy_cobweb") > 0) then
@@ -164,10 +169,13 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 			exchangeclone.multidig_data[player:get_player_name()] = nil
 			exchangeclone.start_cooldown(player, "pickaxe", 0.5)
 			return
+		-- I don't remember why I'm doing the dirt group separetely... but there must be a reason.
 		elseif minetest.get_item_group(name, "exchangeclone_dirt") > 0 and exchangeclone.mcl then
 			exchangeclone.shovel_action(itemstack, player, pointed_thing.under)
 		elseif minetest.get_item_group(name, exchangeclone.shovel_group) > 0 then
 			exchangeclone.shovel_action(itemstack, player, pointed_thing.under)
+		elseif exchangeclone.mcla and minetest.registered_items[name]._on_shovel_place then
+			exchangeclone.shovel_action(itemstack, player, pointed_thing)
 		elseif minetest.get_item_group(name, exchangeclone.pickaxe_group) > 0 and sneaking then
 			exchangeclone.hammer_action(itemstack, player, pointed_thing.under)
 		else

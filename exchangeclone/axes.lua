@@ -1,6 +1,6 @@
 local S = minetest.get_translator()
 
-function exchangeclone.axe_action(itemstack, player, center)
+function exchangeclone.axe_action(itemstack, player, center, force_strip)
     if exchangeclone.check_cooldown(player, "axe") then return end
     local strip
     local start_node = minetest.get_node(center)
@@ -8,15 +8,17 @@ function exchangeclone.axe_action(itemstack, player, center)
     local start_def = minetest.registered_items[start_node.name]
     local stripped_variant = start_def._mcl_stripped_variant
     if exchangeclone.mcl then
-        if charge == 1 then
+        if force_strip then
+            strip = true
+        elseif charge == 1 then
             strip = true
         else
             strip = not player:get_player_control().sneak
         end
-        if strip and not stripped_variant then return end
+        if strip and not (exchangeclone.mcla or stripped_variant) then return end
     end
     local nodes
-    local groups_to_search = strip and {start_node.name} or {"group:tree", "group:leaves"}
+    local groups_to_search = strip and {start_node.name} or {"group:tree", "group:leaves", "group:bamboo_block"}
     local range_type = strip and "basic_radius" or "large_radius"
     if charge > 1 then
         local vector1, vector2 = exchangeclone.process_range(player, range_type, charge)
@@ -33,11 +35,14 @@ function exchangeclone.axe_action(itemstack, player, center)
         else
             if strip then
                 if node.param2 == start_node.param2 then
-                    local on_axe_place = minetest.registered_items[node.name]._on_axe_place
-                    if on_axe_place then
-                        on_axe_place(itemstack, player, {type="node",under=pos})
+                    if exchangeclone.mcla then
+                        local on_axe_place = minetest.registered_items[node.name]._on_axe_place
+                        if on_axe_place then
+                            on_axe_place(itemstack, player, {type="node",under=pos})
+                        end
+                    else
+                        minetest.swap_node(pos, {name=stripped_variant, param2=node.param2})
                     end
-                    minetest.swap_node(pos, {name=stripped_variant, param2=node.param2})
                 end
             else
                 local drops = minetest.get_node_drops(node.name, itemstack:get_name())
@@ -64,8 +69,18 @@ local function axe_on_place(itemstack, player, pointed_thing)
     end
 
     if pointed_thing.type == "node" then
-        if minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "tree") > 0 then
+        local name = minetest.get_node(pointed_thing.under).name
+        if (minetest.get_item_group(name, "tree") > 0)
+        or (minetest.get_item_group(name, "bamboo_block") > 0) then
             exchangeclone.axe_action(itemstack, player, pointed_thing.under)
+        elseif exchangeclone.mcl then
+            if minetest.registered_items[name]._mcl_stripped_variant then
+                exchangeclone.axe_action(itemstack, player, pointed_thing.under, true)
+            end
+        elseif exchangeclone.mcla then
+            if minetest.registered_items[name]._on_axe_place then
+                exchangeclone.axe_action(itemstack, player, pointed_thing.under, true)
+            end
         end
     end
 

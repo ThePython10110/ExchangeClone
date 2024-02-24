@@ -30,7 +30,6 @@ Dependencies: Minetest Game or MineClone.
 * Tools do not show the wear bar (to show the charge level) when first created or crafted. It only appears after changing the range. This will not be fixed.
 * Unfortunately, caused by the performance improvements to various tool abilities, using the shear ability on sea grass (MCL) will also remove the sand below the sea grass. I can't think of a good way to fix it.
 * Dark and Red Matter Armor can make the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix.
-* ExchangeClone axes cannot strip bamboo blocks or remove wax from copper blocks in MCL. This will probably be fixed in v7.1, but I want to release this as soon as possible.
 * Mobs Redo (and mods that use it) don't care that DM/RM tools are supposed to be unbreakable and add wear to them anyway.
 * Covalence Dust and the Talisman of Repair cannot repair certain tools. This will not be fixed.
 * The recipe for Energy Collectors doesn't include glowstone even though they are very glowstone-y. This will probably not be fixed because glowstone doesn't exist in MTG.
@@ -64,6 +63,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 <details><summary>Look at this fancy expanding changelog</summary>
 
 ### v7.1
+* Axes and Katars now correctly function when used on bamboo and copper blocks.
 * The Gem of Eternal Density and various other things now respects players' actual hotbar size (reported by @programmerjake)
 
 ### v7.0 (The Parity Update)
