@@ -20,7 +20,7 @@ local function condense(player, itemstack)
     local inv = player:get_inventory()
     local list = inv:get_list("main")
     -- Don't include hotbar
-    local min = exchangeclone.mcl and 10 or 9
+    local min = player:hud_get_hotbar_itemcount() + 1
     if player:get_wield_index() >= min then return end
 
     local total_emc = exchangeclone.get_item_emc(itemstack) - exchangeclone.get_item_emc(itemstack:get_name())

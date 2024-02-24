@@ -1210,7 +1210,6 @@ function exchangeclone.place_torch(player, pointed_thing)
 end
 
 do
-    local hb_max = exchangeclone.mcl and 9 or 8
     local timer = 0
 
     minetest.register_globalstep(function(dtime)
@@ -1218,6 +1217,7 @@ do
         if timer >= 1 then
             timer = 0
             for _, player in pairs(minetest.get_connected_players()) do
+                local hb_max = player:hud_get_hotbar_itemcount()
                 local inv = player:get_inventory()
                 local processed_already = {}
                 for i, stack in ipairs(inv:get_list("main")) do

@@ -1,7 +1,7 @@
 # ExchangeClone
 [![ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone/shields/downloads/)](https://content.minetest.net/packages/ThePython/exchangeclone/)
 
-Allows players to turn items into EMC, or Energy Matter Covalence, and EMC into items. Supports all items in Minetest Game, Technic, More Ores, and MineClone2/Mineclonia, as well as anything that can be made from them! Also adds a whole bunch of other stuff.
+Allows players to turn items into EMC, or Energy Matter Covalence, and EMC into items. Supports all items in Minetest Game, MineClone2/Mineclonia, Technic, and More Ores, as well as anything that can be made from them! Also adds a whole bunch of other stuff.
 
 If you would like to see the latest changes, check out (pun) the dev branch! Beware of bugs.
 
@@ -34,6 +34,7 @@ Dependencies: Minetest Game or MineClone.
 * Mobs Redo (and mods that use it) don't care that DM/RM tools are supposed to be unbreakable and add wear to them anyway.
 * Covalence Dust and the Talisman of Repair cannot repair certain tools. This will not be fixed.
 * The recipe for Energy Collectors doesn't include glowstone even though they are very glowstone-y. This will probably not be fixed because glowstone doesn't exist in MTG.
+* DM/RM tools are too fast in MTG (can't figure out why)
 
 **If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -61,6 +62,9 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
+
+### v7.1
+* The Gem of Eternal Density and various other things now respects players' actual hotbar size (reported by @programmerjake)
 
 ### v7.0 (The Parity Update)
 
