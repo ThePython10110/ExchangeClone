@@ -12,6 +12,8 @@ function exchangeclone.round(num)
     end
 end
 
+exchangeclone.width = exchangeclone.mtg and 8 or 9
+
 --- Adds all items in a certain list to a table.
 function exchangeclone.get_inventory_drops(pos, listname, drops)
     local inv = minetest.get_meta(pos):get_inventory()
@@ -1203,15 +1205,18 @@ function exchangeclone.add_transmutation_loop(itemstrings)
 end
 
 function exchangeclone.place_torch(player, pointed_thing)
-    local torch_on_place = minetest.registered_items[exchangeclone.itemstrings.torch].on_place
-    if torch_on_place then
-        torch_on_place(ItemStack(exchangeclone.itemstrings.torch), player, pointed_thing)
+    local torch_cost = math.max(exchangeclone.get_item_emc(exchangeclone.itemstrings.torch) or 0, 8)
+    if exchangeclone.get_player_emc(player) >= torch_cost then
+        local torch_on_place = minetest.registered_items[exchangeclone.itemstrings.torch].on_place
+        if torch_on_place then
+            torch_on_place(ItemStack(exchangeclone.itemstrings.torch), player, pointed_thing)
+            return -torch_cost
+        end
     end
 end
 
 do
     local timer = 0
-
     minetest.register_globalstep(function(dtime)
         timer = timer + dtime
         if timer >= 1 then

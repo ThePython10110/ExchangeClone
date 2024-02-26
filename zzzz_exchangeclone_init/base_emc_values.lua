@@ -298,7 +298,7 @@ for itemstring, emc_value in pairs ({
     ["technic:chromium_ingot"] = 4096,
     ["technic:granite"] = 1,
     ["technic:lead_ingot"] = 256,
-    ["technic:marble"] = 1,
+    ["technic:marble"] = 16,
     ["technic:sulfur_lump"] = 128,
     ["technic:uranium_ingot"] = 8192,
     ["technic:zinc_ingot"] = 512,
@@ -306,6 +306,88 @@ for itemstring, emc_value in pairs ({
     ["useful_green_potatoes:useful_green_potato"] = 256
 }) do
     exchangeclone.base_emc_values[itemstring] = emc_value
+end
+
+if minetest.get_modpath("ethereal") then
+    for item, emc in pairs({
+        ["bakedclay:grey"] = 16,
+        ["bakedclay:orange"] = 16,
+        ["bakedclay:red"] = 16,
+        ["ethereal:bamboo"] = 18,
+        ["ethereal:crystal_spike"] = 8192*4,
+        ["ethereal:seaweed"] = 16,
+        ["ethereal:banana"] = 64,
+        ["ethereal:basandra_bush_stem"] = 16,
+        ["ethereal:blue_marble"] = 16,
+        ["ethereal:coconut"] = 256,
+        ["ethereal:coral2"] = 16,
+        ["ethereal:coral3"] = 16,
+        ["ethereal:coral4"] = 16,
+        ["ethereal:coral5"] = 16,
+        ["ethereal:crystalgrass"] = 4,
+        ["ethereal:dry_shrub"] = 4,
+        ["ethereal:etherium_dust"] = 2048,
+        ["ethereal:fern"] = 4,
+        ["ethereal:fern_tubers"] = 4,
+        ["ethereal:fire_flower"] = 16384,
+        ["ethereal:firethorn"] = 1,
+        ["ethereal:illumishroom"] = 24,
+        ["ethereal:lemon"] = 32,
+        ["ethereal:lilac"] = 8,
+        ["ethereal:mushroom_pore"] = 32,
+        ["ethereal:olive"] = 16,
+        ["ethereal:orange"] = 32,
+        ["ethereal:pine_nuts"] = 4,
+        ["ethereal:snowygrass"] = 4,
+        ["ethereal:sponge"] = 128,
+        ["ethereal:sponge_wet"] = 128,
+        ["ethereal:spore_grass"] = 4,
+        ["ethereal:strawberry"] = 32,
+        ["ethereal:wild_onion"] = 32,
+    }) do
+        exchangeclone.base_emc_values[item] = emc
+    end
+
+    table.insert_all(exchangeclone.group_values, {
+        {"ethereal_fish", 64}
+    })
+end
+
+if minetest.get_modpath("nether") then
+    for item, emc in pairs({
+        ["nether:basalt"] = 4,
+        ["nether:brick_cracked"] = 1,
+        ["nether:rack"] = 1,
+        ["nether:rack_deep"] = 1,
+        ["nether:fumarole"] = 256,
+        ["nether:fumarole_corner"] = 256,
+        ["nether:fumarole_slab"] = 256,
+        ["nether:geode"] = 64,
+        ["nether:glowstone"] = 64,
+        ["nether:glowstone_deep"] = 256,
+        ["nether:lava_crust"] = 3200,
+        ["nether:native_mapgen"] = 1,
+    }) do
+        exchangeclone.base_emc_values[item] = emc
+    end
+end
+
+if minetest.get_modpath("mobs") then
+    for item, emc in pairs({
+        ["mobs:beehive"] = 2048,
+        ["mobs:bucket_milk"] = 800,
+        ["mobs:chicken_feather"] = 48,
+        ["mobs:egg"] = 32,
+        ["mobs:hairball"] = 16,
+        ["mobs:honey"] = 48,
+        ["mobs:rabbit_hide"] = 16,
+        ["mobs:rat_cooked"] = 64,
+    }) do
+        exchangeclone.base_emc_values[item] = emc
+    end
+    table.insert_all(exchangeclone.group_values, {
+        {"food_meat_raw", 64},
+    })
 end
 
 table.insert_all(exchangeclone.group_values, {

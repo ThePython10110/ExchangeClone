@@ -202,7 +202,7 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
     elseif to_list == "forget" then
         -- Kind of a weird way of doing this, but I couldn't make it work in the "on_inventory_* functions"
         local list = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
-        local item_index = table.indexof(list, stack:get_name())
+        local item_index = table.indexof(list, exchangeclone.handle_alias(stack:get_name()))
         if item_index > -1 then
             list[item_index] = list[#list]
             list[#list] = nil

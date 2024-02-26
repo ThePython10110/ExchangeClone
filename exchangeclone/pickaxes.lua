@@ -69,9 +69,11 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
             exchangeclone.mine_vein(player, pointed_thing.under)
             exchangeclone.start_cooldown(player, "pickaxe", 0.5)
         elseif itemstack:get_name():find("red_") then
-            exchangeclone.place_torch(player, pointed_thing)
-            exchangeclone.add_player_emc(player, -math.max(exchangeclone.get_item_emc(exchangeclone.itemstrings.torch) or 0, 8))
-            -- If the torch could not be placed, it still costs EMC... not sure how to fix that
+            local result = exchangeclone.place_torch(player, pointed_thing)
+            if result then
+                exchangeclone.add_player_emc(player, result)
+                -- If the torch could not be placed, it still costs EMC... not sure how to fix that
+            end
         end
     end
 end

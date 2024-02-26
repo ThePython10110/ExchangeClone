@@ -1,15 +1,27 @@
 # ExchangeClone
 [![ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone/shields/downloads/)](https://content.minetest.net/packages/ThePython/exchangeclone/)
 
-Allows players to turn items into EMC, or Energy Matter Covalence, and EMC into items. Supports all items in Minetest Game, MineClone2/Mineclonia, Technic, and More Ores, as well as anything that can be made from them! Also adds a whole bunch of other stuff.
+Allows players to turn items into EMC, or Energy Matter Covalence, and EMC into items. Also adds a whole bunch of other stuff.
 
-If you would like to see the latest changes, check out (pun) the dev branch! Beware of bugs.
+### Mod/game support
+ExchangeClone upports all items in the following mods/games (and anything that can be made from them):
+* Minetest Game
+* MineClone2
+* Mineclonia
+* Technic
+* More Ores
+* Ethereal
+* Nether
+* Mobs Redo API and Mobs Animals
 
 ExchangeClone is tested with the latest release of Minetest, Minetest Game, MineClone2, and Mineclonia.
 
+### Links
 See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more information
 
 [GitHub repo](https://github.com/thepython10110/exchangeclone)
+
+If you would like to see the latest changes, check out (pun) the dev branch! Beware of bugs.
 
 [Forum topic](https://forum.minetest.net/viewtopic.php?f=9&t=29473)
 
@@ -61,6 +73,15 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
+
+### v7.2
+* The Gem of Eternal Density now has filter options, accessed with left click (requested by @programmerjake).
+* Added support for the following mods:
+    * Ethereal
+    * Nether
+    * Mobs Redo API
+    * Mobs Animals
+* When attempting to place a torch with an RM Pickaxe or Red Morningstar, if the player has no personal EMC, the torch is no longer placed.
 
 ### v7.1
 * Axes and Katars now correctly function when used on bamboo and copper blocks.
