@@ -61,12 +61,6 @@ for i, name in ipairs(names) do
             }
         })
     end
-
-    minetest.register_craft({ -- Making it fuel so old versions of MCL's hoppers will work with (de)constructors
-        type = "fuel",
-        recipe = "exchangeclone:"..codified_name,
-        burntime = 800*i
-    })
 end
 
 minetest.register_craft({

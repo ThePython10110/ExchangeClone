@@ -49,12 +49,6 @@ function exchangeclone.register_upgrade(itemstring, name, modifier, recipe, ench
     })
 end
 
-minetest.register_craft({
-    type = "fuel",
-    recipe = "group:exchangeclone_upgrade",
-    time = 10000
-})
-
 local function upgrader_action(pos)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()

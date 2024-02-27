@@ -73,6 +73,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 ## To-to for v8.0:
 [x] Deprecate (De)Constructors
+[x] Remove fuel crafting recipes for stars and upgrades
 [ ] Add EMC Link
 [ ] Add Energy Condensers
 [ ] Add Divining Rods
@@ -94,6 +95,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 ### v8.0
 * The Constructor and Deconstructor are now deprecated. Element Exchange is no more.
+* Upgrades and Stars can no longer be used as fuel.
 
 ### v7.3 (not released yet because there's not enough)
 * Renamed Alchemical Tome to Tome of Knowledge, and made it uncraftable by default.
