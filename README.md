@@ -54,10 +54,12 @@ Dependencies: Minetest Game or MineClone.
 ![Philosopher's Stone Transmutation Screenshot](phil_transmutation.png)
 
 ## Sources/licenses:
+* Ideas:
+    * Based on the Minecraft mod Equivalent Exchange 2 and the modern version, ProjectE (both MIT, though the source for EE2 is unavailable)
+    * Also includes some features from ProjectExpansion, an expansion to ProjectE (MIT).
 * Code: GPLv3+
     * Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (GPLv3+).
-    * Based on the Minecraft mod Equivalent Exchange 2 and the modern version, ProjectE (both MIT, though the source for EE2 is unavailable)
-    * Also includes some features from ProjectExpansion, an expansion to ProjectE.
+    * Some code copied/modified from MineClone2 and Minetest Game (both GPLv3+)
 * Textures:
     * Constructor and Deconstructor: Unmodified from Element Exchange (GPLv3+)
     * Armor (not the inventory image): Modified versions of diamond armor from 3D Armor in MTG and `mcl_armor` in MCL (both CC-BY-SA-3.0)
@@ -77,6 +79,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 ## To-to for v8.0:
 [x] Deprecate (De)Constructors
 [x] Remove fuel crafting recipes for stars and upgrades
+[ ] Add ProjectE armor textures
 [ ] Add EMC Link
 [ ] Add Energy Condensers
 [ ] Add Divining Rods
@@ -91,7 +94,6 @@ You can find the old textures and sounds by going back to previous commits in Gi
 [ ] Add Void Ring
 [ ] Add DM Pedestal
     [ ] Functions for passive stones, talisman, evertide/volcanite, zero/ignition
-[ ] Add ProjectE armor textures
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
