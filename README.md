@@ -71,8 +71,29 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 -----
 
+## To-to for v8.0:
+[x] Deprecate (De)Constructors
+[ ] Add EMC Link
+[ ] Add Energy Condensers
+[ ] Add Divining Rods
+[ ] Add Alchemical Books
+[ ] Add Knowledge Sharing Book
+    [ ] Add function for getting player's learned items
+[ ] Add Evertide Amulet
+[ ] Add Volcanite Amulet
+[ ] Add Zero Ring
+[ ] Add Ring of Ignition
+[ ] Add Black Hole Band (without bag functionality)
+[ ] Add Void Ring
+[ ] Add DM Pedestal
+    [ ] Functions for passive stones, talisman, evertide/volcanite, zero/ignition
+[ ] Add ProjectE armor textures
+
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
+
+### v8.0
+* The Constructor and Deconstructor are now deprecated. Element Exchange is no more.
 
 ### v7.3 (not released yet because there's not enough)
 * Renamed Alchemical Tome to Tome of Knowledge, and made it uncraftable by default.
@@ -428,26 +449,27 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 </details>
 
 ### Features that I might add eventually:
-* ~~As soon as Minetest 5.8 comes out, better textures for armor...~~ Don't want to limit it to 5.8
+* ProjectE's armor textures (maybe MCL only)\*
 * Archangel's Smite (MCL only, arrows will not track targets)
-* Ring of Ignition
-* Zero Ring
+* Ring of Ignition\*
+* Zero Ring\*
 * Swiftwolf's Rending Gale (maybe not, if so, without the force field; basically Why's Flying Sausage with a different texture and maybe lightning in MCL)
 * Harvest Band (maybe not)
 * Ring of Arcana (possibly without the Harvest Band)
 * Gem Armor
 * Destruction Catalyst
 * Hyperkinetic Lens?
-* Divining Rods
-* Alchemical Books
+* Divining Rods\*
+* Alchemical Books\*
 * Catalytic Lens
 * Mercurial Eye
-* Probably other things
-* Evertide Amulet (but without being able to stand on water)
-* Volcanite Amulet (but without being able to stand on lava)
-* Pedestals?
-* Black Hole Band? If so, Void Ring.
+* Evertide Amulet (but without being able to stand on water)\*
+* Volcanite Amulet (but without being able to stand on lava)\*
+* Pedestals\*
+* Black Hole Band and Void Ring\*
 * Nova Catalyst/Cataclysm?
-* Knowledge Sharing Book
-* Energy Condensers
-* EMC Link
+* Knowledge Sharing Book\*
+* Energy Condensers\*
+* EMC Link\*
+
+\* Planned for v8.0
