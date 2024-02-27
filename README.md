@@ -74,6 +74,8 @@ You can find the old textures and sounds by going back to previous commits in Gi
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
+### v7.3
+
 ### v7.2
 * The Gem of Eternal Density now has filter options, accessed with left click (requested by @programmerjake).
 * Added support for the following mods:
@@ -82,6 +84,9 @@ You can find the old textures and sounds by going back to previous commits in Gi
     * Mobs Redo API
     * Mobs Animals
 * When attempting to place a torch with an RM Pickaxe or Red Morningstar, if the player has no personal EMC, the torch is no longer placed.
+
+### v7.2
+* Renamed Alchemical Tome to Tome of Knowledge, and made it uncraftable by default.
 
 ### v7.1
 * Axes and Katars now correctly function when used on bamboo and copper blocks.

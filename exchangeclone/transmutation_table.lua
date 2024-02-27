@@ -373,12 +373,13 @@ minetest.register_node("exchangeclone:transmutation_table", {
     _mcl_blast_resistance = 6,
 })
 
-minetest.register_tool("exchangeclone:alchemical_tome", {
-    description = "Alchemical Tome\nKlein Star Omegas in crafting recipe must be full",
-    inventory_image = "exchangeclone_alchemical_tome.png",
-    wield_image = "exchangeclone_alchemical_tome.png",
+minetest.register_tool("exchangeclone:tome_of_knowledge", {
+    description = "Tome of Knowledge\nKlein Star Omegas in crafting recipe must be full\nLearns all items when put into Transmutation Table(t)",
+    inventory_image = "exchangeclone_tome_of_knowledge.png",
     groups = {disable_repair = 1, fire_immune = 1}
 })
+
+minetest.register_alias("exchangeclone:alchemical_tome", "exchangeclone:tome_of_knowledge")
 
 local book = "default:book"
 local obsidian = "default:obsidian"
@@ -408,7 +409,7 @@ minetest.register_craft({
     },
 })
 
-if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", true) then
+if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", false) then
     minetest.register_craft({
         output = "exchangeclone:alchemical_tome",
         recipe = {

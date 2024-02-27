@@ -2,4 +2,4 @@
 exchangeclone.keep_data (Keep temporary data after loading) bool false
 
 # Allow the crafting recipe for the Alchemical Tome
-exchangeclone.allow_crafting_alchemical_tome (Allow crafting Alchemical Tome) bool true
+exchangeclone.allow_crafting_alchemical_tome (Allow crafting Alchemical Tome) bool false
