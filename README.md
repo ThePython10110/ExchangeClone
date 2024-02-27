@@ -55,16 +55,19 @@ Dependencies: Minetest Game or MineClone.
 
 ## Sources/licenses:
 * Code: GPLv3+
-    * Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (also GPLv3+).
+    * Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (GPLv3+).
     * Based on the Minecraft mod Equivalent Exchange 2 and the modern version, ProjectE (both MIT, though the source for EE2 is unavailable)
+    * Also includes some features from ProjectExpansion, an expansion to ProjectE.
 * Textures:
     * Constructor and Deconstructor: Unmodified from Element Exchange (GPLv3+)
     * Armor (not the inventory image): Modified versions of diamond armor from 3D Armor in MTG and `mcl_armor` in MCL (both CC-BY-SA-3.0)
-    * Upgraders and Upgrades: Created by me (CC-BY-SA-3.0)
+    * Upgrader and Upgrades: Created by me (CC-BY-SA-3.0)
     * Energy Collectors:
         * Base: Glowstone block from MineClone2 (CC-BY-SA-3.0)
         * Overlay: Created by me (CC-BY-SA-3.0)
-    * Alchemical Chests (and Advanced Alchemical Chests): Modified version of EE2/ProjectE's textures, extended to 16x16 instead of 14x14 (MIT)
+    * Alchemical Chest: Modified version of EE2/ProjectE's textures, extended to 16x16 instead of 14x14 (MIT)
+    * Advanced Alchemical Chests: Modified version of ProjectExpansion's textures, extended to 16x16 instead of 14x14 (MIT)
+    * Magnum Stars: Directly from ProjectExpansion (MIT)
     * All other textures and sounds: Directly from EE2/ProjectE (MIT)
 
 You can find the old textures and sounds by going back to previous commits in GitHub.
