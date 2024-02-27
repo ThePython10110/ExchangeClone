@@ -74,7 +74,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
 
-### v7.3
+### v7.3 (not released yet because there's not enough)
 * Renamed Alchemical Tome to Tome of Knowledge, and made it uncraftable by default.
 
 ### v7.2
@@ -427,16 +427,27 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 
 </details>
 
-### Features that I plan on adding eventually:
+### Features that I might add eventually:
 * ~~As soon as Minetest 5.8 comes out, better textures for armor...~~ Don't want to limit it to 5.8
-* Rings (I'll probably add a new PESA-like item for holding rings)
-    * Archangel's Smite (MCL only, arrows will not track targets)
-    * Ring of Ignition
-    * Zero Ring
-    * Swiftwolf's Rending Gale (but without the force field; basically Why's Flying Sausage with a different texture and maybe lightning in MCL)
-    * Harvest Band (maybe not)
-    * Ring of Arcana (possibly without the Harvest Band)
+* Archangel's Smite (MCL only, arrows will not track targets)
+* Ring of Ignition
+* Zero Ring
+* Swiftwolf's Rending Gale (maybe not, if so, without the force field; basically Why's Flying Sausage with a different texture and maybe lightning in MCL)
+* Harvest Band (maybe not)
+* Ring of Arcana (possibly without the Harvest Band)
 * Gem Armor
+* Destruction Catalyst
+* Hyperkinetic Lens?
+* Divining Rods
+* Alchemical Books
 * Catalytic Lens
 * Mercurial Eye
 * Probably other things
+* Evertide Amulet (but without being able to stand on water)
+* Volcanite Amulet (but without being able to stand on lava)
+* Pedestals?
+* Black Hole Band? If so, Void Ring.
+* Nova Catalyst/Cataclysm?
+* Knowledge Sharing Book
+* Energy Condensers
+* EMC Link
