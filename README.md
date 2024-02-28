@@ -105,6 +105,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
     * The Constructor and Deconstructor are now deprecated. Element Exchange is no more.
     * Upgrades and Stars can no longer be used as fuel.
     * Dark and Red Matter Armor now uses ProjectE's textures
+    * Removed the ability to right click with stars to see the charge (made it more convenient to add the EMC Link)
 * Bugfixes:
     * Dark and Red Matter Armor display properly (and identically) in both games.
 

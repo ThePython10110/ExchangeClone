@@ -1,16 +1,5 @@
 local S = minetest.get_translator()
 
-local function read_star_charge(itemstack, player, pointed_thing)
-    local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
-    if click_test ~= false then
-        return click_test
-    end
-
-    local stored = exchangeclone.get_star_itemstack_emc(itemstack)
-    minetest.chat_send_player(player:get_player_name(), S("Current Charge: @1", exchangeclone.format_number(stored)))
-    return itemstack
-end
-
 local names = {
     "Klein Star Ein",
     "Klein Star Zwei",
@@ -35,8 +24,6 @@ for i, name in ipairs(names) do
         description = S(name).."\n"..S("Current Charge: @1/@2", 0, exchangeclone.format_number(capacity)),
         inventory_image = "exchangeclone_"..codified_name..".png",
         wield_image = "exchangeclone_"..codified_name..".png",
-        on_secondary_use = read_star_charge,
-        on_place = read_star_charge,
         groups = {klein_star = i, disable_repair = 1, fire_immune = 1},
         max_capacity = capacity,
         _mcl_generate_description = function(itemstack)
