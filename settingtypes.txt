@@ -1,5 +1,5 @@
  Keep unnecessary temporary data (such as the list of recipes) after load time for debugging purposes.
 exchangeclone.keep_data (Keep temporary data after loading) bool false
 
-# Allow the crafting recipe for the Alchemical Tome
-exchangeclone.allow_crafting_alchemical_tome (Allow crafting Alchemical Tome) bool false
+# Allow the crafting recipe for the Tome of Knowledge
+exchangeclone.allow_crafting_alchemical_tome (Allow crafting Tome of Knowledge) bool false

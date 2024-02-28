@@ -120,7 +120,7 @@ local function handle_inventory(player, inventory, to_list)
     itemstring = exchangeclone.emc_aliases[itemstring] or itemstring
     if to_list == "learn" then
         local list = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
-        if itemstring == "exchangeclone:alchemical_tome" then
+        if itemstring == "exchangeclone:tome_of_knowledge" then
             list = {}
             local i = 0
             for name, def in pairs(minetest.registered_items) do
@@ -191,7 +191,7 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
     elseif to_list == "charge" and minetest.get_item_group(stack:get_name(), "klein_star") < 1 then
         return 0
     elseif to_list == "learn" then
-        if stack:get_name() == "exchangeclone:alchemical_tome" then return count end
+        if stack:get_name() == "exchangeclone:tome_of_knowledge" then return count end
         local emc_value = exchangeclone.get_item_emc(exchangeclone.handle_alias(stack))
         if not emc_value then return 0 end
         if emc_value <= 0 then
@@ -379,7 +379,7 @@ minetest.register_tool("exchangeclone:tome_of_knowledge", {
     groups = {disable_repair = 1, fire_immune = 1}
 })
 
-minetest.register_alias("exchangeclone:alchemical_tome", "exchangeclone:tome_of_knowledge")
+minetest.register_alias("exchangeclone:tome_of_knowledge", "exchangeclone:tome_of_knowledge")
 
 local book = "default:book"
 local obsidian = "default:obsidian"
@@ -411,7 +411,7 @@ minetest.register_craft({
 
 if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", false) then
     minetest.register_craft({
-        output = "exchangeclone:alchemical_tome",
+        output = "exchangeclone:tome_of_knowledge",
         recipe = {
             {"", book, ""},
             {"exchangeclone:klein_star_omega", "exchangeclone:philosophers_stone", "exchangeclone:klein_star_omega"},
@@ -422,7 +422,7 @@ if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", fa
 end
 
 minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
-    if itemstack == ItemStack("exchangeclone:alchemical_tome") then
+    if itemstack == ItemStack("exchangeclone:tome_of_knowledge") then
         for _, i in pairs({4,6}) do
             local stack = old_craft_grid[i]
             if exchangeclone.get_star_itemstack_emc(stack) < exchangeclone.get_star_max(stack) then
