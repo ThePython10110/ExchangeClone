@@ -1,28 +1,5 @@
 local S = minetest.get_translator()
 
-local function get_armor_texture(type, matter, preview)
-    local modifier
-    -- hsl unfortunately only works in 5.8
-    if matter == "dark" then
-        modifier = "^[multiply:#222222"
-        --modifier = "^[hsl:0:-100:-100^[hsl:0:-100:-100"
-    else
-        modifier = "^[multiply:#990000"
-        --modifier = "^[hsl:-180:100:-100"
-    end
-    local result
-    if type:sub(1,3) == "inv" then
-        result = "exchangeclone_"..type..".png"
-    elseif exchangeclone.mcl then
-        result = "exchangeclone_mcl_"..type.."_base.png"..modifier
-    else
-        result = "exchangeclone_mtg_"..type.."_base"
-        if preview then result = result.."_preview" end
-        result = result..".png"..modifier
-    end
-    return result
-end
-
 local armor_pieces = {
     ["exchangeclone:helmet_dark_matter"] = {material = "dark_matter", piece = "helmet", category = "weak"},
     ["exchangeclone:helmet_red_matter"] = {material = "red_matter", piece = "helmet", category = "weak"},
@@ -156,10 +133,10 @@ if exchangeclone.mcl then
             feet = 0,
         },
         textures = {
-            head = "exchangeclone_dark_matter_helmet_mcl.png",
-            torso = "exchangeclone_dark_matter_chestplate_mcl.png",
-            legs = "exchangeclone_dark_matter_leggings_mcl.png",
-            feet = "exchangeclone_dark_matter_boots_mcl.png",
+            head = "exchangeclone_dark_matter_helmet.png",
+            torso = "exchangeclone_dark_matter_chestplate.png",
+            legs = "exchangeclone_dark_matter_leggings.png",
+            feet = "exchangeclone_dark_matter_boots.png",
         },
         toughness = 4,
         groups = {dark_matter_armor = 1, fire_immune = 1, exchangeclone_upgradable = 1},
@@ -187,10 +164,10 @@ if exchangeclone.mcl then
             feet = 0,
         },
         textures = {
-            head = "exchangeclone_red_matter_helmet_mcl.png",
-            torso = "exchangeclone_red_matter_chestplate_mcl.png",
-            legs = "exchangeclone_red_matter_leggings_mcl.png",
-            feet = "exchangeclone_red_matter_boots_mcl.png",
+            head = "exchangeclone_red_matter_helmet.png",
+            torso = "exchangeclone_red_matter_chestplate.png",
+            legs = "exchangeclone_red_matter_leggings.png",
+            feet = "exchangeclone_red_matter_boots.png",
         },
         toughness = 5,
         groups = {red_matter_armor = 1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
@@ -203,14 +180,13 @@ if exchangeclone.mcl then
     for _, matter in pairs({"dark", "red"}) do
         for _, type in pairs({"helmet", "chestplate", "leggings", "boots"}) do
             minetest.override_item("exchangeclone:"..type.."_"..matter.."_matter", {
-                inventory_image = get_armor_texture("inv_"..matter.."_matter_"..type, matter),
+                inventory_image = "exchangeclone_inv_"..matter.."_matter_"..type..".png",
             })
         end
     end
 
     -- Until Minetest fixes an issue, there's no way to make this work correctly.
     mcl_damage.register_modifier(function(obj, damage, reason)
-        local start_time = minetest.get_us_time()
         if not obj:is_player() then return end
         local inv = mcl_util.get_inventory(obj)
         local blocked = 0
@@ -224,62 +200,19 @@ if exchangeclone.mcl then
         end
     end, -100)
 else
-    armor:register_armor("exchangeclone:helmet_dark_matter", {
-        description = S("Dark Matter Helmet"),
-        texture = get_armor_texture("helmet","dark"),
-        inventory_image = get_armor_texture("inv_dark_matter_helmet"),
-        preview = get_armor_texture("helmet","dark", true),
-        groups = {armor_head = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
-    armor:register_armor("exchangeclone:chestplate_dark_matter", {
-        description = S("Dark Matter Chestplate"),
-        texture = get_armor_texture("chestplate","dark"),
-        inventory_image = get_armor_texture("inv_dark_matter_chestplate"),
-        preview = get_armor_texture("chestplate","dark", true),
-        groups = {armor_torso = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
-    armor:register_armor("exchangeclone:leggings_dark_matter", {
-        description = S("Dark Matter Leggings"),
-        texture = get_armor_texture("leggings","dark"),
-        inventory_image = get_armor_texture("inv_dark_matter_leggings"),
-        preview = get_armor_texture("leggings","dark", true),
-        groups = {armor_legs = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
-    armor:register_armor("exchangeclone:boots_dark_matter", {
-        description = S("Dark Matter Boots"),
-        texture = get_armor_texture("boots","dark"),
-        inventory_image = get_armor_texture("inv_dark_matter_boots"),
-        preview = get_armor_texture("boots","dark", true),
-        groups = {armor_feet = 1, dark_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1, armor_feather = 1}
-    })
-    armor:register_armor("exchangeclone:helmet_red_matter", {
-        description = S("Red Matter Helmet"),
-        texture = get_armor_texture("helmet","red"),
-        inventory_image = get_armor_texture("inv_red_matter_helmet"),
-        preview = get_armor_texture("helmet","red", true),
-        groups = {armor_head = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
-    armor:register_armor("exchangeclone:chestplate_red_matter", {
-        description = S("Red Matter Chestplate"),
-        texture = get_armor_texture("chestplate","red"),
-        inventory_image = get_armor_texture("inv_red_matter_chestplate"),
-        preview = get_armor_texture("chestplate","red", true),
-        groups = {armor_torso = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
-    armor:register_armor("exchangeclone:leggings_red_matter", {
-        description = S("Red Matter Leggings"),
-        texture = get_armor_texture("leggings","red"),
-        inventory_image = get_armor_texture("inv_red_matter_leggings"),
-        preview = get_armor_texture("leggings","red", true),
-        groups = {armor_legs = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
-    armor:register_armor("exchangeclone:boots_red_matter", {
-        description = S("Red Matter Boots"),
-        texture = get_armor_texture("boots","red"),
-        inventory_image = get_armor_texture("inv_red_matter_boots"),
-        preview = get_armor_texture("boots","red", true),
-        groups = {armor_feet = 1, red_matter_armor = 1, disable_repair = 1, exchangeclone_upgradable = 1}
-    })
+    for _, matter in pairs({"Dark", "Red"}) do
+        for piece, place in pairs({Helmet = "head", Chestplate = "torso", Leggings = "legs", Boots = "feet"}) do
+            local matter_lower = matter:lower()
+            local piece_lower = piece:lower()
+            armor:register_armor("exchangeclone:"..piece_lower.."_"..matter_lower.."_matter", {
+                description = S("@1 Matter @2", matter, piece),
+                texture = "exchangeclone_"..matter_lower.."_matter_"..piece_lower..".png",
+                inventory_image = "exchangeclone_inv_"..matter_lower.."_matter_"..piece_lower..".png",
+                groups = {["armor_"..place] = 1, [matter_lower.."_matter_armor"] = 1, disable_repair = 1, exchangeclone_upgradable = 1}
+            })
+        end
+    end
+
     minetest.register_on_player_hpchange(function(player, hp_change, reason)
         if hp_change < 0 then
             local damage = -hp_change
