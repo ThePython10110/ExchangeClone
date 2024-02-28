@@ -109,14 +109,14 @@ if exchangeclone.mcl2 then
 end
 
 local files = {
-	"deprecated_stuff",
-	"energy_collector",
-	"klein_stars",
 	"craftitems",
-	"tool_upgrades",
+	"deprecated_stuff",
+	"energy_collectors",
+	"klein_stars",
 	"swords",
 	"pickaxes",
 	"axes",
+	"tool_upgrades",
 	"shovels",
 	"hoes",
 	"hammers",
@@ -130,6 +130,7 @@ local files = {
 	"gem_of_eternal_density",
 	"talisman_of_repair",
 	"passive_stones",
+	"emc_link",
 }
 
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then

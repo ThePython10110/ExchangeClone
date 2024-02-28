@@ -99,8 +99,15 @@ You can find the old textures and sounds by going back to previous commits in Gi
 <details><summary>Look at this fancy expanding changelog</summary>
 
 ### v8.0
-* The Constructor and Deconstructor are now deprecated. Element Exchange is no more.
-* Upgrades and Stars can no longer be used as fuel.
+* New Features:
+    * 
+* Changes:
+    * The Constructor and Deconstructor are now deprecated. Element Exchange is no more.
+    * Upgrades and Stars can no longer be used as fuel.
+    * Dark and Red Matter Armor now uses ProjectE's textures
+* Bugfixes:
+    * Dark and Red Matter Armor display properly (and identically) in both games.
+
 
 ### v7.3 (not released yet because there's not enough)
 * Renamed Alchemical Tome to Tome of Knowledge, and made it uncraftable by default.
