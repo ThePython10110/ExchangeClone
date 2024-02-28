@@ -289,7 +289,7 @@ end
 -- For things that are the same in both games:
 
 for itemstring, emc_value in pairs ({
-    ["exchangeclone:alchemical_tome"] = 0,
+    ["exchangeclone:tome_of_knowledge"] = 0,
 
     ["moreores:mithril_ingot"] = 16384,
     ["moreores:silver_ingot"] = 4000,
