@@ -79,7 +79,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 ## To-to for v8.0:
 [x] Deprecate (De)Constructors
 [x] Remove fuel crafting recipes for stars and upgrades
-[ ] Add ProjectE armor textures
+[x] Add ProjectE armor textures
 [ ] Add EMC Link
 [ ] Add Energy Condensers
 [ ] Add Divining Rods
