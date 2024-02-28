@@ -87,6 +87,9 @@ minetest.register_node("exchangeclone:emc_link", {
         inv:set_size("output", 1)
         meta:set_string("infotext", "EMC Link")
     end,
+    can_dig = exchangeclone.can_dig,
+    after_dig_node = exchangeclone.drop_after_dig({"input", "star", "output"}),
+    on_blast = exchangeclone.on_blast({"input", "star", "output"}),
     after_place_node = function(pos, player, itemstack, pointed_thing)
         local player_name = player:get_player_name()
         local meta = minetest.get_meta(pos)
