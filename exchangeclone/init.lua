@@ -107,9 +107,9 @@ end
 if exchangeclone.mcl2 then
 	mcl_item_id.set_mod_namespace("exchangeclone")
 end
+
 local files = {
-	"constructor",
-	"deconstructor",
+	"deprecated_stuff",
 	"energy_collector",
 	"klein_stars",
 	"craftitems",
