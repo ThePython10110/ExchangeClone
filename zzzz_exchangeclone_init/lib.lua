@@ -829,8 +829,6 @@ function exchangeclone.mcl2_hoppers_on_try_pull(dst_condition, fuel_condition)
         local inv = meta:get_inventory()
         if exchangeclone.select_stack(inv, "dst", hop_inv, hop_list) then
             return inv, "dst", exchangeclone.select_stack(inv, "dst", hop_inv, hop_list, dst_condition)
-        else
-            return inv, "fuel", exchangeclone.select_stack(inv, "fuel", hop_inv, hop_list, fuel_condition or exchangeclone.isnt_fuel)
         end
     end
 end
