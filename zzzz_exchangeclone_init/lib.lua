@@ -155,7 +155,7 @@ end
 
 -- Adds to the amount of EMC in a star in a specific inventory slot
 function exchangeclone.add_star_emc(inventory, listname, index, amount)
-    if not inventory or not amount or amount < 0 then return end
+    if not (inventory and listname and index and amount) then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)

@@ -26,7 +26,7 @@ hopper:add_container({
 })
 
 hopper:add_container({
-	{"top", "exchangeclone:emc_link", "output"},
-	{"bottom", "exchangeclone:emc_link", "input"},
-	{"side", "exchangeclone:emc_link", "input"},
+	{"top", "exchangeclone:emc_link", "dst"},
+	{"bottom", "exchangeclone:emc_link", "src"},
+	{"side", "exchangeclone:emc_link", "fuel"},
 })
