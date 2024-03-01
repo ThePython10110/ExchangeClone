@@ -130,7 +130,7 @@ local function pedestal_action(pos)
 end
 
 minetest.register_node("exchangeclone:dark_matter_pedestal", {
-    "Dark Matter Pedestal",
+    description = "Dark Matter Pedestal",
     drawtype = "nodebox",
     tiles = {"exchangeclone_dark_matter_block.png"},
     node_box = {
