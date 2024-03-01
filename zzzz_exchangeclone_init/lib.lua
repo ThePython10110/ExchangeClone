@@ -236,18 +236,6 @@ function exchangeclone.format_number(number)
     return minus .. int:reverse():gsub("^,", "") .. fraction
   end
 
-  -- Splits a string into a table using a delimiter (copied from somewhere, I don't remember)
-function exchangeclone.split (input, sep)
-    if sep == nil then
-            sep = "%s"
-    end
-    local result={}
-    for str in string.gmatch(input, "([^"..sep.."]+)") do
-            table.insert(result, str)
-    end
-    return result
-end
-
 -- Returns a table of all items in the specified group(s).
 function exchangeclone.get_group_items(groups, allow_duplicates, include_no_group)
     if type(groups) ~= "table" then
@@ -276,10 +264,10 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
         in_group = false
         for i = 1, num_groups do
             local grp = groups[i]
-            local subgroups = exchangeclone.split(grp, ",")
+            local subgroups = grp:split(",")
             local success = true
             for _, subgroup in pairs(subgroups) do
-                local group_info = exchangeclone.split(subgroup, "=")
+                local group_info = subgroup:split("=")
                 if #group_info == 1 then
                     if minetest.get_item_group(name, subgroup) <= 0 then
                         success = false
@@ -631,7 +619,7 @@ minetest.register_chatcommand("add_player_emc", {
     description = "Add to a player's personal EMC (player is self if not included, value can be negative to subtract)",
     privs = {privs = true},
     func = function(name, param)
-        local split_param = exchangeclone.split(param, " ")
+        local split_param = param:split(" ")
         local target_player
         local target_name
         local value
@@ -685,7 +673,7 @@ minetest.register_chatcommand("set_player_emc", {
     description = "Set a player's personal EMC (player is self if not included; use 'limit' as value to set it to maximum)",
     privs = {privs = true},
     func = function(name, param)
-        local split_param = exchangeclone.split(param, " ")
+        local split_param = param:split(" ")
         local target_player
         local target_name
         local value

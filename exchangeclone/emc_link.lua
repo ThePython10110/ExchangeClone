@@ -81,10 +81,8 @@ local function link_action(pos)
     local timer = minetest.get_node_timer(pos)
     if inv:get_stack("src", 1):is_empty() and inv:get_stack("target", 1):is_empty() then
         timer:stop()
-    else
-        if not timer:is_started() then
-            timer:start(1)
-        end
+    elseif not timer:is_started() then
+        timer:start(1)
     end
 end
 
