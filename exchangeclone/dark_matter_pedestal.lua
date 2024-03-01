@@ -2,29 +2,15 @@ local function pedestal_action(pos)
     local meta = minetest.get_meta(pos)
     local inv = meta:get_inventory()
     local stack = inv:get_stack("main", 1)
-    if stack:is_empty() then
-        minetest.log("empty")
-        minetest.get_node_timer(pos):stop()
-        return
-    end
     local def = stack:get_definition()
-    if not def then
-        minetest.log("no def")
-        minetest.get_node_timer(pos):stop()
-        return
-    end
     local func = def._exchangeclone_pedestal
     if func then
         minetest.log("Running function")
         inv:set_stack("main", 1, func(pos, stack) or stack)
         local new_stack = inv:get_stack("main", 1)
-        if not (new_stack:get_definition() and new_stack:get_definition()._exchangeclone_pedestal) then
-            minetest.log("fail 2")
-            minetest.get_node_timer(pos):stop()
+        if new_stack:get_definition() and new_stack:get_definition()._exchangeclone_pedestal then
+            return true
         end
-    else
-        minetest.log("no func")
-        minetest.get_node_timer(pos):stop()
     end
 end
 
