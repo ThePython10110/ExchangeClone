@@ -75,7 +75,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 -----
 
-## To-to for v8.0:
+## To-do for v8.0:
 [x] Deprecate (De)Constructors
 [x] Remove fuel crafting recipes for stars and upgrades
 [x] Add ProjectE armor textures
@@ -90,7 +90,19 @@ You can find the old textures and sounds by going back to previous commits in Gi
 [ ] Add Ring of Ignition
 [ ] Add Black Hole Band (without bag functionality)
 [ ] Add Void Ring
-[ ] Add DM Pedestal
+[x] Add DM Pedestal
+[ ] Add Pedestal abilities
+    [ ] Passive Stones
+        [x] Soul
+        [x] Body
+        [x] Life
+        [ ] Mind
+    [ ] Talisman
+    [ ] Evertide
+    [ ] Volcanite
+    [ ] Zero
+    [ ] Ignition
+    [ ] Black Hole/Void
     [ ] Functions for passive stones, talisman, evertide/volcanite, zero/ignition
 
 ## Changelog
