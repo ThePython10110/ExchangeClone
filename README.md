@@ -76,34 +76,34 @@ You can find the old textures and sounds by going back to previous commits in Gi
 -----
 
 ## To-do for v8.0:
-[x] Deprecate (De)Constructors
-[x] Remove fuel crafting recipes for stars and upgrades
-[x] Add ProjectE armor textures
-[x] Add EMC Link
-[ ] ~~Add Divining Rods~~
-[ ] Add Alchemical Books
-[ ] Add Knowledge Sharing Book
-    [ ] Add function for getting player's learned items
-[ ] Add Evertide Amulet
-[ ] Add Volcanite Amulet
-[ ] Add Zero Ring
-[ ] Add Ring of Ignition
-[ ] Add Black Hole Band (without bag functionality)
-[ ] Add Void Ring
-[x] Add DM Pedestal
-[ ] Add Pedestal abilities
-    [ ] Passive Stones
-        [x] Soul
-        [x] Body
-        [x] Life
-        [ ] Mind
-    [ ] Talisman
-    [ ] Evertide
-    [ ] Volcanite
-    [ ] Zero
-    [ ] Ignition
-    [ ] Black Hole/Void
-    [ ] Functions for passive stones, talisman, evertide/volcanite, zero/ignition
+- [x] Deprecate (De)Constructors
+- [x] Remove fuel crafting recipes for stars and upgrades
+- [x] Add ProjectE armor textures
+- [x] Add EMC Link
+- [ ] ~~Add Divining Rods~~
+- [ ] Add Alchemical Books
+- [ ] Add Knowledge Sharing Book
+    - [ ] Add function for getting player's learned items
+- [ ] Add Evertide Amulet
+- [ ] Add Volcanite Amulet
+- [ ] Add Zero Ring
+- [ ] Add Ring of Ignition
+- [ ] Add Black Hole Band (without bag functionality)
+- [ ] Add Void Ring
+- [x] Add DM Pedestal
+- [ ] Add Pedestal abilities
+    - [ ] Passive Stones
+        - [x] Soul
+        - [x] Body
+        - [x] Life
+        - [ ] Mind
+    - [ ] Talisman
+    - [ ] Evertide
+    - [ ] Volcanite
+    - [ ] Zero
+    - [ ] Ignition
+    - [ ] Black Hole/Void
+    - [ ] Functions for passive stones, talisman, evertide/volcanite, zero/ignition
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
