@@ -36,7 +36,7 @@ local function link_action(pos)
     local stored_emc
     local target = inv:get_stack("target", 1):get_name()
     local output_stack = inv:get_stack("dst", 1)
-    local in_indiv_emc = exchangeclone.get_item_emc(input_stack:peek_item(1)) or 0
+    local in_indiv_emc = exchangeclone.get_item_emc(input_stack:peek_item()) or 0
     local target_emc = exchangeclone.get_item_emc(target)
     local stack_max = ItemStack(target):get_stack_max()
 
@@ -102,7 +102,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
             return stack:get_count()
         end
     elseif listname == "target" then
-        local single_item = stack:peek_item(1)
+        local single_item = stack:peek_item()
         local emc = exchangeclone.get_item_emc(single_item)
         if emc and emc > 0 then
             minetest.get_meta(pos):get_inventory():set_stack("target", 1, ItemStack(exchangeclone.handle_alias(single_item)))
@@ -211,3 +211,12 @@ if exchangeclone.pipeworks then
         on_rotate = pipeworks.on_rotate,
     })
 end
+
+minetest.register_craft({
+    output = "exchangeclone:emc_link",
+    recipe = {
+        {exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.obsidian},
+        {exchangeclone.itemstrings.diamond, "exchangeclone:alchemical_chest", exchangeclone.itemstrings.diamond},
+        {exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.obsidian},
+    }
+})

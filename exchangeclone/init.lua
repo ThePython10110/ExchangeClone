@@ -131,6 +131,7 @@ local files = {
 	"talisman_of_repair",
 	"passive_stones",
 	"emc_link",
+	"dark_matter_pedestal",
 }
 
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then

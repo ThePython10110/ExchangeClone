@@ -116,7 +116,7 @@ end
 local function handle_inventory(player, inventory, to_list)
     local stack = inventory:get_stack(to_list, 1)
     local itemstring = stack:get_name()
-    local single_item = stack:peek_item(1)
+    local single_item = stack:peek_item()
     itemstring = exchangeclone.emc_aliases[itemstring] or itemstring
     if to_list == "learn" then
         local list = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}

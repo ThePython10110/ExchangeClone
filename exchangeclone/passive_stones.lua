@@ -42,6 +42,11 @@ minetest.register_tool("exchangeclone:soul_stone", {
         active_image = "exchangeclone_soul_stone_active.png",
         exclude = {"exchangeclone:life_stone"}
     },
+    _exchangeclone_pedestal = function(pos)
+        for _, player in minetest.get_objects_inside_radius(pos, 5) do
+            heal(player, 2)
+        end
+    end,
     on_secondary_use = exchangeclone.toggle_active,
     on_place = exchangeclone.toggle_active,
     groups = {exchangeclone_passive = 1, disable_repair = 1}
@@ -71,6 +76,13 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
             active_image = "exchangeclone_body_stone_active.png",
             exclude = {"exchangeclone:life_stone"}
         },
+        _exchangeclone_pedestal = function(pos)
+            for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
+                if object:is_player() then
+                    heal(object, 2)
+                end
+            end
+        end,
         on_secondary_use = exchangeclone.toggle_active,
         on_place = exchangeclone.toggle_active,
         groups = {exchangeclone_passive = 1, disable_repair = 1}
@@ -108,6 +120,14 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
             active_image = "exchangeclone_life_stone_active.png",
             exclude = {"exchangeclone:body_stone", "exchangeclone:soul_stone"}
         },
+        _exchangeclone_pedestal = function(pos)
+            for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
+                if object:is_player() then
+                    heal(object, 2)
+                    satiate(object, 2)
+                end
+            end
+        end,
         on_secondary_use = exchangeclone.toggle_active,
         on_place = exchangeclone.toggle_active,
         groups = {exchangeclone_passive = 1, disable_repair = 1},

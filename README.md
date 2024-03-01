@@ -61,15 +61,14 @@ Dependencies: Minetest Game or MineClone.
     * Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (GPLv3+).
     * Some code copied/modified from MineClone2 and Minetest Game (both GPLv3+)
 * Textures:
-    * Constructor and Deconstructor: Unmodified from Element Exchange (GPLv3+)
-    * Armor (not the inventory image): Modified versions of diamond armor from 3D Armor in MTG and `mcl_armor` in MCL (both CC-BY-SA-3.0)
     * Upgrader and Upgrades: Created by me (CC-BY-SA-3.0)
     * Energy Collectors:
         * Base: Glowstone block from MineClone2 (CC-BY-SA-3.0)
         * Overlay: Created by me (CC-BY-SA-3.0)
+    * Armor (not the inventory image): Slightly modified from ProjectE (just moved stuff around so it fit onto Minetest player models correctly).
     * Alchemical Chest: Modified version of EE2/ProjectE's textures, extended to 16x16 instead of 14x14 (MIT)
     * Advanced Alchemical Chests: Modified version of ProjectExpansion's textures, extended to 16x16 instead of 14x14 (MIT)
-    * Magnum Stars: Directly from ProjectExpansion (MIT)
+    * Magnum Stars and EMC Link: Directly from ProjectExpansion (MIT)
     * All other textures and sounds: Directly from EE2/ProjectE (MIT)
 
 You can find the old textures and sounds by going back to previous commits in GitHub.
@@ -80,9 +79,8 @@ You can find the old textures and sounds by going back to previous commits in Gi
 [x] Deprecate (De)Constructors
 [x] Remove fuel crafting recipes for stars and upgrades
 [x] Add ProjectE armor textures
-[ ] Add EMC Link
-[ ] Add Energy Condensers
-[ ] Add Divining Rods
+[x] Add EMC Link
+[ ] ~~Add Divining Rods~~
 [ ] Add Alchemical Books
 [ ] Add Knowledge Sharing Book
     [ ] Add function for getting player's learned items
@@ -100,7 +98,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 
 ### v8.0
 * New Features:
-    * 
+    * Added the EMC Link to replace both the Constructor and Deconstructor.
 * Changes:
     * The Constructor and Deconstructor are now deprecated. Element Exchange is no more.
     * Upgrades and Stars can no longer be used as fuel.
