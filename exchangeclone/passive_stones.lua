@@ -43,8 +43,10 @@ minetest.register_tool("exchangeclone:soul_stone", {
         exclude = {"exchangeclone:life_stone"}
     },
     _exchangeclone_pedestal = function(pos)
-        for _, player in minetest.get_objects_inside_radius(pos, 5) do
-            heal(player, 2)
+        for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
+            if object:is_player() then
+                heal(object, 2)
+            end
         end
     end,
     on_secondary_use = exchangeclone.toggle_active,
@@ -79,7 +81,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
         _exchangeclone_pedestal = function(pos)
             for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
                 if object:is_player() then
-                    heal(object, 2)
+                    satiate(object, 2)
                 end
             end
         end,
@@ -174,12 +176,12 @@ if exchangeclone.mcl then
             mcl_experience.set_xp(player, player_xp - amount_to_take)
             stored = stored + amount_to_take
             meta:set_int("exchangeclone_stored_xp", stored)
-            meta:set_string("description", get_mind_description(itemstack))
             if stored > 0 then
                 meta:set_string("exchangeclone_emc_value", "none")
             else
                 meta:set_string("exchangeclone_emc_value", "")
             end
+            meta:set_string("description", get_mind_description(itemstack))
             return itemstack
         else
             local player_xp = mcl_experience.get_xp(player)
@@ -208,7 +210,25 @@ if exchangeclone.mcl then
         on_secondary_use = mind_action,
         on_place = mind_action,
         groups = {exchangeclone_passive = 1, disable_repair = 1},
-        _mcl_generate_description = get_mind_description
+        _mcl_generate_description = get_mind_description,
+        _exchangeclone_pedestal = function(pos, itemstack)
+            local meta = itemstack:get_meta()
+            for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
+                local lua_entity = object:get_luaentity()
+                if lua_entity and lua_entity.name == "mcl_experience:orb" then
+                    local amount = lua_entity._xp
+                    meta:set_int("exchangeclone_stored_xp", meta:get_int("exchangeclone_stored_xp") + amount)
+                    if meta:get_int("exchangeclone_stored_xp") > 0 then
+                        meta:set_string("exchangeclone_emc_value", "none")
+                    else
+                        meta:set_string("exchangeclone_emc_value", "")
+                    end
+                    meta:set_string("description", get_mind_description(itemstack))
+                    object:remove()
+                end
+            end
+            return itemstack
+        end,
     })
 
     local book = "mcl_books:book"

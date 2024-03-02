@@ -92,18 +92,13 @@ You can find the old textures and sounds by going back to previous commits in Gi
 - [ ] Add Void Ring
 - [x] Add DM Pedestal
 - [ ] Add Pedestal abilities
-    - [ ] Passive Stones
-        - [x] Soul
-        - [x] Body
-        - [x] Life
-        - [ ] Mind
-    - [ ] Talisman
+    - [x] Passive Stones
+    - [x] Talisman
     - [ ] Evertide
     - [ ] Volcanite
     - [ ] Zero
     - [ ] Ignition
     - [ ] Black Hole/Void
-    - [ ] Functions for passive stones, talisman, evertide/volcanite, zero/ignition
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>

@@ -131,6 +131,7 @@ local files = {
 	"talisman_of_repair",
 	"passive_stones",
 	"emc_link",
+	"alchemical_books",
 	"dark_matter_pedestal",
 }
 
