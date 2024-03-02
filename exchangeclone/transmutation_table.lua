@@ -108,7 +108,7 @@ local function add_to_output(player, amount, show)
         local max_amount = math.min(amount, stack_max, math.floor(player_emc/emc_value))
         local inventory = minetest.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..player:get_player_name()})
         local added_amount = max_amount - inventory:add_item("output", ItemStack(item.." "..max_amount)):get_count()
-        exchangeclone.set_player_emc(player, math.min(player_emc, player_emc - (emc_value * added_amount))) -- not sure if "math.min()" is necessary
+        exchangeclone.add_player_emc(player, math.min(player_emc, -(emc_value * added_amount))) -- not sure if "math.min()" is necessary
         if show then exchangeclone.show_transmutation_table_formspec(player) end
     end
 end
