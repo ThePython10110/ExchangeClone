@@ -109,7 +109,8 @@ if exchangeclone.mcl2 then
 end
 
 local files = {
-	"craftitems",
+	"fuels",
+	"matter",
 	"deprecated_stuff",
 	"energy_collectors",
 	"klein_stars",

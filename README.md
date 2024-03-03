@@ -81,7 +81,7 @@ You can find the old textures and sounds by going back to previous commits in Gi
 - [x] Add ProjectE armor textures
 - [x] Add EMC Link
 - [x] Add Alchemical Books
-- [ ] Add more matter/fuel types
+- [x] Add more matter/fuel types
 - [ ] Make collectors less expensive and less effective (gold instead of glowstone)
 - [ ] Make collectors use ProjectExpansion's textures
 - [ ] Add Knowledge Sharing Book
@@ -101,6 +101,12 @@ You can find the old textures and sounds by going back to previous commits in Gi
     - [ ] Zero
     - [ ] Ignition
     - [ ] Black Hole/Void
+- [ ] Update wiki
+    - [ ] New matter/fuel types
+    - [ ] Changes to collectors
+    - [ ] New armor textures
+    - [ ] DM Pedestal/abilities
+    - [ ] All the new items
 
 ## Changelog
 <details><summary>Look at this fancy expanding changelog</summary>
@@ -110,11 +116,14 @@ You can find the old textures and sounds by going back to previous commits in Gi
     * Added the EMC Link to replace both the Constructor and Deconstructor.
     * Added the Dark Matter Pedestal.
     * Added Alchemical Books.
+    * DM/RM armor now use ProjectE's textures.
+    * Added Magenta through White Matter (would have added fading matter, but it's over 1 trillion EMC)
 * Changes:
     * The Constructor and Deconstructor are now deprecated, replaced with the EMC Link.
     * Upgrades and Stars can no longer be used as fuel.
     * Dark and Red Matter Armor now uses ProjectE's textures
     * Removed the ability to right click with stars to see the charge (it's unnecessary).
+    * Organized textures into folders
 * Bugfixes:
     * Dark and Red Matter Armor display properly (and identically) in both games, with ProjectE's textures.
     * `add_star_emc` now correctly works with negative energy values.
