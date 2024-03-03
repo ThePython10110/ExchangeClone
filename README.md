@@ -80,7 +80,6 @@ You can find the old textures and sounds by going back to previous commits in Gi
 - [x] Remove fuel crafting recipes for stars and upgrades
 - [x] Add ProjectE armor textures
 - [x] Add EMC Link
-- [ ] ~~Add Divining Rods~~
 - [x] Add Alchemical Books
 - [ ] Add more matter/fuel types
 - [ ] Make collectors less expensive and less effective (gold instead of glowstone)
@@ -109,13 +108,15 @@ You can find the old textures and sounds by going back to previous commits in Gi
 ### v8.0
 * New Features:
     * Added the EMC Link to replace both the Constructor and Deconstructor.
+    * Added the Dark Matter Pedestal.
+    * Added Alchemical Books.
 * Changes:
-    * The Constructor and Deconstructor are now deprecated. Element Exchange is no more.
+    * The Constructor and Deconstructor are now deprecated, replaced with the EMC Link.
     * Upgrades and Stars can no longer be used as fuel.
     * Dark and Red Matter Armor now uses ProjectE's textures
-    * Removed the ability to right click with stars to see the charge (made it more convenient to add the EMC Link)
+    * Removed the ability to right click with stars to see the charge (it's unnecessary).
 * Bugfixes:
-    * Dark and Red Matter Armor display properly (and identically) in both games.
+    * Dark and Red Matter Armor display properly (and identically) in both games, with ProjectE's textures.
     * `add_star_emc` now correctly works with negative energy values.
 
 
@@ -473,27 +474,33 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 </details>
 
 ### Features that I might add eventually:
-* ProjectE's armor textures (maybe MCL only)\*
+* ProjectE's armor textures\*\*
 * Archangel's Smite (MCL only, arrows will not track targets)
 * Ring of Ignition\*
 * Zero Ring\*
 * Swiftwolf's Rending Gale (maybe not, if so, without the force field; basically Why's Flying Sausage with a different texture and maybe lightning in MCL)
 * Harvest Band (maybe not)
 * Ring of Arcana (possibly without the Harvest Band)
-* Gem Armor
+* Gem Armor (only if the engine bug with armor is fixed)
 * Destruction Catalyst
 * Hyperkinetic Lens?
-* Divining Rods\*
-* Alchemical Books\*
+* Alchemical Books\*\*
 * Catalytic Lens
 * Mercurial Eye
 * Evertide Amulet (but without being able to stand on water)\*
 * Volcanite Amulet (but without being able to stand on lava)\*
-* Pedestals\*
+* Pedestals\*\* (haven't added all the abilities yet)
 * Black Hole Band and Void Ring\*
 * Nova Catalyst/Cataclysm?
 * Knowledge Sharing Book\*
-* Energy Condensers\*
-* EMC Link\*
+* EMC Link\*\*
 
 \* Planned for v8.0
+
+\*\* Added to v8.0
+
+### Features that I will not add:
+* Divining Rods (I would have to manually add energy values for ores, and I'm not going to do that)
+* Energy Condensers (what's the point?)
+* Watch of Flowing Time (impossible/laggy)
+* Any item from ProjectE(xpansion) with an EMC value of over 1 trillion (impossible)
