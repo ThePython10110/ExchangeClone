@@ -231,7 +231,7 @@ if exchangeclone.mcl then
         end,
     })
 
-    local book = "mcl_books:book"
+    local book = exchangeclone.itemstrings.book
     minetest.register_craft({
         output = "exchangeclone:mind_stone",
         recipe = {

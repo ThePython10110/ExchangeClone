@@ -4,9 +4,7 @@ local function extract_dimension(pos)
     if exchangeclone.mtg then
         if minetest.get_modpath("nether") then
             if pos.y >= nether.DEPTH_FLOOR and pos.y <= nether.DEPTH_CEILING then
-                local report_y = pos.y - nether.DEPTH_FLOOR
-                minetest.log(report_y)
-                return "Nether", {x = pos.x, y = report_y, z = pos.z}
+                return "Nether", pos
             else
                 return "Overworld", pos
             end
@@ -38,12 +36,6 @@ end
 local function add_dimension(dimension, pos)
     dimension = dimension:lower()
     if exchangeclone.mtg then
-        if dimension == "nether" then
-            if minetest.get_modpath("nether") then
-                local report_y = pos.y + nether.DEPTH_FLOOR
-                return {x = pos.x, y = report_y, z = pos.z}
-            end
-        end
         return pos
     end
 
@@ -110,7 +102,7 @@ local function show_formspec(player, index, text, use_stack_data, confirmation)
         local selected = data.locations[index]
         if selected then
             local dimension, adjusted_pos = extract_dimension(selected.pos)
-            local _, player_adjusted_pos = extract_dimension(player_pos)
+            local player_dimension, player_adjusted_pos = extract_dimension(player_pos)
             local dimension_string = dimension and (" ("..dimension..")") or ""
             local distance = vector.distance(adjusted_pos, player_adjusted_pos)
             local cost = math.floor(book_data.emc_per_node*distance*20)/20
@@ -124,7 +116,12 @@ local function show_formspec(player, index, text, use_stack_data, confirmation)
                  distance,
                  exchangeclone.format_number(cost)
             ))
-            formspec[#formspec+1] = "textarea[0.5,8;4,4;;;"..info.."]"
+            if player_dimension ~= dimension then
+                if book_data.dimension_lock then
+                    info = info.."\nCannot teleport between dimensions."
+                end
+            end
+            formspec[#formspec+1] = "textarea[0.5,8;7,1.75;;;"..info.."]"
         end
     end
     if confirmation then
@@ -154,7 +151,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
     local meta = (use_stack_data and stack or player):get_meta()
     local data = minetest.deserialize(meta:get_string("exchangeclone_alchemical_book"))
+    if not data then data = {} end
+    if not data.locations then data.locations = {} end
     local index = context[player:get_player_name()].index
+    local book_data = stack:get_definition().alchemical_book_data
     if type(data) ~= "table" then
         data = {}
     end
@@ -162,7 +162,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         data.locations = {}
     end
     if fields.key_enter_field == "name" or fields.add or fields.rename then
-        local name = fields.name
+        local name = fields.name:trim()
         if name == "" then return end
         for _, location in pairs(data.locations) do
             if location.name == name then
@@ -181,8 +181,15 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     elseif fields.teleport then
         if not data.locations[index] then return end
         local pos = data.locations[index].pos
-        local _, adjusted_pos = extract_dimension(pos)
-        local _, adjusted_player_pos = extract_dimension(player:get_pos())
+        local dimension, adjusted_pos = extract_dimension(pos)
+        local player_dimension, adjusted_player_pos = extract_dimension(player:get_pos())
+        if dimension ~= player_dimension then
+            if book_data.dimension_lock then
+                minetest.chat_send_player(player:get_player_name(), "This Alchemical Book is not powerful enough to teleport between dimensions.")
+                show_formspec(player, index, fields.name, use_stack_data)
+                return
+            end
+        end
         local distance = vector.distance(adjusted_player_pos, adjusted_pos)
         local emc_per_node = stack:get_definition().alchemical_book_data.emc_per_node
         local cost = distance*emc_per_node
@@ -201,8 +208,15 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         context[player:get_player_name()].index = index
         if exploded.type == "DCL" then
             local pos = data.locations[index].pos
-            local _, adjusted_pos = extract_dimension(pos)
-            local _, adjusted_player_pos = extract_dimension(player:get_pos())
+            local dimension, adjusted_pos = extract_dimension(pos)
+            local player_dimension, adjusted_player_pos = extract_dimension(player:get_pos())
+            if dimension ~= player_dimension then
+                if book_data.dimension_lock then
+                    minetest.chat_send_player(player:get_player_name(), "This Alchemical Book is not powerful enough to teleport between dimensions.")
+                    show_formspec(player, index, fields.name, use_stack_data)
+                    return
+                end
+            end
             local distance = vector.distance(adjusted_player_pos, adjusted_pos)
             local emc_per_node = stack:get_definition().alchemical_book_data.emc_per_node
             local cost = distance*emc_per_node
@@ -278,9 +292,75 @@ local function alchemical_book_function(itemstack, player, pointed_thing)
 end
 
 minetest.register_tool("exchangeclone:basic_alchemical_book", {
-    description = "Basic Alchemical Book",
+    description = "Basic Alchemical Book\n1000 EMC/node\nCannot travel between dimensions",
+    inventory_image = "exchangeclone_basic_alchemical_book.png",
     groups = {exchangeclone_alchemical_book = 1},
-    alchemical_book_data = {emc_per_node = 1000},
+    alchemical_book_data = {emc_per_node = 1000, dimension_lock = true},
     on_secondary_use = alchemical_book_function,
     on_place = alchemical_book_function
+})
+
+minetest.register_tool("exchangeclone:advanced_alchemical_book", {
+    description = "Advanced Alchemical Book\n500 EMC/node",
+    inventory_image = "exchangeclone_advanced_alchemical_book.png",
+    groups = {exchangeclone_alchemical_book = 1},
+    alchemical_book_data = {emc_per_node = 500},
+    on_secondary_use = alchemical_book_function,
+    on_place = alchemical_book_function
+})
+
+minetest.register_tool("exchangeclone:master_alchemical_book", {
+    description = "Master Alchemical Book\n100 EMC/node.",
+    inventory_image = "exchangeclone_master_alchemical_book.png",
+    groups = {exchangeclone_alchemical_book = 1},
+    alchemical_book_data = {emc_per_node = 100},
+    on_secondary_use = alchemical_book_function,
+    on_place = alchemical_book_function
+})
+
+minetest.register_tool("exchangeclone:arcane_alchemical_book", {
+    description = "Arcane Alchemical Book\n0 EMC/node",
+    inventory_image = "exchangeclone_arcane_alchemical_book.png",
+    groups = {exchangeclone_alchemical_book = 1},
+    alchemical_book_data = {emc_per_node = 0},
+    on_secondary_use = alchemical_book_function,
+    on_place = alchemical_book_function
+})
+
+local craftitem = exchangeclone.mcl and "mcl_throwing:ender_pearl" or "default:mese_crystal"
+
+minetest.register_craft({
+    output = "exchangeclone:basic_alchemical_book",
+    recipe = {
+        {"exchangeclone:low_covalence_dust","exchangeclone:red_matter", "exchangeclone:low_covalence_dust"},
+        {craftitem, exchangeclone.itemstrings.book, "exchangeclone:philosophers_stone"},
+        {"exchangeclone:low_covalence_dust","exchangeclone:red_matter", "exchangeclone:low_covalence_dust"},
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:advanced_alchemical_book",
+    recipe = {
+        {"exchangeclone:medium_covalence_dust","exchangeclone:pink_matter", "exchangeclone:medium_covalence_dust"},
+        {craftitem, "exchangeclone:basic_alchemical_book", "exchangeclone:pink_matter"},
+        {"exchangeclone:medium_covalence_dust","exchangeclone:pink_matter", "exchangeclone:medium_covalence_dust"},
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:master_alchemical_book",
+    recipe = {
+        {"exchangeclone:high_covalence_dust","exchangeclone:violet_matter", "exchangeclone:high_covalence_dust"},
+        {"exchangeclone:violet_matter", "exchangeclone:advanced_alchemical_book", "exchangeclone:violet_matter"},
+        {"exchangeclone:high_covalence_dust","exchangeclone:violet_matter", "exchangeclone:high_covalence_dust"},
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:arcane_alchemical_book",
+    recipe = {
+        {"exchangeclone:void_ring","exchangeclone:block_cyan_matter", "exchangeclone:void_ring"},
+        {"exchangeclone:void_ring", "exchangeclone:master_alchemical_book", "exchangeclone:void_ring"},
+        {"exchangeclone:void_ring","exchangeclone:block_cyan_matter", "exchangeclone:void_ring"},
+    }
 })

@@ -379,23 +379,14 @@ minetest.register_tool("exchangeclone:tome_of_knowledge", {
     groups = {disable_repair = 1, fire_immune = 1}
 })
 
-minetest.register_alias("exchangeclone:tome_of_knowledge", "exchangeclone:tome_of_knowledge")
-
-local book = "default:book"
-local obsidian = "default:obsidian"
-local stone = "default:stone"
-if exchangeclone.mcl then
-    book = "mcl_books:book"
-    obsidian = "mcl_core:obsidian"
-    stone = "mcl_core:stone"
-end
+minetest.register_alias("exchangeclone:alchemical_tome", "exchangeclone:tome_of_knowledge")
 
 minetest.register_craft({
     output = "exchangeclone:transmutation_table",
     recipe = {
-        {obsidian, stone, obsidian},
-        {stone, "exchangeclone:philosophers_stone", stone},
-        {obsidian, stone, obsidian}
+        {exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.stone, exchangeclone.itemstrings.obsidian},
+        {exchangeclone.itemstrings.stone, "exchangeclone:philosophers_stone", exchangeclone.itemstrings.stone},
+        {exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.stone, exchangeclone.itemstrings.obsidian}
     },
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
@@ -403,9 +394,9 @@ minetest.register_craft({
 minetest.register_craft({
     output = "exchangeclone:transmutation_tablet",
     recipe = {
-        {"exchangeclone:dark_matter_block", stone, "exchangeclone:dark_matter_block"},
-        {stone, "exchangeclone:transmutation_table", stone},
-        {"exchangeclone:dark_matter_block", stone, "exchangeclone:dark_matter_block"}
+        {"exchangeclone:dark_matter_block", exchangeclone.itemstrings.stone, "exchangeclone:dark_matter_block"},
+        {exchangeclone.itemstrings.stone, "exchangeclone:transmutation_table", exchangeclone.itemstrings.stone},
+        {"exchangeclone:dark_matter_block", exchangeclone.itemstrings.stone, "exchangeclone:dark_matter_block"}
     },
 })
 
@@ -413,7 +404,7 @@ if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", fa
     minetest.register_craft({
         output = "exchangeclone:tome_of_knowledge",
         recipe = {
-            {"", book, ""},
+            {"", exchangeclone.itemstrings.book, ""},
             {"exchangeclone:klein_star_omega", "exchangeclone:philosophers_stone", "exchangeclone:klein_star_omega"},
             {"", "exchangeclone:red_matter", ""}
         },

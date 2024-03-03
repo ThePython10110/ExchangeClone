@@ -344,6 +344,7 @@ end
 -- Itemstrings for various items used in crafting recipes.
 exchangeclone.itemstrings = {
     cobble =            exchangeclone.mcl and "mcl_core:cobble"             or "default:cobble",
+    stone =             exchangeclone.mcl and "mcl_core:stone"              or "default:stone",
     redstoneworth =     exchangeclone.mcl and "mesecons:redstone"           or "default:obsidian",
     obsidian =          exchangeclone.mcl and "mcl_core:obsidian"           or "default:obsidian",
     glowstoneworth =    exchangeclone.mcl and "mcl_nether:glowstone_dust"   or "default:tin_ingot",
@@ -358,7 +359,8 @@ exchangeclone.itemstrings = {
     dirt =              exchangeclone.mcl and "mcl_core:dirt"               or "default:dirt",
     clay =              exchangeclone.mcl and "mcl_core:clay"               or "default:clay",
     sand =              exchangeclone.mcl and "mcl_core:sand"               or "default:sand",
-    torch =             exchangeclone.mcl and "mcl_torches:torch"           or "default:torch"
+    torch =             exchangeclone.mcl and "mcl_torches:torch"           or "default:torch",
+    book =              exchangeclone.mcl and "mcl_books:book"              or "default:book"
 }
 
 exchangeclone.emc_aliases = {}
