@@ -341,6 +341,9 @@ function exchangeclone.charge_update(itemstack, player)
     return itemstack
 end
 
+exchangeclone.int_limit = 2147483647
+exchangeclone.fuel_limit = 2147483583 -- no idea why...
+
 -- Itemstrings for various items used in crafting recipes.
 exchangeclone.itemstrings = {
     cobble =            exchangeclone.mcl and "mcl_core:cobble"             or "default:cobble",
@@ -360,7 +363,8 @@ exchangeclone.itemstrings = {
     clay =              exchangeclone.mcl and "mcl_core:clay"               or "default:clay",
     sand =              exchangeclone.mcl and "mcl_core:sand"               or "default:sand",
     torch =             exchangeclone.mcl and "mcl_torches:torch"           or "default:torch",
-    book =              exchangeclone.mcl and "mcl_books:book"              or "default:book"
+    book =              exchangeclone.mcl and "mcl_books:book"              or "default:book",
+    glass =             exchangeclone.mcl and "mcl_core:glass"              or "default:glass",
 }
 
 exchangeclone.emc_aliases = {}

@@ -9,7 +9,7 @@ local formspec =
     "listring[context;main]"..
     (exchangeclone.mcl and mcl_formspec.get_itemslot_bg(4,2,1,1) or "")
 
-minetest.register_alias("exchangeclone:energy_collector", "exchangeclone:energy_collector_mk1")
+minetest.register_alias("exchangeclone:energy_collector", "exchangeclone:basic_collector")
 
 local function check_for_furnaces(pos, set_furnace, start)
 	local found = false
@@ -118,12 +118,10 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
     return stack:get_count()
 end
 
-function exchangeclone.register_energy_collector(itemstring, name, amount, modifier, recipe, glow)
+function exchangeclone.register_energy_collector(itemstring, name, amount, texture, recipe, glow)
     minetest.register_node(itemstring, {
         description = name.."\nGenerates "..exchangeclone.format_number(amount).." EMC/second",
-        tiles = {
-            "exchangeclone_energy_collector_base.png^(exchangeclone_energy_collector_overlay.png"..modifier..")"
-        },
+        tiles = {texture},
         groups = {
             cracky = 2,
             pickaxey = 1,
@@ -133,7 +131,7 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
             energy_collector = 1,
             container = 2,
             tubedevice = 1,
-            tubedevice_receiver = 1, 
+            tubedevice_receiver = 1,
         },
         light_source = glow,
         _mcl_hardness = 1,
@@ -171,9 +169,11 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
         allow_metadata_inventory_move = allow_metadata_inventory_move,
         allow_metadata_inventory_take = allow_metadata_inventory_take,
     })
+    minetest.log(dump(recipe))
     minetest.register_craft({
         output = itemstring,
-        recipe = recipe
+        type = recipe[2] or "shaped",
+        recipe = recipe[1]
     })
 
     if exchangeclone.pipeworks then
@@ -199,82 +199,58 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, modif
     end
 end
 
-local iron_block = "default:steelblock"
-local glass = "default:glass"
-local chest = "default:chest"
+local collectors = {
+    "Basic",
+    "Dark",
+    "Red",
+    "Magenta",
+    "Pink",
+    "Purple",
+    "Violet",
+    "Blue",
+    "Cyan",
+    "Green",
+    "Lime",
+    "Yellow",
+    "Orange",
+    "White",
+}
 
-if exchangeclone.mcl then
-    iron_block = "mcl_core:ironblock"
-    glass = "mcl_core:glass"
-    chest = "mcl_chests:chest"
+local ingredient = exchangeclone.mcl and "mcl_nether:glowstone" or "default:gold_ingot"
+
+exchangeclone.register_energy_collector(
+    "exchangeclone:basic_collector",
+    S("Basic Collector [MK 1]"),
+    4,
+    "exchangeclone_basic_collector.png",
+    {{
+        {ingredient, exchangeclone.itemstrings.glass, ingredient},
+        {ingredient, "exchangeclone:aeternalis_fuel_block", ingredient},
+        {ingredient, (exchangeclone.mcl and "mcl_furnaces:furnace" or "default:furnace"), ingredient},
+
+    }},
+    5
+)
+
+minetest.register_alias("exchangeclone:energy_collector_mk1", "exchangeclone:basic_collector")
+
+for i = 2, #collectors do
+    local collector = collectors[i]
+    local codified = collector:lower().."_collector"
+    local previous = "exchangeclone:"..collectors[i-1]:lower().."_collector"
+    exchangeclone.register_energy_collector(
+        "exchangeclone:"..codified,
+        S(collector.." Energy Collector [MK"..i.."]"),
+        4*math.pow(6,i-1),
+        "exchangeclone_"..codified..".png",
+        {
+            {
+                previous,
+                "exchangeclone:"..collector:lower().."_matter"
+            },
+            "shapeless"
+        },
+        5+i
+    )
+    minetest.register_alias("exchangeclone:energy_collector_mk"..i, "exchangeclone:"..codified)
 end
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk1", S("Energy Collector MK1"), 16, "", {
-        {glass, glass, glass},
-        {"exchangeclone:klein_star_drei", chest, "exchangeclone:klein_star_drei"},
-        {iron_block, iron_block, iron_block}
-    }, 5
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk2", S("Energy Collector MK2"), 48, "^[multiply:#333333", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk1", "exchangeclone:energy_collector_mk1", "exchangeclone:energy_collector_mk1"},
-        {iron_block, iron_block, iron_block}
-    }, 6
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk3", S("Energy Collector MK3"), 160, "^[multiply:#770000", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2", "exchangeclone:energy_collector_mk2"},
-        {iron_block, iron_block, iron_block}
-    }, 7
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk4", S("Energy Collector MK4"), 640, "^[multiply:#aa5500", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3", "exchangeclone:energy_collector_mk3"},
-        {iron_block, iron_block, iron_block}
-    }, 8
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk5", S("Energy Collector MK5"), 2560, "^[multiply:#cc9900", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4", "exchangeclone:energy_collector_mk4"},
-        {iron_block, iron_block, iron_block}
-    }, 9
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk6", S("Energy Collector MK6"), 10240, "^[multiply:#007700", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk5", "exchangeclone:energy_collector_mk5", "exchangeclone:energy_collector_mk5"},
-        {iron_block, iron_block, iron_block}
-    }, 10
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk7", S("Energy Collector MK7"), 40960, "^[multiply:#007777", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk6", "exchangeclone:energy_collector_mk6", "exchangeclone:energy_collector_mk6"},
-        {iron_block, iron_block, iron_block}
-    }, 11
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk8", S("Energy Collector MK8"), 163840, "^[multiply:#000077", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk7", "exchangeclone:energy_collector_mk7", "exchangeclone:energy_collector_mk7"},
-        {iron_block, iron_block, iron_block}
-    }, 12
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk9", S("Energy Collector MK9"), 655360, "^[multiply:#770077", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk8", "exchangeclone:energy_collector_mk8", "exchangeclone:energy_collector_mk8"},
-        {iron_block, iron_block, iron_block}
-    }, 13
-)
-
-exchangeclone.register_energy_collector("exchangeclone:energy_collector_mk10", S("Energy Collector MK10"), 2621440, "^[multiply:#cc00aa", {
-        {iron_block, iron_block, iron_block},
-        {"exchangeclone:energy_collector_mk9", "exchangeclone:energy_collector_mk9", "exchangeclone:energy_collector_mk9"},
-        {iron_block, iron_block, iron_block}
-    }, minetest.LIGHT_MAX
-)

@@ -80,7 +80,12 @@ for i, matter in ipairs(exchangeclone.matter_types) do
 
     local previous = exchangeclone.matter_types[i-1] or "Dark"
     previous = "exchangeclone:"..previous:lower().."_matter"
-    local fuel = "exchangeclone:"..exchangeclone.fuels[i+2]:lower():gsub(" ", "_")
+    local fuel
+    if matter ~= "Red" then
+        fuel = "exchangeclone:"..exchangeclone.fuels[i+1]:lower():gsub(" ", "_")
+    else
+        fuel = "exchangeclone:aeternalis_fuel"
+    end
 
     minetest.register_craft({
         output = itemstring,

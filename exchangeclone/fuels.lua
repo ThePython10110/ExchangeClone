@@ -38,6 +38,8 @@ for i, fuel in ipairs(exchangeclone.fuels) do
         _mcl_hardness = 7,
     })
 
+    minetest.log(string.format("%s: %s", fuel, fuel_time))
+
     minetest.register_craft({
         type = "fuel",
         recipe = "exchangeclone:"..codified,
@@ -47,9 +49,9 @@ for i, fuel in ipairs(exchangeclone.fuels) do
     minetest.register_craft({
         type = "fuel",
         recipe = "exchangeclone:"..codified.."_block",
-        burntime = fuel_time * 10,
+        burntime = math.min(fuel_time * 10, exchangeclone.fuel_limit)
     })
-    fuel_time = fuel_time * 4
+    fuel_time = math.min(fuel_time * 4, exchangeclone.fuel_limit)
 
     minetest.register_craft({
         output = "exchangeclone:"..codified.."_block",

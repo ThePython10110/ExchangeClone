@@ -82,8 +82,8 @@ You can find the old textures and sounds by going back to previous commits in Gi
 - [x] Add EMC Link
 - [x] Add Alchemical Books
 - [x] Add more matter/fuel types
-- [ ] Make collectors less expensive and less effective (gold instead of glowstone)
-- [ ] Make collectors use ProjectExpansion's textures
+- [x] Make collectors less expensive and less effective (gold instead of glowstone)
+- [x] Make collectors use ProjectExpansion's textures
 - [ ] Add Knowledge Sharing Book
     - [ ] Add function for getting player's learned items
 - [ ] Add Evertide Amulet
