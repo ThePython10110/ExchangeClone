@@ -179,9 +179,11 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 		elseif minetest.get_item_group(name, exchangeclone.pickaxe_group) > 0 and sneaking then
 			exchangeclone.hammer_action(itemstack, player, pointed_thing.under)
 		else
-			exchangeclone.place_torch(player, pointed_thing)
-			exchangeclone.add_player_emc(player, -math.max(exchangeclone.get_item_emc(exchangeclone.itemstrings.torch) or 8, 8))
-			-- If the torch could not be placed, it still costs EMC... not sure how to fix that
+            local result = exchangeclone.place_torch(player, pointed_thing)
+            if result then
+                player:_add_emc(result)
+                -- If the torch could not be placed, it still costs EMC... not sure how to fix that
+            end
 			return
 		end
 	elseif sneaking then

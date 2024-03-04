@@ -75,9 +75,9 @@ local function upgrader_action(pos)
     local new_tool = exchangeclone.enchant(tool, upgrade_def.enchantment, upgrade_def.level)
     if not new_tool then return end -- If the tool already has that enchantment
 
-    local new_emc = exchangeclone.get_item_emc(new_tool) + exchangeclone.get_item_emc(upgrade:get_name())
+    local new_emc = new_tool:_get_emc() + exchangeclone.get_item_emc(upgrade:get_name())
 
-    new_tool:get_meta():set_int("exchangeclone_emc_value", new_emc)
+    new_tool:get_meta():set_string("exchangeclone_emc_value", new_emc)
 
     inv:set_stack("dst", 1, new_tool)
 

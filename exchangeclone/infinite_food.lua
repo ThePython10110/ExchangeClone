@@ -9,7 +9,7 @@ local function infinite_food_function(itemstack, player, pointed_thing)
     if click_test ~= false then
         return click_test
     end
-    local player_emc = exchangeclone.get_player_emc(player)
+    local player_emc = player:_get_emc()
     if player_emc >= 64 then
         if stamina_exists then
             if stamina.get_saturation(player) >= stamina_max then
@@ -37,9 +37,8 @@ minetest.register_tool("exchangeclone:infinite_food", {
 })
 
 minetest.register_on_item_eat(function(hp_change, replace_with_item, itemstack, player, pointed_thing)
-    local player_emc = exchangeclone.get_player_emc(player)
     if itemstack:get_name() == "exchangeclone:infinite_food" then
-        exchangeclone.set_player_emc(player, player_emc - 64)
+        player:_add_emc(-64)
     end
 end)
 

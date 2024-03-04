@@ -73,7 +73,7 @@ local function on_timer(pos, elapsed)
             if placer and placer ~= "" then
                 local player = minetest.get_player_by_name(placer)
                 if player then
-                    exchangeclone.add_player_emc(player, amount)
+                    player:_add_emc(amount)
                 end
             end
         end
@@ -240,7 +240,7 @@ for i = 2, #collectors do
     local previous = "exchangeclone:"..collectors[i-1]:lower().."_collector"
     exchangeclone.register_energy_collector(
         "exchangeclone:"..codified,
-        S(collector.." Energy Collector [MK"..i.."]"),
+        S(collector.." Collector [MK"..i.."]"),
         4*math.pow(6,i-1),
         "exchangeclone_"..codified..".png",
         {

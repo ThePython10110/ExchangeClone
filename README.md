@@ -44,8 +44,8 @@ Dependencies: Minetest Game or MineClone.
 * Dark and Red Matter Armor can make the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix.
 * Mobs Redo (and mods that use it) don't care that DM/RM tools are supposed to be unbreakable and add wear to them anyway.
 * Covalence Dust and the Talisman of Repair cannot repair certain tools. This will not be fixed.
-* The recipe for Energy Collectors doesn't include glowstone even though they are very glowstone-y. This will probably not be fixed because glowstone doesn't exist in MTG.
 * DM/RM tools are too fast in MTG (can't figure out why)
+* When placing torches with a pick/morningstar, if the placement fails, it still costs energy. This will probably not be fixed.
 
 **If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 
@@ -84,8 +84,6 @@ You can find the old textures and sounds by going back to previous commits in Gi
 - [x] Add more matter/fuel types
 - [x] Make collectors less expensive and less effective (gold instead of glowstone)
 - [x] Make collectors use ProjectExpansion's textures
-- [ ] Add Knowledge Sharing Book
-    - [ ] Add function for getting player's learned items
 - [ ] Add Evertide Amulet
 - [ ] Add Volcanite Amulet
 - [ ] Add Zero Ring
@@ -96,8 +94,8 @@ You can find the old textures and sounds by going back to previous commits in Gi
 - [ ] Add Pedestal abilities
     - [x] Passive Stones
     - [x] Talisman
-    - [ ] Evertide
-    - [ ] Volcanite
+    - [ ] Evertide (MCL)
+    - [ ] Volcanite (MCL)
     - [ ] Zero
     - [ ] Ignition
     - [ ] Black Hole/Void
@@ -117,13 +115,16 @@ You can find the old textures and sounds by going back to previous commits in Gi
     * Added the Dark Matter Pedestal.
     * Added Alchemical Books.
     * DM/RM armor now use ProjectE's textures.
-    * Added Magenta through White Matter (would have added fading matter, but it's over 1 trillion EMC)
+    * Added Magenta through White Fuel/Matter (would have added fading matter, but it's over 1 trillion EMC)
+    * Added `_get_emc`, `_set_emc`, and `_add_emc` to player metatables. This means you can use `player:_get_emc()` instead of `exchangeclone.get_player_emc(player)`. **WARNING: Do not use these functions in `on_joinplayer` functions.**
+    * Added the same functions for itemstack metatables, as well as `_<get/set/add>_star_emc` and `_get_star_max`. `_set_emc` and `_add_emc` work by changing the metadata EMC value.
 * Changes:
     * The Constructor and Deconstructor are now deprecated, replaced with the EMC Link.
     * Upgrades and Stars can no longer be used as fuel.
     * Dark and Red Matter Armor now uses ProjectE's textures
     * Removed the ability to right click with stars to see the charge (it's unnecessary).
     * Organized textures into folders
+    * Collectors now match ProjectExpansion's in every way possible (except MTG doesn't have glowstone so it's replaced with gold in the recipe)
 * Bugfixes:
     * Dark and Red Matter Armor display properly (and identically) in both games, with ProjectE's textures.
     * `add_star_emc` now correctly works with negative energy values.
@@ -501,7 +502,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 * Pedestals\*\* (haven't added all the abilities yet)
 * Black Hole Band and Void Ring\*
 * Nova Catalyst/Cataclysm?
-* Knowledge Sharing Book\*
+* Knowledge Sharing Book
 * EMC Link\*\*
 
 \* Planned for v8.0

@@ -71,7 +71,7 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
         elseif itemstack:get_name():find("red_") then
             local result = exchangeclone.place_torch(player, pointed_thing)
             if result then
-                exchangeclone.add_player_emc(player, result)
+                player:_add_emc(result)
                 -- If the torch could not be placed, it still costs EMC... not sure how to fix that
             end
         end

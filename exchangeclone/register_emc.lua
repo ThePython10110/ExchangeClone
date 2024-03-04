@@ -115,7 +115,7 @@ end
 exchangeclone.emc_values = {}
 
 -- Sets the EMC value of an item, must be called during load time.
-local function set_item_emc(itemstring, emc_value)
+local function register_emc(itemstring, emc_value)
     if not (emc_value and itemstring) then return end
     emc_value = math.floor(emc_value*20)/20 -- floor to nearest .05
     if emc_value < 0 then return end
@@ -297,19 +297,19 @@ end
 local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
 for index, group in ipairs(exchangeclone.group_values) do
     for i, item in pairs(grouped_items[group[1]]) do
-        set_item_emc(item, group[2])
+        register_emc(item, group[2])
     end
 end
 
 -- Register base EMC values
 for itemstring, emc_value in pairs(exchangeclone.base_emc_values) do
-    set_item_emc(itemstring, emc_value)
+    register_emc(itemstring, emc_value)
 end
 
 -- Register `exchangeclone_custom_emc` values and decide whether to automatically register EMC values
 for itemstring, def in pairs(minetest.registered_items) do
     if def.exchangeclone_custom_emc then
-        set_item_emc(itemstring, def.exchangeclone_custom_emc)
+        register_emc(itemstring, def.exchangeclone_custom_emc)
     else
         itemstring = exchangeclone.handle_alias(itemstring) or itemstring
         def = minetest.registered_items[itemstring] -- in case itemstring changed
@@ -364,7 +364,7 @@ while not same do
     for itemstring, _ in pairs(auto) do
         local cheapest = get_cheapest_recipe(itemstring)
         if cheapest then
-            set_item_emc(itemstring, cheapest)
+            register_emc(itemstring, cheapest)
             auto[itemstring] = nil
         end
     end
@@ -372,8 +372,8 @@ while not same do
 end
 
 if exchangeclone.mcl then
-    set_item_emc("mcl_campfires:campfire", exchangeclone.get_item_emc("mcl_campfires:campfire_lit"))
-    set_item_emc("mcl_campfires:soul_campfire", exchangeclone.get_item_emc("mcl_campfires:soul_campfire_lit"))
+    register_emc("mcl_campfires:campfire", exchangeclone.get_item_emc("mcl_campfires:campfire_lit"))
+    register_emc("mcl_campfires:soul_campfire", exchangeclone.get_item_emc("mcl_campfires:soul_campfire_lit"))
     -- Recovery compasses use a random compass frame for the crafting recipe... Incredibly irritating.
     for i = 0, 31 do
         if exchangeclone.get_item_emc("mcl_compass:"..i.."_recovery") then
@@ -404,12 +404,12 @@ local cheapest_advanced_itemstring = "exchangeclone:advanced_alchemical_chest_".
 
 for color, color_data in pairs(exchangeclone.colors) do
     local advanced_itemstring = "exchangeclone:advanced_alchemical_chest_"..color
-    set_item_emc(advanced_itemstring, exchangeclone.get_item_emc(cheapest_advanced_itemstring))
+    register_emc(advanced_itemstring, exchangeclone.get_item_emc(cheapest_advanced_itemstring))
 end
 
 -- Adds EMC values to aliased items, even though they're not used (just so it's displayed)
 for alias, itemstring in pairs(exchangeclone.emc_aliases) do
-    set_item_emc(itemstring, exchangeclone.get_item_emc(alias))
+    register_emc(itemstring, exchangeclone.get_item_emc(alias))
 end
 
 -- Delete unnecessary data (waste of memory)

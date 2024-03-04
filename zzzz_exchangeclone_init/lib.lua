@@ -1,7 +1,7 @@
 -- A ton of functions with approximately zero organization. At least there are comments now.
 
 local S = minetest.get_translator()
-local exchangeclone = exchangeclone
+--local exchangeclone = exchangeclone
 
 --- Rounds to the nearest integer
 function exchangeclone.round(num)
@@ -71,7 +71,7 @@ function exchangeclone.get_item_emc(item)
     end
 
     -- Only check metadata for ItemStacks
-    if type(item) == "userdata" then
+    if getmetatable(item) == getmetatable(ItemStack()) then
         local meta_emc_value = item:get_meta():get_string("exchangeclone_emc_value")
         if meta_emc_value == "none" then
             return 0
@@ -89,12 +89,32 @@ function exchangeclone.get_item_emc(item)
     if not def then return end
     if minetest.get_item_group(item:get_name(), "klein_star") > 0 then
         if def.emc_value then
-            return def.emc_value + exchangeclone.get_star_itemstack_emc(item)
+            return def.emc_value + item:_get_star_emc()
         end
     end
     if def.emc_value then
         return (def.emc_value) * item:get_count()
     end
+end
+
+function exchangeclone.set_item_meta_emc(item, value)
+    if getmetatable(item) ~= getmetatable(ItemStack()) then
+        return
+    end
+    item:get_meta():set_string("exchangeclone_emc_value", value)
+end
+
+function exchangeclone.add_item_meta_emc(item, value)
+    if getmetatable(item) ~= getmetatable(ItemStack()) then
+        return
+    end
+    local current_value = item:get_meta():get_string("exchangeclone_emc_value", value)
+    if current_value == "" or current_value == "none" then
+        current_value = 0
+    else
+        current_value = tonumber(current_value)
+    end
+    item:get_meta():set_string("exchangeclone_emc_value", current_value + value)
 end
 
 -- https://forum.unity.com/threads/re-map-a-number-from-one-range-to-another.119437/
@@ -106,6 +126,9 @@ end
 -- Gets the EMC stored in a specified Klein/Magnum Star itemstack.
 function exchangeclone.get_star_itemstack_emc(itemstack)
     if not itemstack then return end
+    if getmetatable(itemstack) ~= getmetatable(ItemStack()) then
+        return
+    end
     if minetest.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
     return math.max(itemstack:get_meta():get_float("stored_energy"), 0)
 end
@@ -116,13 +139,13 @@ function exchangeclone.get_star_emc(inventory, listname, index)
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    return exchangeclone.get_star_itemstack_emc(itemstack)
+    return itemstack:get_star_emc()
 end
 
 function exchangeclone.set_star_itemstack_emc(itemstack, amount)
     if not itemstack or not amount then return end
     if minetest.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
-    local old_emc = exchangeclone.get_star_itemstack_emc(itemstack)
+    local old_emc = itemstack:get_star_emc()
     local max = exchangeclone.get_star_max(itemstack)
     if amount > old_emc and old_emc > max then return end -- don't allow more EMC to be put into an over-filled star
 
@@ -131,7 +154,6 @@ function exchangeclone.set_star_itemstack_emc(itemstack, amount)
     meta:set_string("description", itemstack:get_definition()._mcl_generate_description(itemstack))
     local wear = math.max(1, math.min(65535, 65535 - 65535*amount/max))
     itemstack:set_wear(wear)
-    return itemstack
 end
 
 -- Sets the amount of EMC in a star in a specific inventory slot
@@ -140,16 +162,15 @@ function exchangeclone.set_star_emc(inventory, listname, index, amount)
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    local new_stack = exchangeclone.set_star_itemstack_emc(itemstack, amount)
-    if not new_stack then return end
-    inventory:set_stack(listname, index, new_stack)
+    itemstack:_set_star_emc(amount)
+    inventory:set_stack(listname, index, itemstack)
 end
 
 function exchangeclone.add_star_itemstack_emc(itemstack, amount)
     if itemstack and amount then
-        local emc = exchangeclone.get_star_itemstack_emc(itemstack) + amount
+        local emc = itemstack:get_star_emc() + amount
         if not emc or emc < 0 or emc > exchangeclone.get_star_max(itemstack) then return end
-        return exchangeclone.set_star_itemstack_emc(itemstack, emc)
+        itemstack:_set_star_emc(itemstack, emc)
     end
 end
 
@@ -159,9 +180,8 @@ function exchangeclone.add_star_emc(inventory, listname, index, amount)
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    local new_stack = exchangeclone.add_star_itemstack_emc(itemstack, amount)
-    if not new_stack then return end
-    inventory:set_stack(listname, index, new_stack)
+    exchangeclone.add_star_itemstack_emc(itemstack, amount)
+    inventory:set_stack(listname, index, itemstack)
 end
 
 function exchangeclone.get_star_max(item)
@@ -212,7 +232,7 @@ end
 -- Add to a player's personal EMC (amount can be negative)
 function exchangeclone.add_player_emc(player, amount)
     if not (player and amount) then return end
-    exchangeclone.set_player_emc(player, (exchangeclone.get_player_emc(player) or 0) + amount)
+    player:_set_emc((player:_get_emc() or 0) + amount)
 end
 
 -- Through trial and error, I have found that this number (1 trillion) works the best.
@@ -641,12 +661,12 @@ minetest.register_chatcommand("add_player_emc", {
             minetest.chat_send_player(name, "Bad command. Use /add_player_emc [player] [value] or /add_player_emc [value]")
             return
         end
-        local emc = exchangeclone.get_player_emc(target_player)
+        local emc = target_player:_get_emc()
         if (emc + value > exchangeclone.limit) or (emc + value < 0) then
             minetest.chat_send_player(name, "Out of bounds; personal EMC must be between 0 and 1 trillion.")
             return
         end
-        exchangeclone.add_player_emc(target_player, tonumber(value))
+        target_player:_add_emc(tonumber(value))
         minetest.chat_send_player(name, "Added "..exchangeclone.format_number(value).." to "..target_name.."'s personal EMC.")
     end
 })
@@ -669,7 +689,7 @@ minetest.register_chatcommand("get_player_emc", {
             minetest.chat_send_player(name, "Bad command. Use /get_player_emc [player] or /get_player_emc")
             return
         end
-        local emc = exchangeclone.get_player_emc(target_player)
+        local emc = target_player:_get_emc()
         minetest.chat_send_player(name, target_name.."'s personal EMC: "..exchangeclone.format_number(emc))
     end
 })
@@ -702,7 +722,7 @@ minetest.register_chatcommand("set_player_emc", {
             minetest.chat_send_player(name, "Failed to set EMC; must be between 0 and 1 trillion.")
             return
         end
-        exchangeclone.set_player_emc(target_player, tonumber(value))
+        target_player:_set_emc(tonumber(value))
         minetest.chat_send_player(name, "Set "..target_name.."'s personal EMC to "..exchangeclone.format_number(value))
     end
 })
@@ -1198,7 +1218,7 @@ end
 
 function exchangeclone.place_torch(player, pointed_thing)
     local torch_cost = math.max(exchangeclone.get_item_emc(exchangeclone.itemstrings.torch) or 0, 8)
-    if exchangeclone.get_player_emc(player) >= torch_cost then
+    if player:_get_emc() >= torch_cost then
         local torch_on_place = minetest.registered_items[exchangeclone.itemstrings.torch].on_place
         if torch_on_place then
             torch_on_place(ItemStack(exchangeclone.itemstrings.torch), player, pointed_thing)
@@ -1268,3 +1288,25 @@ function exchangeclone.toggle_active(itemstack, player, pointed_thing)
     end
     return itemstack
 end
+
+local item_metatable = getmetatable(ItemStack())
+item_metatable._get_emc = exchangeclone.get_item_emc
+item_metatable._set_emc = exchangeclone.set_item_meta_emc
+item_metatable._add_emc = exchangeclone.add_item_meta_emc
+
+item_metatable._get_star_emc = exchangeclone.get_star_itemstack_emc
+item_metatable._set_star_emc = exchangeclone.set_star_itemstack_emc
+item_metatable._add_star_emc = exchangeclone.add_star_itemstack_emc
+item_metatable._get_star_max = exchangeclone.get_star_max
+
+local updated_metatable = false
+
+minetest.register_on_joinplayer(function(player)
+    if not updated_metatable then
+        local player_metatable = getmetatable(player)
+        player_metatable._get_emc = exchangeclone.get_player_emc
+        player_metatable._set_emc = exchangeclone.set_player_emc
+        player_metatable._add_emc = exchangeclone.add_player_emc
+        updated_metatable = true
+    end
+end)

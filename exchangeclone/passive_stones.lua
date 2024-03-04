@@ -32,9 +32,9 @@ minetest.register_tool("exchangeclone:soul_stone", {
     inventory_image = "exchangeclone_soul_stone.png",
     _exchangeclone_passive = {
         func = function(player)
-            if exchangeclone.get_player_emc(player) >= 64 then
+            if player:_get_emc() >= 64 then
                 if heal(player, 2) then
-                    exchangeclone.add_player_emc(player, -64)
+                    player:_add_emc(-64)
                 end
             end
         end,
@@ -68,9 +68,9 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
         inventory_image = "exchangeclone_body_stone.png",
         _exchangeclone_passive = {
             func = function(player)
-                if exchangeclone.get_player_emc(player) >= 64 then
+                if player:_get_emc() >= 64 then
                     if satiate(player, 2) then
-                        exchangeclone.add_player_emc(player, -64)
+                        player:_add_emc(-64)
                     end
                 end
             end,
@@ -105,7 +105,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
         inventory_image = "exchangeclone_life_stone.png",
         _exchangeclone_passive = {
             func = function(player)
-                if exchangeclone.get_player_emc(player) >= 64 then
+                if player:_get_emc() >= 64 then
                     local changed
                     if heal(player, 2)  then
                         changed = true
@@ -114,7 +114,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
                         changed = true
                     end
                     if changed then
-                        exchangeclone.add_player_emc(player, -64)
+                        player:_add_emc(-64)
                     end
                 end
             end,
@@ -145,7 +145,7 @@ if exchangeclone.mcl then
 
     local function get_mind_description(itemstack)
         local meta = itemstack:get_meta()
-        local emc = exchangeclone.get_item_emc(itemstack) or 0
+        local emc = itemstack:_get_emc() or 0
         local stored = meta:get_int("exchangeclone_stored_xp") or 0
         return "Mind Stone\nEMC: "..exchangeclone.format_number(emc).."\nStored XP: "..exchangeclone.format_number(stored)
     end

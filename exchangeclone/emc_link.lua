@@ -36,7 +36,7 @@ local function link_action(pos)
     local stored_emc
     local target = inv:get_stack("target", 1):get_name()
     local output_stack = inv:get_stack("dst", 1)
-    local in_indiv_emc = exchangeclone.get_item_emc(input_stack:peek_item()) or 0
+    local in_indiv_emc = input_stack:peek_item():_get_emc() or 0
     local target_emc = exchangeclone.get_item_emc(target)
     local stack_max = ItemStack(target):get_stack_max()
 
@@ -44,12 +44,13 @@ local function link_action(pos)
     if minetest.get_item_group(star_stack:get_name(), "klein_star") > 0 then
         using_star = true
         limit = exchangeclone.get_star_max(star_stack)
-        stored_emc = exchangeclone.get_star_itemstack_emc(star_stack)
+        stored_emc = star_stack:get_star_emc()
     else
         using_star = false
         limit = exchangeclone.limit
         player = minetest.get_player_by_name(meta:get_string("exchangeclone_placer"))
-        stored_emc = exchangeclone.get_player_emc(player)
+        if not player then return true end
+        stored_emc = player:_get_emc()
     end
     -- Construct
     if target ~= "" and (output_stack:is_empty() or exchangeclone.handle_alias(output_stack) == target) then
@@ -60,7 +61,7 @@ local function link_action(pos)
                 minetest.log(dump({out_count = out_count, target_emc = target_emc}))
                 exchangeclone.add_star_emc(inv, "fuel", 1, -out_count*target_emc)
             else
-                exchangeclone.add_player_emc(player, -out_count*target_emc)
+                player:_add_emc(-out_count*target_emc)
             end
         end
     end
@@ -73,7 +74,7 @@ local function link_action(pos)
             if using_star then
                 exchangeclone.add_star_emc(inv, "fuel", 1, max_count*in_indiv_emc)
             else
-                exchangeclone.add_player_emc(player, max_count*in_indiv_emc)
+                player:_add_emc(max_count*in_indiv_emc)
             end
         end
     end
@@ -95,13 +96,13 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
             return stack:get_count()
         end
     elseif listname == "src" then
-        local emc = exchangeclone.get_item_emc(stack)
+        local emc = stack:_get_emc()
         if emc and emc > 0 then
             return stack:get_count()
         end
     elseif listname == "target" then
         local single_item = stack:peek_item()
-        local emc = exchangeclone.get_item_emc(single_item)
+        local emc = single_item:_get_emc()
         if emc and emc > 0 then
             minetest.get_meta(pos):get_inventory():set_stack("target", 1, ItemStack(exchangeclone.handle_alias(single_item)))
             link_action(pos)

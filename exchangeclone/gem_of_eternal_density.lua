@@ -11,7 +11,7 @@ local function get_gem_description(itemstack)
     local current_target = math.max(meta:get_int("density_target"), 1)
     local target_message = "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description()
     local emc = exchangeclone.get_item_emc(itemstack:get_name())
-    local stored = exchangeclone.get_item_emc(itemstack) - emc
+    local stored = itemstack:_get_emc() - emc
     return "Gem of Eternal Density\n"..target_message.."\nEMC: "..exchangeclone.format_number(emc).."\nStored EMC: "..exchangeclone.format_number(stored)
 end
 
@@ -24,7 +24,7 @@ local function condense(player, itemstack)
     local min = player:hud_get_hotbar_itemcount() + 1
     if player:get_wield_index() >= min then return end
 
-    local total_emc = exchangeclone.get_item_emc(itemstack) - exchangeclone.get_item_emc(itemstack:get_name())
+    local total_emc = itemstack:_get_emc() - exchangeclone.get_item_emc(itemstack:get_name())
     local target = exchangeclone.density_targets[math.max(meta:get_int("density_target"),  1)]
     local filter
     local current_mode = player:get_meta():get_string("exchangeclone_goed_filter_type")
@@ -45,7 +45,7 @@ local function condense(player, itemstack)
     for i = min, #list do
         local stack = list[i]
         if filter(stack) and stack:get_name() ~= target then
-            local emc = exchangeclone.get_item_emc(stack) or 0
+            local emc = stack:_get_emc() or 0
             local individual_emc = exchangeclone.get_item_emc(stack:get_name()) or 0
             if individual_emc > 0 and individual_emc <= exchangeclone.get_item_emc(target) then
                 total_emc = total_emc + emc
@@ -85,7 +85,7 @@ local function condense(player, itemstack)
     if meta:get_string("exchangeclone_active") ~= "true" then
         exchangeclone.play_sound(player, "exchangeclone_enable")
     end
-    meta:set_int("exchangeclone_emc_value", exchangeclone.get_item_emc(itemstack:get_name()) + remainder_emc)
+    meta:set_string("exchangeclone_emc_value", exchangeclone.get_item_emc(itemstack:get_name()) + remainder_emc)
     meta:set_string("description", get_gem_description(itemstack))
     return itemstack
 end
@@ -138,7 +138,7 @@ minetest.register_on_joinplayer(function(joining_player)
         minetest.create_detached_inventory(inv_name, {
             allow_put = function(inv, listname, index, stack, player)
                 if player:get_player_name() ~= joining_player:get_player_name() then return 0 end
-                local emc = exchangeclone.get_item_emc(stack)
+                local emc = stack:_get_emc()
                 if emc <= 0 or not emc then return 0 end
                 local stack_copy = ItemStack(stack)
                 stack_copy:set_count(1)

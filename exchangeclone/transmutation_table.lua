@@ -16,7 +16,7 @@ local function get_amount_label(itemstring, player_emc)
 end
 
 local function get_transmutation_buttons(player, page, x, y)
-    local player_emc = exchangeclone.get_player_emc(player)
+    local player_emc = player:_get_emc()
     local pages = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation")) or {}
     if page < 1 then page = 1 end
     if not pages[1] then
@@ -52,7 +52,7 @@ end
 
 function exchangeclone.reload_transmutation_list(player, search)
     local meta = player:get_meta()
-    local player_emc = exchangeclone.get_player_emc(player)
+    local player_emc = player:_get_emc()
     local items_to_show = minetest.deserialize(meta:get_string("exchangeclone_transmutation_learned_items")) or {}
 	local lang = minetest.get_player_information(player:get_player_name()).lang_code
     local pages = {}
@@ -102,13 +102,13 @@ local function add_to_output(player, amount, show)
     if minetest.registered_items[item] then
         local emc_value = exchangeclone.get_item_emc(item)
         if not emc_value then return end
-        local player_emc = exchangeclone.get_player_emc(player)
+        local player_emc = player:_get_emc()
         local stack_max = ItemStack(item):get_stack_max()
         if amount == true then amount = stack_max end
         local max_amount = math.min(amount, stack_max, math.floor(player_emc/emc_value))
         local inventory = minetest.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..player:get_player_name()})
         local added_amount = max_amount - inventory:add_item("output", ItemStack(item.." "..max_amount)):get_count()
-        exchangeclone.add_player_emc(player, math.min(player_emc, -(emc_value * added_amount))) -- not sure if "math.min()" is necessary
+        player:_add_emc(math.min(player_emc, -(emc_value * added_amount))) -- not sure if "math.min()" is necessary
         if show then exchangeclone.show_transmutation_table_formspec(player) end
     end
 end
@@ -134,16 +134,16 @@ local function handle_inventory(player, inventory, to_list)
             player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
             inventory:set_stack(to_list, 1, nil)
         else
-            local individual_emc_value = exchangeclone.get_item_emc(single_item)
+            local individual_emc_value = single_item:_get_emc()
             if not individual_emc_value or individual_emc_value <= 0 then return end
-            local player_emc = exchangeclone.get_player_emc(player)
+            local player_emc = player:_get_emc()
             -- How many items can be added?
             local max_count = math.floor((exchangeclone.limit - player_emc)/individual_emc_value)
             -- How many items will be added?
             local add_count = math.min(max_count, stack:get_count())
             -- How much EMC is that?
             local emc_value = individual_emc_value * add_count
-            exchangeclone.add_player_emc(player, emc_value)
+            player:_add_emc(emc_value)
             local item_index = table.indexof(list, itemstring)
             if item_index == -1 then
                 list[#list+1] = itemstring
@@ -158,11 +158,11 @@ local function handle_inventory(player, inventory, to_list)
     elseif to_list == "forget" then
         return
     elseif to_list == "charge" then
-        local player_emc = exchangeclone.get_player_emc(player)
-        local star_emc = exchangeclone.get_star_itemstack_emc(stack)
+        local player_emc = player:_get_emc()
+        local star_emc = stack:_get_star_emc()
         local charge_amount = math.min(exchangeclone.get_star_max(stack) - star_emc, player_emc)
         if charge_amount > 0 then
-            exchangeclone.add_player_emc(player, -charge_amount)
+            player:_add_emc(-charge_amount)
             exchangeclone.add_star_emc(inventory, to_list, 1, charge_amount)
             exchangeclone.show_transmutation_table_formspec(player)
         end
@@ -223,7 +223,7 @@ end
 function exchangeclone.show_transmutation_table_formspec(player, data)
     exchangeclone.reload_transmutation_list(player, data and data.search)
     if not data then data = {} end
-    local player_emc = exchangeclone.get_player_emc(player)
+    local player_emc = player:_get_emc()
     local selection = data.selection or player:get_meta():get_string("exchangeclone_transmutation_selection")
     local player_name = player:get_player_name()
     local inventory_name = "detached:exchangeclone_transmutation_"..player_name
@@ -416,7 +416,7 @@ minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craf
     if itemstack == ItemStack("exchangeclone:tome_of_knowledge") then
         for _, i in pairs({4,6}) do
             local stack = old_craft_grid[i]
-            if exchangeclone.get_star_itemstack_emc(stack) < exchangeclone.get_star_max(stack) then
+            if stack:_get_star_emc() < stack:_get_star_max() then
                 return ItemStack("")
             end
         end

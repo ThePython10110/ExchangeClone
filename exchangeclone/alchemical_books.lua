@@ -193,12 +193,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         local distance = vector.distance(adjusted_player_pos, adjusted_pos)
         local emc_per_node = stack:get_definition().alchemical_book_data.emc_per_node
         local cost = distance*emc_per_node
-        local player_emc = exchangeclone.get_player_emc(player)
+        local player_emc = player:_get_emc()
         if player_emc < cost then
             minetest.chat_send_player(player:get_player_name(), "Not enough EMC to teleport.")
         else
             player:set_pos(pos)
-            exchangeclone.add_player_emc(-cost)
+            player:_add_emc(-cost)
         end
         show_formspec(player, index, fields.name, use_stack_data)
     elseif fields.location_list then
@@ -220,12 +220,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
             local distance = vector.distance(adjusted_player_pos, adjusted_pos)
             local emc_per_node = stack:get_definition().alchemical_book_data.emc_per_node
             local cost = distance*emc_per_node
-            local player_emc = exchangeclone.get_player_emc(player)
+            local player_emc = player:_get_emc()
             if player_emc < cost then
                 minetest.chat_send_player(player:get_player_name(), "Not enough EMC to teleport.")
             else
                 player:set_pos(pos)
-                exchangeclone.add_player_emc(-cost)
+                player:_add_emc(-cost)
             end
         end
         show_formspec(player, index, fields.name, use_stack_data)

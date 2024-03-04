@@ -29,7 +29,7 @@ for i, name in ipairs(names) do
         _mcl_generate_description = function(itemstack)
             return name.."\n"..S(
                 "Current Charge: @1/@2",
-                exchangeclone.format_number(exchangeclone.get_star_itemstack_emc(itemstack)),
+                exchangeclone.format_number(itemstack:_get_star_emc()),
                 exchangeclone.format_number(capacity)
             )
         end

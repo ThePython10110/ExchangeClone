@@ -1,4 +1,4 @@
- Keep unnecessary temporary data (such as the list of recipes) after load time for debugging purposes.
+# Keep unnecessary temporary data (such as the list of recipes) after load time for debugging purposes.
 exchangeclone.keep_data (Keep temporary data after loading) bool false
 
 # Allow the crafting recipe for the Tome of Knowledge
