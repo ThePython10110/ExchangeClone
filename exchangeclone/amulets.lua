@@ -19,22 +19,26 @@ local function place_liquid(itemstack, player, pointed_thing)
         return click_test
     end
 
-    if not pointed_thing then return end
     local liquid = itemstack:get_name() == "exchangeclone:volcanite_amulet" and "lava" or "water"
     local cost = liquid == "lava" and 64 or 0
+    local sound = liquid == "lava" and "exchangeclone_transmute" or "exchangeclone_water"
 
-    if pointed_thing.type == "node" then
+    exchangeclone.play_sound(player, sound)
+    if pointed_thing and pointed_thing.type == "node" then
         local bucket = ItemStack(exchangeclone.itemstrings[liquid.."_bucket"])
         bucket:get_definition().on_place(bucket, player, pointed_thing)
     else
         if (not exchangeclone.mcl) or minetest.settings:get_bool("mcl_buckets_use_select_box", false) then
             local velocity = player:get_look_dir()*20
-            minetest.add_entity(player:get_pos(), "exchangeclone:projectile", minetest.serialize({
-                velocity = vector.to_string(velocity),
-                player = player:get_player_name(),
-                itemstring = itemstack:get_name(),
-                texture = liquid == "lava" and "exchangeclone_lava_projectile.png" or "exchangeclone_water_projectile.png"
-            }))
+            minetest.add_entity(
+                vector.offset(player:get_pos(), 0, player:get_properties().eye_height, 0),
+                "exchangeclone:projectile", minetest.serialize({
+                    velocity = vector.to_string(velocity),
+                    player = player:get_player_name(),
+                    itemstring = itemstack:get_name(),
+                    texture = liquid == "lava" and "exchangeclone_lava_projectile.png" or "exchangeclone_water_projectile.png"
+                })
+            )
         end
         player:_add_emc(-cost)
     end
@@ -44,7 +48,7 @@ minetest.register_entity("exchangeclone:projectile", {
     initial_properties = {
         hp_max = 1,
         physical = true,
-        collide_with_objects = false,
+        collide_with_objects = true,
         pointable = false,
         visual = "sprite",
         textures = {"blank.png"},
@@ -57,12 +61,16 @@ minetest.register_entity("exchangeclone:projectile", {
         self._player = table_data.player
         self.object:set_velocity(velocity)
         self.object:set_properties({textures = {table_data.texture}})
+        if not self._player then self.object:remove() end
     end,
     on_step = function(self, dtime, moveresult)
         for _, collision in ipairs(moveresult.collisions) do
             if collision.type == "node" then
                 local player = minetest.get_player_by_name(self._player)
-                if not player then return end
+                if not player then
+                    self.object:remove()
+                    return
+                end
                 local above = vector.new(collision.node_pos)
                 if collision.old_velocity[collision.axis] < 0 then
                     above[collision.axis] = above[collision.axis] + 1
@@ -70,9 +78,19 @@ minetest.register_entity("exchangeclone:projectile", {
                     above[collision.axis] = above[collision.axis] - 1
                 end
                 place_liquid(ItemStack(self._itemstring), player, {type = "node", under = collision.node_pos, above = above})
-                self.object:remove()
-                break
+            elseif collision.type == "object" then
+                local obj = collision.object
+                if exchangeclone.mcl then
+					mcl_util.deal_damage(obj, 5, {type = "on_fire"})
+                    mcl_burning.set_on_fire(obj, 4)
+                else
+                    obj:set_hp(obj:get_hp() - 5)
+                    if minetest.get_modpath("fire_plus") and obj:is_player() then
+                        fire_plus.burn_player(obj, 4, 1)
+                    end
+                end
             end
+            self.object:remove()
         end
     end
 })
@@ -141,7 +159,6 @@ minetest.register_tool("exchangeclone:volcanite_amulet", {
 -- Drowning damage looks the same in MCL and MTGs
 minetest.register_on_player_hpchange(function(player, hp_change, reason)
     if hp_change < 0 then
-        minetest.log(dump({hp_change, reason}))
         if reason.type == "drown" then
             local inv = player:get_inventory()
             local hotbar_max = player:hud_get_hotbar_itemcount() + 1
@@ -151,7 +168,7 @@ minetest.register_on_player_hpchange(function(player, hp_change, reason)
                     return 0
                 end
             end
-        elseif reason.type == "node_damage" and reason.node then
+        elseif exchangeclone.mtg and reason.type == "node_damage" and reason.node then
             if fire_nodes[reason.node] then
                 local inv = player:get_inventory()
                 local hotbar_max = player:hud_get_hotbar_itemcount() + 1
@@ -184,3 +201,21 @@ if exchangeclone.mcl then
         return damage
     end)
 end
+
+minetest.register_craft({
+    output = "exchangeclone:evertide_amulet",
+    recipe = {
+        {exchangeclone.itemstrings.water_bucket, exchangeclone.itemstrings.water_bucket, exchangeclone.itemstrings.water_bucket},
+        {"exchangeclone:dark_matter", "exchangeclone:dark_matter", "exchangeclone:dark_matter"},
+        {exchangeclone.itemstrings.water_bucket, exchangeclone.itemstrings.water_bucket, exchangeclone.itemstrings.water_bucket},
+    }
+})
+
+minetest.register_craft({
+    output = "exchangeclone:volcanite",
+    recipe = {
+        {exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket},
+        {"exchangeclone:dark_matter", "exchangeclone:dark_matter", "exchangeclone:dark_matter"},
+        {exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket},
+    }
+})
