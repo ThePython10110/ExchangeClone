@@ -111,6 +111,7 @@ end
 local files = {
 	"fuels",
 	"matter",
+	"amulets",
 	"deprecated_stuff",
 	"energy_collectors",
 	"klein_stars",

@@ -273,6 +273,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 local function alchemical_book_function(itemstack, player, pointed_thing)
+    local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
+    if click_test ~= false then
+        return click_test
+    end
+
     local use_stack_data = itemstack:get_meta():get_int("exchangeclone_use_stack_data")
     if use_stack_data == 0 then
         use_stack_data = nil
@@ -294,7 +299,7 @@ end
 minetest.register_tool("exchangeclone:basic_alchemical_book", {
     description = "Basic Alchemical Book\n1000 EMC/node\nCannot travel between dimensions",
     inventory_image = "exchangeclone_basic_alchemical_book.png",
-    groups = {exchangeclone_alchemical_book = 1},
+    groups = {exchangeclone_alchemical_book = 1, disable_repair = 1},
     alchemical_book_data = {emc_per_node = 1000, dimension_lock = true},
     on_secondary_use = alchemical_book_function,
     on_place = alchemical_book_function
@@ -303,7 +308,7 @@ minetest.register_tool("exchangeclone:basic_alchemical_book", {
 minetest.register_tool("exchangeclone:advanced_alchemical_book", {
     description = "Advanced Alchemical Book\n500 EMC/node",
     inventory_image = "exchangeclone_advanced_alchemical_book.png",
-    groups = {exchangeclone_alchemical_book = 1},
+    groups = {exchangeclone_alchemical_book = 1, disable_repair = 1},
     alchemical_book_data = {emc_per_node = 500},
     on_secondary_use = alchemical_book_function,
     on_place = alchemical_book_function
@@ -312,7 +317,7 @@ minetest.register_tool("exchangeclone:advanced_alchemical_book", {
 minetest.register_tool("exchangeclone:master_alchemical_book", {
     description = "Master Alchemical Book\n100 EMC/node.",
     inventory_image = "exchangeclone_master_alchemical_book.png",
-    groups = {exchangeclone_alchemical_book = 1},
+    groups = {exchangeclone_alchemical_book = 1, disable_repair = 1},
     alchemical_book_data = {emc_per_node = 100},
     on_secondary_use = alchemical_book_function,
     on_place = alchemical_book_function
@@ -321,7 +326,7 @@ minetest.register_tool("exchangeclone:master_alchemical_book", {
 minetest.register_tool("exchangeclone:arcane_alchemical_book", {
     description = "Arcane Alchemical Book\n0 EMC/node",
     inventory_image = "exchangeclone_arcane_alchemical_book.png",
-    groups = {exchangeclone_alchemical_book = 1},
+    groups = {exchangeclone_alchemical_book = 1, disable_repair = 1},
     alchemical_book_data = {emc_per_node = 0},
     on_secondary_use = alchemical_book_function,
     on_place = alchemical_book_function

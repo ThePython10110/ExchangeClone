@@ -59,7 +59,7 @@ Dependencies: Minetest Game or MineClone.
     * Also includes some features from ProjectExpansion, an expansion to ProjectE (MIT).
 * Code: GPLv3+
     * Originally started as a fork of Enchant97's mod [Element Exchange](https://github.com/enchant97/minetest_element_exchange) (GPLv3+).
-    * Some code copied/modified from MineClone2 and Minetest Game (both GPLv3+)
+    * Some code copied/modified from other places, of course, but not large amounts and not closed-source projects. Sometimes I remember to give credit, sometimes I don't.
 * Textures:
     * Upgrader and Upgrades: Created by me (CC-BY-SA-3.0)
     * Energy Collectors:
@@ -84,8 +84,8 @@ You can find the old textures and sounds by going back to previous commits in Gi
 - [x] Add more matter/fuel types
 - [x] Make collectors less expensive and less effective (gold instead of glowstone)
 - [x] Make collectors use ProjectExpansion's textures
-- [ ] Add Evertide Amulet
-- [ ] Add Volcanite Amulet
+- [x] Add Evertide Amulet
+- [x] Add Volcanite Amulet
 - [ ] Add Zero Ring
 - [ ] Add Ring of Ignition
 - [ ] Add Black Hole Band (without bag functionality)
@@ -94,8 +94,8 @@ You can find the old textures and sounds by going back to previous commits in Gi
 - [ ] Add Pedestal abilities
     - [x] Passive Stones
     - [x] Talisman
-    - [ ] Evertide (MCL)
-    - [ ] Volcanite (MCL)
+    - [x] Evertide
+    - [x] Volcanite
     - [ ] Zero
     - [ ] Ignition
     - [ ] Black Hole/Void
@@ -118,6 +118,10 @@ You can find the old textures and sounds by going back to previous commits in Gi
     * Added Magenta through White Fuel/Matter (would have added fading matter, but it's over 1 trillion EMC)
     * Added `_get_emc`, `_set_emc`, and `_add_emc` to player metatables. This means you can use `player:_get_emc()` instead of `exchangeclone.get_player_emc(player)`. **WARNING: Do not use these functions in `on_joinplayer` functions.**
     * Added the same functions for itemstack metatables, as well as `_<get/set/add>_star_emc` and `_get_star_max`. `_set_emc` and `_add_emc` work by changing the metadata EMC value.
+    * Added Evertide/Volcanite Amulets
+        * Projectiles do not work in Mineclonia.
+        * The "Buckets use select box" (`mcl_buckets_use_select_box`) setting must be enabled to use projectiles in MineClone2.
+        * Pedestal abilities use the "Weather" mod (the one by theFox) in Minetest Game
 * Changes:
     * The Constructor and Deconstructor are now deprecated, replaced with the EMC Link.
     * Upgrades and Stars can no longer be used as fuel.

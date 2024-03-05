@@ -385,6 +385,11 @@ exchangeclone.itemstrings = {
     torch =             exchangeclone.mcl and "mcl_torches:torch"           or "default:torch",
     book =              exchangeclone.mcl and "mcl_books:book"              or "default:book",
     glass =             exchangeclone.mcl and "mcl_core:glass"              or "default:glass",
+    water =             exchangeclone.mcl and "mcl_core:water_source"       or "default:water_source",
+    lava =              exchangeclone.mcl and "mcl_core:lava_source"        or "default:lava_source",
+    water_bucket =      exchangeclone.mcl and "mcl_buckets:bucket_water"    or "bucket:bucket_water",
+    lava_bucket =       exchangeclone.mcl and "mcl_buckets:bucket_lava"     or "bucket:bucket_lava",
+    empty_bucket =      exchangeclone.mcl and "mcl_buckets:bucket_empty"    or "bucket:bucket_empty",
 }
 
 exchangeclone.emc_aliases = {}
