@@ -212,7 +212,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-    output = "exchangeclone:volcanite",
+    output = "exchangeclone:volcanite_amulet",
     recipe = {
         {exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket},
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter", "exchangeclone:dark_matter"},

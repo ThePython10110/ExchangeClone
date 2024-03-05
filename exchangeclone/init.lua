@@ -112,6 +112,7 @@ local files = {
 	"fuels",
 	"matter",
 	"amulets",
+	"black_hole_band",
 	"deprecated_stuff",
 	"energy_collectors",
 	"klein_stars",
