@@ -1,3 +1,4 @@
+# Changelog
 ## To-do for v8.0:
 - [x] Deprecate (De)Constructors
 - [x] Remove fuel crafting recipes for stars and upgrades
@@ -24,10 +25,14 @@
     - [ ] Ignition
 - [ ] Update wiki
 
-## Changelog
-<details><summary>Look at this fancy expanding changelog</summary>
+### v8.0: The Expansion Update
+#### Overview:
+* It's called "The Expansion Update" because I didn't know what else to call it and it adds several features from ProjectExpansion.
+* Replaces (De)Constructor with EMC Link
+* Adds more types of matter/fuel
+* Added lots of useful items from ProjectE(xpansion)
 
-### v8.0
+#### Full changelog
 * New Features:
     * Added the EMC Link to replace both the Constructor and Deconstructor.
     * Added the Dark Matter Pedestal.
@@ -42,6 +47,8 @@
         * Pedestal abilities use the "Weather" mod (the one by theFox) in Minetest Game
     * Added Black Hole Band
     * Added Void Ring
+    * Added support for Animalia
+    * Added support for Mobs Monster
 * Changes:
     * Moved the changelog back to a separate file (it was getting annoyingly long)
     * The Constructor and Deconstructor are now deprecated, replaced with the EMC Link.
@@ -49,11 +56,14 @@
     * Dark and Red Matter Armor now uses ProjectE's textures
     * Removed the ability to right click with stars to see the charge (it's unnecessary).
     * Organized textures into folders
-    * Collectors now match ProjectExpansion's recipes and amounts (except MTG doesn't have glowstone so it's replaced with gold in the recipe)
+    * Collectors now match ProjectExpansion's recipes, EMC generation rates, and textures
+        * MTG doesn't have glowstone, so it's replaced with gold in the recipe, adding around 3000 EMC to the cost of each collector.
 * Bugfixes:
     * Dark and Red Matter Armor display properly (and identically) in both games, with ProjectE's textures.
     * `add_star_emc` now correctly works with negative EMC values.
 
+
+<details><summary><h2>Older versions</h3></summary>
 
 ### v7.3 (not released yet because there's not enough)
 * Renamed Alchemical Tome to Tome of Knowledge, and made it uncraftable by default.

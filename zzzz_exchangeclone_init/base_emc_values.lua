@@ -375,11 +375,13 @@ end
 if minetest.get_modpath("mobs") then
     for item, emc in pairs({
         ["mobs:beehive"] = 2048,
-        ["mobs:bucket_milk"] = 800,
+        ["mobs:bucket_milk"] = 784,
         ["mobs:chicken_feather"] = 48,
         ["mobs:egg"] = 32,
         ["mobs:hairball"] = 16,
         ["mobs:honey"] = 48,
+        ["mobs:leather"] = 64,
+        ["mobs:lava_orb"] = 16834,
         ["mobs:rabbit_hide"] = 16,
         ["mobs:rat_cooked"] = 64,
     }) do
@@ -387,6 +389,24 @@ if minetest.get_modpath("mobs") then
     end
     table.insert_all(exchangeclone.group_values, {
         {"food_meat_raw", 64},
+    })
+end
+
+if minetest.get_modpath("animalia") then
+    for item, emc in pairs({
+        ["animalia:bucket_guano"] = 832,
+        ["animalia:bucket_milk"] = 784,
+        ["animalia:feather"] = 48,
+        ["animalia:leather"] = 64,
+        ["animalia:nametag"] = 192,
+        ["animalia:pelt_bear"] = 192,
+        ["animalia:saddle"] = 192,
+    }) do
+        exchangeclone.base_emc_values[item] = emc
+    end
+    table.insert_all(exchangeclone.group_values, {
+        {"food_meat", 64},
+        {"food_egg", 32},
     })
 end
 

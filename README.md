@@ -13,6 +13,7 @@ ExchangeClone upports all items in the following mods/games (and anything that c
 * Ethereal
 * Nether
 * Mobs Redo API and Mobs Animals
+* Animalia
 
 ExchangeClone is tested with the latest release of Minetest, Minetest Game, MineClone2, and Mineclonia.
 
@@ -75,6 +76,3 @@ Dependencies: Minetest Game or MineClone.
     * All other sounds: Directly from EE2/ProjectE (MIT)
 
 You can find the old textures and sounds by going back to previous commits in GitHub.
-
------
-
