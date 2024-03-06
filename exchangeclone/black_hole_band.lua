@@ -5,9 +5,6 @@ local function pickup_items(player)
     for j = 1, #objs do
         local obj = objs[j]
         if obj:get_luaentity() and obj:get_luaentity().name == "__builtin:item" then
-            local objpos = obj:get_pos()
-            local objdir = vector.direction(pos, objpos)
-            local objdist = vector.distance(pos, objpos)
             local itemstack = obj:get_luaentity().itemstring
             if player:get_inventory():room_for_item("main", itemstack) then
                 player:get_inventory():add_item("main", itemstack)
@@ -56,20 +53,6 @@ local function void_ring_teleport(player)
     player:set_pos(new_pos)
     exchangeclone.start_cooldown(player, "void_ring", 0.5)
 end
-
-minetest.register_tool("exchangeclone:black_hole_band", {
-    description = "Black Hole Band",
-    inventory_image = "exchangeclone_black_hole_band.png",
-    on_secondary_use = exchangeclone.toggle_active,
-    on_place = exchangeclone.toggle_active,
-    groups = {exchangeclone_passive = 1, disable_repair = 1, immune_to_fire = 1},
-    _exchangeclone_passive = {
-        func = pickup_items,
-        hotbar = true,
-        active_image = "exchangeclone_black_hole_band_active.png",
-        exclude = {"exchangeclone:void_ring"}
-    },
-})
 
 -- A lot of duplication here, unfortunately
 local function get_void_ring_description(itemstack)
@@ -173,6 +156,47 @@ local void_ring_leftclick = function(itemstack, player, pointed_thing)
     return itemstack
 end
 
+local function black_hole_pedestal(pos)
+    local nearby_chests = {}
+    for _, neighbor_pos in ipairs(exchangeclone.neighbors) do
+        local new_pos = vector.add(pos, neighbor_pos)
+        if minetest.get_node(new_pos).name == "exchangeclone:alchemical_chest" then
+            table.insert(nearby_chests, new_pos)
+        end
+    end
+    if not nearby_chests[1] then return end
+    local objs = minetest.get_objects_inside_radius(pos, 5)
+    for j = 1, #objs do
+        local obj = objs[j]
+        if obj:get_luaentity() and obj:get_luaentity().name == "__builtin:item" then
+            local itemstack = obj:get_luaentity().itemstring
+            for _, chest in ipairs(nearby_chests) do
+                local inv = minetest.get_meta(chest):get_inventory()
+                if inv:room_for_item("main", itemstack) then
+                    inv:add_item("main", itemstack)
+                    obj:remove()
+                    break
+                end
+            end
+        end
+    end
+end
+
+minetest.register_tool("exchangeclone:black_hole_band", {
+    description = "Black Hole Band",
+    inventory_image = "exchangeclone_black_hole_band.png",
+    on_secondary_use = exchangeclone.toggle_active,
+    on_place = exchangeclone.toggle_active,
+    groups = {exchangeclone_passive = 1, disable_repair = 1, immune_to_fire = 1},
+    _exchangeclone_passive = {
+        func = pickup_items,
+        hotbar = true,
+        active_image = "exchangeclone_black_hole_band_active.png",
+        exclude = {"exchangeclone:void_ring"}
+    },
+    _exchangeclone_pedestal = black_hole_pedestal,
+})
+
 minetest.register_tool("exchangeclone:void_ring", {
     description = "Void Ring",
     inventory_image = "exchangeclone_void_ring.png",
@@ -195,32 +219,7 @@ minetest.register_tool("exchangeclone:void_ring", {
         active_image = "exchangeclone_void_ring_active.png",
         exclude = {"exchangeclone:black_hole_band", "exchangeclone:gem_of_eternal_density"}
     },
-})
-
-minetest.register_craftitem("exchangeclone:iron_band", {
-    description = "Iron Band", -- I could easily make it "Steel Band" in MTG but I don't care.
-    groups = {craftitem = 1},
-    inventory_image = "exchangeclone_iron_band.png"
-})
-
-minetest.register_craft({
-    output = "exchangeclone:iron_band",
-    recipe = {
-        {exchangeclone.itemstrings.iron, exchangeclone.itemstrings.iron, exchangeclone.itemstrings.iron},
-        {exchangeclone.itemstrings.iron, exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.iron},
-        {exchangeclone.itemstrings.iron, exchangeclone.itemstrings.iron, exchangeclone.itemstrings.iron},
-    },
-    replacements = {{exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.empty_bucket}}
-})
-
-minetest.register_craft({
-    output = "exchangeclone:iron_band",
-    recipe = {
-        {exchangeclone.itemstrings.iron, exchangeclone.itemstrings.iron, exchangeclone.itemstrings.iron},
-        {exchangeclone.itemstrings.iron, "exchangeclone:volcanite_amulet", exchangeclone.itemstrings.iron},
-        {exchangeclone.itemstrings.iron, exchangeclone.itemstrings.iron, exchangeclone.itemstrings.iron},
-    },
-    replacements = {{"exchangeclone:volcanite_amulet", "exchangeclone:volcanite_amulet"}}
+    _exchangeclone_pedestal = black_hole_pedestal,
 })
 
 local ingredient = exchangeclone.mcl and "mcl_mobitems:string" or "farming:cotton"

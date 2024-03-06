@@ -9,19 +9,19 @@
 - [x] Make collectors use ProjectExpansion's textures
 - [x] Add Evertide Amulet
 - [x] Add Volcanite Amulet
-- [ ] Add Zero Ring
-- [ ] Add Ring of Ignition
 - [x] Add Black Hole Band (without bag functionality)
 - [x] Add Void Ring
 - [x] Add DM Pedestal
+- [ ] Add Zero Ring
+- [ ] Add Ring of Ignition
 - [ ] Add Pedestal abilities
     - [x] Passive Stones
     - [x] Talisman
     - [x] Evertide
     - [x] Volcanite
+    - [x] Black Hole/Void
     - [ ] Zero
     - [ ] Ignition
-    - [ ] Black Hole/Void
 - [ ] Update wiki
 
 ## Changelog

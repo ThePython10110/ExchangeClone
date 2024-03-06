@@ -112,8 +112,8 @@ for color, color_data in pairs(exchangeclone.colors) do
         end
         if pointed_thing.type == "node"
         and minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "advanced_alchemical_chest") > 0 then
-            if minetest.is_protected(player) then
-                minetest.record_protection_violation(player)
+            if minetest.is_protected(pointed_thing.under, player:get_player_name()) then
+                minetest.record_protection_violation(pointed_thing.under, player:get_player_name())
             else
                 minetest.set_node(pointed_thing.under, {name=advanced_itemstring})
                 local on_construct = alchemical_on_construct(color_data.name)

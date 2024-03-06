@@ -109,10 +109,10 @@ if exchangeclone.mcl2 then
 end
 
 local files = {
+	"craftitems",
 	"fuels",
 	"matter",
 	"amulets",
-	"black_hole_band",
 	"deprecated_stuff",
 	"energy_collectors",
 	"klein_stars",
@@ -136,6 +136,7 @@ local files = {
 	"emc_link",
 	"alchemical_books",
 	"dark_matter_pedestal",
+	"black_hole_band",
 }
 
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then

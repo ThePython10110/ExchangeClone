@@ -142,6 +142,9 @@ minetest.register_node("exchangeclone:dark_matter_pedestal", {
         }
     },
     on_punch = function(pos, node, player, pointed_thing)
+        if minetest.is_protected(pos, player:get_player_name()) then
+            minetest.record_protection_violation(pos, player:get_player_name())
+        end
         local wielded_item = player:get_wielded_item()
         local meta = minetest.get_meta(pos)
         local inv = meta:get_inventory()
@@ -156,6 +159,9 @@ minetest.register_node("exchangeclone:dark_matter_pedestal", {
         end
     end,
     on_rightclick = function(pos, node, player, pointed_thing)
+        if minetest.is_protected(pos, player:get_player_name()) then
+            minetest.record_protection_violation(pos, player:get_player_name())
+        end
         local wielded_item = player:get_wielded_item()
         local meta = minetest.get_meta(pos)
         local inv = meta:get_inventory()
