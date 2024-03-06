@@ -58,7 +58,6 @@ local function link_action(pos)
         if out_count > 0 then
             inv:add_item("dst", ItemStack(target.." "..out_count))
             if using_star then
-                minetest.log(dump({out_count = out_count, target_emc = target_emc}))
                 exchangeclone.add_star_emc(inv, "fuel", 1, -out_count*target_emc)
             else
                 player:_add_emc(-out_count*target_emc)

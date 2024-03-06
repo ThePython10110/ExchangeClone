@@ -121,7 +121,6 @@ if exchangeclone.mcl and minetest.settings:get_bool("mcl_doWeatherCycle", true) 
     volcanite_pedestal = function()
         change_count = change_count + 1
         if change_count >= 10 then
-            minetest.log("clearing?")
             mcl_weather.change_weather("none")
             change_count = 0
         end

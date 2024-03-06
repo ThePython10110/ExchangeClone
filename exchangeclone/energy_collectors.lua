@@ -169,7 +169,6 @@ function exchangeclone.register_energy_collector(itemstring, name, amount, textu
         allow_metadata_inventory_move = allow_metadata_inventory_move,
         allow_metadata_inventory_take = allow_metadata_inventory_take,
     })
-    minetest.log(dump(recipe))
     minetest.register_craft({
         output = itemstring,
         type = recipe[2] or "shaped",

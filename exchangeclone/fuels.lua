@@ -38,8 +38,6 @@ for i, fuel in ipairs(exchangeclone.fuels) do
         _mcl_hardness = 7,
     })
 
-    minetest.log(string.format("%s: %s", fuel, fuel_time))
-
     minetest.register_craft({
         type = "fuel",
         recipe = "exchangeclone:"..codified,

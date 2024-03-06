@@ -15,7 +15,7 @@ local function get_gem_description(itemstack)
     return "Gem of Eternal Density\n"..target_message.."\nEMC: "..exchangeclone.format_number(emc).."\nStored EMC: "..exchangeclone.format_number(stored)
 end
 
-local function condense(player, itemstack)
+function exchangeclone.goed_condense(player, itemstack)
     local meta = itemstack:get_meta()
     local inv = player:get_inventory()
     local filter_inv = minetest.get_inventory({type = "detached", name = player:get_player_name().."_exchangeclone_goed"})
@@ -111,11 +111,11 @@ local function gem_action(itemstack, player, pointed_thing)
     elseif player:get_player_control().sneak then
         return exchangeclone.toggle_active(itemstack, player, pointed_thing)
     else
-        return condense(player, itemstack)
+        return exchangeclone.goed_condense(player, itemstack)
     end
 end
 
-local function filter_formspec(player)
+function exchangeclone.goed_filter_formspec(player)
     local meta = player:get_meta()
     local current_mode = meta:get_string("exchangeclone_goed_filter_type") or "Blacklist"
     if current_mode == "" then current_mode = "Blacklist" end
@@ -170,7 +170,8 @@ end)
 minetest.register_on_player_receive_fields(function(player, formname, fields)
     local meta = player:get_meta()
     if formname == "exchangeclone_goed_filter" then
-        if player:get_wielded_item():get_name() ~= "exchangeclone:gem_of_eternal_density" then return end
+        if player:get_wielded_item():get_name() ~= "exchangeclone:gem_of_eternal_density"
+        and player:get_wielded_item():get_name() ~= "exchangeclone:void_ring" then return end
         for field, value in pairs(fields) do
             if field == "filter_type" then
                 local current_mode = meta:get_string("exchangeclone_goed_filter_type") or "Blacklist"
@@ -179,7 +180,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 elseif current_mode == "Whitelist" then current_mode = "All Learned Items"
                 else current_mode = "Blacklist" end
                 meta:set_string("exchangeclone_goed_filter_type", current_mode)
-                filter_formspec(player)
+                exchangeclone.goed_filter_formspec(player)
             end
         end
     end
@@ -191,12 +192,12 @@ minetest.register_tool("exchangeclone:gem_of_eternal_density", {
     on_secondary_use = gem_action,
     on_place = gem_action,
     on_use = function(itemstack, player, pointed_thing)
-        filter_formspec(player)
+        exchangeclone.goed_filter_formspec(player)
     end,
     _exchangeclone_passive = {
         hotbar = true,
         active_image = "exchangeclone_gem_of_eternal_density_active.png",
-        func = condense
+        func = exchangeclone.goed_condense
     },
     groups = {disable_repair = 1, exchangeclone_passive = 1},
     _mcl_generate_description = get_gem_description
