@@ -108,6 +108,7 @@ if exchangeclone.mcl2 then
 	mcl_item_id.set_mod_namespace("exchangeclone")
 end
 
+-- The order is usually unimportant
 local files = {
 	"craftitems",
 	"fuels",
@@ -137,6 +138,7 @@ local files = {
 	"alchemical_books",
 	"dark_matter_pedestal",
 	"black_hole_band",
+	"rings",
 }
 
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then

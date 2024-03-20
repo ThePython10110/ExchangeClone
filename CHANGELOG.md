@@ -432,13 +432,14 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 * Alchemical Books\*\*
 * Catalytic Lens
 * Mercurial Eye
-* Evertide Amulet (but without being able to stand on water)\*
-* Volcanite Amulet (but without being able to stand on lava)\*
+* Evertide Amulet (but without being able to stand on water)\*\*
+* Volcanite Amulet (but without being able to stand on lava)\*\*
 * Pedestals\*\* (haven't added all the abilities yet)
-* Black Hole Band and Void Ring\*
+* Black Hole Band and Void Ring\*\*
 * Nova Catalyst/Cataclysm?
 * Knowledge Sharing Book
 * EMC Link\*\*
+* Support for EMC values greater than 1 trillion with the [BigNum](https://github.com/thepython10110/bignum) library
 
 \* Planned for v8.0
 
@@ -448,5 +449,4 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
 * Divining Rods (I would have to manually add energy values for ores, and I'm not going to do that)
 * Energy Condensers (what's the point?)
 * Watch of Flowing Time (impossible/laggy)
-* Interdiction Torches (extremely laggy)
-* Any item from ProjectE(xpansion) with an EMC value of over 1 trillion
+* Interdiction Torches (laggy)

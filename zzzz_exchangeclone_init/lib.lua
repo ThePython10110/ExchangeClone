@@ -390,6 +390,9 @@ exchangeclone.itemstrings = {
     water_bucket =      exchangeclone.mcl and "mcl_buckets:bucket_water"    or "bucket:bucket_water",
     lava_bucket =       exchangeclone.mcl and "mcl_buckets:bucket_lava"     or "bucket:bucket_lava",
     empty_bucket =      exchangeclone.mcl and "mcl_buckets:bucket_empty"    or "bucket:bucket_empty",
+    snow =              exchangeclone.mcl and "mcl_core:snow"               or "default:snow",
+    fire =              exchangeclone.mcl and "mcl_fire:fire"               or "fire:fire",
+    ice =               exchangeclone.mcl and "mcl_core:ice"                or "default:ice"
 }
 
 exchangeclone.emc_aliases = {}

@@ -283,6 +283,55 @@ if exchangeclone.mtg then
 end
 
 
+if minetest.global_exists("logistica") then
+    exchangeclone.register_craft_type("lava_furnace", "shapeless") -- weird that it's not cooking but I can't see any way around that
+    exchangeclone.register_craft({
+        output = "logistica:silverin",
+        type = "lava_furnace",
+        recipe = {
+            exchangeclone.mcl and "mcl_core:sand" or "default:silver_sand",
+            exchangeclone.itemstrings.ice
+        }
+    })
+    exchangeclone.register_craft({
+        output = "logistica:silverin_circuit",
+        type = "lava_furnace",
+        recipe = {
+            "logistica:silverin_slice",
+            exchangeclone.mcl and "mesecons:redstone" or "default:mese_crystal_fragment"
+        }
+    })
+    exchangeclone.register_craft({
+        output = "logistica:silverin_mirror_box",
+        type = "lava_furnace",
+        recipe = {
+            exchangeclone.itemstrings.glass,
+            "logistica:silverin_slice",
+            "logistica:silverin_slice",
+            "logistica:silverin_slice",
+            "logistica:silverin_slice",
+            "logistica:silverin_slice",
+            "logistica:silverin_slice",
+        }
+    })
+    exchangeclone.register_craft({
+        output = "logistica:silverin_plate",
+        type = "lava_furnace",
+        recipe = {
+            "logistica:silverin",
+            exchangeclone.itemstrings.iron,
+        }
+    })
+    exchangeclone.register_craft({
+        output = "logistica:wireless_crystal",
+        type = "lava_furnace",
+        recipe = {
+            "logistica:silverin",
+            exchangeclone.itemstrings.emeraldworth,
+        }
+    })
+end
+
 
 
 -- Up to this point, no EMC values have actually been set.

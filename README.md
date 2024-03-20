@@ -14,6 +14,7 @@ ExchangeClone upports all items in the following mods/games (and anything that c
 * Nether
 * Mobs Redo API and Mobs Animals
 * Animalia
+* Logistica
 
 ExchangeClone is tested with the latest release of Minetest, Minetest Game, MineClone2, and Mineclonia.
 
@@ -36,13 +37,12 @@ Dependencies: Minetest Game or MineClone.
 
 ## Known issues:
 * The sword/katar AOE ability does not take upgrades (looting, fire aspect, etc.) into account. This will probably not be fixed (MCL)
-* Klein Stars and Upgrades can be used as fuel. This isn't really a problem, but it will probably be removed once I decide the new hopper API is old enough that most people are using it.
-* Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by dispensers. This will not be fixed.
+* Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by MCL dispensers. This will not be fixed.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
 * In Mineclonia, hoppers can put invalid items into Energy Collectors. This will not be fixed.
 * Tools do not show the wear bar (to show the charge level) when first created or crafted. It only appears after changing the range. This will not be fixed.
-* Unfortunately, caused by the performance improvements to various tool abilities, using the shear ability on sea grass (MCL) will also remove the sand below the sea grass. I can't think of a good way to fix it.
-* Dark and Red Matter Armor can make the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix.
+* Unfortunately, changes to various tool abilities in v7.0, using the shear ability on sea grass (MCL) will also remove the sand below the sea grass. I can't think of a good way to fix it.
+* Dark and Red Matter Armor can make the player invincible. This is an [engine problem](https://github.com/minetest/minetest/issues/14344) that I can't fix without simply making the armor worse.
 * Mobs Redo (and mods that use it) don't care that DM/RM tools are supposed to be unbreakable and add wear to them anyway.
 * Covalence Dust and the Talisman of Repair cannot repair certain tools. This will not be fixed.
 * DM/RM tools are too fast in MTG (can't figure out why)

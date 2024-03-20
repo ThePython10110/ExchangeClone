@@ -1,3 +1,4 @@
+-- You can edit these tables any time before minetest.register_on_mods_loaded functions are run.
 exchangeclone.group_values = {}
 exchangeclone.base_emc_values = {}
 
