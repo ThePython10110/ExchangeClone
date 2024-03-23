@@ -199,7 +199,10 @@ if exchangeclone.mcl then
             return math.max(0, damage - blocked)
         end
     end, -100)
+elseif exchangeclone.exile then
+    -- FIXME: add armor
 else
+    assert(exchangeclone.mtg)
     for _, matter in pairs({"Dark", "Red"}) do
         for piece, place in pairs({Helmet = "head", Chestplate = "torso", Leggings = "legs", Boots = "feet"}) do
             local matter_lower = matter:lower()

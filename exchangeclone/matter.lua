@@ -43,7 +43,7 @@ minetest.register_craft({
     output = "exchangeclone:dark_matter",
     recipe = {
         {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"},
-        {"exchangeclone:aeternalis_fuel", exchangeclone.mcl and "mcl_core:diamondblock" or 'default:diamondblock', "exchangeclone:aeternalis_fuel"},
+        {"exchangeclone:aeternalis_fuel", exchangeclone.itemstrings.diamondblock, "exchangeclone:aeternalis_fuel"},
         {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"}
     }
 })

@@ -3,13 +3,14 @@ function exchangeclone.shear_action(itemstack, player, center)
 	if exchangeclone.check_cooldown(player, "shears") then return end
     local start_node = minetest.get_node(center)
     local leaves = minetest.get_item_group(start_node.name, "leaves") > 0
+    leaves = leaves or minetest.get_item_group(start_node.name, "leafdecay") > 0
 	local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
 	local vector1, vector2 = exchangeclone.process_range(player, leaves and "large_radius" or "basic_radius", charge)
 	if not (vector1 and vector2) then return end
 
 	local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
     exchangeclone.play_sound(player, "exchangeclone_destruct")
-    local grouped = leaves and {"group:leaves"} or {"group:shearsy", "group:shearsy_cobweb"}
+    local grouped = leaves and { "group:leaves", "group:leafdecay" } or { "group:shearsy", "group:shearsy_cobweb" }
     local nodes = minetest.find_nodes_in_area(pos1, pos2, grouped)
     for i, pos in pairs(nodes) do
         local node = minetest.get_node(pos)

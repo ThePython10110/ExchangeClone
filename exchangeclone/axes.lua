@@ -18,7 +18,8 @@ function exchangeclone.axe_action(itemstack, player, center, force_strip)
         if strip and not (exchangeclone.mcla or stripped_variant) then return end
     end
     local nodes
-    local groups_to_search = strip and {start_node.name} or {"group:tree", "group:leaves", "group:bamboo_block"}
+    local groups_to_search = strip and { start_node.name } or
+        { "group:tree", "group:leaves", "group:leafdecay", "group:bamboo_block" }
     local range_type = strip and "basic_radius" or "large_radius"
     if charge > 1 then
         local vector1, vector2 = exchangeclone.process_range(player, range_type, charge)
@@ -71,7 +72,7 @@ local function axe_on_place(itemstack, player, pointed_thing)
     if pointed_thing.type == "node" then
         local name = minetest.get_node(pointed_thing.under).name
         if (minetest.get_item_group(name, "tree") > 0)
-        or (minetest.get_item_group(name, "bamboo_block") > 0) then
+            or (minetest.get_item_group(name, "bamboo_block") > 0) then
             exchangeclone.axe_action(itemstack, player, pointed_thing.under)
         elseif exchangeclone.mcl then
             if minetest.registered_items[name]._mcl_stripped_variant then

@@ -3,15 +3,32 @@
 
 exchangeclone = {recipes = {}}
 
-if (not minetest.get_modpath("mcl_core")) and (not minetest.get_modpath("default")) then
-    error("ExchangeClone requires Minetest Game, MineClone2, or MineClonia (and possibly variant subgames).\nPlease use one of those games.")
-end
+-- detect games:
+-- don't use minetest.get_game_info().id because that returns the name of
+-- the folder the game is stored in, which users can name whatever they like.
 
--- Ensure that value is either true or nil
-if minetest.get_game_info().id == "mineclonia" then exchangeclone.mcla = true end
-if minetest.get_game_info().id == "mineclone2" then exchangeclone.mcl2 = true end
-if exchangeclone.mcl2 or exchangeclone.mcla then exchangeclone.mcl = true end
-if not exchangeclone.mcl then exchangeclone.mtg = true end
+-- Ensure that game identifier values are either true or nil
+if minetest.get_modpath("mcl_core") then
+    -- mineclonia makes a big deal about excluding hamburgers, but you could add mineclone2's copy
+    local has_mcl_hamburger = minetest.get_modpath("mcl_hamburger")
+    local has_mcl_base_textures = minetest.get_modpath("mcl_base_textures")
+    local has_mcl_playerplus = minetest.get_modpath("mcl_playerplus")
+    if has_mcl_hamburger and has_mcl_playerplus then
+        exchangeclone.mcl2 = true
+    elseif has_mcl_base_textures then
+        exchangeclone.mcla = true
+    else
+        minetest.log("warning", "[ExchangeClone] unable to determine if you're running MineClonia or MineClone2")
+    end
+    exchangeclone.mcl = true
+elseif minetest.get_modpath("exile_env_sounds") then
+    exchangeclone.exile = true
+elseif minetest.get_modpath("default") then
+    exchangeclone.mtg = true
+else
+    error("ExchangeClone requires Minetest Game, Exile, MineClone2, or MineClonia (and possibly variant subgames).\n" ..
+        "Please use one of those games.")
+end
 
 exchangeclone.pipeworks = minetest.get_modpath("pipeworks")
 exchangeclone.keep_data = minetest.settings:get_bool("exchangeclone.keep_data", false)

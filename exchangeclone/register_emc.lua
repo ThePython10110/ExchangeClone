@@ -146,6 +146,331 @@ end
 
 local auto = {}
 
+if exchangeclone.exile then
+    local seen_unknown_crafting_types = {}
+    local did_cooking_warning = false
+    local replacements_actions = {}
+    -- Exile doesn't have lava buckets and uses an alternative,
+    -- so just eat the input item
+    replacements_actions[dump({{
+        exchangeclone.itemstrings.lava_bucket,
+        exchangeclone.itemstrings.empty_bucket,
+    }})] = {just_eat_input = true}
+    -- we're already using a philosopher's stone to do the crafting,
+    -- don't add to recipe so we don't need two
+    replacements_actions[dump({{
+        "exchangeclone:philosophers_stone",
+        "exchangeclone:philosophers_stone",
+    }})] = {remove_from_input = "exchangeclone:philosophers_stone"}
+    -- used for recipe for iron band -- crafting mod doesn't support
+    -- replacements, there is another recipe for the iron band,
+    -- so just ignore the recipe
+    replacements_actions[dump({{
+        "exchangeclone:volcanite_amulet",
+        "exchangeclone:volcanite_amulet",
+    }})] = {ignore_recipe = true}
+    local replacement_itemstrings = {
+        ["group:tree"] = "group:log",
+    }
+    for _, recipes in pairs(exchangeclone.recipes) do
+        for _, recipe in ipairs(recipes) do
+            local mt_craft_type = recipe.type and exchangeclone.craft_types[recipe.type].type
+            if not mt_craft_type or mt_craft_type == "shaped" or mt_craft_type == "shapeless" then
+                ---@type table<string, integer>
+                local item_counts = {}
+                local remove_from_input = nil
+                local ignore_recipe = false
+                if recipe.replacements then
+                    local replacements_value = dump(recipe.replacements)
+                    local replacements_action = replacements_actions[replacements_value]
+                    assert(replacements_action, "[ExchangeClone] unimplemented replacements style: "..replacements_value)
+                    if replacements_action.remove_from_input then
+                        remove_from_input = replacements_action.remove_from_input
+                    elseif replacements_action.ignore_recipe then
+                        ignore_recipe = true
+                    else
+                        assert(replacements_action.just_eat_input, "unhandled replacements_action"..dump(replacements_action))
+                    end
+                end
+                local worklist = table.copy(recipe.recipe)
+                while #worklist > 0 do
+                    local item = table.remove(worklist)
+                    if type(item) == "table" then
+                        for _, v in ipairs(item) do
+                            table.insert(worklist, v)
+                        end
+                    elseif item and item ~= remove_from_input and item ~= "" then
+                        local count = item_counts[item] or 0
+                        item_counts[item] = count + 1
+                    end
+                end
+                local items_array = {}
+                for itemstring, count in pairs(item_counts) do
+                    itemstring = replacement_itemstrings[itemstring] or itemstring
+                    local item = ItemStack(itemstring)
+                    item:set_count(count)
+                    if not itemstring:find("^group:") and not item:is_known() then
+                        ignore_recipe = true
+                        break
+                    end
+                    assert(item:to_string() ~= "", dump({itemstring=itemstring,count=count,recipe=recipe}))
+                    table.insert(items_array, item:to_string())
+                end
+                if not ignore_recipe then
+                    local final_recipe = {
+                        type = "exchangeclone_crafting",
+                        output = recipe.output,
+                        items = items_array,
+                        always_known = true,
+                    }
+                    minetest.log("[ExchangeClone]: registered Exile crafting recipe: \n"..dump(final_recipe))
+                    crafting.register_recipe(final_recipe)
+                end
+            elseif mt_craft_type == "cooking" then
+                if not did_cooking_warning then
+                    minetest.log("warning", "[ExchangeClone] cooking crafts aren't implemented for Exile, ignoring")
+                end
+                did_cooking_warning = true
+            else
+                local unknown_craft_type = dump(mt_craft_type)
+                if not seen_unknown_crafting_types[unknown_craft_type] then
+                    minetest.log("warning", "[ExchangeClone] unknown minetest crafting type: "..unknown_craft_type)
+                end
+                seen_unknown_crafting_types[unknown_craft_type] = true
+            end
+        end
+    end
+    for craft_type, recipes in pairs(crafting.recipes) do
+        if craft_type ~= "exchangeclone_crafting" then
+            exchangeclone.register_craft_type(craft_type, "shapeless")
+            for _, orig_recipe in ipairs(recipes) do
+                local recipe = {}
+                for _, item in ipairs(orig_recipe.items) do
+                    item = ItemStack(item)
+                    for _ = 1, item:get_count() do
+                        table.insert(recipe, item:get_name())
+                    end
+                end
+                exchangeclone.register_craft({
+                    type = orig_recipe.type,
+                    output = orig_recipe.output,
+                    recipe = recipe,
+                })
+            end
+        end
+    end
+    exchangeclone.register_craft_type("thawing", "cooking", true)
+    exchangeclone.register_craft({
+        type = "thawing",
+        output = "nodes_nature:freshwater_source",
+        recipe = "nodes_nature:ice",
+    })
+    exchangeclone.register_craft({
+        type = "thawing",
+        output = "nodes_nature:salt_water_source",
+        recipe = "nodes_nature:sea_ice",
+    })
+    exchangeclone.register_craft_type("roasting", "cooking")
+    exchangeclone.register_craft({
+        type = "roasting",
+        output = "tech:iron_bloom",
+        recipe = "tech:iron_and_slag",
+    })
+    exchangeclone.register_craft({
+        type = "roasting",
+        output = "tech:iron_and_slag",
+        recipe = "tech:iron_smelting_mix",
+    })
+    exchangeclone.register_craft({
+        type = "roasting",
+        output = "tech:green_glass_ingot",
+        recipe = "tech:green_glass_mix",
+    })
+    exchangeclone.register_craft({
+        type = "roasting",
+        output = "tech:clear_glass_ingot",
+        recipe = "tech:clear_glass_mix",
+    })
+    exchangeclone.register_craft({
+        type = "roasting",
+        output = "tech:quicklime",
+        recipe = "tech:crushed_lime",
+    })
+    exchangeclone.register_craft_type("melting", "shapeless")
+    exchangeclone.register_craft({
+        type = "melting",
+        output = "tech:pane_tray_clear",
+        recipe = {"tech:clear_glass_ingot", "tech:pane_tray"},
+    })
+    exchangeclone.register_craft({
+        type = "melting",
+        output = "tech:pane_tray_green",
+        recipe = {"tech:green_glass_ingot", "tech:pane_tray"},
+    })
+    exchangeclone.register_craft_type("start_fire", "cooking")
+    exchangeclone.register_craft({
+        type = "start_fire",
+        output = "tech:small_wood_fire",
+        recipe = "tech:small_wood_fire_unlit",
+    })
+    exchangeclone.register_craft({
+        type = "start_fire",
+        output = "tech:large_wood_fire",
+        recipe = "tech:large_wood_fire_unlit",
+    })
+    exchangeclone.register_craft({
+        type = "start_fire",
+        output = "tech:small_charcoal_fire",
+        recipe = "tech:charcoal",
+    })
+    exchangeclone.register_craft({
+        type = "start_fire",
+        output = "tech:large_charcoal_fire",
+        recipe = "tech:charcoal_block",
+    })
+    exchangeclone.register_craft_type("extinguish_fire", "cooking", true)
+    exchangeclone.register_craft({
+        type = "extinguish_fire",
+        output = "tech:small_wood_fire_ext",
+        recipe = "tech:small_wood_fire",
+    })
+    exchangeclone.register_craft({
+        type = "extinguish_fire",
+        output = "tech:large_wood_fire_ext",
+        recipe = "tech:large_wood_fire",
+    })
+    exchangeclone.register_craft({
+        type = "extinguish_fire",
+        output = "tech:small_charcoal_fire_ext",
+        recipe = "tech:small_charcoal_fire",
+    })
+    exchangeclone.register_craft({
+        type = "extinguish_fire",
+        output = "tech:large_charcoal_fire_ext",
+        recipe = "tech:large_charcoal_fire",
+    })
+    exchangeclone.register_craft_type("to_smoldering", "cooking", true)
+    exchangeclone.register_craft({
+        type = "to_smoldering",
+        output = "tech:small_wood_fire_smoldering",
+        recipe = "tech:small_wood_fire",
+    })
+    exchangeclone.register_craft({
+        type = "to_smoldering",
+        output = "tech:large_wood_fire_smoldering",
+        recipe = "tech:large_wood_fire",
+    })
+    exchangeclone.register_craft({
+        type = "to_smoldering",
+        output = "tech:small_charcoal_fire_smoldering",
+        recipe = "tech:small_charcoal_fire",
+    })
+    exchangeclone.register_craft({
+        type = "to_smoldering",
+        output = "tech:large_charcoal_fire_smoldering",
+        recipe = "tech:large_charcoal_fire",
+    })
+
+    exchangeclone.register_craft_type("hammer_place", "cooking")
+    exchangeclone.register_craft({
+        type = "hammer_place",
+        output = "tech:hammer_basalt_placed",
+        recipe = "tech:hammer_basalt",
+    })
+    exchangeclone.register_craft({
+        type = "hammer_place",
+        output = "tech:hammer_granite_placed",
+        recipe = "tech:hammer_granite",
+    })
+    exchangeclone.register_craft_type("retting", "cooking")
+    exchangeclone.register_craft({
+        type = "retting",
+        output = "tech:retted_cana_bundle",
+        recipe = "tech:unretted_cana_bundle",
+    })
+    local extended_sed_list = table.copy(sed_list)
+    local artificial_seds = {broken_pottery_block = {mod_name = 'tech'}}
+    for name, _ in pairs(artificial_seds) do
+        table.insert(extended_sed_list, {name})
+    end
+    local water_pots = {
+        "tech:clay_water_pot",
+        "tech:wooden_water_pot",
+        "tech:glass_bottle_green",
+        "tech:glass_bottle_clear",
+    }
+    local wetnesses = {
+        [""] = {water_pot_suffix = "", source = ""},
+        ["_wet"] = {water_pot_suffix = "_freshwater", source = "nodes_nature:freshwater_source"},
+        ["_wet_salty"] = {water_pot_suffix = "_salt_water", source = "nodes_nature:salt_water_source"},
+    }
+    local ag_soils = {
+        {ag = "", depleted = ""},
+        {ag = "_agricultural_soil", depleted = ""},
+        {ag = "_agricultural_soil", depleted = "_depleted"},
+    }
+    exchangeclone.register_craft_type("make_ag_depleted", "cooking")
+    exchangeclone.register_craft_type("ag_soil_to_soil", "cooking")
+    exchangeclone.register_craft_type("wetten", "shapeless")
+    for _, v in ipairs(extended_sed_list) do
+        local name = v[1]
+        local mod_name = "nodes_nature"
+        if artificial_seds[name] then
+            mod_name = artificial_seds[name].mod_name
+        end
+        for wetness, wetness_data in pairs(wetnesses) do
+            for _, ag_soil in ipairs(ag_soils) do
+                if wetness == "_wet" or (wetness == "_wet_salty" and ag_soil.ag == "") then
+                    exchangeclone.register_craft({
+                        type = "wetten",
+                        output = mod_name..":"..name..ag_soil.ag..wetness..ag_soil.depleted,
+                        recipe = {
+                            mod_name..":"..name..ag_soil.ag..ag_soil.depleted,
+                            water_pots[1]..wetness_data.water_pot_suffix,
+                        },
+                        replacements = {{water_pots[1]..wetness_data.water_pot_suffix, water_pots[1]}},
+                    })
+                end
+            end
+            if wetness ~= "_wet_salty" then
+                exchangeclone.register_craft({
+                    type = "make_ag_depleted",
+                    output = mod_name..":"..name.."_agricultural_soil"..wetness.."_depleted",
+                    recipe = mod_name..":"..name..wetness,
+                })
+            end
+        end
+    end
+    exchangeclone.register_craft_type("fill_water_pot", "shapeless")
+    for wetness, wetness_data in pairs(wetnesses) do
+        if wetness ~= "" then
+            for _, water_pot in ipairs(water_pots) do
+                exchangeclone.register_craft({
+                    type = "fill_water_pot",
+                    output = water_pot..wetness_data.water_pot_suffix,
+                    recipe = {
+                        water_pot,
+                        wetness_data.source,
+                    },
+                })
+            end
+        end
+    end
+    for _, v in ipairs(soil_list) do
+        local name = v[1]
+        local sed_name = v[4]
+        for wetness, wetness_data in pairs(wetnesses) do
+            if wetness ~= "_wet_salty" then
+                exchangeclone.register_craft({
+                    type = "ag_soil_to_soil",
+                    output = "nodes_nature:"..name..wetness,
+                    recipe = "nodes_nature:"..sed_name.."_agricultural_soil"..wetness,
+                })
+            end
+        end
+    end
+end
+
 -- Handle stonecutter recipes and decaychains in Mineclonia
 if exchangeclone.mcla then
     exchangeclone.register_craft_type("stonecutting", "cooking")
@@ -355,6 +680,7 @@ for itemstring, emc_value in pairs(exchangeclone.base_emc_values) do
     register_emc(itemstring, emc_value)
 end
 
+--minetest.log('[ExchangeClone] recipes:\n' .. dump(exchangeclone.recipes))
 -- Register `exchangeclone_custom_emc` values and decide whether to automatically register EMC values
 for itemstring, def in pairs(minetest.registered_items) do
     if def.exchangeclone_custom_emc then
@@ -363,17 +689,19 @@ for itemstring, def in pairs(minetest.registered_items) do
         itemstring = exchangeclone.handle_alias(itemstring) or itemstring
         def = minetest.registered_items[itemstring] -- in case itemstring changed
         local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
-        if (
-            def
-            and item_name
-            and mod_name
-            and def.description
-            and def.description ~= ""
-            and ((minetest.get_item_group(itemstring, "not_in_creative_inventory") < 1) or mod_name == "mcl_compass")
-            and (not exchangeclone.get_item_emc(itemstring))
-            and exchangeclone.recipes[itemstring]
-        ) then
+        local add_to_auto = def and item_name and mod_name
+        add_to_auto = add_to_auto and def.description and def.description ~= ""
+        if minetest.get_item_group(itemstring, "not_in_creative_inventory") ~= 0 and mod_name ~= "mcl_compass" then
+            add_to_auto = false
+        elseif exchangeclone.exile and minetest.get_item_group(itemstring, "natural_slope") ~= 0 then
+            add_to_auto = false
+        elseif exchangeclone.get_item_emc(itemstring) then
+            add_to_auto = false
+        end
+        if add_to_auto and exchangeclone.recipes[itemstring] then
             auto[itemstring] = true
+        elseif add_to_auto then
+            minetest.log("[ExchangeClone] skipping " .. itemstring .. "\n" .. dump(def))
         end
     end
 end
@@ -461,6 +789,7 @@ for alias, itemstring in pairs(exchangeclone.emc_aliases) do
     register_emc(itemstring, exchangeclone.get_item_emc(alias))
 end
 
+minetest.log("items without EMC" .. dump(auto))
 -- Delete unnecessary data (waste of memory)
 if not exchangeclone.keep_data then
     exchangeclone.recipes = nil

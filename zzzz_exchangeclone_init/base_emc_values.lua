@@ -233,7 +233,10 @@ if exchangeclone.mcl then
         {name = "invisibility", bases = {"mcl_potions:night_vision"}, ingredient = "mcl_potions:fermented_spider_eye", custom_base_cost = 623, plus = true},
         {name = "withering", ingredient = "mcl_flowers:wither_rose", plus = true, two = true}
     }
+elseif exchangeclone.exile then
+    -- handled in exchangeclone/base_emc_values.lua
 else
+    assert(exchangeclone.mtg)
     -- MTG stuff
     table.insert_all(exchangeclone.group_values, {
         {"flower", 32},

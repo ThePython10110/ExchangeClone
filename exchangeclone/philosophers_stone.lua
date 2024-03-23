@@ -84,6 +84,15 @@ if exchangeclone.mcl then
             end
         end
     end
+elseif exchangeclone.exile then
+    local crafting_on_click = crafting.make_on_rightclick("exchangeclone_crafting", 2, { x = 8, y = 3 })
+    on_left_click = function(itemstack, player, pointed_thing)
+        if player:get_player_control().sneak then
+            minetest.show_formspec(player:get_player_name(), "exchangeclone_repairing", repairing_formspec)
+        else
+            crafting_on_click(nil, nil, player)
+        end
+    end
 else
     on_left_click = function(itemstack, player, pointed_thing)
         minetest.show_formspec(player:get_player_name(), "exchangeclone_repairing", repairing_formspec)
@@ -350,3 +359,37 @@ minetest.register_craft({
     },
     replacements = {{phil, phil}}
 })
+
+if exchangeclone.exile then
+    minetest.register_craft({
+        output = exchangeclone.itemstrings.diamondblock,
+        type = "shapeless",
+        recipe = {
+            phil,
+            exchangeclone.itemstrings.diamond,
+            exchangeclone.itemstrings.diamond,
+            exchangeclone.itemstrings.diamond,
+        },
+        replacements = {{phil, phil}}
+    })
+
+    minetest.register_craft({
+        output = exchangeclone.itemstrings.diamond.." 3",
+        type = "shapeless",
+        recipe = {
+            phil,
+            exchangeclone.itemstrings.diamondblock,
+        },
+        replacements = {{phil, phil}}
+    })
+
+    megamorph.register_loot({
+        level = 1,
+        rarity = 6,
+        name = "exchangeclone:philosophers_stone",
+        number = {
+            min = 1,
+            max = 1,
+        },
+    })
+end
