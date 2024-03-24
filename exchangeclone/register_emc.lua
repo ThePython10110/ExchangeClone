@@ -369,7 +369,7 @@ for itemstring, def in pairs(minetest.registered_items) do
             and mod_name
             and def.description
             and def.description ~= ""
-            and ((minetest.get_item_group(item_name, "not_in_creative_inventory") < 1) or mod_name == "mcl_compass")
+            and ((minetest.get_item_group(itemstring, "not_in_creative_inventory") < 1) or mod_name == "mcl_compass")
             and (not exchangeclone.get_item_emc(itemstring))
             and exchangeclone.recipes[itemstring]
         ) then
