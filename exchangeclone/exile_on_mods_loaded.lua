@@ -304,6 +304,9 @@ sorted_dump_action = {
 local sediments = {}
 
 for name, def in pairs(minetest.registered_items) do
+    if name:match("^artifacts:wayfinder_[1-9][0-9]*$") then
+        exchangeclone.register_alias("artifacts:wayfinder_0", name)
+    end
     if def.groups.natural_slope or def.groups.not_in_creative_inventory then
         goto continue
     end
