@@ -28,7 +28,10 @@ if exchangeclone.mcl then
             mcl_fire.set_fire(pointed_thing, player, false)
         end
     end
+elseif exchangeclone.exile then
+    --FIXME: implement set_fire
 else
+    assert(exchangeclone.mtg)
     set_fire = function(player, pos)
 		local protname = player:get_player_name()
 		if minetest.is_protected(pos, protname) then

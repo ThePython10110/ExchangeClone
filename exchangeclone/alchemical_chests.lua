@@ -75,8 +75,8 @@ minetest.register_node("exchangeclone:alchemical_chest", {
     can_dig = exchangeclone.can_dig,
 })
 
-local stone_itemstring = exchangeclone.mcl and "mcl_core:stone" or "default:stone"
-local chest_itemstring = exchangeclone.mcl and "mcl_chests:chest" or "default:chest"
+local stone_itemstring = exchangeclone.itemstrings.stone
+local chest_itemstring = exchangeclone.itemstrings.chest
 
 minetest.register_craft({
     output = "exchangeclone:alchemical_chest",
@@ -98,8 +98,8 @@ end)
 for color, color_data in pairs(exchangeclone.colors) do
     local bag_itemstring = "exchangeclone:alchemical_bag_"..color
     local advanced_itemstring = "exchangeclone:advanced_alchemical_chest_"..color
-    local wool_itemstring = (exchangeclone.mcl and "mcl_wool:" or "wool:")..color
-    local dye_itemstring = (exchangeclone.mcl and "mcl_dye:" or "dye:")..color
+    local wool_itemstring = exchangeclone.itemstrings.wool_prefix .. color
+    local dye_itemstring = exchangeclone.itemstrings.dye_prefix .. color
 
     local bag_modifier = "^[multiply:"..color_data.hex
     if color == "white" then bag_modifier = "" end

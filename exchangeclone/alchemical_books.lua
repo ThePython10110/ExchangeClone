@@ -1,7 +1,9 @@
 -- There's a lot of duplicated code in this file, but removing it means adding more duplicated code... so I'm just going to leave it.
 
 local function extract_dimension(pos)
-    if exchangeclone.mtg then
+    if exchangeclone.exile then
+        return nil, pos
+    elseif exchangeclone.mtg then
         if minetest.get_modpath("nether") then
             if pos.y >= nether.DEPTH_FLOOR and pos.y <= nether.DEPTH_CEILING then
                 return "Nether", pos
@@ -11,6 +13,7 @@ local function extract_dimension(pos)
         end
         return nil, pos
     end
+    assert(exchangeclone.mcl)
 
     -- overworld
     if (pos.y >= mcl_vars.mg_overworld_min) and (pos.y <= mcl_vars.mg_overworld_max) then
@@ -35,9 +38,10 @@ end
 
 local function add_dimension(dimension, pos)
     dimension = dimension:lower()
-    if exchangeclone.mtg then
+    if exchangeclone.mtg or exchangeclone.exile then
         return pos
     end
+    assert(exchangeclone.mcl)
 
     if dimension == "nether" then
         local report_y = pos.y + mcl_vars.mg_nether_min
@@ -332,13 +336,11 @@ minetest.register_tool("exchangeclone:arcane_alchemical_book", {
     on_place = alchemical_book_function
 })
 
-local craftitem = exchangeclone.mcl and "mcl_throwing:ender_pearl" or "default:mese_crystal"
-
 minetest.register_craft({
     output = "exchangeclone:basic_alchemical_book",
     recipe = {
         {"exchangeclone:low_covalence_dust","exchangeclone:red_matter", "exchangeclone:low_covalence_dust"},
-        {craftitem, exchangeclone.itemstrings.book, "exchangeclone:philosophers_stone"},
+        { exchangeclone.itemstrings.ender_pearl, exchangeclone.itemstrings.book, "exchangeclone:philosophers_stone" },
         {"exchangeclone:low_covalence_dust","exchangeclone:red_matter", "exchangeclone:low_covalence_dust"},
     }
 })
@@ -347,7 +349,7 @@ minetest.register_craft({
     output = "exchangeclone:advanced_alchemical_book",
     recipe = {
         {"exchangeclone:medium_covalence_dust","exchangeclone:pink_matter", "exchangeclone:medium_covalence_dust"},
-        {craftitem, "exchangeclone:basic_alchemical_book", "exchangeclone:pink_matter"},
+        { exchangeclone.itemstrings.ender_pearl, "exchangeclone:basic_alchemical_book", "exchangeclone:pink_matter" },
         {"exchangeclone:medium_covalence_dust","exchangeclone:pink_matter", "exchangeclone:medium_covalence_dust"},
     }
 })

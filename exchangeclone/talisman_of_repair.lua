@@ -71,13 +71,13 @@ minetest.register_tool("exchangeclone:talisman_of_repair", {
     groups = {exchangeclone_passive = 1, disable_repair = 1}
 })
 
-local string = exchangeclone.mcl and "mcl_mobitems:string" or "farming:string"
+local string = exchangeclone.itemstrings.string
 
 minetest.register_craft({
     output = "exchangeclone:talisman_of_repair",
     recipe = {
         {"exchangeclone:low_covalence_dust", "exchangeclone:medium_covalence_dust", "exchangeclone:high_covalence_dust"},
-        {string, exchangeclone.mcl and "mcl_core:paper" or "default:paper", string},
+        {string, exchangeclone.itemstrings.paper, string},
         {"exchangeclone:high_covalence_dust", "exchangeclone:medium_covalence_dust", "exchangeclone:low_covalence_dust"}
     }
 })

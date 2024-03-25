@@ -32,7 +32,7 @@ minetest.register_tool("exchangeclone:infinite_food", {
     groups = { food = 2, eatable = 8, disable_repair = 1, fire_immune = 1},
     on_place = exchangeclone.mcl and infinite_food_function,
     on_secondary_use = exchangeclone.mcl and infinite_food_function,
-    on_use = exchangeclone.mtg and infinite_food_function,
+    on_use = (not exchangeclone.mcl) and infinite_food_function,
     _mcl_saturation = 12.8,
 })
 
@@ -42,7 +42,7 @@ minetest.register_on_item_eat(function(hp_change, replace_with_item, itemstack, 
     end
 end)
 
-local bread_itemstring = exchangeclone.mcl and "mcl_farming:bread" or "farming:bread"
+local bread_itemstring = exchangeclone.itemstrings.bread
 
 minetest.register_craft({
     output = "exchangeclone:infinite_food",

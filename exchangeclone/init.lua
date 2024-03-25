@@ -6,7 +6,18 @@ local start_time = minetest.get_us_time()
 minetest.log("action", "[ExchangeClone] Registering own stuff")
 
 -- Decides what mod to use for sounds
-exchangeclone.sound_mod = exchangeclone.mcl and mcl_sounds or default
+if exchangeclone.mcl then
+	exchangeclone.sound_mod = mcl_sounds
+elseif exchangeclone.exile then
+	exchangeclone.sound_mod = {
+		node_sound_stone_defaults = nodes_nature.node_sound_stone_defaults,
+		node_sound_metal_defaults = nodes_nature.node_sound_glass_defaults,
+		node_sound_glass_defaults = nodes_nature.node_sound_glass_defaults,
+	}
+else
+	assert(exchangeclone.mtg, "unhandled game type")
+	exchangeclone.sound_mod = default
+end
 
 local modpath = minetest.get_modpath("exchangeclone")
 
@@ -23,7 +34,19 @@ if exchangeclone.mcl then
             }
         end
     end
+elseif exchangeclone.exile then
+	exchangeclone.colors = {}
+	for name, palette in pairs(bundlelist) do
+		if name ~= "none" then
+			exchangeclone.colors[name] = {
+				name = name,
+				hex = dye_to_colorstring(palette),
+				dye = "ncrafting:dye_"..name,
+			}
+		end
+	end
 else
+	assert(exchangeclone.mtg)
 	-- color hex values taken from MCLA
 	exchangeclone.colors = {
 		white = {
@@ -108,6 +131,10 @@ if exchangeclone.mcl2 then
 	mcl_item_id.set_mod_namespace("exchangeclone")
 end
 
+if exchangeclone.exile then
+	crafting.register_type("exchangeclone_crafting")
+end
+
 -- The order is usually unimportant
 local files = {
 	"craftitems",
@@ -139,6 +166,7 @@ local files = {
 	"dark_matter_pedestal",
 	"black_hole_band",
 	"rings",
+	"base_emc_values",
 }
 
 if exchangeclone.mcl or minetest.get_modpath("3d_armor") then
@@ -163,6 +191,9 @@ for _, file in ipairs(files) do
 end
 
 minetest.register_on_mods_loaded(function()
+	if exchangeclone.exile then
+		dofile(modpath.."/exile_on_mods_loaded.lua")
+	end
 	local emc_start_time = minetest.get_us_time()
 	minetest.log("action", "[ExchangeClone] Registering EMC values")
 	dofile(modpath.."/register_emc.lua")

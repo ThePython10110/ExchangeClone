@@ -7,24 +7,31 @@ local function heal(player, amount)
     end
 end
 
-local function satiate() end
+local satiate = nil
 
-if exchangeclone.mcl and mcl_hunger.active then
-    satiate = function(player, amount)
-        local hunger = mcl_hunger.get_hunger(player)
-        if hunger < 20 then
-            mcl_hunger.set_hunger(player, hunger + amount)
-            mcl_hunger.set_saturation(player, hunger + amount)
-            return true
+if exchangeclone.mcl then
+    if mcl_hunger.active then
+        satiate = function(player, amount)
+            local hunger = mcl_hunger.get_hunger(player)
+            if hunger < 20 then
+                mcl_hunger.set_hunger(player, hunger + amount)
+                mcl_hunger.set_saturation(player, hunger + amount)
+                return true
+            end
         end
     end
-elseif exchangeclone.mtg and minetest.get_modpath("stamina") then
-    satiate = function(player, amount)
-        if stamina.get_saturation(player) < stamina.settings.visual_max then
-            stamina.change_saturation(player, amount)
-            return true
+elseif exchangeclone.mtg then
+    if minetest.get_modpath("stamina") then
+        satiate = function(player, amount)
+            if stamina.get_saturation(player) < stamina.settings.visual_max then
+                stamina.change_saturation(player, amount)
+                return true
+            end
         end
     end
+else
+    assert(exchangeclone.exile)
+    -- FIXME: implement satiate()
 end
 
 minetest.register_tool("exchangeclone:soul_stone", {
@@ -62,7 +69,7 @@ minetest.register_craft({
     }
 })
 
-if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.get_modpath("stamina")) then
+if satiate then
     minetest.register_tool("exchangeclone:body_stone", {
         description = "Body Stone",
         inventory_image = "exchangeclone_body_stone.png",
@@ -90,7 +97,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
         groups = {exchangeclone_passive = 1, disable_repair = 1}
     })
 
-    local sugar_ingredient = exchangeclone.mcl and "mcl_core:sugar" or "default:papyrus"
+    local sugar_ingredient = exchangeclone.itemstrings.sugar
     minetest.register_craft({
         output = "exchangeclone:body_stone",
         recipe = {

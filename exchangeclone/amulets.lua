@@ -11,6 +11,21 @@ local fire_nodes = {
     ["default:torch"] = true,
     ["default:torch_ceiling"] = true,
     ["default:torch_wall"] = true,
+    ["tech:small_wood_fire"] = true,
+    ["tech:large_wood_fire"] = true,
+    ["tech:small_wood_fire_smoldering"] = true,
+    ["tech:large_wood_fire_smoldering"] = true,
+    ["tech:small_charcoal_fire"] = true,
+    ["tech:large_charcoal_fire"] = true,
+    ["tech:small_charcoal_fire_smoldering"] = true,
+    ["tech:large_charcoal_fire_smoldering"] = true,
+    ["tech:torch"] = true,
+    ["tech:torch_wall"] = true,
+    ["tech:torch_ceiling"] = true,
+    ["nodes_nature:lava_source"] = true,
+    ["nodes_nature:lava_flowing"] = true,
+    ["climate:air_temp"] = true,
+    ["climate:air_temp_visible"] = true,
 }
 
 local function place_liquid(itemstack, player, pointed_thing)

@@ -20,7 +20,7 @@ for group, amount in pairs({
     exchangeclone.tool_types[group] = exchangeclone.tool_types[group] or amount
 end
 
-local charcoal_itemstring = exchangeclone.mcl and "mcl_core:charcoal_lump" or "group:tree"
+local charcoal_itemstring = exchangeclone.itemstrings.charcoal
 
 minetest.register_craftitem("exchangeclone:low_covalence_dust", {
     description = S("Low Covalence Dust"),

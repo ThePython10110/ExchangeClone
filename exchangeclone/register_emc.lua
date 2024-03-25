@@ -284,6 +284,7 @@ end
 
 
 if minetest.global_exists("logistica") then
+    assert(exchangeclone.mcl or exchangeclone.mtg, "logistica integration not implemented for Exile")
     exchangeclone.register_craft_type("lava_furnace", "shapeless") -- weird that it's not cooking but I can't see any way around that
     exchangeclone.register_craft({
         output = "logistica:silverin",
@@ -355,6 +356,7 @@ for itemstring, emc_value in pairs(exchangeclone.base_emc_values) do
     register_emc(itemstring, emc_value)
 end
 
+--minetest.log('[ExchangeClone] recipes:\n' .. dump(exchangeclone.recipes))
 -- Register `exchangeclone_custom_emc` values and decide whether to automatically register EMC values
 for itemstring, def in pairs(minetest.registered_items) do
     if def.exchangeclone_custom_emc then
@@ -363,17 +365,21 @@ for itemstring, def in pairs(minetest.registered_items) do
         itemstring = exchangeclone.handle_alias(itemstring) or itemstring
         def = minetest.registered_items[itemstring] -- in case itemstring changed
         local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
-        if (
-            def
-            and item_name
-            and mod_name
-            and def.description
-            and def.description ~= ""
-            and ((minetest.get_item_group(item_name, "not_in_creative_inventory") < 1) or mod_name == "mcl_compass")
-            and (not exchangeclone.get_item_emc(itemstring))
-            and exchangeclone.recipes[itemstring]
-        ) then
+        local add_to_auto = def and item_name and mod_name
+        add_to_auto = add_to_auto and def.description and def.description ~= ""
+        if minetest.get_item_group(itemstring, "not_in_creative_inventory") ~= 0 and mod_name ~= "mcl_compass" then
+            add_to_auto = false
+        elseif exchangeclone.exile and minetest.get_item_group(itemstring, "natural_slope") ~= 0 then
+            add_to_auto = false
+        elseif exchangeclone.exile and minetest.get_item_group(itemstring, "air") ~= 0 then
+            add_to_auto = false
+        elseif exchangeclone.get_item_emc(itemstring) then
+            add_to_auto = false
+        end
+        if add_to_auto and exchangeclone.recipes[itemstring] then
             auto[itemstring] = true
+        elseif add_to_auto then
+            minetest.log("[ExchangeClone] skipping " .. itemstring .. "\n" .. dump(def))
         end
     end
 end
@@ -437,7 +443,7 @@ end
 local cheapest_color = {""}
 
 for color, color_data in pairs(exchangeclone.colors) do
-    local dye_itemstring = (exchangeclone.mcl and "mcl_dye:" or "dye:")..color
+    local dye_itemstring = exchangeclone.itemstrings.dye_prefix..color
     local dye_emc = exchangeclone.get_item_emc(dye_itemstring)
     if dye_emc then
         if (not cheapest_color[2]) or (dye_emc < cheapest_color[2])  then
@@ -461,6 +467,7 @@ for alias, itemstring in pairs(exchangeclone.emc_aliases) do
     register_emc(itemstring, exchangeclone.get_item_emc(alias))
 end
 
+minetest.log("items without EMC" .. dump(auto))
 -- Delete unnecessary data (waste of memory)
 if not exchangeclone.keep_data then
     exchangeclone.recipes = nil
