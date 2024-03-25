@@ -162,26 +162,56 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
-    output = exchangeclone.itemstrings.iron,
-    type = "shapeless",
-    recipe = {
-        phil,
-        exchangeclone.itemstrings.coal,
-        exchangeclone.itemstrings.coal,
-    },
-    replacements = {{phil, phil}}
-})
+if exchangeclone.exile then
+    -- in Exile, iron is really hard to make, increase cost to compensate
+    minetest.register_craft({
+        output = exchangeclone.itemstrings.iron,
+        type = "shapeless",
+        recipe = {
+            phil,
+            exchangeclone.itemstrings.coal,
+            exchangeclone.itemstrings.coal,
+            exchangeclone.itemstrings.coal,
+            exchangeclone.itemstrings.coal,
+            exchangeclone.itemstrings.coal,
+            exchangeclone.itemstrings.coal,
+            exchangeclone.itemstrings.coal,
+            exchangeclone.itemstrings.coal,
+        },
+        replacements = {{phil, phil}}
+    })
 
-minetest.register_craft({
-    output = exchangeclone.itemstrings.coal.." 2",
-    type = "shapeless",
-    recipe = {
-        phil,
-        exchangeclone.itemstrings.iron
-    },
-    replacements = {{phil, phil}}
-})
+    minetest.register_craft({
+        output = exchangeclone.itemstrings.coal.." 8",
+        type = "shapeless",
+        recipe = {
+            phil,
+            exchangeclone.itemstrings.iron
+        },
+        replacements = {{phil, phil}}
+    })
+else
+    minetest.register_craft({
+        output = exchangeclone.itemstrings.iron,
+        type = "shapeless",
+        recipe = {
+            phil,
+            exchangeclone.itemstrings.coal,
+            exchangeclone.itemstrings.coal,
+        },
+        replacements = {{phil, phil}}
+    })
+
+    minetest.register_craft({
+        output = exchangeclone.itemstrings.coal.." 2",
+        type = "shapeless",
+        recipe = {
+            phil,
+            exchangeclone.itemstrings.iron
+        },
+        replacements = {{phil, phil}}
+    })
+end
 
 minetest.register_craft({
     output = exchangeclone.itemstrings.copper.." 2",

@@ -374,6 +374,7 @@ if exchangeclone.mcl then
         glowstoneworth = "mcl_nether:glowstone_dust",
         lapisworth = "mcl_core:lapis",
         coal = "mcl_core:coal_lump",
+        charcoal = "mcl_core:charcoal_lump",
         iron = "mcl_core:iron_ingot",
         copper = "mcl_copper:copper_ingot",
         gold = "mcl_core:gold_ingot",
@@ -399,6 +400,13 @@ if exchangeclone.mcl then
         chest = "mcl_chests:chest",
         dye_prefix = "mcl_dye:",
         wool_prefix = "mcl_wool:",
+        furnace = "mcl_furnaces:furnace",
+        collector_ingredient = "mcl_nether:glowstone",
+        cotton = "mcl_mobitems:string",
+        string = "mcl_mobitems:string",
+        bread = "mcl_farming:bread",
+        sugar = "mcl_core:sugar",
+        paper = "mcl_core:paper",
     }
 elseif exchangeclone.exile then
     exchangeclone.itemstrings = {
@@ -408,7 +416,8 @@ elseif exchangeclone.exile then
         obsidian = "nodes_nature:basalt_boulder",
         glowstoneworth = "tech:iron_ingot",
         lapisworth = "tech:green_glass_ingot",
-        coal = "tech:charcoal",
+        coal = "tech:charcoal_block",
+        charcoal = "tech:charcoal",
         iron = "tech:iron_ingot",
         copper = "tech:clear_glass_ingot",
         gold = "artifacts:moon_glass",
@@ -434,6 +443,13 @@ elseif exchangeclone.exile then
         chest = "tech:primitive_wooden_chest",
         dye_prefix = "ncrafting:dye_",
         wool_prefix = "ncrafting:dye_", -- there isn't really dyable blocks
+        furnace = "tech:torch", -- there aren't really furnaces
+        collector_ingredient = "tech:iron_ingot",
+        cotton = "tech:coarse_fibre",
+        string = "tech:coarse_fibre",
+        bread = "tech:maraka_bread_cooked",
+        sugar = "nodes_nature:tangkal_fruit",
+        paper = "tech:coarse_fabric",
     }
 else
     assert(exchangeclone.mtg)
@@ -445,6 +461,7 @@ else
         glowstoneworth = "default:tin_ingot",
         lapisworth = "bucket:bucket_lava",
         coal = "default:coal_lump",
+        charcoal = "group:tree",
         iron = "default:steel_ingot",
         copper = "default:copper_ingot",
         gold = "default:gold_ingot",
@@ -469,6 +486,13 @@ else
         chest = "default:chest",
         dye_prefix = "dye:",
         wool_prefix = "wool:",
+        furnace = "default:furnace",
+        collector_ingredient = "default:gold_ingot",
+        cotton = "farming:cotton",
+        string = "farming:string",
+        bread = "farming:bread",
+        sugar = "default:papyrus",
+        paper = "default:paper",
     }
 end
 
@@ -555,7 +579,7 @@ end
 
 -- This function gets the drops from a node and drops them at the player's position
 function exchangeclone.drop_items_on_player(pos, drops, player) -- modified from MineClone's code
-    if exchangeclone.mtg then
+    if not exchangeclone.mcl then
         return minetest.handle_node_drops(pos, drops, player)
     end
     -- NOTE: This function override allows player to be nil.

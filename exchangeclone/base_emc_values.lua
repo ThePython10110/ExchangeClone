@@ -4,7 +4,7 @@ if exchangeclone.exile then
         {"leafdecay", 1},
         {"_ncrafting_bundle", 64},
         {"_ncrafting_dye_color", 32},
-        {"air", 0},
+        {"wet_sediment", 1},
     })
     for itemstring, emc_value in pairs({
         ["tech:soup"] = 16,
@@ -12,8 +12,28 @@ if exchangeclone.exile then
         ["bones:bones"] = 32,
         ["lore:exile_letter"] = 32,
 
+        ["animals:gundu"] = 128,
+        ["animals:pegasun_male"] = 128,
+        ["animals:pegasun"] = 144, -- higher because they lay eggs
+        ["animals:kubwakubwa"] = 144,
+        ["animals:darkasthaan"] = 192,
+        ["animals:sarkamos"] = 256,
         ["animals:impethu"] = 32,
-        ["animals:impethu_eggs"] = 8,
+        ["animals:sneachan"] = 32,
+
+        ["animals:gundu_eggs"] = 64,
+        ["animals:pegasun_eggs"] = 32,
+        ["animals:kubwakubwa_eggs"] = 24,
+        ["animals:darkasthaan_eggs"] = 32,
+        ["animals:sarkamos_eggs"] = 64,
+        ["animals:impethu_eggs"] = 16,
+        ["animals:sneachan_eggs"] = 16,
+
+        ["animals:carcass_invert_small"] = 3,
+        ["animals:carcass_invert_large"] = 10,
+        ["animals:carcass_bird_small"] = 20,
+        ["animals:carcass_fish_small"] = 15,
+        ["animals:carcass_fish_large"] = 45,
 
         ["nodes_nature:vansano"] = 32,
         ["nodes_nature:anperla"] = 32,
@@ -42,16 +62,15 @@ if exchangeclone.exile then
         ['tech:molten_slag_source'] = 8192, -- because it's so hard to get
 
         ['nodes_nature:ironstone_boulder'] = 64,
+        ['tech:slag'] = 16,
         ['nodes_nature:volcanic_ash'] = 1,
         ['tech:wood_ash'] = 8,
-        ['tech:potash_source'] = 32,
         ['tech:broken_pottery'] = 8,
         ['nodes_nature:gneiss_boulder'] = 4,
         ['tech:clay_water_pot'] = 16,
         ['tech:cooking_pot'] = 16,
         ['tech:clay_storage_pot'] = 16,
         ['tech:clay_oil_lamp_empty'] = 16,
-        ['tech:charcoal'] = 128,
 
         ['nodes_nature:jade_boulder'] = 64,
 
@@ -67,8 +86,8 @@ if exchangeclone.exile then
 
 
         --low level artifacts (rarity 5), non-durables
-        --['artifacts:conveyor'] = 256,
-        --['artifacts:trampoline'] = 256,
+        ['artifacts:conveyor'] = 256,
+        ['artifacts:trampoline'] = 256,
 
         --['nodes_nature:merki_seed'] = 256,
 
@@ -101,7 +120,7 @@ if exchangeclone.exile then
         ['artifacts:sculpture_j_dragon_head'] = 256,
         ['artifacts:sculpture_j_skull_head'] = 256,
 
-        --['artifacts:star_stone'] = 256,
+        ['artifacts:star_stone'] = 256,
         ['artifacts:singing_stone'] = 256,
         ['artifacts:drumming_stone'] = 256,
 
@@ -146,6 +165,13 @@ if exchangeclone.exile then
         ['artifacts:sculpture_g_arch_trickster'] = 1024,
         ['artifacts:sculpture_g_arch_mother'] = 1024,
 
+        ['player_api:cloth_female_upper_default'] = 1024,
+        ['player_api:cloth_female_lower_default'] = 1024,
+        ['player_api:cloth_unisex_footwear_default'] = 1024,
+        ['player_api:cloth_female_head_default'] = 1024,
+        ['player_api:cloth_male_upper_default'] = 1024,
+        ['player_api:cloth_male_lower_default'] = 1024,
+
         ['artifacts:metastim'] = 100000,
 
     }) do
@@ -179,4 +205,6 @@ if exchangeclone.exile then
         local itemstring = "nodes_nature:"..v[1].."_block"
         exchangeclone.base_emc_values[itemstring] = exchangeclone.base_emc_values[itemstring] or 1
     end
+    exchangeclone.register_alias("artifacts:antiquorium", "rings:antiquorium")
+    exchangeclone.register_alias("artifacts:moon_glass", "rings:moon_glass")
 end

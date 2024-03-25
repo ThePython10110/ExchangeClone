@@ -222,7 +222,7 @@ minetest.register_tool("exchangeclone:void_ring", {
     _exchangeclone_pedestal = black_hole_pedestal,
 })
 
-local ingredient = exchangeclone.mcl and "mcl_mobitems:string" or "farming:cotton"
+local ingredient = exchangeclone.itemstrings.cotton
 minetest.register_craft({
     output = "exchangeclone:black_hole_band",
     recipe = {

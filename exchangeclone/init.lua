@@ -35,7 +35,7 @@ if exchangeclone.mcl then
         end
     end
 elseif exchangeclone.exile then
-	exchangeclone.colors = {} -- FIXME: extract from ncrafting
+	exchangeclone.colors = {}
 	for name, palette in pairs(bundlelist) do
 		if name ~= "none" then
 			exchangeclone.colors[name] = {
@@ -191,6 +191,9 @@ for _, file in ipairs(files) do
 end
 
 minetest.register_on_mods_loaded(function()
+	if exchangeclone.exile then
+		dofile(modpath.."/exile_on_mods_loaded.lua")
+	end
 	local emc_start_time = minetest.get_us_time()
 	minetest.log("action", "[ExchangeClone] Registering EMC values")
 	dofile(modpath.."/register_emc.lua")

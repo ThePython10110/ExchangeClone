@@ -27,7 +27,10 @@ local hoe_function
 
 if exchangeclone.mcl then
 	hoe_function = create_soil
+elseif exchangeclone.exile then
+	hoe_function = function(...) end -- FIXME: implement
 else
+	assert(exchangeclone.mtg)
 	if farming then
 		hoe_function = farming.hoe_on_use
 	else

@@ -25,11 +25,6 @@ local ores = {
 	["technic:zinc_lump"] = true,
 }
 
-local furnace_itemstring = "default:furnace"
-if exchangeclone.mcl then
-	furnace_itemstring = "mcl_furnaces:furnace"
-end
-
 local function is_ore(itemstring)
 	if ores[itemstring] then return true end
 	local exchangeclone_ore = minetest.get_item_group(itemstring, "exchangeclone_ore")
@@ -730,7 +725,7 @@ minetest.register_craft({
 	output = "exchangeclone:dark_matter_furnace",
 	recipe = {
 		{ "exchangeclone:dark_matter_block", "exchangeclone:dark_matter_block", "exchangeclone:dark_matter_block" },
-		{ "exchangeclone:dark_matter_block", furnace_itemstring, "exchangeclone:dark_matter_block" },
+		{ "exchangeclone:dark_matter_block", exchangeclone.itemstrings.furnace, "exchangeclone:dark_matter_block" },
 		{ "exchangeclone:dark_matter_block", "exchangeclone:dark_matter_block", "exchangeclone:dark_matter_block" },
 	}
 })

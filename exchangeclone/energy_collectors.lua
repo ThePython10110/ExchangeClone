@@ -215,7 +215,7 @@ local collectors = {
     "White",
 }
 
-local ingredient = exchangeclone.mcl and "mcl_nether:glowstone" or "default:gold_ingot"
+local ingredient = exchangeclone.itemstrings.collector_ingredient
 
 exchangeclone.register_energy_collector(
     "exchangeclone:basic_collector",
@@ -225,7 +225,7 @@ exchangeclone.register_energy_collector(
     {{
         {ingredient, exchangeclone.itemstrings.glass, ingredient},
         {ingredient, "exchangeclone:aeternalis_fuel_block", ingredient},
-        {ingredient, (exchangeclone.mcl and "mcl_furnaces:furnace" or "default:furnace"), ingredient},
+        {ingredient, exchangeclone.itemstrings.furnace, ingredient},
 
     }},
     5
