@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 exchangeclone.matter_types = {
     "Red",
@@ -15,21 +15,21 @@ exchangeclone.matter_types = {
     "White",
 }
 
-minetest.register_craftitem("exchangeclone:dark_matter", {
+core.register_craftitem("exchangeclone:dark_matter", {
     description = S("Dark Matter Orb"),
     wield_image = "exchangeclone_dark_matter.png",
     inventory_image = "exchangeclone_dark_matter.png",
     groups = {craftitem = 1}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter 4",
     recipe = {
         {"exchangeclone:dark_matter_block"}
     }
 })
 
-minetest.register_node("exchangeclone:dark_matter_block", {
+core.register_node("exchangeclone:dark_matter_block", {
     description = S("Dark Matter Block"),
     tiles = {"exchangeclone_dark_matter_block.png"},
 	is_ground_content = false,
@@ -39,7 +39,7 @@ minetest.register_node("exchangeclone:dark_matter_block", {
 	_mcl_hardness = 12,
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter",
     recipe = {
         {"exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel", "exchangeclone:aeternalis_fuel"},
@@ -48,7 +48,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter_block",
     recipe = {
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter"},
@@ -60,14 +60,14 @@ for i, matter in ipairs(exchangeclone.matter_types) do
     local codified = matter:lower().."_matter"
     local itemstring = "exchangeclone:"..codified
 
-    minetest.register_craftitem(itemstring, {
+    core.register_craftitem(itemstring, {
         description = S(matter.." Matter Orb"),
         wield_image = "exchangeclone_"..codified..".png",
         inventory_image = "exchangeclone_"..codified..".png",
         groups = {craftitem = 1},
     })
 
-    minetest.register_node(itemstring.."_block", {
+    core.register_node(itemstring.."_block", {
         description = S(matter.." Matter Block"),
         tiles = {"exchangeclone_"..codified.."_block.png"},
         is_ground_content = false,
@@ -87,7 +87,7 @@ for i, matter in ipairs(exchangeclone.matter_types) do
         fuel = "exchangeclone:aeternalis_fuel"
     end
 
-    minetest.register_craft({
+    core.register_craft({
         output = itemstring,
         recipe = {
             {fuel, fuel, fuel},
@@ -96,7 +96,7 @@ for i, matter in ipairs(exchangeclone.matter_types) do
         }
     })
 
-    minetest.register_craft({
+    core.register_craft({
         output = itemstring.."_block",
         recipe = {
             {itemstring, itemstring},
@@ -104,7 +104,7 @@ for i, matter in ipairs(exchangeclone.matter_types) do
         }
     })
 
-    minetest.register_craft({
+    core.register_craft({
         output = itemstring.." 4",
         recipe = {
             {itemstring.."_block",}

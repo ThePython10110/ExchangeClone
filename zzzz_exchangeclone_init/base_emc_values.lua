@@ -1,4 +1,4 @@
--- You can edit these tables any time before minetest.register_on_mods_loaded functions are run.
+-- You can edit these tables any time before core.register_on_mods_loaded functions are run.
 exchangeclone.group_values = {}
 exchangeclone.base_emc_values = {}
 
@@ -309,7 +309,7 @@ for itemstring, emc_value in pairs ({
     exchangeclone.base_emc_values[itemstring] = emc_value
 end
 
-if minetest.get_modpath("ethereal") then
+if core.get_modpath("ethereal") then
     for item, emc in pairs({
         ["bakedclay:grey"] = 16,
         ["bakedclay:orange"] = 16,
@@ -354,7 +354,7 @@ if minetest.get_modpath("ethereal") then
     })
 end
 
-if minetest.get_modpath("nether") then
+if core.get_modpath("nether") then
     for item, emc in pairs({
         ["nether:basalt"] = 4,
         ["nether:brick_cracked"] = 1,
@@ -373,7 +373,7 @@ if minetest.get_modpath("nether") then
     end
 end
 
-if minetest.get_modpath("mobs") then
+if core.get_modpath("mobs") then
     for item, emc in pairs({
         ["mobs:beehive"] = 2048,
         ["mobs:bucket_milk"] = 784,
@@ -393,7 +393,7 @@ if minetest.get_modpath("mobs") then
     })
 end
 
-if minetest.get_modpath("animalia") then
+if core.get_modpath("animalia") then
     for item, emc in pairs({
         ["animalia:bucket_guano"] = 832,
         ["animalia:bucket_milk"] = 784,

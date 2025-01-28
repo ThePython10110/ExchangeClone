@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 local names = {
     "Klein Star Ein",
@@ -15,12 +15,12 @@ local names = {
     "Magnum Star Omega",
 }
 
-minetest.register_alias("exchangeclone:exchange_orb", "exchangeclone:klein_star_omega")
+core.register_alias("exchangeclone:exchange_orb", "exchangeclone:klein_star_omega")
 
 for i, name in ipairs(names) do
     local codified_name = name:lower():gsub(" ", "_")
     local capacity = 50000*math.pow(4,i-1)
-    minetest.register_tool("exchangeclone:"..codified_name, {
+    core.register_tool("exchangeclone:"..codified_name, {
         description = S(name).."\n"..S("Current Charge: @1/@2", 0, exchangeclone.format_number(capacity)),
         inventory_image = "exchangeclone_"..codified_name..".png",
         wield_image = "exchangeclone_"..codified_name..".png",
@@ -37,7 +37,7 @@ for i, name in ipairs(names) do
 
     if i > 1 then
         local previous_codified_name = names[i-1]:lower():gsub(" ", "_")
-        minetest.register_craft({
+        core.register_craft({
             output = "exchangeclone:"..codified_name,
             type = "shapeless",
             recipe = {
@@ -50,7 +50,7 @@ for i, name in ipairs(names) do
     end
 end
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:klein_star_ein",
     recipe = {
         {"exchangeclone:mobius_fuel", "exchangeclone:mobius_fuel", "exchangeclone:mobius_fuel"},

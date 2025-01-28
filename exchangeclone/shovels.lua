@@ -2,12 +2,12 @@ function exchangeclone.shovel_action(itemstack, player, center)
 	if not (itemstack and player and center) then return end
 	if exchangeclone.check_cooldown(player, "shovel") then return end
 	local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
-    local start_node = minetest.get_node(center)
+    local start_node = core.get_node(center)
     local action
     if exchangeclone.mcl then
-        if minetest.registered_items[start_node.name]._on_shovel_place
-        or minetest.get_item_group(start_node.name, "path_creation_possible") == 1 then
-            if minetest.get_node(vector.offset(center,0,1,0)).name == "air" then
+        if core.registered_items[start_node.name]._on_shovel_place
+        or core.get_item_group(start_node.name, "path_creation_possible") == 1 then
+            if core.get_node(vector.offset(center,0,1,0)).name == "air" then
                 if (not player:get_player_control().sneak or charge == 1) then
                     action = "path"
                 end
@@ -52,7 +52,7 @@ function exchangeclone.shovel_action(itemstack, player, center)
         else
             exchangeclone.play_sound(player, "exchangeclone_destruct")
         end
-        nodes = minetest.find_nodes_in_area(pos1, pos2, groups_to_search)
+        nodes = core.find_nodes_in_area(pos1, pos2, groups_to_search)
     else
         if action == "path" or action == "unpath" then
             nodes = {center}
@@ -61,27 +61,27 @@ function exchangeclone.shovel_action(itemstack, player, center)
         end
     end
 	for _, pos in pairs(nodes) do
-        local node = minetest.get_node(pos)
-		if minetest.is_protected(pos, player:get_player_name()) then
-			minetest.record_protection_violation(pos, player:get_player_name())
+        local node = core.get_node(pos)
+		if core.is_protected(pos, player:get_player_name()) then
+			core.record_protection_violation(pos, player:get_player_name())
 		else
             if action == "path" then
                 if exchangeclone.mcla then
-                    local on_shovel_place = minetest.registered_items[node.name]._on_shovel_place
+                    local on_shovel_place = core.registered_items[node.name]._on_shovel_place
                     if on_shovel_place then
                         on_shovel_place(itemstack, player, {type="node",under=pos,above=vector.offset(pos,0,1,0)})
                     end
                 else -- in MCL2, it only searches for pathable nodes
-                    if minetest.get_node(vector.offset(pos,0,1,0)).name == "air" then
-                        minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
-                        minetest.swap_node(pos, {name="mcl_core:grass_path"})
+                    if core.get_node(vector.offset(pos,0,1,0)).name == "air" then
+                        core.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
+                        core.swap_node(pos, {name="mcl_core:grass_path"})
                     end
                 end
             elseif action == "unpath" then
-                minetest.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
-                minetest.swap_node(pos, {name="mcl_core:dirt"})
+                core.sound_play({name="default_grass_footstep", gain=1}, {pos = pos}, true)
+                core.swap_node(pos, {name="mcl_core:dirt"})
             else
-                local drops = minetest.get_node_drops(minetest.get_node(pos).name, itemstack)
+                local drops = core.get_node_drops(core.get_node(pos).name, itemstack)
                 exchangeclone.drop_items_on_player(pos, drops, player)
             end
 		end
@@ -113,7 +113,7 @@ local function shovel_on_place(itemstack, player, pointed_thing)
     return itemstack
 end
 
-minetest.register_tool("exchangeclone:dark_matter_shovel", {
+core.register_tool("exchangeclone:dark_matter_shovel", {
 	description = "Dark Matter Shovel",
 	wield_image = "exchangeclone_dark_matter_shovel.png",
 	inventory_image = "exchangeclone_dark_matter_shovel.png",
@@ -140,7 +140,7 @@ minetest.register_tool("exchangeclone:dark_matter_shovel", {
 
 exchangeclone.set_charge_type("exchangeclone:dark_matter_shovel", "dark_matter")
 
-minetest.register_tool("exchangeclone:red_matter_shovel", {
+core.register_tool("exchangeclone:red_matter_shovel", {
 	description = "Red Matter Shovel",
 	wield_image = "exchangeclone_red_matter_shovel.png",
 	inventory_image = "exchangeclone_red_matter_shovel.png",
@@ -169,7 +169,7 @@ exchangeclone.set_charge_type("exchangeclone:red_matter_shovel", "red_matter")
 
 --Crafting recipes
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter_shovel",
     recipe = {
         {"exchangeclone:dark_matter"},
@@ -178,7 +178,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:red_matter_shovel",
     recipe = {
         {"exchangeclone:red_matter"},

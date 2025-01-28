@@ -1,22 +1,30 @@
 -- A ton of functions with approximately zero organization. At least there are comments now.
 
-local S = minetest.get_translator()
---local exchangeclone = exchangeclone
+---@class core.ItemStack
+---@field _get_star_emc fun(itemstack: core.ItemStack) : number?
+---@field _set_star_emc fun(itemstack: core.ItemStack, amount : number)
+---@field _add_star_emc fun(itemstack: core.ItemStack, amount : number)
+---@field _get_emc fun(item: string|core.ItemStack) : number?
 
---- Rounds to the nearest integer
-function exchangeclone.round(num)
-    if num % 1 < 0.5 then
-        return math.floor(num)
-    else
-        return math.ceil(num)
-    end
-end
+---@class core.Player
+---@field _get_emc fun(player: core.Player) : number
+---@field _set_emc fun(itemstack: core.Player, amount : number)
+---@field _add_emc fun(itemstack: core.Player, amount : number)
 
+local S = core.get_translator()
+-- local exchangeclone = exchangeclone
+
+-- The default width of inventory formspecs
 exchangeclone.width = exchangeclone.mtg and 8 or 9
 
---- Adds all items in a certain list to a table.
+local modpath = core.get_modpath(core.get_current_modname())
+
+---Adds all items in a certain inventory list to a table.
+---@param pos vector.Vector
+---@param listname string
+---@param drops table[]
 function exchangeclone.get_inventory_drops(pos, listname, drops)
-    local inv = minetest.get_meta(pos):get_inventory()
+    local inv = core.get_meta(pos):get_inventory()
     local n = #drops
     for i = 1, inv:get_size(listname) do
         local stack = inv:get_stack(listname, i)
@@ -27,26 +35,31 @@ function exchangeclone.get_inventory_drops(pos, listname, drops)
     end
 end
 
+---Drops items when exploded
+---@param lists string[]
+---@return function(pos: vector.Vector): table[]
 function exchangeclone.on_blast(lists)
     return function(pos)
         local drops = {}
         for _, list in pairs(lists) do
             exchangeclone.get_inventory_drops(pos, list, drops)
         end
-        table.insert(drops, minetest.get_node(pos).name)
-        minetest.remove_node(pos)
+        table.insert(drops, core.get_node(pos).name)
+        core.remove_node(pos)
         if exchangeclone.mcl then
             for _, drop in pairs(drops) do
                 local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-                minetest.add_item(p, drop)
+                core.add_item(p, drop)
             end
         end
         return drops
     end
 end
 
---- Gets the EMC value of an itemstring or ItemStack
---- Handles "group:group_name" syntax (although it goes through every item), returns cheapest item in group
+---Gets the EMC value of an itemstring or ItemStack
+---Handles "group:group_name" syntax (although it goes through every item), returns cheapest item in group
+---@param item string|core.ItemStack
+---@return number?
 function exchangeclone.get_item_emc(item)
     if (item == "") or not item then return end
     -- handle groups
@@ -56,6 +69,7 @@ function exchangeclone.get_item_emc(item)
             if item_group == group[1] then return group[2] end
         end
         local group_items = exchangeclone.get_group_items(item_group)
+        if not group_items then return end
         local cheapest
         for _, group_item in pairs(group_items[item_group]) do
             if group_item then
@@ -72,6 +86,7 @@ function exchangeclone.get_item_emc(item)
 
     -- Only check metadata for ItemStacks
     if getmetatable(item) == getmetatable(ItemStack()) then
+        ---@cast item core.ItemStack
         local meta_emc_value = item:get_meta():get_string("exchangeclone_emc_value")
         if meta_emc_value == "none" then
             return 0
@@ -85,9 +100,9 @@ function exchangeclone.get_item_emc(item)
     if item == ItemStack("") then return end
     item:set_name(exchangeclone.handle_alias(item))
 
-    local def = minetest.registered_items[item:get_name()]
+    local def = core.registered_items[item:get_name()]
     if not def then return end
-    if minetest.get_item_group(item:get_name(), "klein_star") > 0 then
+    if core.get_item_group(item:get_name(), "klein_star") > 0 then
         if def.emc_value then
             return def.emc_value + item:_get_star_emc()
         end
@@ -97,6 +112,9 @@ function exchangeclone.get_item_emc(item)
     end
 end
 
+---Sets an ItemStack's metadata EMC value
+---@param item core.ItemStack
+---@param value number
 function exchangeclone.set_item_meta_emc(item, value)
     if getmetatable(item) ~= getmetatable(ItemStack()) then
         return
@@ -104,48 +122,68 @@ function exchangeclone.set_item_meta_emc(item, value)
     item:get_meta():set_string("exchangeclone_emc_value", value)
 end
 
+---Adds to an ItemStack's metadata EMC value
+---@param item core.ItemStack
+---@param value number
 function exchangeclone.add_item_meta_emc(item, value)
     if getmetatable(item) ~= getmetatable(ItemStack()) then
         return
     end
-    local current_value = item:get_meta():get_string("exchangeclone_emc_value", value)
+    local current_value = item:get_meta():get_string("exchangeclone_emc_value")
     if current_value == "" or current_value == "none" then
+---@diagnostic disable-next-line: cast-local-type
         current_value = 0
     else
+---@diagnostic disable-next-line: cast-local-type
         current_value = tonumber(current_value)
     end
     item:get_meta():set_string("exchangeclone_emc_value", current_value + value)
 end
 
--- https://forum.unity.com/threads/re-map-a-number-from-one-range-to-another.119437/
--- Remaps a number from one range to another
+---Remaps a number from one range to another
+---See https://forum.unity.com/threads/re-map-a-number-from-one-range-to-another.119437/
+---@param input number
+---@param min1 number
+---@param max1 number
+---@param min2 number
+---@param max2 number
+---@return number
 function exchangeclone.map(input, min1, max1, min2, max2)
     return (input - min1) / (max1 - min1) * (max2 - min2) + min2
 end
 
--- Gets the EMC stored in a specified Klein/Magnum Star itemstack.
+--- Gets the EMC stored in a specified Klein/Magnum Star itemstack.
+---@param itemstack core.ItemStack
+---@return number?
 function exchangeclone.get_star_itemstack_emc(itemstack)
     if not itemstack then return end
     if getmetatable(itemstack) ~= getmetatable(ItemStack()) then
         return
     end
-    if minetest.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
+    if core.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
     return math.max(itemstack:get_meta():get_float("stored_energy"), 0)
 end
 
--- Gets the amount of EMC stored in a star in a specific inventory slot
+---Gets the amount of EMC stored in a star in a specific inventory slot
+---@param inventory core.InvRef
+---@param listname string
+---@param index integer
+---@return number?
 function exchangeclone.get_star_emc(inventory, listname, index)
     if not inventory then return end
     if not listname then listname = "main" end
     if not index then index = 1 end
     local itemstack = inventory:get_stack(listname, index)
-    return itemstack:get_star_emc()
+    return itemstack:_get_star_emc()
 end
 
+---Sets the EMC stored in a specified Klein/Magnum Star itemstack.
+---@param itemstack core.ItemStack
+---@param amount number
 function exchangeclone.set_star_itemstack_emc(itemstack, amount)
     if not itemstack or not amount then return end
-    if minetest.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
-    local old_emc = itemstack:get_star_emc()
+    if core.get_item_group(itemstack:get_name(), "klein_star") < 1 then return end
+    local old_emc = itemstack:_get_star_emc()
     local max = exchangeclone.get_star_max(itemstack)
     if amount > old_emc and old_emc > max then return end -- don't allow more EMC to be put into an over-filled star
 
@@ -156,7 +194,11 @@ function exchangeclone.set_star_itemstack_emc(itemstack, amount)
     itemstack:set_wear(wear)
 end
 
--- Sets the amount of EMC in a star in a specific inventory slot
+---Sets the amount of EMC stored in a star in a specific inventory slot
+---@param inventory core.InvRef
+---@param listname string
+---@param index integer
+---@param amount number
 function exchangeclone.set_star_emc(inventory, listname, index, amount)
     if not inventory or not amount or amount < 0 then return end
     if not listname then listname = "main" end
@@ -166,15 +208,22 @@ function exchangeclone.set_star_emc(inventory, listname, index, amount)
     inventory:set_stack(listname, index, itemstack)
 end
 
+---Adds to the amount of EMC stored in a specified Klein/Magnum Star itemstack.
+---@param itemstack core.ItemStack
+---@param amount number
 function exchangeclone.add_star_itemstack_emc(itemstack, amount)
     if itemstack and amount then
-        local emc = itemstack:get_star_emc() + amount
+        local emc = itemstack:_get_star_emc() + amount
         if not emc or emc < 0 or emc > exchangeclone.get_star_max(itemstack) then return end
-        itemstack:_set_star_emc(itemstack, emc)
+        itemstack:_set_star_emc(emc)
     end
 end
 
--- Adds to the amount of EMC in a star in a specific inventory slot
+---Adds to the amount of EMC in a star in a specific inventory slot
+---@param inventory core.InvRef
+---@param listname string
+---@param index integer
+---@param amount number
 function exchangeclone.add_star_emc(inventory, listname, index, amount)
     if not (inventory and listname and index and amount) then return end
     if not listname then listname = "main" end
@@ -184,20 +233,26 @@ function exchangeclone.add_star_emc(inventory, listname, index, amount)
     inventory:set_stack(listname, index, itemstack)
 end
 
+---Gets the maximum capacity of a star.
+---@param item core.ItemStack|string
+---@return number
 function exchangeclone.get_star_max(item)
     item = ItemStack(item)
     return item:get_definition().max_capacity or 0
 end
 
+----------------------------------------------------------------------------
 -- HUD stuff (show EMC value in bottom right)
 local hud_elements = {}
 
+---Updates the "Personal EMC" HUD element
+---@param player core.Player
 function exchangeclone.update_hud(player)
     local hud_text = hud_elements[player:get_player_name()]
     player:hud_change(hud_text, "text", S("Personal EMC: @1", exchangeclone.format_number(exchangeclone.get_player_emc(player))))
 end
 
-minetest.register_on_joinplayer(function(player, last_login)
+core.register_on_joinplayer(function(player, last_login)
     hud_elements[player:get_player_name()] = player:hud_add({
         hud_elem_type = "text",
         position      = {x = 1, y = 1},
@@ -210,18 +265,25 @@ minetest.register_on_joinplayer(function(player, last_login)
     exchangeclone.update_hud(player)
 end)
 
-minetest.register_on_leaveplayer(function(player, timed_out)
+core.register_on_leaveplayer(function(player, timed_out)
     hud_elements[player:get_player_name()] = nil
 end)
 
--- Get a player's personal EMC
+-----------------------------------------------------------
+
+---Get a player's personal EMC
+---@param player core.Player
+---@return number
 function exchangeclone.get_player_emc(player)
     -- Can't really change it to "EMC" without everyone losing everything
     return tonumber(player:get_meta():get_string("exchangeclone_stored_energy")) or 0
 end
 
--- Set a player's personal EMC
+---Set a player's personal EMC
+---@param player core.Player
+---@param amount number
 function exchangeclone.set_player_emc(player, amount)
+---@diagnostic disable-next-line: cast-local-type
     amount = tonumber(amount)
     if not (player and amount) then return end
     if amount < 0 or amount > exchangeclone.limit then return end
@@ -229,20 +291,26 @@ function exchangeclone.set_player_emc(player, amount)
     exchangeclone.update_hud(player)
 end
 
--- Add to a player's personal EMC (amount can be negative)
+---Add to a player's personal EMC (amount can be negative)
+---@param player core.Player
+---@param amount number
 function exchangeclone.add_player_emc(player, amount)
     if not (player and amount) then return end
     player:_set_emc((player:_get_emc() or 0) + amount)
 end
 
--- Through trial and error, I have found that this number (1 trillion) works the best.
--- When a player has any more EMC (as in ANY more), precision-based exploits such as creating infinite glass panes are possible.
--- I temporarily considered finding some Lua library that allowed for arbitrary precision (and therefore infinite maximum EMC)
--- but I decided not to.
+--[[
+Through trial and error, I have found that this number (1 trillion) works the best.
+When a player has any more EMC (as in ANY more), precision-based exploits such as creating infinite glass panes are possible.
+I temporarily considered finding some Lua library that allowed for arbitrary precision (and therefore infinite maximum EMC)
+but I decided not to. This number would be 100 trillion if I wasn't allowing two places after the decimal.
+]]
 exchangeclone.limit = 1000000000000
 
--- From https://stackoverflow.com/questions/10989788/format-integer-in-lua
--- Formats an integer with commas, accounting for decimal points.
+---From https://stackoverflow.com/questions/10989788/format-integer-in-lua
+---Formats an integer with commas, accounting for decimal points.
+---@param number number
+---@return string
 function exchangeclone.format_number(number)
     -- Quit if not a number
     if not tonumber(tostring(number)) then return tostring(number) end
@@ -256,7 +324,11 @@ function exchangeclone.format_number(number)
     return minus .. int:reverse():gsub("^,", "") .. fraction
   end
 
--- Returns a table of all items in the specified group(s).
+---Returns a table of all items in the specified group(s).
+---@param groups string[]|string
+---@param allow_duplicates boolean?
+---@param include_no_group boolean?
+---@return table?
 function exchangeclone.get_group_items(groups, allow_duplicates, include_no_group)
     if type(groups) ~= "table" then
         if type(groups) == "string" then
@@ -280,7 +352,7 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
     end
     local in_group
     -- copied from... somewhere
-    for name, def in pairs(minetest.registered_items) do
+    for name in pairs(core.registered_items) do
         in_group = false
         for i = 1, num_groups do
             local grp = groups[i]
@@ -289,12 +361,12 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
             for _, subgroup in pairs(subgroups) do
                 local group_info = subgroup:split("=")
                 if #group_info == 1 then
-                    if minetest.get_item_group(name, subgroup) <= 0 then
+                    if core.get_item_group(name, subgroup) <= 0 then
                         success = false
                         break
                     end
                 elseif #group_info == 2 then
-                    if minetest.get_item_group(name, group_info[1]) ~= tonumber(group_info[2]) then
+                    if core.get_item_group(name, group_info[1]) ~= tonumber(group_info[2]) then
                         success = false
                         break
                     end
@@ -319,26 +391,36 @@ function exchangeclone.get_group_items(groups, allow_duplicates, include_no_grou
     return result
 end
 
--- Plays the sound caused by ExchangeClone abilities
+---Plays a sound in a certain way (not really necessary)
+---@param player core.Player
+---@param sound string
+---@param pitch number?
 function exchangeclone.play_sound(player, sound, pitch)
     if not player then return end
-    minetest.sound_play(sound, {pitch = pitch or 1, pos = player:get_pos(), max_hear_distance = 20, })
+    core.sound_play(sound, {pitch = pitch or 1, pos = player:get_pos(), max_hear_distance = 20, })
 end
 
--- Check the clicked node for a right-click function.
+---Check the clicked node for a right-click function.
+---@param itemstack core.ItemStack
+---@param player core.Player
+---@param pointed_thing table
+---@return core.ItemStack|false
 function exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
     if pointed_thing.type ~= "node" then return false end
     if player:get_player_control().sneak then return false end
-    local node = minetest.get_node(pointed_thing.under)
+    local node = core.get_node(pointed_thing.under)
     if player and not player:get_player_control().sneak then
-        if minetest.registered_nodes[node.name] and minetest.registered_nodes[node.name].on_rightclick then
-            return minetest.registered_nodes[node.name].on_rightclick(pointed_thing.under, node, player, itemstack) or itemstack
+        if core.registered_nodes[node.name] and core.registered_nodes[node.name].on_rightclick then
+            return core.registered_nodes[node.name].on_rightclick(pointed_thing.under, node, player, itemstack) or itemstack
         end
     end
     return false
 end
 
--- Update the charge level of an ExchangeClone tool
+---Update the charge level of an ExchangeClone tool
+---@param itemstack core.ItemStack
+---@param player core.Player
+---@return core.ItemStack
 function exchangeclone.charge_update(itemstack, player)
     itemstack = ItemStack(itemstack) -- don't affect original
     local charge_type = exchangeclone.charge_types[itemstack:get_name()]
@@ -397,20 +479,28 @@ exchangeclone.itemstrings = {
 
 exchangeclone.emc_aliases = {}
 
--- <itemstring> will be treated as <alias> in Deconstructors, Constructors, Transmutation Table(t)s, etc.
--- When you put <itemstring> into a TT, you will learn <alias> instead.
+---<itemstring> will be treated as <alias> in Deconstructors, Constructors, Transmutation Table(t)s, etc.
+---When you put <itemstring> into a TT, you will learn <alias> instead.
+---@param alias string
+---@param itemstring string
 function exchangeclone.register_alias_force(alias, itemstring)
     if alias == itemstring then return end
     exchangeclone.emc_aliases[itemstring] = alias
 end
 
+---Like register_alias_force but only registers the alias if it doesn't already exist.
+---@see exchangeclone.register_alias_force
+---@param alias string
+---@param itemstring string
 function exchangeclone.register_alias(alias, itemstring)
     if not exchangeclone.emc_aliases[alias] then
         exchangeclone.register_alias_force(alias, itemstring)
     end
 end
 
--- Returns the correct itemstring, handling both Minetest and Exchangeclone aliases.
+---Returns the correct itemstring, handling both Minetest and Exchangeclone aliases.
+---@param item core.ItemStack|string
+---@return string?
 function exchangeclone.handle_alias(item)
     item = ItemStack(item)
     if not item:is_empty() then
@@ -419,7 +509,10 @@ function exchangeclone.handle_alias(item)
     end
 end
 
--- Returns a player's inventory formspec with the correct width and hotbar position for the current game
+---Returns a player's inventory formspec with the correct width and hotbar position for the current game
+---@param x number
+---@param y number
+---@return string
 function exchangeclone.inventory_formspec(x,y)
     local formspec
     if exchangeclone.mcl then
@@ -435,8 +528,12 @@ function exchangeclone.inventory_formspec(x,y)
 end
 
 -- Modified from MineClone2, basically helps drop items on the player {
-local doTileDrops = minetest.settings:get_bool("mcl_doTileDrops", true)
+local doTileDrops = core.settings:get_bool("mcl_doTileDrops", true)
 
+---Gets drops based on fortune level
+---@param fortune_drops table[]
+---@param fortune_level integer
+---@return table
 local function get_fortune_drops(fortune_drops, fortune_level)
     local drop
     local i = fortune_level
@@ -447,6 +544,12 @@ local function get_fortune_drops(fortune_drops, fortune_level)
     return drop or {}
 end
 
+---Don't even remember what this does :D
+---@param drops table[]
+---@param min_count integer
+---@param max_count integer
+---@param cap integer
+---@return table[]
 local function discrete_uniform_distribution(drops, min_count, max_count, cap)
     local new_drops = table.copy(drops)
     for i, item in ipairs(drops) do
@@ -463,28 +566,37 @@ end
 
 local tmp_id = 0
 
+---Gets drops based on toolname
+---@param drop table|string
+---@param toolname string
+---@param param2 integer
+---@param paramtype2 string
+---@return table
 local function get_drops(drop, toolname, param2, paramtype2)
     tmp_id = tmp_id + 1
     local tmp_node_name = "mcl_item_entity:" .. tmp_id
-    minetest.registered_nodes[tmp_node_name] = {
+    core.registered_nodes[tmp_node_name] = {
         name = tmp_node_name,
         drop = drop,
         paramtype2 = paramtype2
     }
-    local drops = minetest.get_node_drops({ name = tmp_node_name, param2 = param2 }, toolname)
-    minetest.registered_nodes[tmp_node_name] = nil
+    local drops = core.get_node_drops({ name = tmp_node_name, param2 = param2 }, toolname)
+    core.registered_nodes[tmp_node_name] = nil
     return drops
 end
 
--- This function gets the drops from a node and drops them at the player's position
+---This function gets the drops from a node and drops them at the player's position
+---@param pos vector.Vector
+---@param drops table[]
+---@param player core.Player
 function exchangeclone.drop_items_on_player(pos, drops, player) -- modified from MineClone's code
     if exchangeclone.mtg then
-        return minetest.handle_node_drops(pos, drops, player)
+        return core.handle_node_drops(pos, drops, player)
     end
     -- NOTE: This function override allows player to be nil.
     -- This means there is no player. This is a special case which allows this function to be called
     -- by hand. Creative Mode is intentionally ignored in this case.
-    if player and player:is_player() and minetest.is_creative_enabled(player:get_player_name()) then
+    if player and player:is_player() and core.is_creative_enabled(player:get_player_name()) then
         local inv = player:get_inventory()
         if inv then
             for _, item in pairs(drops) do
@@ -497,12 +609,12 @@ function exchangeclone.drop_items_on_player(pos, drops, player) -- modified from
     elseif not doTileDrops then return end
 
     -- Check if node will yield its useful drop by the player's tool
-    local dug_node = minetest.get_node(pos)
+    local dug_node = core.get_node(pos)
     local tooldef
     local tool
     if player then
         tool = player:get_wielded_item()
-        tooldef = minetest.registered_items[tool:get_name()]
+        tooldef = core.registered_items[tool:get_name()]
 
         if not mcl_autogroup.can_harvest(dug_node.name, tool:get_name(), player) then
             return
@@ -519,10 +631,10 @@ function exchangeclone.drop_items_on_player(pos, drops, player) -- modified from
     * table: Drop every itemstring in this table when dug by shears _mcl_silk_touch_drop
     ]]
 
-local enchantments = tool and mcl_enchanting.get_enchantments(tool)
+    local enchantments = tool and mcl_enchanting.get_enchantments(tool)
 
     local silk_touch_drop = false
-    local nodedef = minetest.registered_nodes[dug_node.name]
+    local nodedef = core.registered_nodes[dug_node.name]
     if not nodedef then return end
 
     if shearsy_level and shearsy_level > 0 and nodedef._mcl_shears_drop then
@@ -561,7 +673,7 @@ local enchantments = tool and mcl_enchanting.get_enchantments(tool)
     end
 
     if player and mcl_experience.throw_xp and not silk_touch_drop then
-        local experience_amount = minetest.get_item_group(dug_node.name, "xp")
+        local experience_amount = core.get_item_group(dug_node.name, "xp")
         if experience_amount > 0 then
             mcl_experience.throw_xp(player:get_pos(), experience_amount)
         end
@@ -578,7 +690,7 @@ local enchantments = tool and mcl_enchanting.get_enchantments(tool)
         drop_item:set_count(1)
         for i = 1, count do
             -- Spawn item
-            local obj = minetest.add_item(player:get_pos(), drop_item)
+            local obj = core.add_item(player:get_pos(), drop_item)
             if obj then
                 -- set the velocity multiplier to the stored amount or if the game dug this node, apply a bigger velocity
                 obj:get_luaentity().age = 0.65
@@ -590,7 +702,9 @@ end
 
 -- }
 
--- Get the direction a player is facing (rounded to -1, 0, and 1 for each axis)
+---Get the direction a player is facing (rounded to -1, 0, and 1 for each axis)
+---@param player core.Player
+---@return vector.Vector
 function exchangeclone.get_face_direction(player)
     local h_look = player:get_look_horizontal()
     local v_look = player:get_look_vertical()
@@ -619,27 +733,33 @@ end
 -- Cooldowns
 exchangeclone.cooldowns = {}
 
-minetest.register_on_joinplayer(function(player, last_login)
+core.register_on_joinplayer(function(player, last_login)
     exchangeclone.cooldowns[player:get_player_name()] = {}
 end)
 
-minetest.register_on_leaveplayer(function(player, timed_out)
+core.register_on_leaveplayer(function(player, timed_out)
     exchangeclone.cooldowns[player:get_player_name()] = nil
 end)
 
--- Start a <time>-second cooldown called <name> for <player>
+---Start a <time>-second cooldown called <name> for <player>
+---@param player core.Player
+---@param name string
+---@param time number
 function exchangeclone.start_cooldown(player, name, time)
     if not (player and name and time and (time > 0)) then return end
     local player_name = player:get_player_name()
     exchangeclone.cooldowns[player_name][name] = time
-    minetest.after(time, function()
+    core.after(time, function()
         if exchangeclone.cooldowns[player_name] then
             exchangeclone.cooldowns[player_name][name] = nil
         end
     end)
 end
 
--- Returns the TOTAL time of a cooldown called <name> for <player> or nil if no matching cooldown is running.
+---Returns the TOTAL time of a cooldown called <name> for <player> or nil if no matching cooldown is running.
+---@param player core.Player
+---@param name string
+---@return number?
 function exchangeclone.check_cooldown(player, name)
     local player_name = player:get_player_name()
     if exchangeclone.cooldowns[player_name] then
@@ -648,7 +768,7 @@ function exchangeclone.check_cooldown(player, name)
 end
 
 -- Chat commands:
-minetest.register_chatcommand("add_player_emc", {
+core.register_chatcommand("add_player_emc", {
     params = "[player] <value>",
     description = "Add to a player's personal EMC (player is self if not included, value can be negative to subtract)",
     privs = {privs = true},
@@ -664,23 +784,23 @@ minetest.register_chatcommand("add_player_emc", {
             target_name = split_param[1]
             value = split_param[2]
         end
-        target_player = minetest.get_player_by_name(target_name)
+        target_player = core.get_player_by_name(target_name)
         if (not (target_player and value)) or not tonumber(value) then
-            minetest.chat_send_player(name, "Bad command. Use /add_player_emc [player] [value] or /add_player_emc [value]")
+            core.chat_send_player(name, "Bad command. Use /add_player_emc [player] [value] or /add_player_emc [value]")
             return
         end
         local emc = target_player:_get_emc()
         if (emc + value > exchangeclone.limit) or (emc + value < 0) then
-            minetest.chat_send_player(name, "Out of bounds; personal EMC must be between 0 and 1 trillion.")
+            core.chat_send_player(name, "Out of bounds; personal EMC must be between 0 and 1 trillion.")
             return
         end
         target_player:_add_emc(tonumber(value))
-        minetest.chat_send_player(name, "Added "..exchangeclone.format_number(value).." to "..target_name.."'s personal EMC.")
+        core.chat_send_player(name, "Added "..exchangeclone.format_number(value).." to "..target_name.."'s personal EMC.")
     end
 })
 
 -- Chat commands:
-minetest.register_chatcommand("get_player_emc", {
+core.register_chatcommand("get_player_emc", {
     params = "[player]",
     description = "Gets a player's personal EMC (player is self if not included).",
     privs = {privs = true},
@@ -692,17 +812,17 @@ minetest.register_chatcommand("get_player_emc", {
         else
             target_name = name
         end
-        target_player = minetest.get_player_by_name(target_name)
+        target_player = core.get_player_by_name(target_name)
         if not (target_player) then
-            minetest.chat_send_player(name, "Bad command. Use /get_player_emc [player] or /get_player_emc")
+            core.chat_send_player(name, "Bad command. Use /get_player_emc [player] or /get_player_emc")
             return
         end
         local emc = target_player:_get_emc()
-        minetest.chat_send_player(name, target_name.."'s personal EMC: "..exchangeclone.format_number(emc))
+        core.chat_send_player(name, target_name.."'s personal EMC: "..exchangeclone.format_number(emc))
     end
 })
 
-minetest.register_chatcommand("set_player_emc", {
+core.register_chatcommand("set_player_emc", {
     params = "[player] <value>",
     description = "Set a player's personal EMC (player is self if not included; use 'limit' as value to set it to maximum)",
     privs = {privs = true},
@@ -719,19 +839,19 @@ minetest.register_chatcommand("set_player_emc", {
             target_name = split_param[1]
             value = split_param[2]
         end
-        target_player = minetest.get_player_by_name(name)
+        target_player = core.get_player_by_name(name)
         if (not (target_player and value)) or (not (value == "limit" or tonumber(value))) then
-            minetest.chat_send_player(name, "Bad command. Use /set_player_emc [player] [value] or /set_player_emc [value]")
+            core.chat_send_player(name, "Bad command. Use /set_player_emc [player] [value] or /set_player_emc [value]")
             return
         end
         if value:lower() == "limit" then
             value = exchangeclone.limit
         elseif (tonumber(value) > exchangeclone.limit) or (tonumber(value) < 0) then
-            minetest.chat_send_player(name, "Failed to set EMC; must be between 0 and 1 trillion.")
+            core.chat_send_player(name, "Failed to set EMC; must be between 0 and 1 trillion.")
             return
         end
         target_player:_set_emc(tonumber(value))
-        minetest.chat_send_player(name, "Set "..target_name.."'s personal EMC to "..exchangeclone.format_number(value))
+        core.chat_send_player(name, "Set "..target_name.."'s personal EMC to "..exchangeclone.format_number(value))
     end
 })
 
@@ -744,21 +864,25 @@ exchangeclone.neighbors = {
     {x=0, y=0, z=1},
 }
 
+---Check for nearby nodes that should fall
+---@param pos vector.Vector
 function exchangeclone.check_nearby_falling(pos)
 	for i = 1, 6 do
         local new_pos = vector.add(pos, exchangeclone.neighbors[i])
         if exchangeclone.mcl then
-            local node = minetest.get_node(new_pos)
+            local node = core.get_node(new_pos)
             if node.name == "mcl_core:vine" then
                 mcl_core.check_vines_supported(new_pos, node)
             end
         end
 	end
-    minetest.check_for_falling(pos)
+    core.check_for_falling(pos)
 end
 
+---Remove nodes with callbacks
+---@param positions vector.Vector[]
 function exchangeclone.remove_nodes(positions)
-    minetest.bulk_set_node(positions, {name = "air"})
+    core.bulk_set_node(positions, {name = "air"})
     for _, pos in pairs(positions) do
         if pos then
             exchangeclone.check_nearby_falling(pos)
@@ -767,7 +891,7 @@ function exchangeclone.remove_nodes(positions)
 end
 
 --[[
-Recipes are registered with the same format that they are in minetest.register_craft:
+Recipes are registered with the same format that they are in core.register_craft:
 {
     type = <type>
     recipe = <recipe>
@@ -775,10 +899,9 @@ Recipes are registered with the same format that they are in minetest.register_c
     replacements = {{<itemstring>, <replace_itemstring>}, {<itemstring>, <replace_itemstring>}}
 }
 
-You do NOT have to call exchangeclone.register_craft if you use minetest.register_craft.
-]]
+You do NOT have to call exchangeclone.register_craft if you use core.register_craft.
 
---[[
+
 name (string): The name of the crafting type.
 recipe_type (string): One of the following:
     shaped (default): Recipe is given in an array of arrays of ingredients.
@@ -790,10 +913,16 @@ reverse (bool): Only applies for "cooking" recipe_type. If set to true, all reci
 
 exchangeclone.craft_types = {}
 
+---Registers a craft type
+---@param name string
+---@param recipe_type string
+---@param reverse boolean?
 function exchangeclone.register_craft_type(name, recipe_type, reverse)
     exchangeclone.craft_types[name] = {type = recipe_type, reverse = reverse}
 end
 
+---Registers a crafting recipe
+---@param data table
 function exchangeclone.register_craft(data)
     if not data.output then return end
     local itemstring = ItemStack(data.output):get_name()
@@ -812,26 +941,28 @@ function exchangeclone.register_craft(data)
     end
 end
 
--- Returns true if item (itemstring or ItemStack) can be used as a furnace fuel.
--- Returns false otherwise
+---Checks if an item is fuel
+---@param item core.ItemStack
+---@return boolean
 function exchangeclone.is_fuel(item)
-	return minetest.get_craft_result({method = "fuel", width = 1, items = {item}}).time ~= 0
+	return core.get_craft_result({method = "fuel", width = 1, items = {item}}).time ~= 0
 end
 
--- Returns true if item (itemstring or ItemStack) can't be used as a furnace fuel.
--- Returns false otherwise
+---Checks if an item is not fuel
+---@param item core.ItemStack
+---@return boolean
 function exchangeclone.isnt_fuel(item)
 	return not exchangeclone.is_fuel(item)
 end
 
 -- Copied from MCL2
 --- Selects item stack to transfer from
---- @param src_inventory InvRef Source innentory to pull from
+--- @param src_inventory core.InvRef Source inventory to pull from
 --- @param src_list string Name of source inventory list to pull from
---- @param dst_inventory InvRef Destination inventory to push to
+--- @param dst_inventory core.InvRef Destination inventory to push to
 --- @param dst_list string Name of destination inventory list to push to
---- @param condition? fun(stack: ItemStack) Condition which items are allowed to be transfered.
---- @return integer Item stack number to be transfered
+--- @param condition? fun(stack: core.ItemStack) Condition which items are allowed to be transfered.
+--- @return integer? Item stack number to be transfered
 function exchangeclone.select_stack(src_inventory, src_list, dst_inventory, dst_list, condition)
 	local src_size = src_inventory:get_size(src_list)
 	local stack
@@ -841,13 +972,12 @@ function exchangeclone.select_stack(src_inventory, src_list, dst_inventory, dst_
 			return i
 		end
 	end
-	return nil
 end
 
 function exchangeclone.mcl2_hoppers_on_try_pull(dst_condition, fuel_condition)
     if not exchangeclone.mcl2 then return end
     return function(pos, hop_pos, hop_inv, hop_list)
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
         if exchangeclone.select_stack(inv, "dst", hop_inv, hop_list) then
             return inv, "dst", exchangeclone.select_stack(inv, "dst", hop_inv, hop_list, dst_condition)
@@ -858,7 +988,7 @@ end
 function exchangeclone.mcl2_hoppers_on_try_push(src_condition, fuel_condition)
     if not exchangeclone.mcl2 then return end
     return function(pos, hop_pos, hop_inv, hop_list)
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
         if math.abs(pos.y - hop_pos.y) > math.abs(pos.x - hop_pos.x) and math.abs(pos.y - hop_pos.y) > math.abs(pos.z - hop_pos.z) then
             return inv, "src", exchangeclone.select_stack(hop_inv, hop_list, inv, "src", src_condition)
@@ -871,8 +1001,8 @@ end
 function exchangeclone.mcla_on_hopper_in(src_condition, fuel_condition, action)
     if not exchangeclone.mcla then return end
     return function(pos, to_pos)
-        local sinv = minetest.get_inventory({type="node", pos = pos})
-        local dinv = minetest.get_inventory({type="node", pos = to_pos})
+        local sinv = core.get_inventory({type="node", pos = pos})
+        local dinv = core.get_inventory({type="node", pos = to_pos})
         local handled
         local moved = true
         if pos.y == to_pos.y then
@@ -908,7 +1038,7 @@ function exchangeclone.mcla_on_hopper_out(fuel_condition, action)
 
 		-- Also suck in non-fuel items from furnace fuel slot
 		if not sucked then
-			local finv = minetest.get_inventory({type="node", pos=uppos})
+			local finv = core.get_inventory({type="node", pos=uppos})
 			if finv and fuel_condition(finv:get_stack("fuel", 1)) then
 				sucked = mcl_util.move_item_container(uppos, pos, "fuel")
 			end
@@ -921,7 +1051,7 @@ end
 function exchangeclone.drop_after_dig(lists)
     return function(pos, oldnode, oldmetadata, player)
         if exchangeclone.mcl then
-            local meta = minetest.get_meta(pos)
+            local meta = core.get_meta(pos)
             local meta2 = meta:to_table()
             meta:from_table(oldmetadata)
             local inv = meta:get_inventory()
@@ -930,7 +1060,7 @@ function exchangeclone.drop_after_dig(lists)
                     local stack = inv:get_stack(listname, i)
                     if not stack:is_empty() then
                         local p = {x=pos.x+math.random(0, 10)/10-0.5, y=pos.y, z=pos.z+math.random(0, 10)/10-0.5}
-                        minetest.add_item(p, stack)
+                        core.add_item(p, stack)
                     end
                 end
             end
@@ -946,7 +1076,7 @@ function exchangeclone.can_dig(pos)
     -- Always allow digging in MCL
     if exchangeclone.mcl then return true end
     -- Only allow digging of empty containers in MTG
-    local inv = minetest.get_inventory({type="node", pos=pos})
+    local inv = core.get_inventory({type="node", pos=pos})
     for listname, _ in pairs(inv:get_lists()) do
         if not inv:is_empty(listname) then
             return false
@@ -988,11 +1118,13 @@ function exchangeclone.multidig(pos, node, player, mode, nodes)
             unused_dir = "z"
         end
 
+---@diagnostic disable-next-line: missing-fields
         local pos1 = vector.add(pos, {[dir1] = -1, [dir2] = -1, [unused_dir] = 0})
+---@diagnostic disable-next-line: missing-fields
         local pos2 = vector.add(pos, {[dir1] = 1, [dir2] = 1, [unused_dir] = 0})
-        local found_nodes = minetest.find_nodes_in_area(pos1, pos2, nodes)
+        local found_nodes = core.find_nodes_in_area(pos1, pos2, nodes)
         for _, node_pos in pairs(found_nodes) do
-            minetest.node_dig(node_pos, minetest.get_node(node_pos), player)
+            core.node_dig(node_pos, core.get_node(node_pos), player)
         end
     elseif mode == "3x1_long" then
         local dir
@@ -1006,9 +1138,9 @@ function exchangeclone.multidig(pos, node, player, mode, nodes)
         local added_vector = vector.zero()
         added_vector[dir] = player_rotation[dir]*2
         local pos2 = vector.add(pos, added_vector)
-        local found_nodes = minetest.find_nodes_in_area(pos, pos2, nodes)
+        local found_nodes = core.find_nodes_in_area(pos, pos2, nodes)
         for _, node_pos in pairs(found_nodes) do
-            minetest.node_dig(node_pos, minetest.get_node(node_pos), player)
+            core.node_dig(node_pos, core.get_node(node_pos), player)
         end
     elseif mode == "3x1_tall" or mode == "3x1_wide" then
         local dir
@@ -1034,14 +1166,14 @@ function exchangeclone.multidig(pos, node, player, mode, nodes)
         vector2[dir] = 1
         local pos1 = vector.add(pos, vector1)
         local pos2 = vector.add(pos, vector2)
-        local found_nodes = minetest.find_nodes_in_area(pos1, pos2, nodes)
+        local found_nodes = core.find_nodes_in_area(pos1, pos2, nodes)
         for _, node_pos in pairs(found_nodes) do
-            minetest.node_dig(node_pos, minetest.get_node(node_pos), player)
+            core.node_dig(node_pos, core.get_node(node_pos), player)
         end
     end
 end
 
-minetest.register_on_dignode(function(pos, node, player)
+core.register_on_dignode(function(pos, node, player)
     if not player then return end
     local player_name = player:get_player_name()
     if exchangeclone.multidig_data.players[player_name] then return end
@@ -1056,7 +1188,7 @@ minetest.register_on_dignode(function(pos, node, player)
     end
 end)
 
-minetest.register_on_joinplayer(function(player)
+core.register_on_joinplayer(function(player)
     exchangeclone.multidig_data.players[player:get_player_name()] = nil
 end)
 
@@ -1150,13 +1282,13 @@ function exchangeclone.get_groupcaps(item, efficiency)
         local groupcaps = mcl_autogroup.get_groupcaps(item:get_name(), efficiency)
         return groupcaps
     else -- This only works if the tool is the same speed for every group.
-        local groupcaps = table.copy(minetest.registered_items[item:get_name()].tool_capabilities.groupcaps)
+        local groupcaps = table.copy(core.registered_items[item:get_name()].tool_capabilities.groupcaps)
         local next, mcl_diggroups = pairs(item:get_definition()._mcl_diggroups)
         local _, mcl_group_def = next(mcl_diggroups)
         local speed = mcl_group_def.speed
 
         if not groupcaps then return end
-        for group, def in pairs(groupcaps) do
+        for group, _ in pairs(groupcaps) do
             local test_group = group
             if test_group == "exchangeclone_dirt" then test_group = "crumbly" end
             groupcaps[group].times = exchangeclone.get_mtg_times(speed, efficiency, test_group)
@@ -1172,7 +1304,7 @@ function exchangeclone.update_tool_capabilities(itemstack)
     local meta = itemstack:get_meta()
     local charge_level = math.max(1, meta:get_int("exchangeclone_tool_charge"))
     local efficiency = exchangeclone.tool_levels.efficiency[charge_type][charge_level]
-    local tool_capabilities = table.copy(minetest.registered_items[itemstack:get_name()].tool_capabilities)
+    local tool_capabilities = table.copy(core.registered_items[itemstack:get_name()].tool_capabilities)
     tool_capabilities.groupcaps = exchangeclone.get_groupcaps(itemstack, efficiency)
     meta:set_tool_capabilities(tool_capabilities)
     return itemstack
@@ -1227,7 +1359,7 @@ end
 function exchangeclone.place_torch(player, pointed_thing)
     local torch_cost = math.max(exchangeclone.get_item_emc(exchangeclone.itemstrings.torch) or 0, 8)
     if player:_get_emc() >= torch_cost then
-        local torch_on_place = minetest.registered_items[exchangeclone.itemstrings.torch].on_place
+        local torch_on_place = core.registered_items[exchangeclone.itemstrings.torch].on_place
         if torch_on_place then
             torch_on_place(ItemStack(exchangeclone.itemstrings.torch), player, pointed_thing)
             return -torch_cost
@@ -1237,16 +1369,16 @@ end
 
 do
     local timer = 0
-    minetest.register_globalstep(function(dtime)
+    core.register_globalstep(function(dtime)
         timer = timer + dtime
         if timer >= 1 then
             timer = 0
-            for _, player in pairs(minetest.get_connected_players()) do
+            for _, player in pairs(core.get_connected_players()) do
                 local hb_max = player:hud_get_hotbar_itemcount()
                 local inv = player:get_inventory()
                 local processed_already = {}
                 for i, stack in ipairs(inv:get_list("main")) do
-                    if minetest.get_item_group(stack:get_name(), "exchangeclone_passive") then
+                    if core.get_item_group(stack:get_name(), "exchangeclone_passive") then
                         local passive_data = stack:get_definition()._exchangeclone_passive
                         if passive_data
                         and not processed_already[stack:get_name()]
@@ -1309,7 +1441,7 @@ item_metatable._get_star_max = exchangeclone.get_star_max
 
 local updated_metatable = false
 
-minetest.register_on_joinplayer(function(player)
+core.register_on_joinplayer(function(player)
     if not updated_metatable then
         local player_metatable = getmetatable(player)
         player_metatable._get_emc = exchangeclone.get_player_emc

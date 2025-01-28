@@ -1,7 +1,7 @@
 -- This function is mostly copied from `sneak_drop` by Krunegan because I was too lazy to do it myself
 local function pickup_items(player)
     local pos = player:get_pos()
-    local objs = minetest.get_objects_inside_radius(pos, 5)
+    local objs = core.get_objects_inside_radius(pos, 5)
     for j = 1, #objs do
         local obj = objs[j]
         if obj:get_luaentity() and obj:get_luaentity().name == "__builtin:item" then
@@ -25,10 +25,10 @@ local function void_ring_teleport(player)
 	local look_dir = player:get_look_dir()
 	local _end = vector.add(start, vector.multiply(look_dir, 60))
 
-	local ray = minetest.raycast(start, _end, false, false)
+	local ray = core.raycast(start, _end, false, false)
 	for pointed_thing in ray do
-		local name = minetest.get_node(pointed_thing.under).name
-		local def = minetest.registered_nodes[name]
+		local name = core.get_node(pointed_thing.under).name
+		local def = core.registered_nodes[name]
         if def.walkable then
             local offset = -0.5
             if pointed_thing.under.y > pointed_thing.above.y then
@@ -77,7 +77,7 @@ local function void_ring_rightclick(itemstack, player, pointed_thing)
         else
             current_target = math.min(#exchangeclone.density_targets, current_target + 1)
         end
-        minetest.chat_send_player(player:get_player_name(), "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description())
+        core.chat_send_player(player:get_player_name(), "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description())
         meta:set_int("density_target", current_target)
         meta:set_string("description", get_void_ring_description(itemstack))
         return itemstack
@@ -94,7 +94,7 @@ local function void_ring_rightclick(itemstack, player, pointed_thing)
             mode = 3
         end
         meta:set_int("exchangeclone_void_ring_mode", mode)
-        minetest.log(string.format("%s -> %s", old_mode, mode))
+        core.log(string.format("%s -> %s", old_mode, mode))
         if mode < old_mode then
             exchangeclone.play_sound(player, "exchangeclone_charge_down")
         else
@@ -130,7 +130,7 @@ local void_ring_leftclick = function(itemstack, player, pointed_thing)
         elseif mode == 2 then
             mode = 0
         end
-        minetest.log(string.format("%s -> %s", old_mode, mode))
+        core.log(string.format("%s -> %s", old_mode, mode))
         meta:set_int("exchangeclone_void_ring_mode", mode)
         if mode < old_mode then
             exchangeclone.play_sound(player, "exchangeclone_charge_down")
@@ -160,18 +160,18 @@ local function black_hole_pedestal(pos)
     local nearby_chests = {}
     for _, neighbor_pos in ipairs(exchangeclone.neighbors) do
         local new_pos = vector.add(pos, neighbor_pos)
-        if minetest.get_node(new_pos).name == "exchangeclone:alchemical_chest" then
+        if core.get_node(new_pos).name == "exchangeclone:alchemical_chest" then
             table.insert(nearby_chests, new_pos)
         end
     end
     if not nearby_chests[1] then return end
-    local objs = minetest.get_objects_inside_radius(pos, 5)
+    local objs = core.get_objects_inside_radius(pos, 5)
     for j = 1, #objs do
         local obj = objs[j]
         if obj:get_luaentity() and obj:get_luaentity().name == "__builtin:item" then
             local itemstack = obj:get_luaentity().itemstring
             for _, chest in ipairs(nearby_chests) do
-                local inv = minetest.get_meta(chest):get_inventory()
+                local inv = core.get_meta(chest):get_inventory()
                 if inv:room_for_item("main", itemstack) then
                     inv:add_item("main", itemstack)
                     obj:remove()
@@ -182,7 +182,7 @@ local function black_hole_pedestal(pos)
     end
 end
 
-minetest.register_tool("exchangeclone:black_hole_band", {
+core.register_tool("exchangeclone:black_hole_band", {
     description = "Black Hole Band",
     inventory_image = "exchangeclone_black_hole_band.png",
     on_secondary_use = exchangeclone.toggle_active,
@@ -197,7 +197,7 @@ minetest.register_tool("exchangeclone:black_hole_band", {
     _exchangeclone_pedestal = black_hole_pedestal,
 })
 
-minetest.register_tool("exchangeclone:void_ring", {
+core.register_tool("exchangeclone:void_ring", {
     description = "Void Ring",
     inventory_image = "exchangeclone_void_ring.png",
     on_secondary_use = void_ring_rightclick,
@@ -223,7 +223,7 @@ minetest.register_tool("exchangeclone:void_ring", {
 })
 
 local ingredient = exchangeclone.mcl and "mcl_mobitems:string" or "farming:cotton"
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:black_hole_band",
     recipe = {
         {ingredient, ingredient, ingredient},
@@ -232,7 +232,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:void_ring",
     type = "shapeless",
     recipe = {

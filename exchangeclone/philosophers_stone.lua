@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 local phil = "exchangeclone:philosophers_stone"
 
@@ -42,7 +42,7 @@ end
 function exchangeclone.phil_action(itemstack, player, center)
     if exchangeclone.check_cooldown(player, "phil") then return end
     local mode = player:get_player_control().sneak and 2 or 1
-    local start_node = minetest.get_node(center)
+    local start_node = core.get_node(center)
     local transmute_name = exchangeclone.node_transmutations[mode][start_node.name]
     if not transmute_name and mode == 2 then
         transmute_name = exchangeclone.node_transmutations[1][start_node.name]
@@ -56,16 +56,16 @@ function exchangeclone.phil_action(itemstack, player, center)
         local vector1, vector2 = exchangeclone.process_range(player, "basic_radius", charge)
         if not (vector1 and vector2) then return end
         local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
-        nodes = minetest.find_nodes_in_area(pos1, pos2, start_node.name)
+        nodes = core.find_nodes_in_area(pos1, pos2, start_node.name)
     end
     exchangeclone.play_sound(player, "exchangeclone_transmute")
     for i, pos in pairs(nodes) do
-        if minetest.is_protected(pos, player:get_player_name()) then
-            minetest.record_protection_violation(pos, player:get_player_name())
+        if core.is_protected(pos, player:get_player_name()) then
+            core.record_protection_violation(pos, player:get_player_name())
         else
-            local node = minetest.get_node(pos)
+            local node = core.get_node(pos)
             node.name = transmute_name
-            minetest.swap_node(pos, node)
+            core.swap_node(pos, node)
         end
     end
     exchangeclone.start_cooldown(player, "phil", 0.3)
@@ -78,7 +78,7 @@ if exchangeclone.mcl then
             show_enchanting(player)
         else
             if player:get_player_control().aux1 then
-                minetest.show_formspec(player:get_player_name(), "exchangeclone_repairing", repairing_formspec)
+                core.show_formspec(player:get_player_name(), "exchangeclone_repairing", repairing_formspec)
             else
                 mcl_crafting_table.show_crafting_form(player)
             end
@@ -86,7 +86,7 @@ if exchangeclone.mcl then
     end
 else
     on_left_click = function(itemstack, player, pointed_thing)
-        minetest.show_formspec(player:get_player_name(), "exchangeclone_repairing", repairing_formspec)
+        core.show_formspec(player:get_player_name(), "exchangeclone_repairing", repairing_formspec)
     end
 end
 
@@ -103,7 +103,7 @@ local function on_right_click(itemstack, player, pointed_thing)
     end
 end
 
-minetest.register_tool("exchangeclone:philosophers_stone", {
+core.register_tool("exchangeclone:philosophers_stone", {
     description = S("Philosopher's Stone").."\n"..S("Always returned when crafting"),
     inventory_image = "exchangeclone_philosophers_stone.png",
     wield_image = "exchangeclone_philosophers_stone.png",
@@ -121,7 +121,7 @@ local diamond = exchangeclone.itemstrings.diamond
 local corner = exchangeclone.itemstrings.glowstoneworth
 local side = exchangeclone.itemstrings.redstoneworth
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:philosophers_stone",
     recipe = {
         {corner, side, corner},
@@ -130,7 +130,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "mcl_core:coal_lump",
     type = "shapeless",
     recipe = {
@@ -143,7 +143,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "mcl_core:charcoal_lump 4",
     type = "shapeless",
     recipe = {
@@ -153,7 +153,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.iron,
     type = "shapeless",
     recipe = {
@@ -164,7 +164,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.coal.." 2",
     type = "shapeless",
     recipe = {
@@ -174,7 +174,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.copper.." 2",
     type = "shapeless",
     recipe = {
@@ -185,7 +185,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.iron.." 2",
     type = "shapeless",
     recipe = {
@@ -196,7 +196,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "mcl_throwing:ender_pearl",
     type = "shapeless",
     recipe = {
@@ -209,7 +209,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "default:tin_ingot 4",
     type = "shapeless",
     recipe = {
@@ -223,7 +223,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "default:copper_ingot 5",
     type = "shapeless",
     recipe = {
@@ -236,7 +236,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.iron.." 8",
     type = "shapeless",
     recipe = {
@@ -246,7 +246,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.gold,
     type = "shapeless",
     recipe = {
@@ -263,7 +263,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.emeraldworth,
     type = "shapeless",
     recipe = {
@@ -274,7 +274,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.gold.." 2",
     type = "shapeless",
     recipe = {
@@ -284,7 +284,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.diamond,
     type = "shapeless",
     recipe = {
@@ -295,7 +295,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = exchangeclone.itemstrings.emeraldworth.." 2",
     type = "shapeless",
     recipe = {
@@ -305,7 +305,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "mcl_nether:glowstone_dust",
     type = "shapeless",
     recipe = {
@@ -320,7 +320,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "mesecons:redstone 6",
     type = "shapeless",
     recipe = {
@@ -330,7 +330,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "mcl_core:lapis",
     type = "shapeless",
     recipe = {
@@ -341,7 +341,7 @@ minetest.register_craft({
     replacements = {{phil, phil}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "mcl_nether:glowstone_dust 2",
     type = "shapeless",
     recipe = {

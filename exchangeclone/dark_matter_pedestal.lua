@@ -11,7 +11,7 @@ local particle_positions = {
 
 local function add_particles(pos)
     for _, offset in pairs(particle_positions) do
-        minetest.add_particle({
+        core.add_particle({
             pos = vector.add(pos, offset),
             expirationtime = 1.1,
             size = 1,
@@ -21,7 +21,7 @@ local function add_particles(pos)
     end
 end
 
-minetest.register_entity("exchangeclone:item", {
+core.register_entity("exchangeclone:item", {
     initial_properties = {
         hp_max = 1,
         pointable = false,
@@ -35,17 +35,17 @@ minetest.register_entity("exchangeclone:item", {
         if staticdata and staticdata ~= "" then
             local split_data = staticdata:split(";")
             self._itemstring = split_data[1]
-            if self._itemstring and minetest.registered_items[self._itemstring] then
+            if self._itemstring and core.registered_items[self._itemstring] then
                 self.object:set_properties({wield_item = split_data[1], is_visible = true})
             else
                 self.object:set_properties({is_visible = false})
             end
-            self._pedestal_pos = minetest.string_to_pos(split_data[2])
+            self._pedestal_pos = core.string_to_pos(split_data[2])
         end
     end,
     get_staticdata = function(self)
         if self._itemstring and self._pedestal_pos then
-            return self._itemstring..";"..minetest.pos_to_string(self._pedestal_pos)
+            return self._itemstring..";"..core.pos_to_string(self._pedestal_pos)
         else
             return ""
         end
@@ -58,7 +58,7 @@ exchangeclone.pedestal_offset = {x=0,y=0.4,z=0}
 local function spawn_pedestal_entity(pos, itemstring, respawn)
 	if respawn then
 		-- Check if we already have an entity
-		local objs = minetest.get_objects_inside_radius(pos, 1)
+		local objs = core.get_objects_inside_radius(pos, 1)
 		for o=1, #objs do
 			local obj = objs[o]
 			local lua = obj:get_luaentity()
@@ -69,12 +69,12 @@ local function spawn_pedestal_entity(pos, itemstring, respawn)
 			end
 		end
 	end
-	minetest.add_entity(vector.add(pos, exchangeclone.pedestal_offset), "exchangeclone:item", (itemstring or "")..";"..minetest.pos_to_string(pos))
+	core.add_entity(vector.add(pos, exchangeclone.pedestal_offset), "exchangeclone:item", (itemstring or "")..";"..core.pos_to_string(pos))
 end
 
 local function update_pedestal_entity(pos)
-    local objs = minetest.get_objects_inside_radius(pos, 1)
-    local stack = minetest.get_meta(pos):get_inventory():get_stack("main", 1)
+    local objs = core.get_objects_inside_radius(pos, 1)
+    local stack = core.get_meta(pos):get_inventory():get_stack("main", 1)
     local itemstring
     if stack:is_known() then
         itemstring = stack:get_name()
@@ -104,7 +104,7 @@ local function update_pedestal_entity(pos)
     end
 end
 
-minetest.register_lbm({
+core.register_lbm({
 	label = "(Re-)spawn item entity above DM pedestal",
 	name = "exchangeclone:spawn_pedestal_entity",
 	nodenames = {"exchangeclone:dark_matter_pedestal"},
@@ -113,7 +113,7 @@ minetest.register_lbm({
 })
 
 local function pedestal_action(pos)
-    local meta = minetest.get_meta(pos)
+    local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
     local stack = inv:get_stack("main", 1)
     local def = stack:get_definition()
@@ -129,7 +129,7 @@ local function pedestal_action(pos)
     end
 end
 
-minetest.register_node("exchangeclone:dark_matter_pedestal", {
+core.register_node("exchangeclone:dark_matter_pedestal", {
     description = "Dark Matter Pedestal",
     drawtype = "nodebox",
     tiles = {"exchangeclone_dark_matter_block.png"},
@@ -142,39 +142,39 @@ minetest.register_node("exchangeclone:dark_matter_pedestal", {
         }
     },
     on_punch = function(pos, node, player, pointed_thing)
-        if minetest.is_protected(pos, player:get_player_name()) then
-            minetest.record_protection_violation(pos, player:get_player_name())
+        if core.is_protected(pos, player:get_player_name()) then
+            core.record_protection_violation(pos, player:get_player_name())
         end
         local wielded_item = player:get_wielded_item()
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
         if not inv:is_empty("main") and wielded_item:is_empty() then
-            minetest.add_item(vector.add(pos, exchangeclone.pedestal_offset), inv:get_stack("main", 1))
+            core.add_item(vector.add(pos, exchangeclone.pedestal_offset), inv:get_stack("main", 1))
             inv:set_stack("main", 1, ItemStack(""))
             update_pedestal_entity(pos)
-            if minetest.get_node_timer(pos):is_started() then
-                minetest.sound_play("exchangeclone_charge_down", {pos = pos, max_hear_distance = 20})
-                minetest.get_node_timer(pos):stop()
+            if core.get_node_timer(pos):is_started() then
+                core.sound_play("exchangeclone_charge_down", {pos = pos, max_hear_distance = 20})
+                core.get_node_timer(pos):stop()
             end
         end
     end,
     on_rightclick = function(pos, node, player, pointed_thing)
-        if minetest.is_protected(pos, player:get_player_name()) then
-            minetest.record_protection_violation(pos, player:get_player_name())
+        if core.is_protected(pos, player:get_player_name()) then
+            core.record_protection_violation(pos, player:get_player_name())
         end
         local wielded_item = player:get_wielded_item()
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
         if not inv:is_empty("main") and wielded_item:is_empty() then
             local stack = inv:get_stack("main", 1)
             local pedestal_data = stack:get_definition()._exchangeclone_pedestal
             if pedestal_data then
-                if minetest.get_node_timer(pos):is_started() then
-                    minetest.sound_play("exchangeclone_charge_down", {pos = pos, max_hear_distance = 20})
-                    minetest.get_node_timer(pos):stop()
+                if core.get_node_timer(pos):is_started() then
+                    core.sound_play("exchangeclone_charge_down", {pos = pos, max_hear_distance = 20})
+                    core.get_node_timer(pos):stop()
                 else
-                    minetest.sound_play("exchangeclone_enable", {pos = pos, max_hear_distance = 20})
-                    minetest.get_node_timer(pos):start(1,0)
+                    core.sound_play("exchangeclone_enable", {pos = pos, max_hear_distance = 20})
+                    core.get_node_timer(pos):start(1)
                     add_particles(pos)
                 end
             end
@@ -186,7 +186,7 @@ minetest.register_node("exchangeclone:dark_matter_pedestal", {
         end
     end,
     on_construct = function(pos)
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
         inv:set_size("main", 1)
     end,
@@ -199,7 +199,7 @@ minetest.register_node("exchangeclone:dark_matter_pedestal", {
     after_dig_node = exchangeclone.drop_after_dig({"main"}),
     on_blast = exchangeclone.on_blast({"main"}),
 	after_destruct = function(pos)
-		local objs = minetest.get_objects_inside_radius(pos, 1)
+		local objs = core.get_objects_inside_radius(pos, 1)
 		for o=1, #objs do
 			local obj = objs[o]
 			local lua = obj:get_luaentity()
@@ -212,7 +212,7 @@ minetest.register_node("exchangeclone:dark_matter_pedestal", {
 	end,
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter_pedestal",
     recipe = {
         {"exchangeclone:red_matter", "exchangeclone:dark_matter_block", "exchangeclone:red_matter"},

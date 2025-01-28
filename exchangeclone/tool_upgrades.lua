@@ -34,7 +34,7 @@ function exchangeclone.enchant(itemstack, enchantment, level)
 end
 
 function exchangeclone.register_upgrade(itemstring, name, modifier, recipe, enchantment, level, upgradable_items)
-    minetest.register_craftitem(itemstring, {
+    core.register_craftitem(itemstring, {
         description = name,
         wield_image = "exchangeclone_upgrade.png"..modifier,
         inventory_image = "exchangeclone_upgrade.png"..modifier,
@@ -43,14 +43,14 @@ function exchangeclone.register_upgrade(itemstring, name, modifier, recipe, ench
         level = level,
         upgradable_items = upgradable_items
     })
-    minetest.register_craft({
+    core.register_craft({
         output = itemstring,
         recipe = recipe,
     })
 end
 
 local function upgrader_action(pos)
-    local meta = minetest.get_meta(pos)
+    local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
     local upgrade = inv:get_stack("fuel", 1)
     local tool = inv:get_stack("src", 1)
@@ -64,7 +64,7 @@ local function upgrader_action(pos)
     if not upgrade_def.upgradable_items[tool:get_name()] then
         local found = false
         for item, _ in pairs(upgrade_def.upgradable_items) do
-            if item:sub(1,6) == "group:" and (minetest.get_item_group(tool:get_name(), item:sub(7,-1)) > 0) then
+            if item:sub(1,6) == "group:" and (core.get_item_group(tool:get_name(), item:sub(7,-1)) > 0) then
                 found = true
                 break
             end
@@ -92,17 +92,17 @@ end
 
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-    if player and player.get_player_name and minetest.is_protected(pos, player:get_player_name()) then
+    if player and player.get_player_name and core.is_protected(pos, player:get_player_name()) then
         return 0
     end
     if listname == "fuel" then
-        if minetest.get_item_group(stack:get_name(), "exchangeclone_upgrade") > 0 then
+        if core.get_item_group(stack:get_name(), "exchangeclone_upgrade") > 0 then
             return stack:get_count()
         else
             return 0
         end
     elseif listname == "src" then
-        if minetest.get_item_group(stack:get_name(), "exchangeclone_upgradable") > 0 then
+        if core.get_item_group(stack:get_name(), "exchangeclone_upgradable") > 0 then
             return stack:get_count()
         else
             return 0
@@ -113,20 +113,20 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 end
 
 local function allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, player)
-    local meta = minetest.get_meta(pos)
+    local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
     local stack = inv:get_stack(from_list, from_index)
     return allow_metadata_inventory_put(pos, to_list, to_index, stack, player)
 end
 
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
-    if minetest.is_protected(pos, player:get_player_name()) then
+    if core.is_protected(pos, player:get_player_name()) then
         return 0
     end
     return stack:get_count()
 end
 
-minetest.register_node("exchangeclone:upgrader", {
+core.register_node("exchangeclone:upgrader", {
     description = "Upgrader",
     tiles = {
         "exchangeclone_upgrader_top.png",
@@ -134,7 +134,7 @@ minetest.register_node("exchangeclone:upgrader", {
         "exchangeclone_upgrader_side.png",
     },
     on_construct = function(pos)
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
         inv:set_size("fuel", 1)
         inv:set_size("src", 1)
@@ -156,17 +156,15 @@ minetest.register_node("exchangeclone:upgrader", {
 	_mcl_hardness = 75,
 	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
 	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(
-        function(stack) return minetest.get_item_group(stack:get_name(), "exchangeclone_upgradable") > 0 end,
-        function(stack) return minetest.get_item_group(stack:get_name(), "exchangeclone_upgrade") > 0 end,
-        upgrader_action
+        function(stack) return core.get_item_group(stack:get_name(), "exchangeclone_upgradable") > 0 end,
+        function(stack) return core.get_item_group(stack:get_name(), "exchangeclone_upgrade") > 0 end
     ),
 	_mcl_hoppers_on_after_push = upgrader_action,
     _mcl_hoppers_on_after_pull = upgrader_action,
     after_place_node = exchangeclone.pipeworks and pipeworks.after_place,
 	_on_hopper_in = exchangeclone.mcla_on_hopper_in(
-        function(stack) return minetest.get_item_group(stack:get_name(), "exchangeclone_upgradable") > 0 end,
-        function(stack) return minetest.get_item_group(stack:get_name(), "exchangeclone_upgrade") > 0 end,
-        upgrader_action
+        function(stack) return core.get_item_group(stack:get_name(), "exchangeclone_upgradable") > 0 end,
+        function(stack) return core.get_item_group(stack:get_name(), "exchangeclone_upgrade") > 0 end
     ),
 })
 
@@ -174,15 +172,15 @@ if exchangeclone.pipeworks then
 	local function get_list(direction)
 		return (direction.y == 0 and "src") or "fuel"
 	end
-    minetest.override_item("exchangeclone:upgrader", {tube = {
+    core.override_item("exchangeclone:upgrader", {tube = {
         input_inventory = "dst",
         connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
         insert_object = function(pos, node, stack, direction)
-            local meta = minetest.get_meta(pos)
+            local meta = core.get_meta(pos)
             local inv = meta:get_inventory()
             local result = inv:add_item(get_list(direction), stack)
             if result then
-                local func = minetest.registered_items[node.name].on_metadata_inventory_put
+                local func = core.registered_items[node.name].on_metadata_inventory_put
                 if func then func(pos) end
             end
             return result
@@ -196,7 +194,7 @@ if exchangeclone.pipeworks then
     on_rotate = pipeworks.on_rotate,})
 end
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:upgrader",
     recipe = {
         {"exchangeclone:dark_matter_block", "mcl_deepslate:tuff", "exchangeclone:dark_matter_block"}, -- Tuff has to be useful SOMEHOW...
@@ -207,13 +205,13 @@ minetest.register_craft({
 })
 
 
-minetest.register_craftitem("exchangeclone:blank_upgrade", {
+core.register_craftitem("exchangeclone:blank_upgrade", {
     description = "Blank Upgrade",
     wield_image = "exchangeclone_upgrade.png",
     inventory_image = "exchangeclone_upgrade.png",
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:blank_upgrade",
     recipe = {
         {"mcl_copper:copper_ingot", "mcl_deepslate:tuff", "mcl_copper:copper_ingot"}, -- Copper and tuff because they're useless.

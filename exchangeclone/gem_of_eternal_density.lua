@@ -18,7 +18,7 @@ end
 function exchangeclone.goed_condense(player, itemstack)
     local meta = itemstack:get_meta()
     local inv = player:get_inventory()
-    local filter_inv = minetest.get_inventory({type = "detached", name = player:get_player_name().."_exchangeclone_goed"})
+    local filter_inv = core.get_inventory({type = "detached", name = player:get_player_name().."_exchangeclone_goed"})
     local list = inv:get_list("main")
     -- Don't include hotbar
     local min = player:hud_get_hotbar_itemcount() + 1
@@ -37,7 +37,7 @@ function exchangeclone.goed_condense(player, itemstack)
             return filter_inv:contains_item("main", stack:get_name())
         end
     else
-        local learned_items = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
+        local learned_items = core.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
         filter = function(stack)
             return table.indexof(learned_items, exchangeclone.handle_alias(stack:get_name())) > -1
         end
@@ -104,7 +104,7 @@ local function gem_action(itemstack, player, pointed_thing)
         else
             current_target = math.min(#exchangeclone.density_targets, current_target + 1)
         end
-        minetest.chat_send_player(player:get_player_name(), "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description())
+        core.chat_send_player(player:get_player_name(), "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description())
         meta:set_int("density_target", current_target)
         meta:set_string("description", get_gem_description(itemstack))
         return itemstack
@@ -128,14 +128,14 @@ function exchangeclone.goed_filter_formspec(player)
         "listring[current_player;main]",
         "listring[detached:", player:get_player_name().."_exchangeclone_goed;main]",
     })
-    minetest.show_formspec(player:get_player_name(), "exchangeclone_goed_filter", formspec)
+    core.show_formspec(player:get_player_name(), "exchangeclone_goed_filter", formspec)
 end
 
-minetest.register_on_joinplayer(function(joining_player)
+core.register_on_joinplayer(function(joining_player)
     local inv_name = joining_player:get_player_name().."_exchangeclone_goed"
-    local inventory = minetest.get_inventory({type = "detached", name = inv_name})
+    local inventory = core.get_inventory({type = "detached", name = inv_name})
     if not inventory then
-        minetest.create_detached_inventory(inv_name, {
+        core.create_detached_inventory(inv_name, {
             allow_put = function(inv, listname, index, stack, player)
                 if player:get_player_name() ~= joining_player:get_player_name() then return 0 end
                 local emc = stack:_get_emc()
@@ -161,13 +161,13 @@ minetest.register_on_joinplayer(function(joining_player)
                 end
             end,
         })
-        inventory = minetest.get_inventory({type = "detached", name = inv_name})
+        inventory = core.get_inventory({type = "detached", name = inv_name})
     end
     inventory:set_size("main", 9)
     inventory:set_width("main", 3)
 end)
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
+core.register_on_player_receive_fields(function(player, formname, fields)
     local meta = player:get_meta()
     if formname == "exchangeclone_goed_filter" then
         if player:get_wielded_item():get_name() ~= "exchangeclone:gem_of_eternal_density"
@@ -186,7 +186,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-minetest.register_tool("exchangeclone:gem_of_eternal_density", {
+core.register_tool("exchangeclone:gem_of_eternal_density", {
     description = "Gem of Eternal Density",
     inventory_image = "exchangeclone_gem_of_eternal_density.png",
     on_secondary_use = gem_action,
@@ -203,7 +203,7 @@ minetest.register_tool("exchangeclone:gem_of_eternal_density", {
     _mcl_generate_description = get_gem_description
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:gem_of_eternal_density",
     recipe = {
         {exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.diamond},

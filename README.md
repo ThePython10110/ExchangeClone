@@ -1,5 +1,5 @@
 # ExchangeClone
-[![ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone/shields/downloads/)](https://content.minetest.net/packages/ThePython/exchangeclone/)
+[![ContentDB](https://content.luanti.org/packages/ThePython/exchangeclone/shields/downloads/)](https://content.luanti.org/packages/ThePython/exchangeclone/)
 
 Allows players to turn items into EMC, or Energy Matter Covalence, and EMC into items. Also adds a whole bunch of other stuff.
 
@@ -25,9 +25,9 @@ See the [wiki](https://github.com/ThePython10110/ExchangeClone/wiki) for more in
 
 If you would like to see the latest changes, check out (pun) the dev branch! Beware of bugs.
 
-[Forum topic](https://forum.minetest.net/viewtopic.php?f=9&t=29473)
+[Forum topic](https://forum.luanti.org/viewtopic.php?f=9&t=29473)
 
-[ContentDB](https://content.minetest.net/packages/ThePython/exchangeclone)
+[ContentDB](https://content.luanti.org/packages/ThePython/exchangeclone)
 
 [Wiki](https://github.com/ThePython10110/ExchangeClone/wiki)
 

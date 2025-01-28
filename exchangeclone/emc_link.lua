@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 local formspec = table.concat({
     "size[",(exchangeclone.mcl and 9 or 8),",9]",
@@ -28,7 +28,7 @@ end
 
 local function link_action(pos)
     local player
-    local meta = minetest.get_meta(pos)
+    local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
     local limit
     local using_star
@@ -41,14 +41,14 @@ local function link_action(pos)
     local stack_max = ItemStack(target):get_stack_max()
 
     local star_stack = inv:get_stack("fuel", 1)
-    if minetest.get_item_group(star_stack:get_name(), "klein_star") > 0 then
+    if core.get_item_group(star_stack:get_name(), "klein_star") > 0 then
         using_star = true
         limit = exchangeclone.get_star_max(star_stack)
-        stored_emc = star_stack:get_star_emc()
+        stored_emc = star_stack:_get_star_emc()
     else
         using_star = false
         limit = exchangeclone.limit
-        player = minetest.get_player_by_name(meta:get_string("exchangeclone_placer"))
+        player = core.get_player_by_name(meta:get_string("exchangeclone_placer"))
         if not player then return true end
         stored_emc = player:_get_emc()
     end
@@ -78,7 +78,7 @@ local function link_action(pos)
         end
     end
 
-    local timer = minetest.get_node_timer(pos)
+    local timer = core.get_node_timer(pos)
     if inv:get_stack("src", 1):is_empty() and inv:get_stack("target", 1):is_empty() then
         timer:stop()
     elseif not timer:is_started() then
@@ -87,11 +87,11 @@ local function link_action(pos)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-    if player and player.get_player_name and minetest.is_protected(pos, player:get_player_name()) then
+    if player and player.get_player_name and core.is_protected(pos, player:get_player_name()) then
         return 0
     end
     if listname == "fuel" then
-        if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
+        if core.get_item_group(stack:get_name(), "klein_star") > 0 then
             return stack:get_count()
         end
     elseif listname == "src" then
@@ -103,7 +103,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
         local single_item = stack:peek_item()
         local emc = single_item:_get_emc()
         if emc and emc > 0 then
-            minetest.get_meta(pos):get_inventory():set_stack("target", 1, ItemStack(exchangeclone.handle_alias(single_item)))
+            core.get_meta(pos):get_inventory():set_stack("target", 1, ItemStack(exchangeclone.handle_alias(single_item)))
             link_action(pos)
         end
     end
@@ -111,18 +111,18 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 end
 
 local function allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, player)
-    local meta = minetest.get_meta(pos)
+    local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
     local stack = inv:get_stack(from_list, from_index)
     return allow_metadata_inventory_put(pos, to_list, to_index, stack, player)
 end
 
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
-    if minetest.is_protected(pos, player:get_player_name()) then
+    if core.is_protected(pos, player:get_player_name()) then
         return 0
     end
     if listname == "target" then
-        minetest.get_meta(pos):get_inventory():set_stack("target", 1, ItemStack(""))
+        core.get_meta(pos):get_inventory():set_stack("target", 1, ItemStack(""))
         link_action(pos)
         return 0
     else
@@ -130,12 +130,12 @@ local function allow_metadata_inventory_take(pos, listname, index, stack, player
     end
 end
 
-minetest.register_node("exchangeclone:emc_link", {
+core.register_node("exchangeclone:emc_link", {
     description = "EMC Link\nAllows automation with personal EMC",
     tiles = {"exchangeclone_emc_link.png"},
 	groups = {pickaxey=4, material_stone=1, cracky = 2, building_block = 1, level = exchangeclone.mtg and 2 or 0, tubedevice = 1, tubedevice_receiver = 1, container = exchangeclone.mcl2 and 2 or 4},
     on_construct = function(pos)
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
         inv:set_size("fuel", 1)
         inv:set_size("src", 1)
@@ -149,7 +149,7 @@ minetest.register_node("exchangeclone:emc_link", {
     on_blast = exchangeclone.on_blast({"src", "fuel", "dst"}),
     after_place_node = function(pos, player, itemstack, pointed_thing)
         local player_name = player:get_player_name()
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         meta:set_string("exchangeclone_placer", player_name)
         meta:set_string("infotext", "EMC Link".."\n".."Owned by "..player_name)
         if exchangeclone.pipeworks then
@@ -167,13 +167,13 @@ minetest.register_node("exchangeclone:emc_link", {
     allow_metadata_inventory_put = allow_metadata_inventory_put,
     allow_metadata_inventory_take = allow_metadata_inventory_take,
 	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
-	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(nil, function(stack) return minetest.get_item_group(stack:get_name(), "klein_star") > 0 end),
+	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(nil, function(stack) return core.get_item_group(stack:get_name(), "klein_star") > 0 end),
 	_mcl_hoppers_on_after_push = function(pos)
-		minetest.get_node_timer(pos):start(1.0)
+		core.get_node_timer(pos):start(1.0)
 	end,
 	_on_hopper_in = exchangeclone.mcla_on_hopper_in(
         nil,
-        function(stack) return minetest.get_item_group(stack:get_name(), "klein_star") > 0 end
+        function(stack) return core.get_item_group(stack:get_name(), "klein_star") > 0 end
     ),
 })
 
@@ -181,12 +181,12 @@ if exchangeclone.pipeworks then
     local function get_list(direction)
         return (direction.y == 0 and "src") or "fuel"
     end
-    minetest.override_item("exchangeclone:emc_link", {
+    core.override_item("exchangeclone:emc_link", {
         tube = {
             input_inventory = "dst",
             connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
             insert_object = function(pos, node, stack, direction)
-                local meta = minetest.get_meta(pos)
+                local meta = core.get_meta(pos)
                 local inv = meta:get_inventory()
                 local result = inv:add_item(get_list(direction), stack)
                 if result then
@@ -195,10 +195,10 @@ if exchangeclone.pipeworks then
                 return result
             end,
             can_insert = function(pos, node, stack, direction)
-                local meta = minetest.get_meta(pos)
+                local meta = core.get_meta(pos)
                 local inv = meta:get_inventory()
                 if get_list(direction) == "fuel" then
-                    if minetest.get_item_group(stack:get_name(), "klein_star") > 0 then
+                    if core.get_item_group(stack:get_name(), "klein_star") > 0 then
                         return inv:room_for_item("fuel", stack)
                     end
                 else
@@ -210,7 +210,7 @@ if exchangeclone.pipeworks then
     })
 end
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:emc_link",
     recipe = {
         {exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.obsidian},

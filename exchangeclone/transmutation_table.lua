@@ -1,7 +1,7 @@
 local suffixes = {"", "K", "M", "B", "T"}
 
 local function get_amount_label(itemstring, player_emc)
-    if not minetest.registered_items[itemstring] then return "" end
+    if not core.registered_items[itemstring] then return "" end
     if player_emc <= 0 then return "0" end
     local item_emc = exchangeclone.get_item_emc(itemstring)
     local amount = math.floor(player_emc/item_emc)
@@ -17,7 +17,7 @@ end
 
 local function get_transmutation_buttons(player, page, x, y)
     local player_emc = player:_get_emc()
-    local pages = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation")) or {}
+    local pages = core.deserialize(player:get_meta():get_string("exchangeclone_transmutation")) or {}
     if page < 1 then page = 1 end
     if not pages[1] then
         pages[1] = {}
@@ -45,7 +45,7 @@ local function filter_item(name, description, lang, filter)
 	if not lang then
 		desc = string.lower(description)
 	else
-		desc = string.lower(minetest.get_translated_string(lang, description))
+		desc = string.lower(core.get_translated_string(lang, description))
 	end
 	return string.find(name, filter, nil, true) or string.find(desc, filter, nil, true)
 end
@@ -53,8 +53,8 @@ end
 function exchangeclone.reload_transmutation_list(player, search)
     local meta = player:get_meta()
     local player_emc = player:_get_emc()
-    local items_to_show = minetest.deserialize(meta:get_string("exchangeclone_transmutation_learned_items")) or {}
-	local lang = minetest.get_player_information(player:get_player_name()).lang_code
+    local items_to_show = core.deserialize(meta:get_string("exchangeclone_transmutation_learned_items")) or {}
+	local lang = core.get_player_information(player:get_player_name()).lang_code
     local pages = {}
     local page_num
     local i = 0
@@ -62,7 +62,7 @@ function exchangeclone.reload_transmutation_list(player, search)
     if search and search ~= "" then
         local filtered_items = {}
         for _, name in pairs(items_to_show) do
-            local def = minetest.registered_items[name]
+            local def = core.registered_items[name]
             if def and def.description and def.description ~= "" then
                 if filter_item(string.lower(def.name), def.description, lang, search) then
                     table.insert(filtered_items, name)
@@ -93,20 +93,20 @@ function exchangeclone.reload_transmutation_list(player, search)
         pages[page_num][(i % 16) + 1] = item
         i = i + 1
     end
-    player:get_meta():set_string("exchangeclone_transmutation", minetest.serialize(pages))
+    player:get_meta():set_string("exchangeclone_transmutation", core.serialize(pages))
     return pages
 end
 
 local function add_to_output(player, amount, show)
     local item = player:get_meta():get_string("exchangeclone_transmutation_selection")
-    if minetest.registered_items[item] then
+    if core.registered_items[item] then
         local emc_value = exchangeclone.get_item_emc(item)
         if not emc_value then return end
         local player_emc = player:_get_emc()
         local stack_max = ItemStack(item):get_stack_max()
         if amount == true then amount = stack_max end
         local max_amount = math.min(amount, stack_max, math.floor(player_emc/emc_value))
-        local inventory = minetest.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..player:get_player_name()})
+        local inventory = core.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..player:get_player_name()})
         local added_amount = max_amount - inventory:add_item("output", ItemStack(item.." "..max_amount)):get_count()
         player:_add_emc(math.min(player_emc, -(emc_value * added_amount))) -- not sure if "math.min()" is necessary
         if show then exchangeclone.show_transmutation_table_formspec(player) end
@@ -119,11 +119,11 @@ local function handle_inventory(player, inventory, to_list)
     local single_item = stack:peek_item()
     itemstring = exchangeclone.emc_aliases[itemstring] or itemstring
     if to_list == "learn" then
-        local list = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
+        local list = core.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
         if itemstring == "exchangeclone:tome_of_knowledge" then
             list = {}
             local i = 0
-            for name, def in pairs(minetest.registered_items) do
+            for name, def in pairs(core.registered_items) do
                 local emc_value = exchangeclone.get_item_emc(name)
                 if emc_value and emc_value > 0 then
                     i = i + 1
@@ -131,7 +131,7 @@ local function handle_inventory(player, inventory, to_list)
                 end
             end
             table.sort(list)
-            player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
+            player:get_meta():set_string("exchangeclone_transmutation_learned_items", core.serialize(list))
             inventory:set_stack(to_list, 1, nil)
         else
             local individual_emc_value = single_item:_get_emc()
@@ -148,7 +148,7 @@ local function handle_inventory(player, inventory, to_list)
             if item_index == -1 then
                 list[#list+1] = itemstring
                 table.sort(list)
-                player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
+                player:get_meta():set_string("exchangeclone_transmutation_learned_items", core.serialize(list))
             end
             stack:set_count(stack:get_count() - add_count)
             if stack:get_count() == 0 then stack = ItemStack("") end
@@ -173,14 +173,14 @@ local function check_for_table(player, inv)
     -- Keeps player from accessing someone else's transmutation inventory
     if inv and inv:get_location().name ~= "exchangeclone_transmutation_"..player:get_player_name() then return false end
     -- Allow creative players to do whatever
-    if minetest.is_creative_enabled(player:get_player_name()) then return true end
+    if core.is_creative_enabled(player:get_player_name()) then return true end
     -- Check for nearby/wielded table(t)
     local def = player:get_wielded_item():get_definition()
     local range = def and def.range
     if not range then range = player:get_inventory():get_stack("hand", 1):get_definition().range end
     if range then range = range + 1 else range = 5 end
     if player:get_wielded_item():get_name() ~= "exchangeclone:transmutation_tablet"
-    and not minetest.find_node_near(player:get_pos(), range, "exchangeclone:transmutation_table", true) then return false end
+    and not core.find_node_near(player:get_pos(), range, "exchangeclone:transmutation_table", true) then return false end
     return true
 end
 
@@ -188,7 +188,7 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
     if not check_for_table(player, inventory) then return 0 end
     if to_list == "output" then
         return 0
-    elseif to_list == "charge" and minetest.get_item_group(stack:get_name(), "klein_star") < 1 then
+    elseif to_list == "charge" and core.get_item_group(stack:get_name(), "klein_star") < 1 then
         return 0
     elseif to_list == "learn" then
         if stack:get_name() == "exchangeclone:tome_of_knowledge" then return count end
@@ -201,13 +201,13 @@ local function allow_inventory_action(player, stack, to_list, count, move, inven
         end
     elseif to_list == "forget" then
         -- Kind of a weird way of doing this, but I couldn't make it work in the "on_inventory_* functions"
-        local list = minetest.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
+        local list = core.deserialize(player:get_meta():get_string("exchangeclone_transmutation_learned_items")) or {}
         local item_index = table.indexof(list, exchangeclone.handle_alias(stack:get_name()))
         if item_index > -1 then
             list[item_index] = list[#list]
             list[#list] = nil
             table.sort(list)
-            player:get_meta():set_string("exchangeclone_transmutation_learned_items", minetest.serialize(list))
+            player:get_meta():set_string("exchangeclone_transmutation_learned_items", core.serialize(list))
             local selection = player:get_meta():get_string("exchangeclone_transmutation_selection")
             if selection == stack:get_name() then
                 player:get_meta():set_string("exchangeclone_transmutation_selection", "")
@@ -247,7 +247,7 @@ function exchangeclone.show_transmutation_table_formspec(player, data)
     "button[1,3.5;1,1;plus5;+5]"..
     "button[0,4.5;1,1;plus10;+10]"..
     "button[1,4.5;1,1;plusstack;+Stack]"..
-    "field[4.25,0.25;4,1;search_box;;"..minetest.formspec_escape(data.search or player:get_meta():get_string("exchangeclone_transmutation_search") or "").."]"..
+    "field[4.25,0.25;4,1;search_box;;"..core.formspec_escape(data.search or player:get_meta():get_string("exchangeclone_transmutation_search") or "").."]"..
     "field_close_on_enter[search_box;false]"..
     "button[8,0;1,1;search_button;Search]"..
     exchangeclone.inventory_formspec(0,6.25)..
@@ -256,7 +256,7 @@ function exchangeclone.show_transmutation_table_formspec(player, data)
     "listring["..inventory_name..";learn]"..
     "listring[current_player;main]"
 
-    if minetest.registered_items[selection] then
+    if core.registered_items[selection] then
         formspec = formspec.."item_image[0.5,2.5;0.8,0.8;"..selection.."]"
     end
 
@@ -268,12 +268,12 @@ function exchangeclone.show_transmutation_table_formspec(player, data)
             mcl_formspec.get_itemslot_bg(2,3.5,2,2)
     end
 
-    minetest.show_formspec(player_name, "exchangeclone_transmutation_table", formspec)
+    core.show_formspec(player_name, "exchangeclone_transmutation_table", formspec)
 end
 
-minetest.register_on_joinplayer(function(ref, last_login)
+core.register_on_joinplayer(function(ref, last_login)
     local playername = ref:get_player_name()
-    minetest.create_detached_inventory("exchangeclone_transmutation_"..playername, {
+    core.create_detached_inventory("exchangeclone_transmutation_"..playername, {
         allow_move = function(inv, from_list, from_index, to_list, to_index, count, player)
             local stack = inv:get_stack(from_list, from_index)
             stack:set_count(count)
@@ -281,17 +281,17 @@ minetest.register_on_joinplayer(function(ref, last_login)
         end,
         on_move = function(inv, from_list, from_index, to_list, to_index, count, player)
             local stack = inv:get_stack(to_list, to_index)
-            handle_inventory(player, inv, to_list, to_index, stack)
+            handle_inventory(player, inv, to_list)
         end,
         allow_put = function(inv, listname, index, stack, player)
             local count = stack:get_count()
             return allow_inventory_action(player, stack, listname, count, false, inv)
         end,
         on_put = function(inv, listname, index, stack, player)
-            handle_inventory(player, inv, listname, index, stack)
+            handle_inventory(player, inv, listname)
         end
     }, playername)
-    local inventory = minetest.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..playername})
+    local inventory = core.get_inventory({type = "detached", name = "exchangeclone_transmutation_"..playername})
     inventory:set_size("charge", 1)
     inventory:set_size("output", 4)
     inventory:set_width("output", 2)
@@ -300,7 +300,7 @@ minetest.register_on_joinplayer(function(ref, last_login)
     exchangeclone.reload_transmutation_list(ref)
 end)
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
+core.register_on_player_receive_fields(function(player, formname, fields)
     if formname == "exchangeclone_transmutation_table" then
         if not check_for_table(player) then return end
         for field, value in pairs(fields) do
@@ -322,7 +322,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 add_to_output(player, 10, true)
             elseif field == "plusstack" then
                 add_to_output(player, true, true)
-            elseif minetest.registered_items[field] then
+            elseif core.registered_items[field] then
                 player:get_meta():set_string("exchangeclone_transmutation_selection", field)
                 exchangeclone.show_transmutation_table_formspec(player, {selection = field})
             end
@@ -330,7 +330,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-minetest.register_tool("exchangeclone:transmutation_tablet", {
+core.register_tool("exchangeclone:transmutation_tablet", {
     description = "Transmutation Tablet",
     groups = {disable_repair = 1, fire_immune = 1},
     wield_image = "exchangeclone_transmutation_tablet.png",
@@ -351,7 +351,7 @@ minetest.register_tool("exchangeclone:transmutation_tablet", {
     end
 })
 
-minetest.register_node("exchangeclone:transmutation_table", {
+core.register_node("exchangeclone:transmutation_table", {
     description = "Transmutation Table",
     paramtype2 = "wallmounted",
     tiles = {
@@ -373,15 +373,15 @@ minetest.register_node("exchangeclone:transmutation_table", {
     _mcl_blast_resistance = 6,
 })
 
-minetest.register_tool("exchangeclone:tome_of_knowledge", {
+core.register_tool("exchangeclone:tome_of_knowledge", {
     description = "Tome of Knowledge\nKlein Star Omegas in crafting recipe must be full\nLearns all items when put into Transmutation Table(t)",
     inventory_image = "exchangeclone_tome_of_knowledge.png",
     groups = {disable_repair = 1, fire_immune = 1}
 })
 
-minetest.register_alias("exchangeclone:alchemical_tome", "exchangeclone:tome_of_knowledge")
+core.register_alias("exchangeclone:alchemical_tome", "exchangeclone:tome_of_knowledge")
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:transmutation_table",
     recipe = {
         {exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.stone, exchangeclone.itemstrings.obsidian},
@@ -391,7 +391,7 @@ minetest.register_craft({
     replacements = {{"exchangeclone:philosophers_stone", "exchangeclone:philosophers_stone"}}
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:transmutation_tablet",
     recipe = {
         {"exchangeclone:dark_matter_block", exchangeclone.itemstrings.stone, "exchangeclone:dark_matter_block"},
@@ -400,8 +400,8 @@ minetest.register_craft({
     },
 })
 
-if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", false) then
-    minetest.register_craft({
+if core.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", false) then
+    core.register_craft({
         output = "exchangeclone:tome_of_knowledge",
         recipe = {
             {"", exchangeclone.itemstrings.book, ""},
@@ -412,7 +412,7 @@ if minetest.settings:get_bool("exchangeclone.allow_crafting_alchemical_tome", fa
     })
 end
 
-minetest.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
+core.register_craft_predict(function(itemstack, player, old_craft_grid, craft_inv)
     if itemstack == ItemStack("exchangeclone:tome_of_knowledge") then
         for _, i in pairs({4,6}) do
             local stack = old_craft_grid[i]

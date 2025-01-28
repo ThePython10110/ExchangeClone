@@ -28,11 +28,11 @@ local function place_liquid(itemstack, player, pointed_thing)
         local bucket = ItemStack(exchangeclone.itemstrings[liquid.."_bucket"])
         bucket:get_definition().on_place(bucket, player, pointed_thing)
     else
-        if (not exchangeclone.mcl) or minetest.settings:get_bool("mcl_buckets_use_select_box", false) then
+        if (not exchangeclone.mcl) or core.settings:get_bool("mcl_buckets_use_select_box", false) then
             local velocity = player:get_look_dir()*20
-            minetest.add_entity(
+            core.add_entity(
                 vector.offset(player:get_pos(), 0, player:get_properties().eye_height, 0),
-                "exchangeclone:projectile", minetest.serialize({
+                "exchangeclone:projectile", core.serialize({
                     velocity = vector.to_string(velocity),
                     player = player:get_player_name(),
                     itemstring = itemstack:get_name(),
@@ -44,7 +44,7 @@ local function place_liquid(itemstack, player, pointed_thing)
     end
 end
 
-minetest.register_entity("exchangeclone:projectile", {
+core.register_entity("exchangeclone:projectile", {
     initial_properties = {
         hp_max = 1,
         physical = true,
@@ -55,7 +55,7 @@ minetest.register_entity("exchangeclone:projectile", {
         static_save = false,
     },
     on_activate = function(self, staticdata)
-        local table_data = minetest.deserialize(staticdata)
+        local table_data = core.deserialize(staticdata)
         local velocity = vector.from_string(table_data.velocity) or vector.new(0,0,0)
         self._itemstring = table_data.itemstring
         self._player = table_data.player
@@ -66,7 +66,7 @@ minetest.register_entity("exchangeclone:projectile", {
     on_step = function(self, dtime, moveresult)
         for _, collision in ipairs(moveresult.collisions) do
             if collision.type == "node" then
-                local player = minetest.get_player_by_name(self._player)
+                local player = core.get_player_by_name(self._player)
                 if not player then
                     self.object:remove()
                     return
@@ -85,7 +85,7 @@ minetest.register_entity("exchangeclone:projectile", {
                     mcl_burning.set_on_fire(obj, 4)
                 else
                     obj:set_hp(obj:get_hp() - 5)
-                    if minetest.get_modpath("fire_plus") and obj:is_player() then
+                    if core.get_modpath("fire_plus") and obj:is_player() then
                         fire_plus.burn_player(obj, 4, 1)
                     end
                 end
@@ -97,7 +97,7 @@ minetest.register_entity("exchangeclone:projectile", {
 
 local change_count = 9 -- numbers of calls before changing, starts at 9 to make it do it the first time (10)
 local evertide_pedestal
-if exchangeclone.mcl and minetest.settings:get_bool("mcl_doWeatherCycle", true) then
+if exchangeclone.mcl and core.settings:get_bool("mcl_doWeatherCycle", true) then
     evertide_pedestal = function()
         change_count = change_count + 1
         if change_count >= 10 then
@@ -105,7 +105,7 @@ if exchangeclone.mcl and minetest.settings:get_bool("mcl_doWeatherCycle", true) 
             change_count = 0
         end
     end
-elseif minetest.get_modpath("weather") then
+elseif core.get_modpath("weather") then
     evertide_pedestal = function()
         change_count = change_count + 1
         if change_count >= 10 then
@@ -117,7 +117,7 @@ elseif minetest.get_modpath("weather") then
     end
 end
 local volcanite_pedestal
-if exchangeclone.mcl and minetest.settings:get_bool("mcl_doWeatherCycle", true) then
+if exchangeclone.mcl and core.settings:get_bool("mcl_doWeatherCycle", true) then
     volcanite_pedestal = function()
         change_count = change_count + 1
         if change_count >= 10 then
@@ -125,7 +125,7 @@ if exchangeclone.mcl and minetest.settings:get_bool("mcl_doWeatherCycle", true) 
             change_count = 0
         end
     end
-elseif minetest.get_modpath("weather") then
+elseif core.get_modpath("weather") then
     volcanite_pedestal = function()
         change_count = change_count + 1
         if change_count >= 10 then
@@ -137,7 +137,7 @@ elseif minetest.get_modpath("weather") then
     end
 end
 
-minetest.register_tool("exchangeclone:evertide_amulet", {
+core.register_tool("exchangeclone:evertide_amulet", {
     description = "Evertide Amulet",
     inventory_image = "exchangeclone_evertide_amulet.png",
     groups = {disable_repair = 1, immune_to_fire = 1},
@@ -146,7 +146,7 @@ minetest.register_tool("exchangeclone:evertide_amulet", {
     _exchangeclone_pedestal = evertide_pedestal
 })
 
-minetest.register_tool("exchangeclone:volcanite_amulet", {
+core.register_tool("exchangeclone:volcanite_amulet", {
     description = "Volcanite Amulet",
     inventory_image = "exchangeclone_volcanite_amulet.png",
     groups = {disable_repair = 1, immune_to_fire = 1},
@@ -156,7 +156,7 @@ minetest.register_tool("exchangeclone:volcanite_amulet", {
 })
 
 -- Drowning damage looks the same in MCL and MTGs
-minetest.register_on_player_hpchange(function(player, hp_change, reason)
+core.register_on_player_hpchange(function(player, hp_change, reason)
     if hp_change < 0 then
         if reason.type == "drown" then
             local inv = player:get_inventory()
@@ -201,7 +201,7 @@ if exchangeclone.mcl then
     end)
 end
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:evertide_amulet",
     recipe = {
         {exchangeclone.itemstrings.water_bucket, exchangeclone.itemstrings.water_bucket, exchangeclone.itemstrings.water_bucket},
@@ -210,7 +210,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:volcanite_amulet",
     recipe = {
         {exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket},

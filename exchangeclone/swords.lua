@@ -52,8 +52,8 @@ local hostile_mobs = { --for Red Matter Sword/Katar
 	["mobs_mc:zombie"] = true,
 }
 
-minetest.register_on_mods_loaded(function()
-	for name, def in pairs(minetest.registered_entities) do
+core.register_on_mods_loaded(function()
+	for name, def in pairs(core.registered_entities) do
 		if not name:find("mobs") then
 			aoe_exclude[name] = true
 		end
@@ -84,7 +84,7 @@ function exchangeclone.aoe_attack(info)
 		local pos = player:get_pos()
 
 		-- Entities in radius of explosion
-		local objs = minetest.get_objects_inside_radius(pos, radius)
+		local objs = core.get_objects_inside_radius(pos, radius)
 
 		-- Trace rays for entity damage
 		for _, obj in pairs(objs) do
@@ -111,14 +111,14 @@ function exchangeclone.aoe_attack(info)
 					if mcl_beds then
 						local meta = obj:get_meta()
 						if meta:get_string("mcl_beds:sleeping") == "true" then
-							minetest.close_formspec(name, "") -- ABSOLUTELY NECESSARY FOR MT5.3 -- TODO: REMOVE THIS IN THE FUTURE
+							core.close_formspec(name, "") -- ABSOLUTELY NECESSARY FOR MT5.3 -- TODO: REMOVE THIS IN THE FUTURE
 							sleep_formspec_doesnt_close_mt53 = true
 						end
 					end
 				end
 
 				if sleep_formspec_doesnt_close_mt53 then
-					minetest.after(0.3,
+					core.after(0.3,
 						function() -- 0.2 is minimum delay for closing old formspec and open died formspec -- TODO: REMOVE THIS IN THE FUTURE
 							if not obj:is_player() then
 								return
@@ -156,20 +156,21 @@ local red_matter_sword_action = function(itemstack, player, pointed_thing)
 	if player:get_player_control().sneak then
 		if damage_all == 0 then
 			damage_all = 1
-			minetest.chat_send_player(player:get_player_name(), "Damage all mobs")
+			core.chat_send_player(player:get_player_name(), "Damage all mobs")
 		else
 			damage_all = 0
-			minetest.chat_send_player(player:get_player_name(), "Damage hostile mobs")
+			core.chat_send_player(player:get_player_name(), "Damage hostile mobs")
 		end
 		itemstack:get_meta():set_int("exchangeclone_damage_all", damage_all)
 		return itemstack
 	end
 
 	local aoe_function = exchangeclone.aoe_attack({damage = 16, knockback = 20, radius = 7.5, damage_all = damage_all, cooldown = 0.7})
+---@diagnostic disable-next-line: need-check-nil
 	aoe_function(itemstack, player, pointed_thing)
 end
 
-minetest.register_tool("exchangeclone:dark_matter_sword", {
+core.register_tool("exchangeclone:dark_matter_sword", {
 	description = "Dark Matter Sword",
 	wield_image = "exchangeclone_dark_matter_sword.png",
 	inventory_image = "exchangeclone_dark_matter_sword.png",
@@ -194,7 +195,7 @@ minetest.register_tool("exchangeclone:dark_matter_sword", {
 	wear_represents = "exchangeclone_charge_level"
 })
 
-minetest.register_tool("exchangeclone:red_matter_sword", {
+core.register_tool("exchangeclone:red_matter_sword", {
 	description = "Red Matter Sword",
 	wield_image = "exchangeclone_red_matter_sword.png",
 	inventory_image = "exchangeclone_red_matter_sword.png",
@@ -220,7 +221,7 @@ minetest.register_tool("exchangeclone:red_matter_sword", {
 	wear_represents = "exchangeclone_charge_level"
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter_sword",
     recipe = {
         {"exchangeclone:dark_matter"},
@@ -229,7 +230,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
 	output = "exchangeclone:red_matter_sword",
 	recipe = {
 		{"exchangeclone:red_matter"},

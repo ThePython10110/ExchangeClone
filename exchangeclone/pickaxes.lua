@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 function exchangeclone.mine_vein(player, start_pos, node_name, pos, depth, visited)
     if not player or not start_pos then
@@ -9,25 +9,25 @@ function exchangeclone.mine_vein(player, start_pos, node_name, pos, depth, visit
     depth = depth or 0
     visited = visited or {}
 
-    local pos_str = minetest.pos_to_string(pos)
+    local pos_str = core.pos_to_string(pos)
     if visited[pos_str] then
         return
     end
     visited[pos_str] = true
 
-    local node = minetest.get_node(pos)
+    local node = core.get_node(pos)
     if not node_name then
         node_name = node.name
     end
 
     if node_name == node.name then
-        local drops = minetest.get_node_drops(node.name, "exchangeclone:red_matter_pickaxe")
+        local drops = core.get_node_drops(node.name, "exchangeclone:red_matter_pickaxe")
         exchangeclone.drop_items_on_player(pos, drops, player)
         exchangeclone.check_nearby_falling(pos)
-        minetest.set_node(pos, {name = "air"})
+        core.set_node(pos, {name = "air"})
 
         if depth < 10 then
-            for _, neighbor_pos in ipairs(minetest.find_nodes_in_area(
+            for _, neighbor_pos in ipairs(core.find_nodes_in_area(
                 {x = pos.x - 1, y = pos.y - 1, z = pos.z - 1},
                 {x = pos.x + 1, y = pos.y + 1, z = pos.z + 1},
                 node_name)) do
@@ -50,20 +50,20 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
         local current_mode = itemstack:get_meta():get_string("exchangeclone_multidig_mode") or "1x1"
         if current_mode == "1x1" then
             meta:set_string("exchangeclone_multidig_mode", "3x1_tall")
-            minetest.chat_send_player(player:get_player_name(), S("3x1 tall mode"))
+            core.chat_send_player(player:get_player_name(), S("3x1 tall mode"))
         elseif current_mode == "tall" then
             meta:set_string("exchangeclone_multidig_mode", "3x1_wide")
-            minetest.chat_send_player(player:get_player_name(), S("3x1 wide mode"))
+            core.chat_send_player(player:get_player_name(), S("3x1 wide mode"))
         elseif current_mode == "wide" then
             meta:set_string("exchangeclone_multidig_mode", "3x1_long")
-            minetest.chat_send_player(player:get_player_name(), S("3x1 long mode"))
+            core.chat_send_player(player:get_player_name(), S("3x1 long mode"))
         else
             meta:set_string("exchangeclone_multidig_mode", "1x1")
-            minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
+            core.chat_send_player(player:get_player_name(), S("Single node mode"))
         end
 		return itemstack
 	elseif pointed_thing.type == "node" then
-        if minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0 then
+        if core.get_item_group(core.get_node(pointed_thing.under).name, "exchangeclone_ore") > 0 then
             if exchangeclone.check_cooldown(player, "pickaxe") then return itemstack end
             exchangeclone.play_sound(player, "exchangeclone_destruct")
             exchangeclone.mine_vein(player, pointed_thing.under)
@@ -78,7 +78,7 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
     end
 end
 
-minetest.register_tool("exchangeclone:dark_matter_pickaxe", {
+core.register_tool("exchangeclone:dark_matter_pickaxe", {
 	description = S("Dark Matter Pickaxe").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_dark_matter_pickaxe.png",
 	inventory_image = "exchangeclone_dark_matter_pickaxe.png",
@@ -103,10 +103,10 @@ minetest.register_tool("exchangeclone:dark_matter_pickaxe", {
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:dark_matter_pickaxe", {"group:"..exchangeclone.pickaxe_group})
-minetest.register_alias("exchangeclone:dark_matter_pickaxe_3x1", "exchangeclone:dark_matter_pickaxe")
+core.register_alias("exchangeclone:dark_matter_pickaxe_3x1", "exchangeclone:dark_matter_pickaxe")
 exchangeclone.set_charge_type("exchangeclone:dark_matter_pickaxe", "dark_matter")
 
-minetest.register_tool("exchangeclone:red_matter_pickaxe", {
+core.register_tool("exchangeclone:red_matter_pickaxe", {
 	description = S("Red Matter Pickaxe").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_red_matter_pickaxe.png",
 	inventory_image = "exchangeclone_red_matter_pickaxe.png",
@@ -131,10 +131,10 @@ minetest.register_tool("exchangeclone:red_matter_pickaxe", {
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:red_matter_pickaxe", {"group:"..exchangeclone.pickaxe_group})
-minetest.register_alias("exchangeclone:red_matter_pickaxe_3x1", "exchangeclone:red_matter_pickaxe")
+core.register_alias("exchangeclone:red_matter_pickaxe_3x1", "exchangeclone:red_matter_pickaxe")
 exchangeclone.set_charge_type("exchangeclone:red_matter_pickaxe", "red_matter")
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter_pickaxe",
     recipe = {
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter", "exchangeclone:dark_matter"},
@@ -143,7 +143,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:red_matter_pickaxe",
     recipe = {
         {"exchangeclone:red_matter", "exchangeclone:red_matter", "exchangeclone:red_matter"},
@@ -154,8 +154,8 @@ minetest.register_craft({
 
 
 -- Can't find a good way to automate this...
-minetest.register_on_mods_loaded(function()
-    for name, def in pairs(minetest.registered_nodes) do
+core.register_on_mods_loaded(function()
+    for name, def in pairs(core.registered_nodes) do
         if name:find("_ore")
         or name:find("stone_with")
         or name:find("deepslate_with")
@@ -168,7 +168,7 @@ minetest.register_on_mods_loaded(function()
         or (name == "mcl_nether:ancient_debris") then
             local groups = table.copy(def.groups)
             groups.exchangeclone_ore = 1
-            minetest.override_item(name, {groups = groups})
+            core.override_item(name, {groups = groups})
         end
     end
 end)

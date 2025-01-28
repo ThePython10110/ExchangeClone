@@ -2,7 +2,7 @@
 
 local function extract_dimension(pos)
     if exchangeclone.mtg then
-        if minetest.get_modpath("nether") then
+        if core.get_modpath("nether") then
             if pos.y >= nether.DEPTH_FLOOR and pos.y <= nether.DEPTH_CEILING then
                 return "Nether", pos
             else
@@ -72,15 +72,15 @@ local context = {}
 -- use_stack_data: Whether to use locations stored with the book or the player.
 local function show_formspec(player, index, text, use_stack_data, confirmation)
     local stack = player:get_wielded_item()
-    if minetest.get_item_group(stack:get_name(), "exchangeclone_alchemical_book") < 1 then
+    if core.get_item_group(stack:get_name(), "exchangeclone_alchemical_book") < 1 then
         return
     end
     context[player:get_player_name()] = context[player:get_player_name()] or {}
     context[player:get_player_name()].using_stack_data = use_stack_data
     local book_data = stack:get_definition().alchemical_book_data
-    local data = minetest.deserialize((use_stack_data and stack or player):get_meta():get_string("exchangeclone_alchemical_book"))
+    local data = core.deserialize((use_stack_data and stack or player):get_meta():get_string("exchangeclone_alchemical_book"))
     local formspec = table.copy(base_formspec)
-    formspec[#formspec+1] = "field[8.5,0.5;3,0.7;name;;"..minetest.formspec_escape(text or "").."]"
+    formspec[#formspec+1] = "field[8.5,0.5;3,0.7;name;;"..core.formspec_escape(text or "").."]"
     local player_pos = player:get_pos()
     if type(data) ~= "table" then
         data = {}
@@ -91,7 +91,7 @@ local function show_formspec(player, index, text, use_stack_data, confirmation)
     if #data.locations > 0 then
         formspec[#formspec+1] = "textlist[0.5,0.5;7,7;location_list;"
         for _, location in ipairs(data.locations) do
-            formspec[#formspec+1] = minetest.formspec_escape(location.name)..","
+            formspec[#formspec+1] = core.formspec_escape(location.name)..","
         end
         if index then
             formspec[#formspec+1] = ";"..index
@@ -106,7 +106,7 @@ local function show_formspec(player, index, text, use_stack_data, confirmation)
             local dimension_string = dimension and (" ("..dimension..")") or ""
             local distance = vector.distance(adjusted_pos, player_adjusted_pos)
             local cost = math.floor(book_data.emc_per_node*distance*20)/20
-            local info = minetest.formspec_escape(string.format(
+            local info = core.formspec_escape(string.format(
                 "%s\nPosition: %.1f, %.1f, %.1f%s\nDistance: %.1f\nCost: %s EMC",
                  selected.name,
                  adjusted_pos.x,
@@ -127,18 +127,18 @@ local function show_formspec(player, index, text, use_stack_data, confirmation)
     if confirmation then
         formspec[#formspec+1] = "label[8.5,8;Delete?]button[10,8;1.25,1;cancel;Cancel]button[11.25,8;1.25,1;confirm;Delete]"
     end
-    minetest.show_formspec(player:get_player_name(), "exchangeclone_alchemical_book", table.concat(formspec))
+    core.show_formspec(player:get_player_name(), "exchangeclone_alchemical_book", table.concat(formspec))
 end
 
-minetest.register_on_joinplayer(function(player)
+core.register_on_joinplayer(function(player)
     context[player:get_player_name()] = nil
 end)
 
-minetest.register_on_leaveplayer(function(player)
+core.register_on_leaveplayer(function(player)
     context[player:get_player_name()] = nil
 end)
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
+core.register_on_player_receive_fields(function(player, formname, fields)
     if formname ~= "exchangeclone_alchemical_book" then return end
     if fields.quit then
         context[player:get_player_name()] = nil
@@ -146,11 +146,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
     local use_stack_data = context[player:get_player_name()].using_stack_data
     local stack = player:get_wielded_item()
-    if minetest.get_item_group(stack:get_name(), "exchangeclone_alchemical_book") < 1 then
+    if core.get_item_group(stack:get_name(), "exchangeclone_alchemical_book") < 1 then
         return
     end
     local meta = (use_stack_data and stack or player):get_meta()
-    local data = minetest.deserialize(meta:get_string("exchangeclone_alchemical_book"))
+    local data = core.deserialize(meta:get_string("exchangeclone_alchemical_book"))
     if not data then data = {} end
     if not data.locations then data.locations = {} end
     local index = context[player:get_player_name()].index
@@ -166,7 +166,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         if name == "" then return end
         for _, location in pairs(data.locations) do
             if location.name == name then
-                minetest.chat_send_player(player:get_player_name(), "There is already a location called '"..location.name.."'")
+                core.chat_send_player(player:get_player_name(), "There is already a location called '"..location.name.."'")
                 return
             end
         end
@@ -175,7 +175,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         else
             data.locations[#data.locations+1] = {name = name, pos = player:get_pos()}
         end
-        meta:set_string("exchangeclone_alchemical_book", minetest.serialize(data))
+        meta:set_string("exchangeclone_alchemical_book", core.serialize(data))
         if use_stack_data then player:set_wielded_item(stack) end
         show_formspec(player, index, "", use_stack_data)
     elseif fields.teleport then
@@ -185,7 +185,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         local player_dimension, adjusted_player_pos = extract_dimension(player:get_pos())
         if dimension ~= player_dimension then
             if book_data.dimension_lock then
-                minetest.chat_send_player(player:get_player_name(), "This Alchemical Book is not powerful enough to teleport between dimensions.")
+                core.chat_send_player(player:get_player_name(), "This Alchemical Book is not powerful enough to teleport between dimensions.")
                 show_formspec(player, index, fields.name, use_stack_data)
                 return
             end
@@ -195,14 +195,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         local cost = distance*emc_per_node
         local player_emc = player:_get_emc()
         if player_emc < cost then
-            minetest.chat_send_player(player:get_player_name(), "Not enough EMC to teleport.")
+            core.chat_send_player(player:get_player_name(), "Not enough EMC to teleport.")
         else
             player:set_pos(pos)
             player:_add_emc(-cost)
         end
         show_formspec(player, index, fields.name, use_stack_data)
     elseif fields.location_list then
-        local exploded = minetest.explode_textlist_event(fields.location_list)
+        local exploded = core.explode_textlist_event(fields.location_list)
         index = math.min(exploded.index, #data.locations)
         if not context[player:get_player_name()] then context[player:get_player_name()] = {} end
         context[player:get_player_name()].index = index
@@ -212,7 +212,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
             local player_dimension, adjusted_player_pos = extract_dimension(player:get_pos())
             if dimension ~= player_dimension then
                 if book_data.dimension_lock then
-                    minetest.chat_send_player(player:get_player_name(), "This Alchemical Book is not powerful enough to teleport between dimensions.")
+                    core.chat_send_player(player:get_player_name(), "This Alchemical Book is not powerful enough to teleport between dimensions.")
                     show_formspec(player, index, fields.name, use_stack_data)
                     return
                 end
@@ -222,7 +222,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
             local cost = distance*emc_per_node
             local player_emc = player:_get_emc()
             if player_emc < cost then
-                minetest.chat_send_player(player:get_player_name(), "Not enough EMC to teleport.")
+                core.chat_send_player(player:get_player_name(), "Not enough EMC to teleport.")
             else
                 player:set_pos(pos)
                 player:_add_emc(-cost)
@@ -233,7 +233,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         if not data.locations[index] then return end
         if index > 1 then
             data.locations[index], data.locations[index-1] = data.locations[index-1], data.locations[index]
-            meta:set_string("exchangeclone_alchemical_book", minetest.serialize(data))
+            meta:set_string("exchangeclone_alchemical_book", core.serialize(data))
             if use_stack_data then player:set_wielded_item(stack) end
             index = index - 1
             if not context[player:get_player_name()] then context[player:get_player_name()] = {} end
@@ -244,7 +244,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         if not data.locations[index] then return end
         if index < #data.locations then
             data.locations[index], data.locations[index+1] = data.locations[index+1], data.locations[index]
-            meta:set_string("exchangeclone_alchemical_book", minetest.serialize(data))
+            meta:set_string("exchangeclone_alchemical_book", core.serialize(data))
             if use_stack_data then player:set_wielded_item(stack) end
             index = index + 1
             if not context[player:get_player_name()] then context[player:get_player_name()] = {} end
@@ -266,7 +266,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         index = math.min(index, #data.locations)
         if not context[player:get_player_name()] then context[player:get_player_name()] = {} end
         context[player:get_player_name()].index = index
-        meta:set_string("exchangeclone_alchemical_book", minetest.serialize(data))
+        meta:set_string("exchangeclone_alchemical_book", core.serialize(data))
         if use_stack_data then player:set_wielded_item(stack) end
         show_formspec(player, index, fields.name, use_stack_data)
     end
@@ -284,10 +284,10 @@ local function alchemical_book_function(itemstack, player, pointed_thing)
     end
     if player:get_player_control().sneak then
         if use_stack_data then
-            minetest.chat_send_player(player:get_player_name(), "Using player data")
+            core.chat_send_player(player:get_player_name(), "Using player data")
             itemstack:get_meta():set_int("exchangeclone_use_stack_data", 0)
         else
-            minetest.chat_send_player(player:get_player_name(), "Using book data")
+            core.chat_send_player(player:get_player_name(), "Using book data")
             itemstack:get_meta():set_int("exchangeclone_use_stack_data", 1)
         end
         return itemstack
@@ -296,7 +296,7 @@ local function alchemical_book_function(itemstack, player, pointed_thing)
     end
 end
 
-minetest.register_tool("exchangeclone:basic_alchemical_book", {
+core.register_tool("exchangeclone:basic_alchemical_book", {
     description = "Basic Alchemical Book\n1000 EMC/node\nCannot travel between dimensions",
     inventory_image = "exchangeclone_basic_alchemical_book.png",
     groups = {exchangeclone_alchemical_book = 1, disable_repair = 1},
@@ -305,7 +305,7 @@ minetest.register_tool("exchangeclone:basic_alchemical_book", {
     on_place = alchemical_book_function
 })
 
-minetest.register_tool("exchangeclone:advanced_alchemical_book", {
+core.register_tool("exchangeclone:advanced_alchemical_book", {
     description = "Advanced Alchemical Book\n500 EMC/node",
     inventory_image = "exchangeclone_advanced_alchemical_book.png",
     groups = {exchangeclone_alchemical_book = 1, disable_repair = 1},
@@ -314,7 +314,7 @@ minetest.register_tool("exchangeclone:advanced_alchemical_book", {
     on_place = alchemical_book_function
 })
 
-minetest.register_tool("exchangeclone:master_alchemical_book", {
+core.register_tool("exchangeclone:master_alchemical_book", {
     description = "Master Alchemical Book\n100 EMC/node.",
     inventory_image = "exchangeclone_master_alchemical_book.png",
     groups = {exchangeclone_alchemical_book = 1, disable_repair = 1},
@@ -323,7 +323,7 @@ minetest.register_tool("exchangeclone:master_alchemical_book", {
     on_place = alchemical_book_function
 })
 
-minetest.register_tool("exchangeclone:arcane_alchemical_book", {
+core.register_tool("exchangeclone:arcane_alchemical_book", {
     description = "Arcane Alchemical Book\n0 EMC/node",
     inventory_image = "exchangeclone_arcane_alchemical_book.png",
     groups = {exchangeclone_alchemical_book = 1, disable_repair = 1},
@@ -334,7 +334,7 @@ minetest.register_tool("exchangeclone:arcane_alchemical_book", {
 
 local craftitem = exchangeclone.mcl and "mcl_throwing:ender_pearl" or "default:mese_crystal"
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:basic_alchemical_book",
     recipe = {
         {"exchangeclone:low_covalence_dust","exchangeclone:red_matter", "exchangeclone:low_covalence_dust"},
@@ -343,7 +343,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:advanced_alchemical_book",
     recipe = {
         {"exchangeclone:medium_covalence_dust","exchangeclone:pink_matter", "exchangeclone:medium_covalence_dust"},
@@ -352,7 +352,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:master_alchemical_book",
     recipe = {
         {"exchangeclone:high_covalence_dust","exchangeclone:violet_matter", "exchangeclone:high_covalence_dust"},
@@ -361,7 +361,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:arcane_alchemical_book",
     recipe = {
         {"exchangeclone:void_ring","exchangeclone:block_cyan_matter", "exchangeclone:void_ring"},

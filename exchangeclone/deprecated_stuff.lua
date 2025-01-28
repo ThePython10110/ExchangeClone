@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 local c_formspec =
     "size["..(exchangeclone.mcl and 9 or 8)..",9]"..
@@ -22,10 +22,10 @@ if exchangeclone.mcl then
         mcl_formspec.get_itemslot_bg(5,2,1,1)
 end
 
-minetest.register_alias("exchangeclone:element_constructor", "exchangeclone:constructor")
+core.register_alias("exchangeclone:element_constructor", "exchangeclone:constructor")
 
 local function c_on_construct(pos)
-    local meta = minetest.get_meta(pos)
+    local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
     inv:set_size("fuel", 1)
     inv:set_size("src", 1)
@@ -37,13 +37,13 @@ end
 local function return_zero() return 0 end
 
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
-    if minetest.is_protected(pos, player:get_player_name()) then
+    if core.is_protected(pos, player:get_player_name()) then
         return 0
     end
     return stack:get_count()
 end
 
-minetest.register_node("exchangeclone:constructor", {
+core.register_node("exchangeclone:constructor", {
     description = "Constructor (DEPRECATED)\nUse the new EMC Link instead. This will be removed in a future version.",
     tiles = {
         "exchangeclone_constructor_up.png",
@@ -87,10 +87,10 @@ if exchangeclone.mcl then
         mcl_formspec.get_itemslot_bg(5,2,1,1)
 end
 
-minetest.register_alias("exchangeclone:element_deconstructor", "exchangeclone:deconstructor")
+core.register_alias("exchangeclone:element_deconstructor", "exchangeclone:deconstructor")
 
 local function d_on_construct(pos)
-    local meta = minetest.get_meta(pos)
+    local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
     inv:set_size("src", 1)
     inv:set_size("fuel", 1)
@@ -98,7 +98,7 @@ local function d_on_construct(pos)
     meta:set_string("infotext", "I thought I made this unplaceable")
 end
 
-minetest.register_node("exchangeclone:deconstructor", {
+core.register_node("exchangeclone:deconstructor", {
     description = S("Deconstructor (DEPRECATED)\nUse the new EMC Link instead. This will be removed in a future version."),
     tiles = {
         "exchangeclone_deconstructor_up.png",

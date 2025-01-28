@@ -2,13 +2,13 @@ if not exchangeclone then
 	error("Disable and re-enable the ExchangeClone modpack.")
 end
 
-local start_time = minetest.get_us_time()
-minetest.log("action", "[ExchangeClone] Registering own stuff")
+local start_time = core.get_us_time()
+core.log("action", "[ExchangeClone] Registering own stuff")
 
 -- Decides what mod to use for sounds
 exchangeclone.sound_mod = exchangeclone.mcl and mcl_sounds or default
 
-local modpath = minetest.get_modpath("exchangeclone")
+local modpath = core.get_modpath("exchangeclone")
 
 exchangeclone.colors = {}
 
@@ -141,7 +141,7 @@ local files = {
 	"rings",
 }
 
-if exchangeclone.mcl or minetest.get_modpath("3d_armor") then
+if exchangeclone.mcl or core.get_modpath("3d_armor") then
 	dofile(modpath.."/armor.lua")
 end
 
@@ -150,11 +150,11 @@ if exchangeclone.mcl then
 	dofile(modpath.."/tool_upgrades.lua")
 end
 
-if minetest.get_modpath("hopper") then
+if core.get_modpath("hopper") then
 	dofile(modpath.."/hopper_compat.lua")
 end
 
-if minetest.get_modpath("awards") then
+if core.get_modpath("awards") then
 	dofile(modpath.."/awards.lua")
 end
 
@@ -162,11 +162,11 @@ for _, file in ipairs(files) do
 	dofile(modpath.."/"..file..".lua")
 end
 
-minetest.register_on_mods_loaded(function()
-	local emc_start_time = minetest.get_us_time()
-	minetest.log("action", "[ExchangeClone] Registering EMC values")
+core.register_on_mods_loaded(function()
+	local emc_start_time = core.get_us_time()
+	core.log("action", "[ExchangeClone] Registering EMC values")
 	dofile(modpath.."/register_emc.lua")
-	minetest.log("action", "[ExchangeClone] Done registering EMC values ("..((minetest.get_us_time() - emc_start_time)/1000000).." seconds)")
+	core.log("action", "[ExchangeClone] Done registering EMC values ("..((core.get_us_time() - emc_start_time)/1000000).." seconds)")
 end)
 
-minetest.log("action", "[ExchangeClone] Done ("..((minetest.get_us_time() - start_time)/1000).." milliseconds)")
+core.log("action", "[ExchangeClone] Done ("..((core.get_us_time() - start_time)/1000).." milliseconds)")

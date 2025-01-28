@@ -103,7 +103,7 @@ local function get_cheapest_recipe(itemstring, log)
                 cheapest = {total_cost, recipe}
             end
         end
-        if log then minetest.log("action", dump({
+        if log then core.log("action", dump({
             recipe = recipe,
             ingredient_cost = ingredient_cost,
             output_count = output_count
@@ -119,7 +119,7 @@ local function register_emc(itemstring, emc_value)
     if not (emc_value and itemstring) then return end
     emc_value = math.floor(emc_value*20)/20 -- floor to nearest .05
     if emc_value < 0 then return end
-    local def = minetest.registered_items[itemstring]
+    local def = core.registered_items[itemstring]
     if not def then return end
     local description = def.description or ""
 
@@ -133,7 +133,7 @@ local function register_emc(itemstring, emc_value)
         end
         description = description.."EMC: "..exchangeclone.format_number(emc_value)
     end
-    minetest.override_item(itemstring, {
+    core.override_item(itemstring, {
         description = description,
         emc_value = emc_value,
     })
@@ -154,12 +154,12 @@ if exchangeclone.mcla then
         ["slab"] = 2,
         ["cut_copper"] = 4,
     }
-    for result, def in pairs(minetest.registered_items) do
-        if minetest.get_item_group(result,"not_in_creative_inventory") == 0 then
+    for result, def in pairs(core.registered_items) do
+        if core.get_item_group(result,"not_in_creative_inventory") == 0 then
             if def._mcl_stonecutter_recipes then
                 for _, source in pairs(def._mcl_stonecutter_recipes) do
                     local yield = 1
-                    for k,v in pairs(recipe_yield) do if minetest.get_item_group(result,k) > 0 then yield = v end end
+                    for k,v in pairs(recipe_yield) do if core.get_item_group(result,k) > 0 then yield = v end end
                     exchangeclone.register_craft({output = result.." "..yield, type = "stonecutting", recipe = source})
                 end
             end
@@ -172,7 +172,7 @@ if exchangeclone.mcla then
         local decaychains = mcl_copper.registered_decaychains
         for name, data in pairs(decaychains) do
             for i, itemstring in ipairs(data.nodes) do
-                if minetest.get_item_group(name,"not_in_creative_inventory") == 0 then
+                if core.get_item_group(name,"not_in_creative_inventory") == 0 then
                     local preserved_itemstring = itemstring.."_preserved"
                     exchangeclone.register_craft({output = preserved_itemstring, type = "preserving", recipe = {itemstring, "group:"..data.preserve_group}})
                     if i > 1 then
@@ -227,7 +227,7 @@ if exchangeclone.mcl then
 
     -- Enchanted/netherite tools
     exchangeclone.register_craft_type("upgrading", "shapeless")
-    for name, def in pairs(minetest.registered_items) do
+    for name, def in pairs(core.registered_items) do
         if def._mcl_enchanting_enchanted_tool then
             exchangeclone.register_alias(name, def._mcl_enchanting_enchanted_tool)
         end
@@ -247,7 +247,7 @@ if exchangeclone.mcl then
 
     -- Maps
     exchangeclone.register_alias("mcl_maps:empty_map", "mcl_maps:filled_map")
-    local mcl_skins_enabled = minetest.global_exists("mcl_skins")
+    local mcl_skins_enabled = core.global_exists("mcl_skins")
     if mcl_skins_enabled then
         -- Generate a node for every skin
         local list = mcl_skins.get_skin_list()
@@ -283,7 +283,7 @@ if exchangeclone.mtg then
 end
 
 
-if minetest.global_exists("logistica") then
+if core.global_exists("logistica") then
     exchangeclone.register_craft_type("lava_furnace", "shapeless") -- weird that it's not cooking but I can't see any way around that
     exchangeclone.register_craft({
         output = "logistica:silverin",
@@ -345,6 +345,7 @@ for index, group in ipairs(exchangeclone.group_values) do
 end
 local grouped_items = exchangeclone.get_group_items(groupnames, true, true)
 for index, group in ipairs(exchangeclone.group_values) do
+---@diagnostic disable-next-line: need-check-nil
     for i, item in pairs(grouped_items[group[1]]) do
         register_emc(item, group[2])
     end
@@ -356,12 +357,12 @@ for itemstring, emc_value in pairs(exchangeclone.base_emc_values) do
 end
 
 -- Register `exchangeclone_custom_emc` values and decide whether to automatically register EMC values
-for itemstring, def in pairs(minetest.registered_items) do
+for itemstring, def in pairs(core.registered_items) do
     if def.exchangeclone_custom_emc then
         register_emc(itemstring, def.exchangeclone_custom_emc)
     else
         itemstring = exchangeclone.handle_alias(itemstring) or itemstring
-        def = minetest.registered_items[itemstring] -- in case itemstring changed
+        def = core.registered_items[itemstring] -- in case itemstring changed
         local _, _, mod_name, item_name = itemstring:find("([%d_%l]+):([%d_%l]+)")
         if (
             def
@@ -369,7 +370,7 @@ for itemstring, def in pairs(minetest.registered_items) do
             and mod_name
             and def.description
             and def.description ~= ""
-            and ((minetest.get_item_group(item_name, "not_in_creative_inventory") < 1) or mod_name == "mcl_compass")
+            and ((core.get_item_group(item_name, "not_in_creative_inventory") < 1) or mod_name == "mcl_compass")
             and (not exchangeclone.get_item_emc(itemstring))
             and exchangeclone.recipes[itemstring]
         ) then
@@ -394,7 +395,7 @@ local same = false
 local i = 1
 -- Automatically register EMC values
 while not same do
-    minetest.log("action", "[ExchangeClone] \tIteration #"..i)
+    core.log("action", "[ExchangeClone] \tIteration #"..i)
     if auto == {} then break end
     if old_auto then
         same = true
@@ -406,7 +407,7 @@ while not same do
         end
     end
     if same then
-        minetest.log("action", "[ExchangeClone]\tNo change, stopping.")
+        core.log("action", "[ExchangeClone]\tNo change, stopping.")
         break
     end
     old_auto = table.copy(auto)
@@ -447,6 +448,7 @@ for color, color_data in pairs(exchangeclone.colors) do
     end
 end
 
+---@diagnostic disable-next-line: cast-local-type
 cheapest_color = cheapest_color[1] -- No idea why I'm doing it this way.
 
 local cheapest_advanced_itemstring = "exchangeclone:advanced_alchemical_chest_"..cheapest_color

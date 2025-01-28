@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 -- Everything with the exchangeclone_ore group is also included (see pickaxes.lua)
 -- This is pretty much the one thing I can't really figure out how to automate.
@@ -32,7 +32,7 @@ end
 
 local function is_ore(itemstring)
 	if ores[itemstring] then return true end
-	local exchangeclone_ore = minetest.get_item_group(itemstring, "exchangeclone_ore")
+	local exchangeclone_ore = core.get_item_group(itemstring, "exchangeclone_ore")
 	if exchangeclone_ore and exchangeclone_ore ~= 0 then return true end
 	return false
 end
@@ -49,7 +49,7 @@ local base_formspec =
 -- Craft guide button temporarily removed due to Minetest bug.
 -- TODO: Add it back when the Minetest bug is fixed.
 --"image_button[8,0;1,1;craftguide_book.png;craftguide;]"..
---"tooltip[craftguide;"..minetest.formspec_escape("Recipe book").."]"..
+--"tooltip[craftguide;"..core.formspec_escape("Recipe book").."]"..
 	"size[10,8.75]"..
 	"label[0,4;"..S("Inventory").."]"..
 	exchangeclone.inventory_formspec(0,4.5)..
@@ -113,8 +113,8 @@ local receive_fields = function(pos, formname, fields, sender)
 end
 
 --[[local function give_xp(pos, player)
-	local meta = minetest.get_meta(pos)
-	local dir = vector.divide(minetest.facedir_to_dir(minetest.get_node(pos).param2),-1.95)
+	local meta = core.get_meta(pos)
+	local dir = vector.divide(core.facedir_to_dir(core.get_node(pos).param2),-1.95)
 	local xp = meta:get_int("xp")
 	if xp > 0 then
 		if player then
@@ -133,18 +133,18 @@ end]]
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 	if player and player.get_player_name then
 		local name = player:get_player_name()
-		if minetest.is_protected(pos, name) then
-			minetest.record_protection_violation(pos, name)
+		if core.is_protected(pos, name) then
+			core.record_protection_violation(pos, name)
 			return 0
 		end
 	end
-	local meta = minetest.get_meta(pos)
+	local meta = core.get_meta(pos)
 	local inv = meta:get_inventory()
 	if listname == "fuel" then
 		-- Test stack with size 1 because we burn one fuel at a time
 		local teststack = ItemStack(stack)
 		teststack:set_count(1)
-		local output, decremented_input = minetest.get_craft_result({method="fuel", width=1, items={teststack}})
+		local output, decremented_input = core.get_craft_result({method="fuel", width=1, items={teststack}})
 		if output.time ~= 0 then
 			-- Only allow to place 1 item if fuel get replaced by recipe.
 			-- This is the case for lava buckets.
@@ -170,7 +170,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 end
 
 local function allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, player)
-	local meta = minetest.get_meta(pos)
+	local meta = core.get_meta(pos)
 	local inv = meta:get_inventory()
 	local stack = inv:get_stack(from_list, from_index)
 	return allow_metadata_inventory_put(pos, to_list, to_index, stack, player)
@@ -179,8 +179,8 @@ end
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
 	if player:is_player() then
 		local name = player:get_player_name()
-		if minetest.is_protected(pos, name) then
-			minetest.record_protection_violation(pos, name)
+		if core.is_protected(pos, name) then
+			core.record_protection_violation(pos, name)
 			return 0
 		end
 	end
@@ -200,7 +200,7 @@ end
 local function spawn_flames(pos, param2)
 	if exchangeclone.mtg then return end
 	local minrelpos, maxrelpos
-	local dir = minetest.facedir_to_dir(param2)
+	local dir = core.facedir_to_dir(param2)
 	if dir.x > 0 then
 		minrelpos = { x = -0.6, y = -0.05, z = -0.25 }
 		maxrelpos = { x = -0.55, y = -0.45, z = 0.25 }
@@ -233,12 +233,12 @@ local function spawn_flames(pos, param2)
 end
 
 local function swap_node(pos, name)
-	local node = minetest.get_node(pos)
+	local node = core.get_node(pos)
 	if node.name == name then
 		return
 	end
 	node.name = name
-	minetest.swap_node(pos, node)
+	core.swap_node(pos, node)
 	if name == "exchangeclone:dark_matter_furnace_active" or name == "exchangeclone:red_matter_furnace_active" then
 		spawn_flames(pos, node.param2)
 	elseif exchangeclone.mcl then
@@ -247,13 +247,13 @@ local function swap_node(pos, name)
 end
 
 local function furnace_reset_delta_time(pos)
-	local meta = minetest.get_meta(pos)
-	local time_speed = tonumber(minetest.settings:get("time_speed") or 72)
+	local meta = core.get_meta(pos)
+	local time_speed = tonumber(core.settings:get("time_speed") or 72)
 	if (time_speed < 0.1) then
 		return
 	end
 	local time_multiplier = 86400 / time_speed
-	local current_game_time = .0 + ((minetest.get_day_count() + minetest.get_timeofday()) * time_multiplier)
+	local current_game_time = .0 + ((core.get_day_count() + core.get_timeofday()) * time_multiplier)
 
 	-- TODO: Change meta:get/set_string() to get/set_float() for "last_gametime".
 	-- In Windows *_float() works OK but under Linux it returns rounded unusable values like 449540.000000000
@@ -269,14 +269,14 @@ local function furnace_reset_delta_time(pos)
 end
 
 local function furnace_get_delta_time(pos, elapsed)
-	local meta = minetest.get_meta(pos)
-	local time_speed = tonumber(minetest.settings:get("time_speed") or 72)
+	local meta = core.get_meta(pos)
+	local time_speed = tonumber(core.settings:get("time_speed") or 72)
 	local current_game_time
 	if (time_speed < 0.1) then
 		return meta, elapsed
 	else
 		local time_multiplier = 86400 / time_speed
-		current_game_time = .0 + ((minetest.get_day_count() + minetest.get_timeofday()) * time_multiplier)
+		current_game_time = .0 + ((core.get_day_count() + core.get_timeofday()) * time_multiplier)
 	end
 
 	local last_game_time = meta:get_string("last_gametime")
@@ -297,7 +297,7 @@ local function furnace_get_delta_time(pos, elapsed)
 end
 
 local function check_srclist(pos)
-	local meta = minetest.get_meta(pos)
+	local meta = core.get_meta(pos)
 	local inv = meta:get_inventory()
 	if not inv:get_stack("src", 1):is_empty() then
 		return "not empty"
@@ -335,7 +335,7 @@ local function furnace_node_timer(pos, elapsed)
 
 	local matter_type = "Dark"
 	local speed = 22 -- /10 to get items/second
-	if minetest.get_node(pos).name:find("red_matter") then
+	if core.get_node(pos).name:find("red_matter") then
 		matter_type = "Red"
 		speed = 66
 	end
@@ -361,8 +361,8 @@ local function furnace_node_timer(pos, elapsed)
 
 		-- Check if we have cookable content: cookable
 		local aftercooked
-		cooked, aftercooked = minetest.get_craft_result({method = "cooking", width = 1, items = {srclist[1]}})
-		cookable = cooked.item ~= ItemStack("") --minetest.get_item_group(inv:get_stack("src", 1):get_name(), "furnace_smeltable") == 1
+		cooked, aftercooked = core.get_craft_result({method = "cooking", width = 1, items = {srclist[1]}})
+		cookable = cooked.item ~= ItemStack("") --core.get_item_group(inv:get_stack("src", 1):get_name(), "furnace_smeltable") == 1
 		if cookable then
 			-- Successful cooking requires space in dst slot and time
 			if not inv:room_for_item("dst", cooked.item) then
@@ -379,7 +379,7 @@ local function furnace_node_timer(pos, elapsed)
 		if cookable and not active then
 			-- We need to get new fuel
 			local afterfuel
-			fuel, afterfuel = minetest.get_craft_result({method = "fuel", width = 1, items = fuellist})
+			fuel, afterfuel = core.get_craft_result({method = "fuel", width = 1, items = fuellist})
 
 			if fuel.time == 0 then
 				-- No valid fuel in fuel list -- stop
@@ -431,6 +431,7 @@ local function furnace_node_timer(pos, elapsed)
 		fuel_totaltime = fuel.time * 5.5
 	end
 	if srclist and srclist[1]:is_empty() then
+---@diagnostic disable-next-line: cast-local-type
 		active = check_srclist(pos)
 		if srclist and srclist[1]:is_empty() then
 			src_time = 0
@@ -460,7 +461,7 @@ local function furnace_node_timer(pos, elapsed)
 	else
 		swap_node(pos, "exchangeclone:"..matter_type:lower().."_matter_furnace")
 		-- stop timer on the inactive furnace
-		minetest.get_node_timer(pos):stop()
+		core.get_node_timer(pos):stop()
 	end
 
 	--
@@ -480,10 +481,10 @@ local function furnace_node_timer(pos, elapsed)
 end
 
 local on_rotate, after_rotate_active
-if minetest.get_modpath("screwdriver") then
+if core.get_modpath("screwdriver") then
 	on_rotate = screwdriver.rotate_simple
 	after_rotate_active = function(pos)
-		local node = minetest.get_node(pos)
+		local node = core.get_node(pos)
 		if exchangeclone.mcl then
 			mcl_particles.delete_node_particlespawners(pos)
 		end
@@ -515,7 +516,7 @@ local inactive_def = {
 	on_timer = furnace_node_timer,
     after_dig_node = exchangeclone.drop_after_dig({"src", "fuel", "dst"}),
 	on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		meta:set_string("formspec", inactive_formspec("Dark"))
 		local inv = meta:get_inventory()
 		inv:set_size("src", 7)
@@ -539,14 +540,14 @@ local inactive_def = {
 		furnace_reset_delta_time(pos)
 		check_srclist(pos)
 		-- start timer function, it will sort out whether furnace can burn or not.
-		minetest.get_node_timer(pos):start(0.45)
+		core.get_node_timer(pos):start(0.45)
 	end,
 	on_metadata_inventory_take = function(pos, listname, index, stack, player)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
 		check_srclist(pos)
 		-- start timer function, it will helpful if player clears dst slot
-		minetest.get_node_timer(pos):start(0.45)
+		core.get_node_timer(pos):start(0.45)
 
 		on_metadata_inventory_take(pos, listname, index, stack, player)
 	end,
@@ -563,7 +564,7 @@ local inactive_def = {
 	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
 	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(),
 	_mcl_hoppers_on_after_push = function(pos)
-		minetest.get_node_timer(pos):start(0.45)
+		core.get_node_timer(pos):start(0.45)
 	end,
 	_on_hopper_in = exchangeclone.mcla_on_hopper_in(),
 	_on_hopper_out = exchangeclone.mcla_on_hopper_out(),
@@ -589,7 +590,7 @@ local active_def = {
 	on_timer = furnace_node_timer,
     after_dig_node = exchangeclone.drop_after_dig({"src", "fuel", "dst"}),
 	on_construct = function(pos)
-		local node = minetest.get_node(pos)
+		local node = core.get_node(pos)
 		spawn_flames(pos, node.param2)
 	end,
 	on_destruct = function(pos)
@@ -625,11 +626,11 @@ if exchangeclone.pipeworks then
 			input_inventory = "dst",
 			connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
 			insert_object = function(pos, node, stack, direction)
-				local meta = minetest.get_meta(pos)
+				local meta = core.get_meta(pos)
 				local inv = meta:get_inventory()
 				local result = inv:add_item(get_list(direction), stack)
 				if result then
-					local func = minetest.registered_items[node.name].on_metadata_inventory_put
+					local func = core.registered_items[node.name].on_metadata_inventory_put
 					if func then func(pos) end
 				end
 				return result
@@ -643,12 +644,12 @@ if exchangeclone.pipeworks then
 	end
 end
 
-minetest.register_node("exchangeclone:dark_matter_furnace", table.copy(inactive_def))
-minetest.register_node("exchangeclone:red_matter_furnace", table.copy(inactive_def))
-minetest.register_node("exchangeclone:dark_matter_furnace_active", table.copy(active_def))
-minetest.register_node("exchangeclone:red_matter_furnace_active", table.copy(active_def))
+core.register_node("exchangeclone:dark_matter_furnace", table.copy(inactive_def))
+core.register_node("exchangeclone:red_matter_furnace", table.copy(inactive_def))
+core.register_node("exchangeclone:dark_matter_furnace_active", table.copy(active_def))
+core.register_node("exchangeclone:red_matter_furnace_active", table.copy(active_def))
 
-minetest.override_item("exchangeclone:red_matter_furnace", {
+core.override_item("exchangeclone:red_matter_furnace", {
 	description = S("Red Matter Furnace"),
 	tiles = {
 		"exchangeclone_red_matter_block.png",
@@ -665,27 +666,27 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
 		check_srclist(pos)
-		minetest.get_node_timer(pos):start(0.16)
+		core.get_node_timer(pos):start(0.16)
 	end,
 	on_metadata_inventory_put = function(pos)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
 		check_srclist(pos)
 		-- start timer function, it will sort out whether furnace can burn or not.
-		minetest.get_node_timer(pos):start(0.16)
+		core.get_node_timer(pos):start(0.16)
 	end,
 	on_metadata_inventory_take = function(pos, listname, index, stack, player)
 		-- Reset accumulated game time when player works with furnace:
 		furnace_reset_delta_time(pos)
 		check_srclist(pos)
 		-- start timer function, it will helpful if player clears dst slot
-		minetest.get_node_timer(pos):start(0.16)
+		core.get_node_timer(pos):start(0.16)
 
 		on_metadata_inventory_take(pos, listname, index, stack, player)
 	end,
 
 	on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		meta:set_string("formspec", inactive_formspec("Red"))
 		local inv = meta:get_inventory()
 		inv:set_size("src", 10)
@@ -695,14 +696,14 @@ minetest.override_item("exchangeclone:red_matter_furnace", {
 	_mcl_hoppers_on_try_pull = exchangeclone.mcl2_hoppers_on_try_pull(),
 	_mcl_hoppers_on_try_push = exchangeclone.mcl2_hoppers_on_try_push(),
 	_mcl_hoppers_on_after_push = function(pos)
-		minetest.get_node_timer(pos):start(0.16)
+		core.get_node_timer(pos):start(0.16)
 	end,
 	_on_hopper_in = exchangeclone.mcla_on_hopper_in(),
 	_on_hopper_out = exchangeclone.mcla_on_hopper_out(),
 
 })
 
-minetest.override_item("exchangeclone:red_matter_furnace_active", {
+core.override_item("exchangeclone:red_matter_furnace_active", {
 	description = S("Active Red Matter Furnace"),
 	tiles = {
 		"exchangeclone_red_matter_block.png",
@@ -717,7 +718,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 	_mcl_hardness = 100,
 
 	on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		meta:set_string("formspec", inactive_formspec("Red"))
 		local inv = meta:get_inventory()
 		inv:set_size("src", 10)
@@ -726,7 +727,7 @@ minetest.override_item("exchangeclone:red_matter_furnace_active", {
 	end,
 })
 
-minetest.register_craft({
+core.register_craft({
 	output = "exchangeclone:dark_matter_furnace",
 	recipe = {
 		{ "exchangeclone:dark_matter_block", "exchangeclone:dark_matter_block", "exchangeclone:dark_matter_block" },
@@ -735,7 +736,7 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_craft({
+core.register_craft({
 	output = "exchangeclone:red_matter_furnace",
 	recipe = {
 		{ "", "exchangeclone:red_matter_block", "" },
@@ -743,7 +744,7 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_lbm({
+core.register_lbm({
 	label = "Active furnace flame particles",
 	name = "exchangeclone:furnace_flames",
 	nodenames = {"exchangeclone:dark_matter_furnace_active","exchangeclone:red_matter_furnace_active"},

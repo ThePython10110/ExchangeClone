@@ -1,7 +1,7 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
-local stamina_exists = minetest.get_modpath("stamina")
-local stamina_max = minetest.settings:get("stamina.visual_max") or 20
+local stamina_exists = core.get_modpath("stamina")
+local stamina_max = core.settings:get("stamina.visual_max") or 20
 
 local function infinite_food_function(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
@@ -19,13 +19,13 @@ local function infinite_food_function(itemstack, player, pointed_thing)
             return nil
         end
         -- no idea why this is different between games but it works
-        local hunger_restore = minetest.item_eat(8, exchangeclone.mcl and ItemStack("") or original)
+        local hunger_restore = core.item_eat(8, exchangeclone.mcl and ItemStack("") or original)
         hunger_restore(itemstack, player, pointed_thing)
     end
     return nil
 end
 
-minetest.register_tool("exchangeclone:infinite_food", {
+core.register_tool("exchangeclone:infinite_food", {
     description = S("Infinite Food").."\n"..S("Consumes 64 EMC when eaten"),
     wield_image = "farming_bread.png^[colorize:#ffff00:128",
     inventory_image = "farming_bread.png^[colorize:#ffff00:128",
@@ -36,7 +36,7 @@ minetest.register_tool("exchangeclone:infinite_food", {
     _mcl_saturation = 12.8,
 })
 
-minetest.register_on_item_eat(function(hp_change, replace_with_item, itemstack, player, pointed_thing)
+core.register_on_item_eat(function(hp_change, replace_with_item, itemstack, player, pointed_thing)
     if itemstack:get_name() == "exchangeclone:infinite_food" then
         player:_add_emc(-64)
     end
@@ -44,7 +44,7 @@ end)
 
 local bread_itemstring = exchangeclone.mcl and "mcl_farming:bread" or "farming:bread"
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:infinite_food",
     recipe = {
         {bread_itemstring, bread_itemstring, bread_itemstring,},

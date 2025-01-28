@@ -18,7 +18,7 @@ if exchangeclone.mcl and mcl_hunger.active then
             return true
         end
     end
-elseif exchangeclone.mtg and minetest.get_modpath("stamina") then
+elseif exchangeclone.mtg and core.get_modpath("stamina") then
     satiate = function(player, amount)
         if stamina.get_saturation(player) < stamina.settings.visual_max then
             stamina.change_saturation(player, amount)
@@ -27,7 +27,7 @@ elseif exchangeclone.mtg and minetest.get_modpath("stamina") then
     end
 end
 
-minetest.register_tool("exchangeclone:soul_stone", {
+core.register_tool("exchangeclone:soul_stone", {
     description = "Soul Stone",
     inventory_image = "exchangeclone_soul_stone.png",
     _exchangeclone_passive = {
@@ -43,7 +43,7 @@ minetest.register_tool("exchangeclone:soul_stone", {
         exclude = {"exchangeclone:life_stone"}
     },
     _exchangeclone_pedestal = function(pos)
-        for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
+        for _, object in pairs(core.get_objects_inside_radius(pos, 5)) do
             if object:is_player() then
                 heal(object, 2)
             end
@@ -53,7 +53,7 @@ minetest.register_tool("exchangeclone:soul_stone", {
     on_place = exchangeclone.toggle_active,
     groups = {exchangeclone_passive = 1, disable_repair = 1}
 })
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:soul_stone",
     recipe = {
         {exchangeclone.itemstrings.glowstoneworth, exchangeclone.itemstrings.glowstoneworth, exchangeclone.itemstrings.glowstoneworth},
@@ -62,8 +62,8 @@ minetest.register_craft({
     }
 })
 
-if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.get_modpath("stamina")) then
-    minetest.register_tool("exchangeclone:body_stone", {
+if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and core.get_modpath("stamina")) then
+    core.register_tool("exchangeclone:body_stone", {
         description = "Body Stone",
         inventory_image = "exchangeclone_body_stone.png",
         _exchangeclone_passive = {
@@ -79,7 +79,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
             exclude = {"exchangeclone:life_stone"}
         },
         _exchangeclone_pedestal = function(pos)
-            for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
+            for _, object in pairs(core.get_objects_inside_radius(pos, 5)) do
                 if object:is_player() then
                     satiate(object, 2)
                 end
@@ -91,7 +91,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
     })
 
     local sugar_ingredient = exchangeclone.mcl and "mcl_core:sugar" or "default:papyrus"
-    minetest.register_craft({
+    core.register_craft({
         output = "exchangeclone:body_stone",
         recipe = {
             {sugar_ingredient, sugar_ingredient, sugar_ingredient},
@@ -100,7 +100,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
         }
     })
 
-    minetest.register_tool("exchangeclone:life_stone", {
+    core.register_tool("exchangeclone:life_stone", {
         description = "Life Stone",
         inventory_image = "exchangeclone_life_stone.png",
         _exchangeclone_passive = {
@@ -123,7 +123,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
             exclude = {"exchangeclone:body_stone", "exchangeclone:soul_stone"}
         },
         _exchangeclone_pedestal = function(pos)
-            for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
+            for _, object in pairs(core.get_objects_inside_radius(pos, 5)) do
                 if object:is_player() then
                     heal(object, 2)
                     satiate(object, 2)
@@ -134,7 +134,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and minetest.
         on_place = exchangeclone.toggle_active,
         groups = {exchangeclone_passive = 1, disable_repair = 1},
     })
-    minetest.register_craft({
+    core.register_craft({
         output = "exchangeclone:life_stone",
         type = "shapeless",
         recipe = {"exchangeclone:soul_stone", "exchangeclone:body_stone"}
@@ -199,7 +199,7 @@ if exchangeclone.mcl then
         end
     end
 
-    minetest.register_tool("exchangeclone:mind_stone", {
+    core.register_tool("exchangeclone:mind_stone", {
         description = "Mind Stone",
         inventory_image = "exchangeclone_mind_stone.png",
         _exchangeclone_passive = {
@@ -213,7 +213,7 @@ if exchangeclone.mcl then
         _mcl_generate_description = get_mind_description,
         _exchangeclone_pedestal = function(pos, itemstack)
             local meta = itemstack:get_meta()
-            for _, object in pairs(minetest.get_objects_inside_radius(pos, 5)) do
+            for _, object in pairs(core.get_objects_inside_radius(pos, 5)) do
                 local lua_entity = object:get_luaentity()
                 if lua_entity and lua_entity.name == "mcl_experience:orb" then
                     local amount = lua_entity._xp
@@ -232,7 +232,7 @@ if exchangeclone.mcl then
     })
 
     local book = exchangeclone.itemstrings.book
-    minetest.register_craft({
+    core.register_craft({
         output = "exchangeclone:mind_stone",
         recipe = {
             {book, book, book},

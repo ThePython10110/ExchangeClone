@@ -1,23 +1,23 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 local function create_soil(itemstack, player, pointed_thing)
 	local pos = pointed_thing.under
-	local name = minetest.get_node(pos).name
-	local above_name = minetest.get_node(vector.offset(pos,0,1,0)).name
+	local name = core.get_node(pos).name
+	local above_name = core.get_node(vector.offset(pos,0,1,0)).name
 
-	if minetest.is_protected(pointed_thing.under, player:get_player_name()) then
-		minetest.record_protection_violation(pointed_thing.under, player:get_player_name())
+	if core.is_protected(pointed_thing.under, player:get_player_name()) then
+		core.record_protection_violation(pointed_thing.under, player:get_player_name())
 		return itemstack
 	end
-	if minetest.get_item_group(name, "cultivatable") == 2 then
+	if core.get_item_group(name, "cultivatable") == 2 then
 		if above_name == "air" then
-			minetest.set_node(pos, {name="mcl_farming:soil"})
-			minetest.sound_play("default_dig_crumbly", { pos = pos, gain = 0.5 }, true)
+			core.set_node(pos, {name="mcl_farming:soil"})
+			core.sound_play("default_dig_crumbly", { pos = pos, gain = 0.5 }, true)
 		end
-	elseif minetest.get_item_group(name, "cultivatable") == 1 then
+	elseif core.get_item_group(name, "cultivatable") == 1 then
 		if above_name == "air" then
-			minetest.set_node(pos, {name="mcl_core:dirt"})
-			minetest.sound_play("default_dig_crumbly", { pos = pos, gain = 0.6 }, true)
+			core.set_node(pos, {name="mcl_core:dirt"})
+			core.sound_play("default_dig_crumbly", { pos = pos, gain = 0.6 }, true)
 		end
 	end
 	return itemstack
@@ -44,15 +44,15 @@ function exchangeclone.hoe_action(itemstack, player, center)
 		local vector1, vector2 = exchangeclone.process_range(player, "flat", charge)
 		if not (vector1 and vector2) then return end
 		local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
-		nodes = minetest.find_nodes_in_area(pos1, pos2, {"group:exchangeclone_dirt"})
+		nodes = core.find_nodes_in_area(pos1, pos2, {"group:exchangeclone_dirt"})
 		exchangeclone.play_sound(player, "exchangeclone_charge_up")
 	else
 		nodes = {center}
 	end
 
 	for _, pos in pairs(nodes) do
-		if minetest.is_protected(pos, player:get_player_name()) then
-			minetest.record_protection_violation(pos, player:get_player_name())
+		if core.is_protected(pos, player:get_player_name()) then
+			core.record_protection_violation(pos, player:get_player_name())
 		else
 			local new_pointed_thing = {type = "node", under = pos, above = vector.offset(pos,0,1,0)}
 			hoe_function(itemstack, player, new_pointed_thing, 0)
@@ -79,18 +79,18 @@ local hoe_on_place = function(itemstack, player, pointed_thing)
 		local current_mode = meta:get_string("exchangeclone_multidig_mode")
 		if current_mode == "3x3" then
 			meta:set_string("exchangeclone_multidig_mode", "1x1")
-			minetest.chat_send_player(player:get_player_name(), S("Single node mode"))
+			core.chat_send_player(player:get_player_name(), S("Single node mode"))
 		else
 			meta:set_string("exchangeclone_multidig_mode", "3x3")
-			minetest.chat_send_player(player:get_player_name(), S("3x3 mode"))
+			core.chat_send_player(player:get_player_name(), S("3x3 mode"))
 		end
 		return itemstack
 	end
 	if pointed_thing.type == "node" then
-		local node_name = minetest.get_node(pointed_thing.under).name
-		local def = minetest.registered_nodes[node_name]
-		if minetest.get_item_group(node_name, "cultivatable") > 0
-		or (minetest.get_item_group(node_name, "soil") > 0 and
+		local node_name = core.get_node(pointed_thing.under).name
+		local def = core.registered_nodes[node_name]
+		if core.get_item_group(node_name, "cultivatable") > 0
+		or (core.get_item_group(node_name, "soil") > 0 and
 		(def.soil and def.soil.wet and def.soil.dry)) then
 			exchangeclone.hoe_action(itemstack, player, pointed_thing.under)
 		end
@@ -100,18 +100,18 @@ end
 if exchangeclone.mcl then
 	mcl_autogroup.register_diggroup("exchangeclone_dirt")
 end
-for name, def in pairs(minetest.registered_nodes) do
-	local is_dirt = minetest.get_item_group(name, "cultivatable") + minetest.get_item_group(name, "soil")
+for name, def in pairs(core.registered_nodes) do
+	local is_dirt = core.get_item_group(name, "cultivatable") + core.get_item_group(name, "soil")
 	if is_dirt > 0 then
 		if not name:find("sand") then
 			local item_groups = table.copy(def.groups)
 			item_groups.exchangeclone_dirt = 1
-			minetest.override_item(name, {groups = item_groups})
+			core.override_item(name, {groups = item_groups})
 		end
 	end
 end
 
-minetest.register_tool("exchangeclone:dark_matter_hoe", {
+core.register_tool("exchangeclone:dark_matter_hoe", {
 	description = S("Dark Matter Hammer").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_dark_matter_hoe.png",
 	inventory_image = "exchangeclone_dark_matter_hoe.png",
@@ -135,10 +135,10 @@ minetest.register_tool("exchangeclone:dark_matter_hoe", {
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:dark_matter_hoe", {"group:exchangeclone_dirt"})
-minetest.register_alias("exchangeclone:dark_matter_hoe_3x3", "exchangeclone:dark_matter_hoe")
+core.register_alias("exchangeclone:dark_matter_hoe_3x3", "exchangeclone:dark_matter_hoe")
 exchangeclone.set_charge_type("exchangeclone:dark_matter_hoe", "dark_matter")
 
-minetest.register_tool("exchangeclone:red_matter_hoe", {
+core.register_tool("exchangeclone:red_matter_hoe", {
 	description = S("Red Matter Hammer").."\n"..S("Single node mode"),
 	wield_image = "exchangeclone_red_matter_hoe.png",
 	inventory_image = "exchangeclone_red_matter_hoe.png",
@@ -162,10 +162,10 @@ minetest.register_tool("exchangeclone:red_matter_hoe", {
 })
 
 exchangeclone.register_multidig_tool("exchangeclone:red_matter_hoe", {"group:exchangeclone_dirt"})
-minetest.register_alias("exchangeclone:red_matter_hoe_3x3", "exchangeclone:red_matter_hoe")
+core.register_alias("exchangeclone:red_matter_hoe_3x3", "exchangeclone:red_matter_hoe")
 exchangeclone.set_charge_type("exchangeclone:red_matter_hoe", "red_matter")
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter_hoe",
     recipe = {
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter"},
@@ -174,7 +174,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:red_matter_hoe",
     recipe = {
         {"exchangeclone:red_matter", "exchangeclone:red_matter"},

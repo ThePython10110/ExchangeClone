@@ -192,7 +192,7 @@ I didn't get to everything I wanted to, mostly because the automatic energy valu
         * `/set_player_energy [player] value` (player defaults to self, value can be "limit" to set to the limit)
 * Changes:
     * **Removed the compatibility thing for Constructors, Deconstructors, and Energy Collectors** (there seems to have been a bug that was making it happen too much) meaning that **old worlds REALLY SHOULD NOT be updated to this version.** And they probably shouldn't have been updated to 5.0 either. So... sorry if I ruined things for you. In the future, I will try to make everything a lot more backwards-compatible.
-    * ExchangeClone is now a modpack for [annoying reasons](https://forum.minetest.net/viewtopic.php?f=47&p=429775s).
+    * ExchangeClone is now a modpack for [annoying reasons](https://forum.luanti.org/viewtopic.php?f=47&p=429775s).
         * Energy values are now in `zzzz_exchangeclone_init/base_energy_values.lua`, and are laid out differently, and aliases now work.
     * The default energy value is no longer 1 but none.
     * The 2.14-billion-ish personal energy limit is has been increased to 1,000,000,000,000 (1 trillion). Any higher (literally ANY higher) and there are precision-based exploits like being able to create an unlimited amount of anything with an energy value less than 1. I considered finding some library for arbitrary precision in Lua, but decided it was too much work (and nobody really needs more than a trillion energy anyway).

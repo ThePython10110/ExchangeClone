@@ -1,11 +1,11 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 function exchangeclone.axe_action(itemstack, player, center, force_strip)
     if exchangeclone.check_cooldown(player, "axe") then return end
     local strip
-    local start_node = minetest.get_node(center)
+    local start_node = core.get_node(center)
 	local charge = math.max(itemstack:get_meta():get_int("exchangeclone_tool_charge"), 1)
-    local start_def = minetest.registered_items[start_node.name]
+    local start_def = core.registered_items[start_node.name]
     local stripped_variant = start_def._mcl_stripped_variant
     if exchangeclone.mcl then
         if force_strip then
@@ -24,28 +24,28 @@ function exchangeclone.axe_action(itemstack, player, center, force_strip)
         local vector1, vector2 = exchangeclone.process_range(player, range_type, charge)
         local pos1, pos2 = vector.add(center, vector1), vector.add(center, vector2)
         exchangeclone.play_sound(player, strip and "exchangeclone_charge_up" or "exchangeclone_destruct")
-        nodes = minetest.find_nodes_in_area(pos1, pos2, groups_to_search)
+        nodes = core.find_nodes_in_area(pos1, pos2, groups_to_search)
     else
         nodes = {center}
     end
     for _, pos in pairs(nodes) do
-        local node = minetest.get_node(pos)
-        if minetest.is_protected(pos, player:get_player_name()) then
-            minetest.record_protection_violation(pos, player:get_player_name())
+        local node = core.get_node(pos)
+        if core.is_protected(pos, player:get_player_name()) then
+            core.record_protection_violation(pos, player:get_player_name())
         else
             if strip then
                 if node.param2 == start_node.param2 then
                     if exchangeclone.mcla then
-                        local on_axe_place = minetest.registered_items[node.name]._on_axe_place
+                        local on_axe_place = core.registered_items[node.name]._on_axe_place
                         if on_axe_place then
                             on_axe_place(itemstack, player, {type="node",under=pos})
                         end
                     else
-                        minetest.swap_node(pos, {name=stripped_variant, param2=node.param2})
+                        core.swap_node(pos, {name=stripped_variant, param2=node.param2})
                     end
                 end
             else
-                local drops = minetest.get_node_drops(node.name, itemstack:get_name())
+                local drops = core.get_node_drops(node.name, itemstack:get_name())
                 exchangeclone.drop_items_on_player(pos, drops, player)
             end
         end
@@ -69,16 +69,16 @@ local function axe_on_place(itemstack, player, pointed_thing)
     end
 
     if pointed_thing.type == "node" then
-        local name = minetest.get_node(pointed_thing.under).name
-        if (minetest.get_item_group(name, "tree") > 0)
-        or (minetest.get_item_group(name, "bamboo_block") > 0) then
+        local name = core.get_node(pointed_thing.under).name
+        if (core.get_item_group(name, "tree") > 0)
+        or (core.get_item_group(name, "bamboo_block") > 0) then
             exchangeclone.axe_action(itemstack, player, pointed_thing.under)
         elseif exchangeclone.mcl then
-            if minetest.registered_items[name]._mcl_stripped_variant then
+            if core.registered_items[name]._mcl_stripped_variant then
                 exchangeclone.axe_action(itemstack, player, pointed_thing.under, true)
             end
         elseif exchangeclone.mcla then
-            if minetest.registered_items[name]._on_axe_place then
+            if core.registered_items[name]._on_axe_place then
                 exchangeclone.axe_action(itemstack, player, pointed_thing.under, true)
             end
         end
@@ -87,7 +87,7 @@ local function axe_on_place(itemstack, player, pointed_thing)
     return itemstack
 end
 
-minetest.register_tool("exchangeclone:dark_matter_axe", {
+core.register_tool("exchangeclone:dark_matter_axe", {
 	description = S("Dark Matter Axe"),
 	wield_image = "exchangeclone_dark_matter_axe.png",
 	inventory_image = "exchangeclone_dark_matter_axe.png",
@@ -115,7 +115,7 @@ minetest.register_tool("exchangeclone:dark_matter_axe", {
 
 exchangeclone.set_charge_type("exchangeclone:dark_matter_axe", "dark_matter")
 
-minetest.register_tool("exchangeclone:red_matter_axe", {
+core.register_tool("exchangeclone:red_matter_axe", {
 	description = S("Red Matter Axe"),
 	wield_image = "exchangeclone_red_matter_axe.png",
 	inventory_image = "exchangeclone_red_matter_axe.png",
@@ -143,7 +143,7 @@ minetest.register_tool("exchangeclone:red_matter_axe", {
 
 exchangeclone.set_charge_type("exchangeclone:red_matter_axe", "red_matter")
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:dark_matter_axe",
     recipe = {
         {"exchangeclone:dark_matter", "exchangeclone:dark_matter"},
@@ -152,7 +152,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:red_matter_axe",
     recipe = {
         {"exchangeclone:red_matter", "exchangeclone:red_matter"},

@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 local armor_pieces = {
     ["exchangeclone:helmet_dark_matter"] = {material = "dark_matter", piece = "helmet", category = "weak"},
@@ -109,7 +109,7 @@ function exchangeclone.check_armor_health(obj)
     end
 end
 
-minetest.register_on_joinplayer(function(ObjectRef, last_login)
+core.register_on_joinplayer(function(ObjectRef, last_login)
     exchangeclone.check_armor_health(ObjectRef)
 end)
 
@@ -179,7 +179,7 @@ if exchangeclone.mcl then
 
     for _, matter in pairs({"dark", "red"}) do
         for _, type in pairs({"helmet", "chestplate", "leggings", "boots"}) do
-            minetest.override_item("exchangeclone:"..type.."_"..matter.."_matter", {
+            core.override_item("exchangeclone:"..type.."_"..matter.."_matter", {
                 inventory_image = "exchangeclone_inv_"..matter.."_matter_"..type..".png",
             })
         end
@@ -213,7 +213,7 @@ else
         end
     end
 
-    minetest.register_on_player_hpchange(function(player, hp_change, reason)
+    core.register_on_player_hpchange(function(player, hp_change, reason)
         if hp_change < 0 then
             local damage = -hp_change
             local _, armor_inv = armor:get_valid_player(player, "3d_armor")
@@ -231,14 +231,14 @@ end
 
 local d = "exchangeclone:dark_matter"
 local r = "exchangeclone:red_matter"
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:helmet_dark_matter",
     recipe = {
         {d,d,d},
         {d,"",d}
     }
 })
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:chestplate_dark_matter",
     recipe = {
         {d,"",d},
@@ -246,7 +246,7 @@ minetest.register_craft({
         {d,d,d},
     }
 })
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:leggings_dark_matter",
     recipe = {
         {d,d,d},
@@ -254,21 +254,21 @@ minetest.register_craft({
         {d,"",d},
     }
 })
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:boots_dark_matter",
     recipe = {
         {d,"",d},
         {d,"",d},
     }
 })
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:helmet_red_matter",
     recipe = {
         {r,r,r},
         {r,"exchangeclone:helmet_dark_matter",r}
     }
 })
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:chestplate_red_matter",
     recipe = {
         {r,"exchangeclone:chestplate_dark_matter",r},
@@ -276,7 +276,7 @@ minetest.register_craft({
         {r,r,r},
     }
 })
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:leggings_red_matter",
     recipe = {
         {r,r,r},
@@ -284,7 +284,7 @@ minetest.register_craft({
         {r,"",r},
     }
 })
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:boots_red_matter",
     recipe = {
         {r,"exchangeclone:boots_dark_matter",r},
@@ -293,7 +293,7 @@ minetest.register_craft({
 })
 
 if exchangeclone.mtg then
-    minetest.register_tool("exchangeclone:shield_dark_matter", {
+    core.register_tool("exchangeclone:shield_dark_matter", {
         description = "Dark Matter Shield (deprecated)\nYou still have this so you can turn it into EMC.\nAnd no, it's not supposed to have a texture.",
         groups = {disable_repair = 1, not_in_creative_inventory = 1, not_in_craft_guide = 1}
     })
@@ -311,7 +311,7 @@ if exchangeclone.mtg then
         }
     })
 
-    minetest.register_tool("exchangeclone:shield_red_matter", {
+    core.register_tool("exchangeclone:shield_red_matter", {
         description = "Red Matter Shield (deprecated)\nYou still have this so you can turn it into EMC.\nAnd no, it's not supposed to have a texture.",
         groups = {disable_repair = 1, not_in_creative_inventory = 1, not_in_craft_guide = 1}
     })

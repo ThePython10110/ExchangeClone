@@ -123,7 +123,7 @@ register_award("exchangeclone:even_hotter_matter", {
 })
 
 -- MCL2 does not support groups in awards for some reason.
--- https://git.minetest.land/MineClone2/MineClone2/issues/4191
+-- https://git.core.land/MineClone2/MineClone2/issues/4191
 if not exchangeclone.mcl2 then
     register_award("exchangeclone:pocket_storage", {
         title = "Pocket storage!",

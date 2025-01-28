@@ -1,4 +1,4 @@
-local S = minetest.get_translator()
+local S = core.get_translator()
 
 -- color is nil for regular alchemical chests (not advanced/bags)
 local function alchemical_formspec(color, name)
@@ -26,13 +26,13 @@ end
 
 local function alchemical_on_construct(color)
     return function(pos)
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         meta:set_string("formspec", alchemical_formspec(color))
         meta:set_string("infotext", color.." Advanced Alchemical Chest")
     end
 end
 
-minetest.register_node("exchangeclone:alchemical_chest", {
+core.register_node("exchangeclone:alchemical_chest", {
     description = S("Alchemical Chest"),
     groups = {container = 2, alchemical_chest = 1, cracky = 2, pickaxey = 2, tubedevice = 1, tubedevice_receiver = 1},
     _mcl_hardness = 10,
@@ -47,7 +47,7 @@ minetest.register_node("exchangeclone:alchemical_chest", {
 		"exchangeclone_alchemical_chest_front.png",
 	},
     on_construct = function(pos)
-        local meta = minetest.get_meta(pos)
+        local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
         meta:set_string("formspec", alchemical_formspec())
         meta:set_string("infotext", S("Alchemical Chest"))
@@ -58,11 +58,11 @@ minetest.register_node("exchangeclone:alchemical_chest", {
         input_inventory = "main",
         connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1},
         insert_object = function(pos, node, stack, direction)
-            local meta = minetest.get_meta(pos)
+            local meta = core.get_meta(pos)
             local inv = meta:get_inventory()
             local result = inv:add_item("main", stack)
             if result then
-                local func = minetest.registered_items[node.name].on_metadata_inventory_put
+                local func = core.registered_items[node.name].on_metadata_inventory_put
                 if func then func(pos) end
             end
             return result
@@ -78,7 +78,7 @@ minetest.register_node("exchangeclone:alchemical_chest", {
 local stone_itemstring = exchangeclone.mcl and "mcl_core:stone" or "default:stone"
 local chest_itemstring = exchangeclone.mcl and "mcl_chests:chest" or "default:chest"
 
-minetest.register_craft({
+core.register_craft({
     output = "exchangeclone:alchemical_chest",
     recipe = {
         {"exchangeclone:low_covalence_dust", "exchangeclone:medium_covalence_dust", "exchangeclone:high_covalence_dust"},
@@ -87,7 +87,7 @@ minetest.register_craft({
     }
 })
 
-minetest.register_on_joinplayer(function(player, last_login)
+core.register_on_joinplayer(function(player, last_login)
     local inv = player:get_inventory()
     for color, color_data in pairs(exchangeclone.colors) do
         inv:set_size(color.."_alchemical_inventory", 104)
@@ -111,21 +111,21 @@ for color, color_data in pairs(exchangeclone.colors) do
             return click_test
         end
         if pointed_thing.type == "node"
-        and minetest.get_item_group(minetest.get_node(pointed_thing.under).name, "advanced_alchemical_chest") > 0 then
-            if minetest.is_protected(pointed_thing.under, player:get_player_name()) then
-                minetest.record_protection_violation(pointed_thing.under, player:get_player_name())
+        and core.get_item_group(core.get_node(pointed_thing.under).name, "advanced_alchemical_chest") > 0 then
+            if core.is_protected(pointed_thing.under, player:get_player_name()) then
+                core.record_protection_violation(pointed_thing.under, player:get_player_name())
             else
-                minetest.set_node(pointed_thing.under, {name=advanced_itemstring})
+                core.set_node(pointed_thing.under, {name=advanced_itemstring})
                 local on_construct = alchemical_on_construct(color_data.name)
                 on_construct(pointed_thing.under)
                 return
             end
         else
-            minetest.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color, color_data.name))
+            core.show_formspec(player:get_player_name(), bag_itemstring, alchemical_formspec(color, color_data.name))
         end
     end
 
-    minetest.register_tool(bag_itemstring, {
+    core.register_tool(bag_itemstring, {
         description = S("@1 Alchemical Bag", color_data.name),
         inventory_image = "exchangeclone_alchemical_bag.png"..bag_modifier,
         wield_image = "exchangeclone_alchemical_bag.png"..bag_modifier,
@@ -134,7 +134,7 @@ for color, color_data in pairs(exchangeclone.colors) do
         on_place = alchemical_bag_action
     })
 
-    minetest.register_craft({
+    core.register_craft({
         output = bag_itemstring,
         recipe = {
             {"exchangeclone:high_covalence_dust", "exchangeclone:high_covalence_dust", "exchangeclone:high_covalence_dust"},
@@ -142,7 +142,7 @@ for color, color_data in pairs(exchangeclone.colors) do
             {wool_itemstring, wool_itemstring, wool_itemstring},
         }
     })
-    minetest.register_craft({
+    core.register_craft({
         output = bag_itemstring,
         type = "shapeless",
         recipe = {
@@ -151,7 +151,7 @@ for color, color_data in pairs(exchangeclone.colors) do
         }
     })
 
-    minetest.register_node(advanced_itemstring, {
+    core.register_node(advanced_itemstring, {
         description = S("@1 Advanced Alchemical Chest", color_data.name).."\n"..S("Shift+right-click with an alchemical bag to change the color."),
         _mcl_hardness = 10,
         _mcl_blast_resistance = 15,
@@ -168,7 +168,7 @@ for color, color_data in pairs(exchangeclone.colors) do
         on_construct = alchemical_on_construct(color_data.name)
     })
 
-    minetest.register_craft({
+    core.register_craft({
         output = advanced_itemstring,
         recipe = {
             {"exchangeclone:dark_matter", "exchangeclone:low_covalence_dust", "exchangeclone:dark_matter"},
@@ -176,7 +176,7 @@ for color, color_data in pairs(exchangeclone.colors) do
             {"exchangeclone:high_covalence_dust", "exchangeclone:low_covalence_dust", "exchangeclone:high_covalence_dust"},
         }
     })
-    minetest.register_craft({
+    core.register_craft({
         output = advanced_itemstring,
         type = "shapeless",
         recipe = {
