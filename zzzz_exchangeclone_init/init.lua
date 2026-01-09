@@ -1,11 +1,13 @@
 -- The z's at the beginning of this mod's name (zzzz_exchangeclone_init) are to ensure that it
--- loads first, since Minetest loads mods in reverse alphabetical order.
+-- loads first, since Minetest loads mods in reverse alphabetical order. I've seen a GitHub
+-- PR or issue or something that would *randomize* the mod load order, which makes no sense
+-- and would break several mods.
 
----@diagnostic disable-next-line: lowercase-global
+---@class exchangeclone
 exchangeclone = {recipes = {}}
 
 if (not core.get_modpath("mcl_core")) and (not core.get_modpath("default")) then
-    error("ExchangeClone requires Minetest Game, MineClone2, or MineClonia (and possibly variant subgames).\nPlease use one of those games.")
+    error("ExchangeClone requires Minetest Game, MineClone2, or Mineclonia (and possibly variant subgames).\nPlease use one of those games.")
 end
 
 -- Ensure that value is either true or nil
@@ -17,17 +19,18 @@ if not exchangeclone.mcl then exchangeclone.mtg = true end
 exchangeclone.pipeworks = core.get_modpath("pipeworks")
 exchangeclone.keep_data = core.settings:get_bool("exchangeclone.keep_data", false)
 
-local modpath = core.get_modpath("zzzz_exchangeclone_init")
-dofile(modpath.."/lib.lua")
+local modpath = core.get_modpath(core.get_current_modname())
+dofile(modpath.."/early_lib.lua")
 
 -- Override crafting
 local old_func = core.register_craft
+---@diagnostic disable-next-line: duplicate-set-field
 function core.register_craft(data, ...)
     local itemstring = ItemStack(data.output):get_name()
     local allowed = true
-    -- Skip thousands of banner recipes in MCL2
+    -- Skip thousands of banner recipes in MCL/VL
     -- This does mean that if other banner recipes exist that don't use wool (or carpet),
-    -- they will be ignored in MCL2... but I can't think of a better way to do this.
+    -- they will be ignored in MCL/VL... but I can't think of a better way to do this.
     if exchangeclone.mcl then
         if itemstring:sub(1, #"mcl_banners:") == "mcl_banners:" then
             allowed = false

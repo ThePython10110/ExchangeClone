@@ -4,7 +4,7 @@ exchangeclone.base_emc_values = {}
 
 if exchangeclone.mcl then
     --[[ Groups are organized so that order matters. Groups that are lower on the
-    list will have their energies applied later, making them  higher priority. It's
+    list will have their EMC values applied later, making them  higher priority. It's
     unnecessary for single items because order doesn't matter for them. The NO_GROUP
     value is for values that are not in any other group, but adding this means that
     NO items will have their EMC calculated by recipes. ]]
@@ -290,7 +290,7 @@ end
 -- For things that are the same in both games:
 
 for itemstring, emc_value in pairs ({
-    ["exchangeclone:tome_of_knowledge"] = 0,
+    ["ec_transmutation:tome_of_knowledge"] = 0,
 
     ["moreores:mithril_ingot"] = 16384,
     ["moreores:silver_ingot"] = 4000,
@@ -418,7 +418,6 @@ table.insert_all(exchangeclone.group_values, {
     {"useless", 0},
     {"exchangeclone_dirt", 1},
 })
-
 
 -- Moved here so other mods could modify it without dependency issues
 exchangeclone.node_transmutations = {

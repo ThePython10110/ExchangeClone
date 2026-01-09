@@ -24,42 +24,63 @@
     - [ ] Zero
     - [ ] Ignition
 - [ ] Update wiki
+- [ ] Finish changelog
+- [ ] Bugs:
+  - [ ] Mineclonia dispenser shears
+  - [ ] Mineclonia hopper insert callback
+  - [ ] MTG fire damage (armor in general)
+  - [ ] Tools
+  - [ ] Check potions
+  - [ ] Check group awards
+  - [ ] Check technic
+  - [ ] `mobs` don't properly die when hit with sword attack
+  - [ ] Right click on pedestal with tool not working
+  - [ ] Probably hoppers again
 
 ### v8.0: The Expansion Update
+Honestly, I just kind of stopped working on Luanti mods for a *long* time in the middle of this update. Multiple times.
 #### Overview:
 * It's called "The Expansion Update" because I didn't know what else to call it and it adds several features from ProjectExpansion.
-* Replaces (De)Constructor with EMC Link
-* Adds more types of matter/fuel
-* Added lots of useful items from ProjectE(xpansion)
+* Replaced Constructors and Deconstructors with EMC Links
+* Added more expensive types of matter/fuel
+* Added lots of items with passive/active abilities
 
 #### Full changelog
 * New Features:
     * Added the EMC Link to replace both the Constructor and Deconstructor.
     * Added the Dark Matter Pedestal.
     * Added Alchemical Books.
-    * DM/RM armor now use ProjectE's textures.
     * Added Magenta through White Fuel/Matter (would have added fading matter, but it's over 1 trillion EMC)
-    * Added `_get_emc`, `_set_emc`, and `_add_emc` to player metatables. This means you can use `player:_get_emc()` instead of `exchangeclone.get_player_emc(player)`. **WARNING: Do not use these functions in `on_joinplayer` functions, since they may not be initialized yet.**
-    * Added the same functions for itemstack metatables, as well as `_<get/set/add>_star_emc` and `_get_star_max`. `_set_emc` and `_add_emc` work by changing the metadata EMC value.
     * Added Evertide/Volcanite Amulets
         * Projectiles do not work in Mineclonia.
-        * The "Buckets use select box" (`mcl_buckets_use_select_box`) setting must be enabled to use projectiles in MineClone2.
-        * Pedestal abilities use the "Weather" mod (the one by theFox) in Minetest Game
+        * The "Buckets use select box" (`mcl_buckets_use_select_box`) setting must be enabled to use projectiles in VoxeLibre.
+        * In MTG, Pedestal abilities use the "Weather" mod (the one by theFox)
     * Added Black Hole Band
     * Added Void Ring
     * Added support for Animalia
     * Added support for Mobs Monster
+    * Added `_get_emc`, `_set_emc`, and `_add_emc` to player metatables. This means you can use `player:_get_emc()` instead of `exchangeclone.get_player_emc(player)`. **WARNING: Do not use these functions in `on_joinplayer` functions, since they may not be initialized yet.**
+    * Added the same functions for itemstack metatables, as well as `_<get/set/add>_star_emc` and `_get_star_max`. `_set_emc` and `_add_emc` work by changing the metadata EMC value.
 * Changes:
+    * ExchangeClone's features are now separated into multiple mods, so people can enable/disable features more easily.
     * Moved the changelog back to a separate file (it was getting annoyingly long)
     * The Constructor and Deconstructor are now deprecated, replaced with the EMC Link.
-    * Upgrades and Stars can no longer be used as fuel.
+    * Upgrades and Stars can no longer be used as furnace fuel.
     * Dark and Red Matter Armor now uses ProjectE's textures
     * Removed the ability to right click with stars to see the charge (it's unnecessary).
-    * Organized textures into folders
     * Collectors now match ProjectExpansion's recipes, EMC generation rates, and textures
         * MTG doesn't have glowstone, so it's replaced with gold in the recipe, adding around 3000 EMC to the cost of each collector.
+    * Texture changes
+      * Organized textures into folders
+      * DM/RM armor now use ProjectE's textures.
+      * Changed textures that are derivatives of Minecraft textures.
+        * Covalence dust (now based on MCL redstone)
+        * Fuels (now based on MCL coal)
+        * Armor inventory images (now based on 3D Armor diamond armor)
+        * Tools (reverted to the old versions I made, except for Morningstar and Katar)
 * Bugfixes:
-    * Dark and Red Matter Armor display properly (and identically) in both games, with ProjectE's textures.
+    * Dark and Red Matter Armor display properly (and identically) in all 3 games, with ProjectE's textures
+    * Dark and Red Matter Armor actually work correctly.
     * `add_star_emc` now correctly works with negative EMC values.
 
 
@@ -163,7 +184,7 @@ This update took a while... there was just so much that had to be done.
 #### Overview
 *   I'm naming updates now for some reason.
 *   Automatic energy values! This means I don't have to manually add energy values for every single item. If it's craftable or cookable, ExchangeClone will automatically figure out an energy value for it. There's also an API (with very little documentation because I'm lazy) for adding custom energy recipes and recipe types.
-*   The minimum Minetest version has been changed to 5.7.0, because I'm never going to test on any older versions. Of course, it will probably still work (at least mostly) on other versions, but I can't promise anything.
+*   The minimum ~~Minetest~~ Luanti version has been changed to 5.7.0, because I'm never going to test on any older versions. Of course, it will probably still work (at least mostly) on other versions, but I can't promise anything.
 *   Players can now have up to 1 trillion personal energy!
 *   Energy values now better match ProjectE's.
 *   Changed A LOT of things internally. Any mods depending on ExchangeClone (probably not very many, which is good) will probably need to update stuff.

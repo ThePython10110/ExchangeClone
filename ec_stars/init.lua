@@ -1,0 +1,62 @@
+local S = core.get_translator()
+
+local names = {
+    "Klein Star Ein",
+    "Klein Star Zwei",
+    "Klein Star Drei",
+    "Klein Star Vier",
+    "Klein Star Sphere",
+    "Klein Star Omega",
+    "Magnum Star Ein",
+    "Magnum Star Zwei",
+    "Magnum Star Drei",
+    "Magnum Star Vier",
+    "Magnum Star Sphere",
+    "Magnum Star Omega",
+}
+
+core.register_alias("exchangeclone:exchange_orb", "ec_stars:klein_star_omega")
+
+for i, name in ipairs(names) do
+    local codified_name = name:lower():gsub(" ", "_")
+    local capacity = 50000*math.pow(4,i-1)
+    core.register_tool("ec_stars:"..codified_name, {
+        description = S(name).."\n"..S("Current Charge: @1/@2", 0, exchangeclone.format_number(capacity)),
+        inventory_image = "exchangeclone_"..codified_name..".png",
+        wield_image = "exchangeclone_"..codified_name..".png",
+        groups = {klein_star = i, disable_repair = 1, fire_immune = 1},
+        max_capacity = capacity,
+        _mcl_generate_description = function(itemstack)
+            return name.."\n"..S(
+                "Current Charge: @1/@2",
+                exchangeclone.format_number(itemstack:_get_star_emc()),
+                exchangeclone.format_number(capacity)
+            )
+        end
+    })
+
+    if i > 1 then
+        local previous_codified_name = names[i-1]:lower():gsub(" ", "_")
+        core.register_craft({
+            output = "ec_stars:"..codified_name,
+            type = "shapeless",
+            recipe = {
+                "ec_stars:"..previous_codified_name,
+                "ec_stars:"..previous_codified_name,
+                "ec_stars:"..previous_codified_name,
+                "ec_stars:"..previous_codified_name,
+            }
+        })
+    end
+
+    core.register_alias("exchangeclone:"..codified_name, "ec_stars:"..codified_name)
+end
+
+core.register_craft({
+    output = "ec_stars:klein_star_ein",
+    recipe = {
+        {"ec_fuel:mobius_fuel", "ec_fuel:mobius_fuel", "ec_fuel:mobius_fuel"},
+        {"ec_fuel:mobius_fuel", exchangeclone.itemstrings.diamond, "ec_fuel:mobius_fuel"},
+        {"ec_fuel:mobius_fuel", "ec_fuel:mobius_fuel", "ec_fuel:mobius_fuel"},
+    }
+})

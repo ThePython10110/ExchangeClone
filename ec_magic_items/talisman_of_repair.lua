@@ -1,0 +1,85 @@
+local function repair_items(inv, listname)
+    local list = inv:get_list(listname)
+    for i = 1, #list do
+        local stack = inv:get_stack(listname, i)
+        if not stack:is_empty() then
+            local def = stack:get_definition()
+            if def
+            and def.type == "tool"
+            and (not def.wear_represents or def.wear_represents == "mechanical_wear")
+            and stack:get_wear() > 0 then
+                local uses
+                if exchangeclone.mcl then
+                    local armor_uses = core.get_item_group(stack:get_name(), "mcl_armor_uses")
+                    if def._mcl_uses then
+                        uses = def._mcl_uses
+                    elseif armor_uses > 0 then
+                        uses = armor_uses
+                    elseif def._mcl_diggroups then
+                        for name, data in pairs(def._mcl_diggroups) do
+                            uses = data.uses
+                            break -- Just the simplest way to do it...
+                        end
+                    end
+                else
+                    if def.tool_capabilities and def.tool_capabilities.groupcaps then
+                        local groupcaps
+                        for name, data in pairs(def.tool_capabilities.groupcaps) do
+                            groupcaps = data
+                            break -- Just the simplest way to do it...
+                        end
+                        uses = groupcaps.uses*math.pow(3, groupcaps.maxlevel-1)
+                    elseif def.groups.armor_use then
+                        uses = 65535/def.groups.armor_use
+                    end
+                end
+                if uses and uses > 0 then
+                    stack:set_wear(math.max(0, stack:get_wear() - 65535/uses))
+                    inv:set_stack(listname, i, stack)
+                end
+            end
+        end
+    end
+end
+
+local function repair_player_inv(player)
+    local inv = player:get_inventory()
+    repair_items(inv, "main")
+    if exchangeclone.mcl then
+        repair_items(inv, "offhand")
+        repair_items(inv, "armor")
+    elseif core.get_modpath("3d_armor") then
+        local _, armor_inv = armor:get_valid_player(player, "3d_armor")
+        repair_items(armor_inv, "armor")
+    end
+end
+
+core.register_tool("ec_magic_items:talisman_of_repair", {
+    description = "Talisman of Repair",
+    inventory_image = "exchangeclone_talisman_of_repair.png",
+    _exchangeclone_passive = {
+        func = repair_player_inv,
+        always_active = true
+    },
+    _exchangeclone_pedestal = function(pos)
+        for _, object in pairs(core.get_objects_inside_radius(pos, 5)) do
+            if object:is_player() then
+                repair_player_inv(object)
+            end
+        end
+    end,
+    groups = {exchangeclone_passive = 1, disable_repair = 1}
+})
+
+local string = exchangeclone.mcl and "mcl_mobitems:string" or "farming:string"
+
+core.register_craft({
+    output = "ec_magic_items:talisman_of_repair",
+    recipe = {
+        {"ec_dust:low_covalence_dust", "ec_dust:medium_covalence_dust", "ec_dust:high_covalence_dust"},
+        {string, exchangeclone.mcl and "mcl_core:paper" or "default:paper", string},
+        {"ec_dust:high_covalence_dust", "ec_dust:medium_covalence_dust", "ec_dust:low_covalence_dust"}
+    }
+})
+
+core.register_alias("exchangeclone:talisman_of_repair", "ec_magic_items:talisman_of_repair")
