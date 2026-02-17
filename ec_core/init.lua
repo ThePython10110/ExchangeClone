@@ -121,7 +121,6 @@ local modpath = core.get_modpath(core.get_current_modname())
 
 local files = {
 	"deprecated_stuff",
-	"craftitems",
 	"commands",
 	"hud",
 	-- used to be a lot more here before I split it into separate mods

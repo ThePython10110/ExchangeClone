@@ -58,8 +58,7 @@ core.register_tool("ec_magic_items:talisman_of_repair", {
     description = "Talisman of Repair",
     inventory_image = "exchangeclone_talisman_of_repair.png",
     _exchangeclone_passive = {
-        func = repair_player_inv,
-        always_active = true
+        inactive_func = repair_player_inv
     },
     _exchangeclone_pedestal = function(pos)
         for _, object in pairs(core.get_objects_inside_radius(pos, 5)) do
@@ -81,5 +80,3 @@ core.register_craft({
         {"ec_dust:high_covalence_dust", "ec_dust:medium_covalence_dust", "ec_dust:low_covalence_dust"}
     }
 })
-
-core.register_alias("exchangeclone:talisman_of_repair", "ec_magic_items:talisman_of_repair")

@@ -23,8 +23,9 @@ function exchangeclone.goed_condense(player, itemstack)
     -- Don't include hotbar
     local min = player:hud_get_hotbar_itemcount() + 1
     if player:get_wield_index() >= min then return end
+    
 
-    local total_emc = itemstack:_get_emc() - exchangeclone.get_item_emc(itemstack:get_name())
+    local total_emc = (itemstack:_get_emc() or 0) - (exchangeclone.get_item_emc(itemstack:get_name()) or 0)
     local target = exchangeclone.density_targets[math.max(meta:get_int("density_target"),  1)]
     local filter
     local current_mode = player:get_meta():get_string("exchangeclone_goed_filter_type")
@@ -197,7 +198,7 @@ core.register_tool("ec_magic_items:gem_of_eternal_density", {
     _exchangeclone_passive = {
         hotbar = true,
         active_image = "exchangeclone_gem_of_eternal_density_active.png",
-        func = exchangeclone.goed_condense
+        active_func = exchangeclone.goed_condense
     },
     groups = {disable_repair = 1, exchangeclone_passive = 1},
     _mcl_generate_description = get_gem_description
@@ -211,5 +212,3 @@ core.register_craft({
         {exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.diamond}
     }
 })
-
-core.register_alias("exchangeclone:gem_of_eternal_density", "ec_magic_items:gem_of_eternal_density")

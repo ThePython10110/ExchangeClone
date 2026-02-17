@@ -1,7 +1,7 @@
 local function heal(player, amount)
     local hp_max = player:get_properties().hp_max
     local current_hp = player:get_hp()
-    if current_hp < hp_max then
+    if current_hp < hp_max and current_hp > 0 then
         player:set_hp(math.min(current_hp + amount, hp_max), { type = "set_hp", other = "healing" })
         return true
     end
@@ -31,7 +31,7 @@ core.register_tool("ec_magic_items:soul_stone", {
     description = "Soul Stone",
     inventory_image = "exchangeclone_soul_stone.png",
     _exchangeclone_passive = {
-        func = function(player)
+        active_func = function(player)
             if player:_get_emc() >= 64 then
                 if heal(player, 2) then
                     player:_add_emc(-64)
@@ -67,7 +67,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and core.get_
         description = "Body Stone",
         inventory_image = "exchangeclone_body_stone.png",
         _exchangeclone_passive = {
-            func = function(player)
+            active_func = function(player)
                 if player:_get_emc() >= 64 then
                     if satiate(player, 2) then
                         player:_add_emc(-64)
@@ -104,7 +104,7 @@ if (exchangeclone.mcl and mcl_hunger.active) or (exchangeclone.mtg and core.get_
         description = "Life Stone",
         inventory_image = "exchangeclone_life_stone.png",
         _exchangeclone_passive = {
-            func = function(player)
+            active_func = function(player)
                 if player:_get_emc() >= 64 then
                     local changed
                     if heal(player, 2)  then
@@ -203,7 +203,7 @@ if exchangeclone.mcl then
         description = "Mind Stone",
         inventory_image = "exchangeclone_mind_stone.png",
         _exchangeclone_passive = {
-            func = drain_xp,
+            active_func = drain_xp,
             hotbar = true,
             active_image = "exchangeclone_mind_stone_active.png",
         },
@@ -241,8 +241,3 @@ if exchangeclone.mcl then
         }
     })
 end
-
-core.register_alias("exchangeclone:soul_stone", "ec_magic_items:soul_stone")
-core.register_alias("exchangeclone:body_stone", "ec_magic_items:body_stone")
-core.register_alias("exchangeclone:life_stone", "ec_magic_items:life_stone")
-core.register_alias("exchangeclone:mind_stone", "ec_magic_items:mind_stone")

@@ -213,5 +213,3 @@ core.register_craft({
         {exchangeclone.itemstrings.obsidian, exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.obsidian},
     }
 })
-
-core.register_alias("exchangeclone:emc_link", "ec_emc_link:emc_link")

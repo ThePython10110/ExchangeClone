@@ -75,14 +75,12 @@ core.register_node("ec_chests:alchemical_chest", {
     can_dig = exchangeclone.can_dig,
 })
 
-local chest_itemstring = exchangeclone.mcl and "mcl_chests:chest" or "default:chest"
-
 core.register_craft({
     output = "ec_chests:alchemical_chest",
     recipe = {
         {"ec_dust:low_covalence_dust", "ec_dust:medium_covalence_dust", "ec_dust:high_covalence_dust"},
         {exchangeclone.itemstrings.stone, exchangeclone.itemstrings.diamond, exchangeclone.itemstrings.stone},
-        {exchangeclone.itemstrings.iron, chest_itemstring, exchangeclone.itemstrings.iron}
+        {exchangeclone.itemstrings.iron, exchangeclone.itemstrings.chest, exchangeclone.itemstrings.iron}
     }
 })
 

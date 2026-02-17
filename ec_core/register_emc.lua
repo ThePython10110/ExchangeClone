@@ -339,7 +339,7 @@ end
 
 
 
--- Register group EMC values
+-- Register base group EMC values
 local groupnames = {}
 for index, group in ipairs(exchangeclone.group_values) do
     groupnames[#groupnames + 1] = group[1] --Get list of group names
@@ -352,9 +352,20 @@ for index, group in ipairs(exchangeclone.group_values) do
     end
 end
 
--- Register base EMC values
+-- Register base individual EMC values
 for itemstring, emc_value in pairs(exchangeclone.base_emc_values) do
     register_emc(itemstring, emc_value)
+end
+
+-- handle aliases in exchangeclone.recipes
+for itemstring, recipes in pairs(exchangeclone.recipes) do
+    local new_name = ItemStack(itemstring):get_name()
+    if new_name and new_name ~= "" and new_name ~= itemstring then
+        exchangeclone.recipes[new_name] = exchangeclone.recipes[new_name] or {}
+        for _, recipe in pairs(recipes) do
+            table.insert(exchangeclone.recipes[new_name], recipe)
+        end
+    end
 end
 
 -- Register `exchangeclone_custom_emc` values and decide whether to automatically register EMC values
@@ -376,17 +387,7 @@ for itemstring, def in pairs(core.registered_items) do
             and exchangeclone.recipes[itemstring]
         ) then
             auto[itemstring] = true
-        end
-    end
-end
-
--- handle aliases in exchangeclone.recipes
-for itemstring, recipes in pairs(exchangeclone.recipes) do
-    local new_name = ItemStack(itemstring):get_name()
-    if new_name and new_name ~= "" and new_name ~= itemstring then
-        exchangeclone.recipes[new_name] = exchangeclone.recipes[new_name] or {}
-        for _, recipe in pairs(recipes) do
-            table.insert(exchangeclone.recipes[new_name], recipe)
+        else
         end
     end
 end

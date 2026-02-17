@@ -1,5 +1,4 @@
 local S = core.get_translator()
-core.log(dump(exchangeclone.colors))
 exchangeclone.fuels = {
     {
         name = "Alchemical Coal",
@@ -171,11 +170,12 @@ function exchangeclone.register_fuel(fuel_data)
         },
         replacements = {{phil, phil}}
     })
-
-    core.register_alias("exchangeclone"..item_itemstring:sub(9), item_itemstring)
-    core.register_alias("exchangeclone"..node_itemstring:sub(9), node_itemstring)
 end
 
-for _, fuel in pairs(exchangeclone.fuels) do
+for i, fuel in pairs(exchangeclone.fuels) do
     exchangeclone.register_fuel(fuel)
 end
+
+core.register_alias("exchangeclone:alchemical_coal", "ec_fuel:alchemical_coal")
+core.register_alias("exchangeclone:mobius_fuel", "ec_fuel:mobius_fuel")
+core.register_alias("exchangeclone:aeternalis_fuel", "ec_fuel:aeternalis_fuel")

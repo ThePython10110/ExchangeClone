@@ -2,7 +2,7 @@ core.register_tool("ec_magic_items:zero_ring", {
     description = "Zero Ring",
     inventory_image = "exchangeclone_zero_ring.png",
     _exchangeclone_passive = {
-        func = function() end,
+        active_func = function() end,
         active_image = "exchangeclone_zero_ring_active.png",
     }
 })
@@ -28,7 +28,7 @@ if exchangeclone.mcl then
             mcl_fire.set_fire(pointed_thing, player, false)
         end
     end
-else
+elseif core.get_modpath("fire") then
     set_fire = function(player, pos)
 		local protname = player:get_player_name()
 		if core.is_protected(pos, protname) then
@@ -44,13 +44,16 @@ else
     end
 end
 
+if not set_fire then return end
+
 core.register_tool("ec_magic_items:ring_of_ignition", {
     description = "Ring of Ignition",
     inventory_image = "exchangeclone_ring_of_ignition.png",
     on_secondary_use = exchangeclone.toggle_active,
     on_place = exchangeclone.toggle_active,
     _exchangeclone_passive = {
-        func = function(player)
+        hotbar = true,
+        active_func = function(player)
             local player_pos = player:get_pos()
             local offset = vector.new(5,1,5)
             local start, _end = player_pos + offset, player_pos - offset
@@ -59,15 +62,33 @@ core.register_tool("ec_magic_items:ring_of_ignition", {
             for _, pos in pairs(nodes) do
                 local above_pos = vector.offset(pos,0,1,0)
                 if core.get_node(above_pos).name == "air" then
-                    if math.random() < 0.2 then
+                    if math.random() < 0.4 then
                         set_fire(player, pos)
                     end
                 end
+            end
+        end,
+        inactive_func = function (player)
+            local player_pos = player:get_pos()
+            local offset = vector.new(2,1,2)
+            local start, _end = player_pos + offset, player_pos - offset
+             -- conveniently, MTG and MCL agree on the flammable group
+            local nodes = core.find_nodes_in_area(start, _end, "group:fire")
+            for _, pos in pairs(nodes) do
+                core.dig_node(pos, player)
             end
         end,
         active_image = "exchangeclone_ring_of_ignition_active.png",
     }
 })
 
-core.register_alias("exchangeclone:zero_ring", "ec_magic_items:zero_ring")
-core.register_alias("exchangeclone:ring_of_ignition", "ec_magic_items:ring_of_ignition")
+local flint_and_steel = exchangeclone.mcl and "mcl_fire:flint_and_steel" or "fire:flint_and_steel"
+
+core.register_craft({
+    output = "ec_magic_items:ring_of_ignition",
+    recipe = {
+        {flint_and_steel, "ec_fuel:mobius_fuel", flint_and_steel},
+        {"ec_matter:dark_matter", "ec_random:iron_band", "ec_matter:dark_matter"},
+        {flint_and_steel, "ec_fuel:mobius_fuel", flint_and_steel},
+    }
+})

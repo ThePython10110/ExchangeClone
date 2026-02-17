@@ -1,4 +1,4 @@
-local suffixes = {"", "K", "M", "B", "T"}
+local suffixes = {"", "K", "M", "B", "T", "Q"} -- "Q" should never be used, but just in case...
 
 local function get_amount_label(itemstring, player_emc)
     if not core.registered_items[itemstring] then return "" end

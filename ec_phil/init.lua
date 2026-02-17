@@ -9,7 +9,7 @@ local function show_enchanting(player)
     mcl_enchanting.show_enchanting_formspec(player)
 end
 
-local width = (exchangeclone.mcl and 9) or 8
+local width = exchangeclone.inv_width
 
 local repairing_formspec =
     "size["..tostring(width)..", 7]"..

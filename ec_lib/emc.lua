@@ -15,6 +15,7 @@
 ---@return number?
 function exchangeclone.get_item_emc(item)
     if (item == "") or not item then return end
+
     -- handle groups
     if type(item) == "string" and item:sub(1,6) == "group:" and exchangeclone.group_values then
         local item_group = item:sub(7,-1)

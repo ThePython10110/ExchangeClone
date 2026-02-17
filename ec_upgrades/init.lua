@@ -1,4 +1,6 @@
-local width = (exchangeclone.mcl and 9) or 8
+if not core.get_modpath("mcl_enchanting") then return end
+
+local width = exchangeclone.inv_width
 
 local upgrader_formspec =
     "size["..tostring(width)..", 7]"..

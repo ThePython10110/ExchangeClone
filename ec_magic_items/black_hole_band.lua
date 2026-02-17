@@ -189,7 +189,7 @@ core.register_tool("ec_magic_items:black_hole_band", {
     on_place = exchangeclone.toggle_active,
     groups = {exchangeclone_passive = 1, disable_repair = 1, immune_to_fire = 1},
     _exchangeclone_passive = {
-        func = pickup_items,
+        active_func = pickup_items,
         hotbar = true,
         active_image = "exchangeclone_black_hole_band_active.png",
         exclude = {"ec_magic_items:void_ring"}
@@ -205,7 +205,7 @@ core.register_tool("ec_magic_items:void_ring", {
     on_use = void_ring_leftclick,
     groups = {exchangeclone_passive = 1, disable_repair = 1, immune_to_fire = 1},
     _exchangeclone_passive = {
-        func = function(player, itemstack)
+        active_func = function(player, itemstack)
             local meta = itemstack:get_meta()
             local mode = meta:get_int("exchangeclone_void_ring_mode")
             if mode == 2 or mode == 3 then
@@ -222,13 +222,12 @@ core.register_tool("ec_magic_items:void_ring", {
     _exchangeclone_pedestal = black_hole_pedestal,
 })
 
-local ingredient = exchangeclone.mcl and "mcl_mobitems:string" or "farming:cotton"
 core.register_craft({
     output = "ec_magic_items:black_hole_band",
     recipe = {
-        {ingredient, ingredient, ingredient},
-        {"ec_matter:dark_matter", "exchangeclone:iron_band", "ec_matter:dark_matter"},
-        {ingredient, ingredient, ingredient},
+        {exchangeclone.itemstrings.string, exchangeclone.itemstrings.string, exchangeclone.itemstrings.string},
+        {"ec_matter:dark_matter", "ec_random:iron_band", "ec_matter:dark_matter"},
+        {exchangeclone.itemstrings.string, exchangeclone.itemstrings.string, exchangeclone.itemstrings.string},
     }
 })
 
@@ -242,6 +241,3 @@ core.register_craft({
         "ec_matter:red_matter"
     }
 })
-
-core.register_alias("exchangeclone:black_hole_band", "ec_magic_items:black_hole_band")
-core.register_alias("exchangeclone:void_ring", "ec_magic_items:void_ring")

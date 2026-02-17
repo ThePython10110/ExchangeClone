@@ -110,7 +110,8 @@ for i, matter in ipairs(exchangeclone.matter_types) do
             {itemstring.."_block",}
         }
     })
-    
-    core.register_alias("exchangeclone:"..codified, itemstring)
-    core.register_alias("exchangeclone:"..codified.."_block", itemstring.."_block")
+    if i < 3 then
+        core.register_alias("exchangeclone:"..codified, itemstring)
+        core.register_alias("exchangeclone:"..codified.."_block", itemstring.."_block")
+    end
 end

@@ -375,8 +375,3 @@ if core.get_modpath("ec_magic_items") then
         }
     })
 end
-
-core.register_alias("exchangeclone:basic_alchemical_book", "ec_alchemical_books:basic_alchemical_book")
-core.register_alias("exchangeclone:advanced_alchemical_book", "ec_alchemical_books:advanced_alchemical_book")
-core.register_alias("exchangeclone:master_alchemical_book", "ec_alchemical_books:master_alchemical_book")
-core.register_alias("exchangeclone:arcane_alchemical_book", "ec_alchemical_books:arcane_alchemical_book")

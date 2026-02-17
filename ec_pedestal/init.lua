@@ -13,10 +13,14 @@ local function add_particles(pos)
     for _, offset in pairs(particle_positions) do
         core.add_particle({
             pos = vector.add(pos, offset),
-            expirationtime = 1.1,
-            size = 1,
-            texture = "exchangeclone_flame_particle.png",
+            scale = math.random(0.5,2),
+            expirationtime = math.random()*5+1,
+            texture = {
+                name = "exchangeclone_flame_particle.png",
+                scale_tween = {{x=1,y=1},{x=0.2,y=0.2}}
+            },
             glow = 14,
+            velocity = vector.new((math.random()-0.5)/10, (math.random()-0.5)/10, (math.random()-0.5)/10)
         })
     end
 end
@@ -165,7 +169,7 @@ core.register_node("ec_pedestal:dark_matter_pedestal", {
         local wielded_item = player:get_wielded_item()
         local meta = core.get_meta(pos)
         local inv = meta:get_inventory()
-        if not inv:is_empty("main") and wielded_item:is_empty() then
+        if not inv:is_empty("main") then
             local stack = inv:get_stack("main", 1)
             local pedestal_data = stack:get_definition()._exchangeclone_pedestal
             if pedestal_data then
@@ -220,5 +224,3 @@ core.register_craft({
         {"ec_matter:dark_matter_block", "ec_matter:dark_matter_block", "ec_matter:dark_matter_block"},
     }
 })
-
-core.register_alias("exchangeclone:dark_matter_pedestal", "ec_pedestal:dark_matter_pedestal")

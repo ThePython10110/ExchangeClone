@@ -39,4 +39,6 @@ exchangeclone.itemstrings = {
     fire =              exchangeclone.mcl and "mcl_fire:fire"               or "fire:fire",
     ice =               exchangeclone.mcl and "mcl_core:ice"                or "default:ice",
     chest =             exchangeclone.mcl and "mcl_chests:chest"            or "default:chest",
+    furnace =           exchangeclone.mcl and "mcl_furnaces:furnace"        or "default:furnace",
+    string =            exchangeclone.mcl and "mcl_mobitems:string"         or "farming:cotton",
 }

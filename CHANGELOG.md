@@ -33,9 +33,9 @@
   - [ ] Check potions
   - [ ] Check group awards
   - [ ] Check technic
-  - [ ] `mobs` don't properly die when hit with sword attack
-  - [ ] Right click on pedestal with tool not working
-  - [ ] Probably hoppers again
+  - [ ] `mobs` don't trigger death callbacks when hit with sword attack
+  - [ ] Probably hoppers/pipes again
+  - [ ] Probably wrong EMC values again
 
 ### v8.0: The Expansion Update
 Honestly, I just kind of stopped working on Luanti mods for a *long* time in the middle of this update. Multiple times.

@@ -25,7 +25,7 @@ dofile(modpath.."/early_lib.lua")
 -- Override crafting
 local old_func = core.register_craft
 ---@diagnostic disable-next-line: duplicate-set-field
-function core.register_craft(data, ...)
+function core.register_craft(data, ...) 
     local itemstring = ItemStack(data.output):get_name()
     local allowed = true
     -- Skip thousands of banner recipes in MCL/VL

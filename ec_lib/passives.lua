@@ -10,24 +10,33 @@ do
                 local inv = player:get_inventory()
                 local processed_already = {}
                 for i, stack in ipairs(inv:get_list("main")) do
-                    if core.get_item_group(stack:get_name(), "exchangeclone_passive") then
+                    local itemstring = stack:get_name()
+                    if core.get_item_group(itemstring, "exchangeclone_passive") then
                         local passive_data = stack:get_definition()._exchangeclone_passive
+                        local active = stack:get_meta():get_string("exchangeclone_active") == "true"
                         if passive_data
-                        and not processed_already[stack:get_name()]
-                        and (stack:get_meta():get_string("exchangeclone_active") == "true" or passive_data.always_active)
+                        and not (processed_already[itemstring] and processed_already[itemstring][active and 1 or 2])
                         and (not passive_data.hotbar or (passive_data.hotbar and i <= hb_max)) then
                             local found
                             if passive_data.exclude then
                                 for _, itemstring in pairs(passive_data.exclude) do
                                     if processed_already[itemstring] then
-                                        found = true
-                                        break
+                                        if processed_already[itemstring][active and 1 or 2] then
+                                            found = true
+                                            break
+                                        end
                                     end
                                 end
                             end
                             if not found then
-                                processed_already[stack:get_name()] = true
-                                local result = passive_data.func(player, stack)
+                                processed_already[itemstring] = processed_already[stack:get_name()] or {}
+                                processed_already[stack:get_name()][active and 1 or 2] = true
+                                local result
+                                if active then
+                                    result = passive_data.active_func and passive_data.active_func(player, stack)
+                                else
+                                    result = passive_data.inactive_func and passive_data.inactive_func(player, stack)
+                                end
                                 if result then inv:set_stack("main", i, result) end
                             end
                         end

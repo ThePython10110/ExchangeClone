@@ -55,6 +55,7 @@ Dependencies: Minetest Game, VoxeLibre, or Mineclonia.
   * Power Flower Bonsai Pots
 
 ## Known issues:
+* If you have "Random mod load order" on in Minetest settings, EMC registration will *not* work correctly, since it relies on being able to override `core.register_item` before any items have been registered.
 * The sword/katar AOE ability does not take upgrades (looting, fire aspect, etc.) into account. This will probably not be fixed (MCL)
 * Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by MCL dispensers. This will not be fixed because it would require me to completely override *all* the code for dispensers, and I don't want to do that.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.

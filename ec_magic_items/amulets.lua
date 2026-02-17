@@ -168,7 +168,6 @@ core.register_on_player_hpchange(function(player, hp_change, reason)
                 end
             end
         elseif exchangeclone.mtg and reason.type == "node_damage" and reason.node then
-            core.log(reason.node)
             if fire_nodes[reason.node] then
                 local inv = player:get_inventory()
                 local hotbar_max = player:hud_get_hotbar_itemcount() + 1
@@ -193,7 +192,7 @@ if exchangeclone.mcl then
             local hotbar_max = obj:hud_get_hotbar_itemcount() + 1
             for i = 1, hotbar_max do
                 local stack = inv:get_stack("main", i)
-                if stack:get_name() == "ec_magic_items:volcanite_amulet" then
+                if stack:get_name() == "ec_magic_items:volcanite_amulet" or stack:get_name() == "ec_magic_items:ring_of_ignition" then
                     return 0
                 end
             end
@@ -219,6 +218,3 @@ core.register_craft({
         {exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket, exchangeclone.itemstrings.lava_bucket},
     }
 })
-
-core.register_alias("exchangeclone:volcanite_amulet", "ec_magic_items:volcanite_amulet")
-core.register_alias("exchangeclone:evertide_amulet", "ec_magic_items:evertide_amulet")

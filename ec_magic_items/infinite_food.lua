@@ -52,5 +52,3 @@ core.register_craft({
         {bread_itemstring, bread_itemstring, bread_itemstring,},
     }
 })
-
-core.register_alias("exchangeclone:infinite_food", "ec_magic_items:infinite_food")
