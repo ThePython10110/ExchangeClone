@@ -50,16 +50,16 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
         local current_mode = itemstack:get_meta():get_string("exchangeclone_multidig_mode") or "1x1"
         if current_mode == "1x1" then
             meta:set_string("exchangeclone_multidig_mode", "3x1_tall")
-            core.chat_send_player(player:get_player_name(), S("3x1 tall mode"))
+            core.chat_send_player(player:get_player_name(), S("Mode: 3x1 tall"))
         elseif current_mode == "tall" then
-            meta:set_string("exchangeclone_multidig_mode", "3x1_wide")
+            meta:set_string("exchangeclone_multidig_mode", S("Mode: 3x1 wide"))
             core.chat_send_player(player:get_player_name(), S("3x1 wide mode"))
         elseif current_mode == "wide" then
             meta:set_string("exchangeclone_multidig_mode", "3x1_long")
-            core.chat_send_player(player:get_player_name(), S("3x1 long mode"))
+            core.chat_send_player(player:get_player_name(), S("Mode: 3x1 long"))
         else
             meta:set_string("exchangeclone_multidig_mode", "1x1")
-            core.chat_send_player(player:get_player_name(), S("Single node mode"))
+            core.chat_send_player(player:get_player_name(), S("Mode: Single node"))
         end
 		return itemstack
 	elseif pointed_thing.type == "node" then
@@ -79,7 +79,7 @@ local function pickaxe_on_use(itemstack, player, pointed_thing)
 end
 
 core.register_tool("ec_tools:dark_matter_pickaxe", {
-	description = S("Dark Matter Pickaxe").."\n"..S("Single node mode"),
+	description = S("Dark Matter Pickaxe"),
 	wield_image = "exchangeclone_dark_matter_pickaxe.png",
 	inventory_image = "exchangeclone_dark_matter_pickaxe.png",
 	groups = { tool=1, pickaxe=1, dig_speed_class=5, enchantability=0, dark_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},
@@ -107,7 +107,7 @@ core.register_alias("ec_tools:dark_matter_pickaxe_3x1", "ec_tools:dark_matter_pi
 exchangeclone.set_charge_type("ec_tools:dark_matter_pickaxe", "dark_matter")
 
 core.register_tool("ec_tools:red_matter_pickaxe", {
-	description = S("Red Matter Pickaxe").."\n"..S("Single node mode"),
+	description = S("Red Matter Pickaxe"),
 	wield_image = "exchangeclone_red_matter_pickaxe.png",
 	inventory_image = "exchangeclone_red_matter_pickaxe.png",
 	groups = { tool=1, pickaxe=1, dig_speed_class=5, enchantability=0, red_matter_pickaxe=1, disable_repair = 1, fire_immune = 1, exchangeclone_upgradable = 1},

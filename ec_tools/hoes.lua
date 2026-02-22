@@ -79,10 +79,10 @@ local hoe_on_place = function(itemstack, player, pointed_thing)
 		local current_mode = meta:get_string("exchangeclone_multidig_mode")
 		if current_mode == "3x3" then
 			meta:set_string("exchangeclone_multidig_mode", "1x1")
-			core.chat_send_player(player:get_player_name(), S("Single node mode"))
+			core.chat_send_player(player:get_player_name(), S("Mode: Single node"))
 		else
 			meta:set_string("exchangeclone_multidig_mode", "3x3")
-			core.chat_send_player(player:get_player_name(), S("3x3 mode"))
+			core.chat_send_player(player:get_player_name(), S("Mode: 3x3"))
 		end
 		return itemstack
 	end
@@ -112,7 +112,7 @@ for name, def in pairs(core.registered_nodes) do
 end
 
 core.register_tool("ec_tools:dark_matter_hoe", {
-	description = S("Dark Matter Hammer").."\n"..S("Single node mode"),
+	description = S("Dark Matter Hammer"),
 	wield_image = "exchangeclone_dark_matter_hoe.png",
 	inventory_image = "exchangeclone_dark_matter_hoe.png",
 	wield_scale = exchangeclone.wield_scale,
@@ -138,7 +138,7 @@ exchangeclone.register_multidig_tool("ec_tools:dark_matter_hoe", {"group:exchang
 exchangeclone.set_charge_type("ec_tools:dark_matter_hoe", "dark_matter")
 
 core.register_tool("ec_tools:red_matter_hoe", {
-	description = S("Red Matter Hammer").."\n"..S("Single node mode"),
+	description = S("Red Matter Hammer"),
 	wield_image = "exchangeclone_red_matter_hoe.png",
 	inventory_image = "exchangeclone_red_matter_hoe.png",
 	wield_scale = exchangeclone.wield_scale,

@@ -7,7 +7,7 @@ local hud_elements = {}
 ---@param player core.Player
 function exchangeclone.update_hud(player)
     local hud_text = hud_elements[player:get_player_name()]
-    player:hud_change(hud_text, "text", S("Personal EMC: @1", exchangeclone.format_number(exchangeclone.get_player_emc(player))))
+    player:hud_change(hud_text, "text", core.colorize("#ffff55", S("Personal EMC: "))..exchangeclone.format_number(exchangeclone.get_player_emc(player)))
 end
 
 core.register_on_joinplayer(function(player, last_login)
@@ -15,7 +15,7 @@ core.register_on_joinplayer(function(player, last_login)
         hud_elem_type = "text",
         position      = {x = 1, y = 1},
         offset        = {x = 0,   y = 0},
-        text          = S("Personal EMC: @1", 0),
+        text          = core.colorize("#ffff55", S("Personal EMC: " )).."0",
         alignment     = {x = -1, y = -1},
         scale         = {x = 100, y = 100},
         number = 0xDDDDDD

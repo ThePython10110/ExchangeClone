@@ -78,14 +78,14 @@ function exchangeclone.set_item_meta_emc(item, value)
     local description = item:get_description()
 
     -- Override EMC value in description
-    local existing_emc_value = description:find("EMC: ([%d%.,]+)")
+    local existing_emc_value = description:find(core.colorize("#ffff55", "EMC: ").."([%d%.,]+)")
     if existing_emc_value then
-        description = description:gsub("EMC: ([%d%.,]+)", "EMC: "..exchangeclone.format_number(value))
+        description = description:gsub(core.colorize("#ffff55", "EMC: ").."([%d%.,]+)", core.colorize("#ffff55", "EMC: ")..exchangeclone.format_number(value))
     else
         if description[#description] ~= "\n" then
             description = description.."\n"
         end
-        description = description.."EMC: "..exchangeclone.format_number(value)
+        description = description..core.colorize("#ffff55", "EMC: ")..exchangeclone.format_number(value)
     end
     item:get_meta():set_string("description", description)
 end

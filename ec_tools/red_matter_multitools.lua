@@ -37,10 +37,10 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 				local current_mode = meta:get_string("exchangeclone_multidig_mode")
 				if current_mode == "3x3" then
 					meta:set_string("exchangeclone_multidig_mode", "1x1")
-					core.chat_send_player(player:get_player_name(), S("Single node mode"))
+					core.chat_send_player(player:get_player_name(), S("Mode: Single node"))
 				else
 					meta:set_string("exchangeclone_multidig_mode", "3x3")
-					core.chat_send_player(player:get_player_name(), S("3x3 mode"))
+					core.chat_send_player(player:get_player_name(), S("Mode: 3x3"))
 				end
 				return itemstack
 			else
@@ -80,7 +80,7 @@ local katar_on_use = function(itemstack, player, pointed_thing)
 end
 
 core.register_tool("ec_tools:red_katar", {
-    description = S("Red Katar").."\n"..S("Single node mode"),
+    description = S("Red Katar"),
 	wield_image = "exchangeclone_red_katar.png",
 	inventory_image = "exchangeclone_red_katar.png",
     on_secondary_use = katar_on_use,
@@ -192,26 +192,26 @@ local function morningstar_on_use(itemstack, player, pointed_thing)
 		if current_mode == "" or not current_mode then current_mode = "1x1" end
 		if current_mode == "1x1" then
 			meta:set_string("exchangeclone_multidig_mode", "3x3")
-			core.chat_send_player(player:get_player_name(), S("3x3 mode"))
+			core.chat_send_player(player:get_player_name(), S("Mode: 3x3"))
 		elseif current_mode == "3x3" then
 			meta:set_string("exchangeclone_multidig_mode", "3x1_tall")
-			core.chat_send_player(player:get_player_name(), S("3x1 tall mode"))
+			core.chat_send_player(player:get_player_name(), S("Mode: 3x1 tall"))
 		elseif current_mode == "3x1_tall" then
 			meta:set_string("exchangeclone_multidig_mode", "3x1_wide")
-			core.chat_send_player(player:get_player_name(), S("3x1 wide mode"))
+			core.chat_send_player(player:get_player_name(), S("Mode: 3x1 wide"))
 		elseif current_mode == "3x1_wide" then
 			meta:set_string("exchangeclone_multidig_mode", "3x1_long")
-			core.chat_send_player(player:get_player_name(), S("3x1 long mode"))
+			core.chat_send_player(player:get_player_name(), S("Mode: 3x1 long"))
 		elseif current_mode == "3x1_long" then
 			meta:set_string("exchangeclone_multidig_mode", "1x1")
-			core.chat_send_player(player:get_player_name(), S("Single node mode"))
+			core.chat_send_player(player:get_player_name(), S("Mode: Single node"))
 		end
 		return itemstack
 	end
 end
 
 core.register_tool("ec_tools:red_morningstar", {
-	 description = S("Red Morningstar").."\n"..S("Single node mode"),
+	 description = S("Red Morningstar"),
 	 wield_image = "exchangeclone_red_morningstar.png",
 	 inventory_image = "exchangeclone_red_morningstar.png",
 	 on_secondary_use = morningstar_on_use,

@@ -122,20 +122,7 @@ local function register_emc(itemstring, emc_value)
     if emc_value < 0 then return end
     local def = core.registered_items[itemstring]
     if not def then return end
-    local description = def.description or ""
-
-    -- Override EMC value if it already exists
-    local existing_emc_value = description:find("EMC: ([%d%.,]+)")
-    if existing_emc_value then
-        description = description:gsub("EMC: ([%d%.,]+)", "EMC: "..exchangeclone.format_number(emc_value))
-    else
-        if description[#description] ~= "\n" then
-            description = description.."\n"
-        end
-        description = description.."EMC: "..exchangeclone.format_number(emc_value)
-    end
     core.override_item(itemstring, {
-        description = description,
         emc_value = emc_value,
     })
     if emc_value > 0 then
@@ -469,7 +456,23 @@ for alias, itemstring in pairs(exchangeclone.emc_aliases) do
     end
 end
 
--- Delete unnecessary data (waste of memory)
+-- Update descriptions of items with EMC
+for name, def in pairs(core.registered_items) do
+    if def.description
+    and def.emc_value
+    and def.description ~= ""
+    and def.emc_value > 0 then
+        local new_description = def.description
+---@diagnostic disable-next-line: need-check-nil
+        if new_description[#new_description] ~= "\n" then
+            new_description = new_description.."\n"
+        end 
+        new_description = new_description..core.colorize("#FFFF55", "EMC: ")..exchangeclone.format_number(def.emc_value)
+        core.override_item(name, {description = new_description})
+    end
+end
+
+-- Delete unnecessary data (waste of memory, I guess)
 if not exchangeclone.keep_data then
     exchangeclone.recipes = nil
     exchangeclone.base_emc_values = nil

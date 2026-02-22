@@ -5,6 +5,7 @@ local files = {
     "cooldowns",
     "digging",
     "emc",
+    "get_drops",
     "item_transfer",
     "nodes",
     "passives",

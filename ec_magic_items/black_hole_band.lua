@@ -56,16 +56,6 @@ local function void_ring_teleport(player)
     exchangeclone.start_cooldown(player, "void_ring", 0.5)
 end
 
--- A lot of duplication here, unfortunately
-local function get_void_ring_description(itemstack)
-    local meta = itemstack:get_meta()
-    local current_target = math.max(meta:get_int("density_target"), 1)
-    local target_message = "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description()
-    local emc = exchangeclone.get_item_emc(itemstack:get_name()) --[[@as number]]
-    local stored = itemstack:_get_emc() - emc
-    return "Void Ring\n"..target_message.."\nEMC: "..exchangeclone.format_number(emc).."\nStored EMC: "..exchangeclone.format_number(stored)
-end
-
 local function void_ring_rightclick(itemstack, player, pointed_thing)
     local click_test = exchangeclone.check_on_rightclick(itemstack, player, pointed_thing)
     if click_test ~= false then
@@ -81,7 +71,7 @@ local function void_ring_rightclick(itemstack, player, pointed_thing)
         end
         core.chat_send_player(player:get_player_name(), "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description())
         meta:set_int("density_target", current_target)
-        meta:set_string("description", get_void_ring_description(itemstack))
+        meta:set_string("description", exchangeclone.get_gem_description(itemstack))
         return itemstack
     elseif player:get_player_control().sneak then
         local mode = meta:get_int("exchangeclone_void_ring_mode") or 0

@@ -6,14 +6,16 @@ exchangeclone.density_targets = {
     "ec_matter:red_matter",
 }
 
-local function get_gem_description(itemstack)
+function exchangeclone.get_gem_description(itemstack)
     local item_name = itemstack:get_short_description()
     local meta = itemstack:get_meta()
     local current_target = math.max(meta:get_int("density_target"), 1)
-    local target_message = "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description()
+    local target_message = core.colorize("#ffff55","Target: ")..ItemStack(exchangeclone.density_targets[current_target]):get_short_description()
     local def_emc = exchangeclone.get_item_emc(itemstack:get_name()) --[[@as number]]
     local stored = itemstack:_get_emc() - def_emc
-    return item_name.."\n"..target_message.."\nEMC: "..exchangeclone.format_number(def_emc).."\nStored EMC: "..exchangeclone.format_number(stored)
+    local emc_message = core.colorize("#ffff55","EMC: ")..exchangeclone.format_number(def_emc)
+    local stored_message = core.colorize("#ffff55","Stored EMC: ")..exchangeclone.format_number(stored)
+    return item_name.."\n"..target_message.."\n"..emc_message.."\n"..stored_message
 end
 
 function exchangeclone.goed_condense(player, gem_item)
@@ -87,7 +89,7 @@ function exchangeclone.goed_condense(player, gem_item)
         exchangeclone.play_sound(player, "exchangeclone_enable")
     end
     meta:set_string("exchangeclone_emc_value", exchangeclone.get_item_emc(gem_item:get_name()) + remainder_emc)
-    meta:set_string("description", get_gem_description(gem_item))
+    meta:set_string("description", exchangeclone.get_gem_description(gem_item))
     return gem_item
 end
 
@@ -107,7 +109,7 @@ local function gem_action(itemstack, player, pointed_thing)
         end
         core.chat_send_player(player:get_player_name(), "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description())
         meta:set_int("density_target", current_target)
-        meta:set_string("description", get_gem_description(itemstack))
+        meta:set_string("description", exchangeclone.get_gem_description(itemstack))
         return itemstack
     elseif player:get_player_control().sneak then
         return exchangeclone.toggle_active(itemstack, player, pointed_thing)
@@ -201,7 +203,7 @@ core.register_tool("ec_magic_items:gem_of_eternal_density", {
         active_func = exchangeclone.goed_condense
     },
     groups = {disable_repair = 1, exchangeclone_passive = 1},
-    _mcl_generate_description = get_gem_description
+    _mcl_generate_description = exchangeclone.get_gem_description
 })
 
 core.register_craft({
