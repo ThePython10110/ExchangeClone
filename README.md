@@ -45,6 +45,7 @@ Dependencies: Minetest Game, VoxeLibre, or Mineclonia.
 * There is only one level of EMC Link, which is instant.
 * Red Matter Pickaxes and Morningstars now place torches when right-clicking on non-ore blocks.
 * Emeralds are worth half as much as diamonds in MCL because villagers are ridiculously overpowered in ProjectE.
+* All Gems of Eternal Density and Void Rings share the *same filter* (per-player, not per-item).
 * Things that don't exist:
   * Swiftwolf's Rending Gale (I don't want to deal with flight permissions)
   * Interdiction torches (entities are laggy enough already)
@@ -53,9 +54,9 @@ Dependencies: Minetest Game, VoxeLibre, or Mineclonia.
   * EMC Relays (unnecessary)
   * Energy Condensers (unnecessary)
   * Power Flower Bonsai Pots
+  * Several other things...
 
 ## Known issues:
-* If you have "Random mod load order" on in Minetest settings, EMC registration will *not* work correctly, since it relies on being able to override `core.register_item` before any items have been registered.
 * The sword/katar AOE ability does not take upgrades (looting, fire aspect, etc.) into account. This will probably not be fixed (MCL)
 * Dark/Red Matter Shears will sometimes (randomly) be treated as normal shears when used by MCL dispensers. This will not be fixed because it would require me to completely override *all* the code for dispensers, and I don't want to do that.
 * In Mineclonia, when inserting items into Dark/Red Matter Furnaces with hoppers, they will not start at the correct speed, instead being limited to a maximum of 1 item/second. This will not be fixed unless Mineclonia changes how things work.
@@ -66,6 +67,7 @@ Dependencies: Minetest Game, VoxeLibre, or Mineclonia.
 * Covalence Dust and the Talisman of Repair cannot repair certain tools. This will not be fixed.
 * DM/RM tools are too fast in MTG (can't figure out why)
 * When placing torches with a Red Matter Pickaxe or Morningstar, if the placement fails, it still costs EMC. This will probably not be fixed.
+* If you have "Random mod load order" on in Minetest settings, EMC registration will *not* work correctly, since it relies on being able to override `core.register_item` before any items have been registered.
 
 **If you have a suggestion or notice a bug that isn't on this list, visit the [GitHub issues page](https://github.com/thepython10110/exchangeclone/issues).**
 

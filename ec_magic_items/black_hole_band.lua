@@ -1,3 +1,5 @@
+S = core.get_translator("exchangeclone")
+
 -- This function is mostly copied from `sneak_drop` by Krunegan because I was too lazy to do it myself
 local function pickup_items(player)
     local pos = player:get_pos()
@@ -83,23 +85,17 @@ local function void_ring_rightclick(itemstack, player, pointed_thing)
         return itemstack
     elseif player:get_player_control().sneak then
         local mode = meta:get_int("exchangeclone_void_ring_mode") or 0
-        local old_mode = mode
-        if mode == 1 then
-            mode = 0 -- 0: off, 1: GOED, 2: BHB, 3: both
-        elseif mode == 3 then
-            mode = 2
-        elseif mode == 0 then
-            mode = 1
-        elseif mode == 2 then
-            mode = 3
+         -- 0: off, 1: GOED, 2: BHB, 3: both
+        if mode % 2 == 1 then
+            mode = mode - 1
+            exchangeclone.play_sound(player, "exchangeclone_charge_down")
+            core.chat_send_player(player:get_player_name(), S("Disabled item condensing"))
+        else
+            mode = mode + 1
+            exchangeclone.play_sound(player, "exchangeclone_enable")
+            core.chat_send_player(player:get_player_name(), S("Enabled item condensing"))
         end
         meta:set_int("exchangeclone_void_ring_mode", mode)
-        core.log(string.format("%s -> %s", old_mode, mode))
-        if mode < old_mode then
-            exchangeclone.play_sound(player, "exchangeclone_charge_down")
-        else
-            exchangeclone.play_sound(player, "exchangeclone_enable")
-        end
         if mode == 0 then
             meta:set_string("exchangeclone_active", "")
             meta:set_string("inventory_image", "")
@@ -120,23 +116,16 @@ local void_ring_leftclick = function(itemstack, player, pointed_thing)
     local meta = itemstack:get_meta()
     if player:get_player_control().sneak then
         local mode = meta:get_int("exchangeclone_void_ring_mode")
-        local old_mode = mode
-        if mode == 1 then
-            mode = 3 -- 0: off, 1: GOED, 2: BHB, 3: both
-        elseif mode == 3 then
-            mode = 1
-        elseif mode == 0 then
-            mode = 2
-        elseif mode == 2 then
-            mode = 0
-        end
-        core.log(string.format("%s -> %s", old_mode, mode))
-        meta:set_int("exchangeclone_void_ring_mode", mode)
-        if mode < old_mode then
+        if mode > 1 then
+            mode = mode - 2
             exchangeclone.play_sound(player, "exchangeclone_charge_down")
+            core.chat_send_player(player:get_player_name(), S("Disabled item magnet"))
         else
+            mode = mode + 2
             exchangeclone.play_sound(player, "exchangeclone_enable")
+            core.chat_send_player(player:get_player_name(), S("Enabled item magnet"))
         end
+        meta:set_int("exchangeclone_void_ring_mode", mode)
         if mode == 0 then
             meta:set_string("exchangeclone_active", "")
             meta:set_string("inventory_image", "")
@@ -212,7 +201,7 @@ core.register_tool("ec_magic_items:void_ring", {
                 pickup_items(player)
             end
             if mode == 1 or mode == 3 then
-                exchangeclone.goed_condense(player, itemstack)
+                return exchangeclone.goed_condense(player, itemstack)
             end
         end,
         hotbar = true,

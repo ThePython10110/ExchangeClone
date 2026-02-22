@@ -7,25 +7,25 @@ exchangeclone.density_targets = {
 }
 
 local function get_gem_description(itemstack)
+    local item_name = itemstack:get_short_description()
     local meta = itemstack:get_meta()
     local current_target = math.max(meta:get_int("density_target"), 1)
     local target_message = "Target: "..ItemStack(exchangeclone.density_targets[current_target]):get_short_description()
-    local emc = exchangeclone.get_item_emc(itemstack:get_name()) --[[@as number]]
-    local stored = itemstack:_get_emc() - emc
-    return "Gem of Eternal Density\n"..target_message.."\nEMC: "..exchangeclone.format_number(emc).."\nStored EMC: "..exchangeclone.format_number(stored)
+    local def_emc = exchangeclone.get_item_emc(itemstack:get_name()) --[[@as number]]
+    local stored = itemstack:_get_emc() - def_emc
+    return item_name.."\n"..target_message.."\nEMC: "..exchangeclone.format_number(def_emc).."\nStored EMC: "..exchangeclone.format_number(stored)
 end
 
-function exchangeclone.goed_condense(player, itemstack)
-    local meta = itemstack:get_meta()
+function exchangeclone.goed_condense(player, gem_item)
+    local meta = gem_item:get_meta()
     local inv = player:get_inventory()
     local filter_inv = core.get_inventory({type = "detached", name = player:get_player_name().."_exchangeclone_goed"})
     local list = inv:get_list("main")
     -- Don't include hotbar
     local min = player:hud_get_hotbar_itemcount() + 1
     if player:get_wield_index() >= min then return end
-    
 
-    local total_emc = (itemstack:_get_emc() or 0) - (exchangeclone.get_item_emc(itemstack:get_name()) or 0)
+    local stored_emc = (gem_item:_get_emc()) - (exchangeclone.get_item_emc(gem_item:get_name()))
     local target = exchangeclone.density_targets[math.max(meta:get_int("density_target"),  1)]
     local filter
     local current_mode = player:get_meta():get_string("exchangeclone_goed_filter_type")
@@ -46,10 +46,10 @@ function exchangeclone.goed_condense(player, itemstack)
     for i = min, #list do
         local stack = list[i]
         if filter(stack) and stack:get_name() ~= target then
-            local emc = stack:_get_emc() or 0
+            local stack_emc = stack:_get_emc() or 0
             local individual_emc = exchangeclone.get_item_emc(stack:get_name()) or 0
             if individual_emc > 0 and individual_emc <= exchangeclone.get_item_emc(target) then
-                total_emc = total_emc + emc
+                stored_emc = stored_emc + stack_emc
                 list[i] = ItemStack("")
             end
         end
@@ -57,11 +57,11 @@ function exchangeclone.goed_condense(player, itemstack)
 
     inv:set_list("main", list)
 
-    if not (total_emc and total_emc > 0) then return end
+    if not (stored_emc and (stored_emc > 0)) then return end
 
     local target_emc = exchangeclone.get_item_emc(target)
     local stack_max = ItemStack(target):get_stack_max()
-    local num_to_add, remainder_emc = math.floor(total_emc/target_emc), total_emc % target_emc
+    local num_to_add, remainder_emc = math.floor(stored_emc/target_emc), stored_emc % target_emc
     local num_stacks, remainder = math.floor(num_to_add/stack_max), num_to_add%stack_max
 
     if num_stacks > 0 then
@@ -86,9 +86,9 @@ function exchangeclone.goed_condense(player, itemstack)
     if meta:get_string("exchangeclone_active") ~= "true" then
         exchangeclone.play_sound(player, "exchangeclone_enable")
     end
-    meta:set_string("exchangeclone_emc_value", exchangeclone.get_item_emc(itemstack:get_name()) + remainder_emc)
-    meta:set_string("description", get_gem_description(itemstack))
-    return itemstack
+    meta:set_string("exchangeclone_emc_value", exchangeclone.get_item_emc(gem_item:get_name()) + remainder_emc)
+    meta:set_string("description", get_gem_description(gem_item))
+    return gem_item
 end
 
 local function gem_action(itemstack, player, pointed_thing)

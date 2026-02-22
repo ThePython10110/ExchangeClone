@@ -219,7 +219,7 @@ else
     end
 
     core.register_on_player_hpchange(function(player, hp_change, reason)
-        core.log("Original HP change: " .. hp_change)
+        core.log("[EC Debug] Original HP change: " .. hp_change)
         if hp_change < 0 then
             local damage = -hp_change
             local _, armor_inv = armor:get_valid_player(player, "3d_armor")
